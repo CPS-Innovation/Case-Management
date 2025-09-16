@@ -1,0 +1,8 @@
+namespace Cps.CaseManagement.Api.Exceptions;
+
+public class BadRequestException : ArgumentException
+{
+    public BadRequestException(string message, string paramName) : base(message, paramName)
+    {
+    }
+}
