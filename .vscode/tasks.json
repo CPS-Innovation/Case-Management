@@ -32,7 +32,7 @@
       "type": "process",
       "args": [
         "clean",
-        "${workspaceFolder}/backend"
+        "${workspaceFolder}/src/backend"
       ],
       "problemMatcher": "$msCompile",
       "presentation": {
@@ -46,7 +46,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/backend"
+        "${workspaceFolder}/src/backend"
       ],
       "problemMatcher": "$msCompile",
       "presentation": {
@@ -58,7 +58,7 @@
       "label": "run-backend",
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/backend/Cps.CaseManagement.Api/bin/Debug/net8.0",
+        "cwd": "${workspaceFolder}/src/backend/Cps.CaseManagement.Api/bin/Debug/net8.0",
         "env": {
           "DDEIOptions__MockBaseUrl": "http://localhost:7081"
         }
@@ -71,7 +71,7 @@
       "label": "build-ui",
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/ui-spa"
+        "cwd": "${workspaceFolder}/src/ui-spa"
       },
       "command": "npm install",
       "isBackground": true,
@@ -98,7 +98,7 @@
       "label": "run-ui",
       "type": "shell",
       "options": {
-        "cwd": "${workspaceFolder}/ui-spa",
+        "cwd": "${workspaceFolder}/src/ui-spa",
         "env": {
           "VITE_GATEWAY_BASE_URL": "http://localhost:7071",
           "VITE_MOCK_API_SOURCE": "",
@@ -127,7 +127,7 @@
       "type": "shell",
       "command": "./scripts/local.ci.sh",
       "options": {
-        "cwd": "${workspaceFolder}/e2e"
+        "cwd": "${workspaceFolder}/src/e2e"
       },
       "problemMatcher": [],
       "isBackground": true
@@ -180,7 +180,7 @@
       "type": "process",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/backend\\Cps.CaseManagement.Api"
+        "cwd": "${workspaceFolder}/src/backend\\Cps.CaseManagement.Api"
       }
     },
     {
@@ -199,7 +199,7 @@
       },
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/backend\\Cps.CaseManagement.Api"
+        "cwd": "${workspaceFolder}/src/backend\\Cps.CaseManagement.Api"
       }
     },
     {
@@ -215,7 +215,7 @@
       "type": "process",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/backend\\Cps.CaseManagement.Api"
+        "cwd": "${workspaceFolder}/src/backend\\Cps.CaseManagement.Api"
       }
     },
     {
@@ -232,14 +232,14 @@
       "dependsOn": "clean release (functions)",
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/backend\\Cps.CaseManagement.Api"
+        "cwd": "${workspaceFolder}/src/backend\\Cps.CaseManagement.Api"
       }
     },
     {
       "type": "func",
       "dependsOn": "build (functions)",
       "options": {
-        "cwd": "${workspaceFolder}/backend\\Cps.CaseManagement.Api/bin/Debug/net8.0"
+        "cwd": "${workspaceFolder}/src/backend\\Cps.CaseManagement.Api/bin/Debug/net8.0"
       },
       "command": "host start",
       "isBackground": true,
