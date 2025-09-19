@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import * as GDS from "govuk-react-jsx";
 import { Link } from "react-router";
 

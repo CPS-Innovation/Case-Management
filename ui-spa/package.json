@@ -5,8 +5,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "start": "vite preview",
+    "lint": "tsc -b && eslint .",
+    "prettier": "prettier --check ./src",
+    "prettier:format": "prettier --write ./src",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
+    "ui:e2e": "npx playwright test --ui",
+    "ui:e2e:ci": "tsc -b && vite build --mode playwright && cross-env CI=true npx playwright test",
+    "ui:e2e:report": "npx playwright show-report ./playwright/playwright-report"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.22.1",
@@ -16,15 +23,22 @@
     "react-dom": "^19.1.1",
     "react-error-boundary": "^6.0.0",
     "react-router": "^7.9.1",
-    "sass": "^1.92.1"
+    "sass": "^1.92.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.5.2",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.33.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -33,10 +47,14 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
+    "jsdom": "^27.0.0",
+    "msw": "^2.11.2",
+    "playwright-msw": "^3.0.1",
     "prettier": "^3.6.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vite-plugin-svgr": "^4.5.0"
+    "vite-plugin-svgr": "^4.5.0",
+    "vitest": "^3.2.4"
   }
 }

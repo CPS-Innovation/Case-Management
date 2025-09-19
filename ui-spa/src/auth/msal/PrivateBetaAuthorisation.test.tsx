@@ -1,6 +1,9 @@
 import PrivateBetaAuthorisation from "./PrivateBetaAuthorisation";
 import * as config from "../../config";
-import { AccountInfo, IPublicClientApplication } from "@azure/msal-browser";
+import type {
+  AccountInfo,
+  IPublicClientApplication,
+} from "@azure/msal-browser";
 import { render, screen } from "@testing-library/react";
 
 const PRIVATE_BETA_USER_GROUP_VALUE = "foo";

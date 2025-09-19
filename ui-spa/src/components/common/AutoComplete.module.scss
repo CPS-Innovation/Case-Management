@@ -2,10 +2,14 @@
   position: relative;
 }
 
+.inputClassName {
+  margin: 0;
+}
+
 .autoCompleteDropdown {
   left: 0;
   position: absolute;
-
+  width: 100%;
   right: 0;
   top: 100%;
   z-index: 10;

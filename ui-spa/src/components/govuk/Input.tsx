@@ -1,7 +1,7 @@
 import * as GDS from "govuk-react-jsx";
 import type { LabelProps } from "./Label";
 
-type InputProps = Omit<
+export type InputProps = Omit<
   React.DetailedHTMLProps<
     React.InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement

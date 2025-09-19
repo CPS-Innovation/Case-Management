@@ -1,20 +1,26 @@
-import { Input } from "../govuk";
+import { Input, type InputProps } from "../govuk";
 import { useState, useRef, useEffect, type FC } from "react";
 import styles from "./AutoComplete.module.scss";
 
-type AutoCompleteProps = {
+interface AutoCompleteProps
+  extends Omit<InputProps, "onChange" | "value" | "type" | "className"> {
   options: {
     id: string;
     value: string;
   }[];
-  onInputChange: (value: string) => void;
+  onInputChange: (val: string) => void;
+  className?: string;
+  inputClassName?: string;
   minLength?: number;
-};
+}
 
 const AutoComplete: FC<AutoCompleteProps> = ({
   options,
   minLength = 2,
   onInputChange,
+  className,
+  inputClassName,
+  ...inputProps
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState<
@@ -49,7 +55,8 @@ const AutoComplete: FC<AutoCompleteProps> = ({
       setFilteredOptions([]);
       setHighlightedIndex(-1);
     }
-  }, [minLength, options, inputValue, isOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minLength, options, inputValue]);
   useEffect(() => {
     if (highlightedIndex !== -1 && listRef.current) {
       const listElement = listRef.current;
@@ -122,16 +129,18 @@ const AutoComplete: FC<AutoCompleteProps> = ({
   };
 
   return (
-    <div className={styles.autoComplete}>
+    <div className={`${styles.autoComplete} ${className}  ${inputClassName}`}>
       <Input
         ref={inputRef}
         value={inputValue}
+        className={`${styles.inputClassName} ${inputClassName}`}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         aria-autocomplete="list"
         aria-controls="autocomplete-list"
         aria-expanded={isOpen}
         autoComplete="off"
+        {...inputProps}
       />
 
       {isOpen && filteredOptions.length > 0 && (

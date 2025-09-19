@@ -1,5 +1,5 @@
 import { MsalProvider } from "@azure/msal-react";
-import React, { FC, useEffect, useState } from "react";
+import React, { type FC, useEffect, useState } from "react";
 import { msalInstance } from "./msalInstance";
 import PrivateBetaAuthorisation from "./PrivateBetaAuthorisation";
 
