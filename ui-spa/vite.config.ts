@@ -22,7 +22,9 @@ export default defineConfig({
       exclude: [
         "src/mocks",
         "src/common/types",
-        "src/components",
+        "src/components/govuk",
+        "src/components/*.tsx",
+        "src/components/case-registration",
         "src/auth/mock",
         "src/auth/no-auth",
         "src/auth/index.ts",

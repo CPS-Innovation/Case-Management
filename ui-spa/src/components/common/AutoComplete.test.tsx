@@ -1,5 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
 import AutoComplete from "./AutoComplete";
+
+// Mock scrollIntoView for tests
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 const options = [
   { id: "1", value: "Apple" },
@@ -46,7 +50,7 @@ describe("AutoComplete", () => {
     );
     const input = screen.getByRole("textbox");
     fireEvent.change(input, { target: { value: "Ban" } });
-    const option = screen.getByText("Banana");
+    const option = screen.getByRole("option", { name: /banana/i });
     fireEvent.click(option);
     expect(input).toHaveValue("Banana");
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -62,5 +66,53 @@ describe("AutoComplete", () => {
     highlighted.forEach((el) => {
       expect(el.className).toContain("highlight");
     });
+  });
+
+  it("highlights correct option as user navigates with arrow keys", () => {
+    render(
+      <AutoComplete options={options} onInputChange={() => {}} minLength={1} />,
+    );
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "a" } });
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    let highlighted = screen
+      .getAllByRole("option")
+      .find((el) => el.getAttribute("aria-selected") === "true");
+    expect(highlighted).toHaveTextContent(/Apple/i);
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    highlighted = screen
+      .getAllByRole("option")
+      .find((el) => el.getAttribute("aria-selected") === "true");
+    expect(highlighted).toHaveTextContent(/Banana/i);
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    highlighted = screen
+      .getAllByRole("option")
+      .find((el) => el.getAttribute("aria-selected") === "true");
+    expect(highlighted).toHaveTextContent(/Apricot/i);
+
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    highlighted = screen
+      .getAllByRole("option")
+      .find((el) => el.getAttribute("aria-selected") === "true");
+    expect(highlighted).toHaveTextContent(/Apple/i);
+
+    fireEvent.keyDown(input, { key: "ArrowUp" });
+    highlighted = screen
+      .getAllByRole("option")
+      .find((el) => el.getAttribute("aria-selected") === "true");
+    expect(highlighted).toHaveTextContent(/Apricot/i);
+  });
+  it("calls handleOptionClick when pressing Enter on a list item", () => {
+    render(
+      <AutoComplete options={options} onInputChange={() => {}} minLength={1} />,
+    );
+    const input = screen.getByRole("textbox");
+    fireEvent.change(input, { target: { value: "a" } });
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(input).toHaveValue("Apple");
   });
 });

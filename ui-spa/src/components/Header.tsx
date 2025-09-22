@@ -15,7 +15,7 @@ export default function Header() {
           >
             <span className="govuk-header__logotype">
               <span className="govuk-header__logotype-text">
-                CPS Large and Complex Cases
+                Case Management
               </span>
             </span>
           </a>

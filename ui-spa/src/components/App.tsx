@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router";
 import Layout from "./Layout";
 import { Auth } from "../auth";
 import AppRoutes from "./AppRoutes";
-import "./App.css";
 
 function App() {
   return (

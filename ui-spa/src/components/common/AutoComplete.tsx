@@ -151,17 +151,13 @@ const AutoComplete: FC<AutoCompleteProps> = ({
         >
           <ul ref={listRef} className={styles.autoCompleteDropdownList}>
             {filteredOptions.map((option, index) => (
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events
               <li
                 role="option"
                 className={`${styles.autoCompleteDropdownListItem} ${index === highlightedIndex ? styles.highlighted : ""}`}
                 aria-selected={index === highlightedIndex}
                 key={option.id}
                 onClick={() => handleOptionClick(option)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleOptionClick(option);
-                  }
-                }}
               >
                 {getHighlightedOptionText(option.value, inputValue)}
               </li>
