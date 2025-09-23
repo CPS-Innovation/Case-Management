@@ -17,6 +17,7 @@ const PrivateBetaAuthorisation: React.FC<Props> = ({
   const canProceedOnGroupMembership = !!groupClaims?.includes(
     PRIVATE_BETA_USER_GROUP,
   );
+  if (!account) return <></>;
 
   return canProceedOnNoGroupInConfig || canProceedOnGroupMembership ? (
     <>{children}</>

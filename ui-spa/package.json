@@ -16,7 +16,7 @@
     "ui:integration:report": "npx playwright show-report ./playwright-report"
   },
   "dependencies": {
-    "@azure/msal-browser": "^4.22.1",
+    "@azure/msal-browser": "^4.4.0",
     "@azure/msal-react": "^3.0.19",
     "govuk-react-jsx": "^7.1.0",
     "react": "^19.1.1",
