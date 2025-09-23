@@ -11,9 +11,9 @@
     "prettier:format": "prettier --write ./src",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "ui:e2e": "npx playwright test --ui",
-    "ui:e2e:ci": "tsc -b && vite build --mode playwright && cross-env CI=true npx playwright test",
-    "ui:e2e:report": "npx playwright show-report ./playwright-report"
+    "ui:integration": "npx playwright test --ui",
+    "ui:integration:ci": "tsc -b && vite build --mode playwright && cross-env CI=true npx playwright test",
+    "ui:integration:report": "npx playwright show-report ./playwright-report"
   },
   "dependencies": {
     "@azure/msal-browser": "^4.22.1",
