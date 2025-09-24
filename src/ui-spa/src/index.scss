@@ -1,0 +1,36 @@
+@font-face {
+  font-family: "NewTransport";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url("./fonts/NewTransport-RegularWEB.woff") format("woff"),
+    url("./fonts/NewTransport-RegularWEB.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "NewTransport";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src:
+    url("./fonts/NewTransport-BoldWEB.woff") format("woff"),
+    url("./fonts/NewTransport-BoldWEB.woff2") format("woff2");
+}
+
+$govuk-font-family: "NewTransport", "Arial", sans-serif;
+
+* {
+  font-family: "NewTransport", "Arial", sans-serif !important;
+}
+
+$govuk-assets-path: "/node_modules/govuk-frontend/govuk/assets/";
+@import "/node_modules/govuk-frontend/govuk/all";
+@import "accessible-autocomplete";
+body {
+  margin: 0;
+  font-size: 19px;
+  h1 {
+    font-size: 3rem;
+  }
+}
