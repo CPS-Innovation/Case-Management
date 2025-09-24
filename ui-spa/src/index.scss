@@ -26,6 +26,7 @@ $govuk-font-family: "NewTransport", "Arial", sans-serif;
 
 $govuk-assets-path: "/node_modules/govuk-frontend/govuk/assets/";
 @import "/node_modules/govuk-frontend/govuk/all";
+@import "accessible-autocomplete";
 body {
   margin: 0;
   font-size: 19px;

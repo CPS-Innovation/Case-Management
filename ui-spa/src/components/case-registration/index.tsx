@@ -1,23 +1,27 @@
-import AutoComplete from "../common/AutoComplete";
+import { AutoComplete } from "../govuk";
 
 const CaseRegistrationPage = () => {
+  const suggest = (
+    query: string,
+    populateResults: (results: string[]) => void,
+  ) => {
+    const results = ["France", "Germany", "United Kingdom"];
+    const filteredResults = results.filter((result) =>
+      result.toLocaleLowerCase().includes(query.toLowerCase()),
+    );
+    populateResults(filteredResults);
+  };
+  const handleOnConfirm = (value: string) => {
+    console.log("Selected value:", value);
+  };
   return (
     <div>
       <h1>Case Registration</h1>
+
       <AutoComplete
-        options={[
-          { id: "1", value: "Option 1" },
-          { id: "2", value: "Option 2" },
-          { id: "3", value: "Option 3" },
-          { id: "4", value: "Option 4" },
-          { id: "5", value: "Option 5" },
-          { id: "6", value: "Option 6" },
-          { id: "7", value: "Option 7" },
-          { id: "8", value: "Option 8" },
-          { id: "9", value: "Option 9" },
-        ]}
-        onInputChange={(value) => console.log("Selected:", value)}
-        inputClassName="govuk-input--width-20"
+        id="autocomplete"
+        source={suggest}
+        onConfirm={handleOnConfirm}
       />
     </div>
   );

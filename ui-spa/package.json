@@ -18,6 +18,7 @@
   "dependencies": {
     "@azure/msal-browser": "^4.4.0",
     "@azure/msal-react": "^3.0.19",
+    "accessible-autocomplete": "^3.0.1",
     "govuk-react-jsx": "^7.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
