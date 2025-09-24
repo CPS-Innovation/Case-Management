@@ -4,14 +4,6 @@
 
 The Case Management project aims to deliver a Case Management solution that streamlines how cases are registered, created, and updated, enabling efficient tracking, improved data accuracy, and greater visibility across the case lifecycle.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Security
-
-If you discover a vulnerability or have a security concern, please refer to our [Security Policy](SECURITY.md) and contact Digital.Security@cps.gov.uk.
-
 ## UI
 
 UI is a vite react typescript project
@@ -35,3 +27,11 @@ UI is a vite react typescript project
 1. To run unit tests: use `npm run test`
 2. To run playwright ui integration test in browser mode: use `ui:integration`
 3. To run playwright ui integration test in ci mode: use `ui:integration:ci`
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Security
+
+If you discover a vulnerability or have a security concern, please refer to our [Security Policy](SECURITY.md) and contact Digital.Security@cps.gov.uk.
