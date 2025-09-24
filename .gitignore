@@ -299,11 +299,11 @@ coverage
 *.sw?
 
 # Playwright
-ui-spa/test-results/
-ui-spa/playwright-report/
-ui-spa/blob-report/
-ui-spa/playwright/.cache/
-ui-spa/playwright/.auth/
+src/ui-spa/test-results/
+src/ui-spa/playwright-report/
+src/ui-spa/blob-report/
+src/ui-spa/playwright/.cache/
+src/ui-spa/playwright/.auth/
 
 
 # Vite
