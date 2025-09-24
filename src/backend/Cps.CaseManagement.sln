@@ -1,0 +1,76 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Api", "Cps.CaseManagement.Api\Cps.CaseManagement.Api.csproj", "{17BA4823-C63A-4011-942B-8D97ED0F19BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Application", "Cps.CaseManagement.Application\Cps.CaseManagement.Application.csproj", "{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Domain", "Cps.CaseManagement.Domain\Cps.CaseManagement.Domain.csproj", "{E3553DDA-0424-4ADA-AB13-6F63096E39CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Infrastructure", "Cps.CaseManagement.Infrastructure\Cps.CaseManagement.Infrastructure.csproj", "{739C07C0-7A3A-43BB-A903-4BA4DD4E44CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.MdsClient", "Cps.CaseManagement.MdsClient\Cps.CaseManagement.MdsClient.csproj", "{0B3C084F-5A8F-483C-A9C8-1ACB3418CB1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Api.Tests", "..\tests\Cps.CaseManagement.Api.Tests\Cps.CaseManagement.Api.Tests.csproj", "{29BF19C8-09B8-459E-8120-9DA6DE6704B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Application.Tests", "..\tests\Cps.CaseManagement.Application.Tests\Cps.CaseManagement.Application.Tests.csproj", "{56BD36FD-0231-4497-A875-2A0E95845338}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Domain.Tests", "..\tests\Cps.CaseManagement.Domain.Tests\Cps.CaseManagement.Domain.Tests.csproj", "{47A4E699-C3DE-448A-948F-0159990042C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Infrastructure.Tests", "..\tests\Cps.CaseManagement.Infrastructure.Tests\Cps.CaseManagement.Infrastructure.Tests.csproj", "{6244D3A7-9340-403C-BF16-1B7861D43A2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.MdsClient.Tests", "..\tests\Cps.CaseManagement.MdsClient.Tests\Cps.CaseManagement.MdsClient.Tests.csproj", "{BDC79D1F-6A2C-42E0-AA1C-D28278251A36}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17BA4823-C63A-4011-942B-8D97ED0F19BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17BA4823-C63A-4011-942B-8D97ED0F19BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17BA4823-C63A-4011-942B-8D97ED0F19BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17BA4823-C63A-4011-942B-8D97ED0F19BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3553DDA-0424-4ADA-AB13-6F63096E39CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3553DDA-0424-4ADA-AB13-6F63096E39CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3553DDA-0424-4ADA-AB13-6F63096E39CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3553DDA-0424-4ADA-AB13-6F63096E39CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{739C07C0-7A3A-43BB-A903-4BA4DD4E44CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{739C07C0-7A3A-43BB-A903-4BA4DD4E44CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{739C07C0-7A3A-43BB-A903-4BA4DD4E44CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{739C07C0-7A3A-43BB-A903-4BA4DD4E44CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B3C084F-5A8F-483C-A9C8-1ACB3418CB1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3C084F-5A8F-483C-A9C8-1ACB3418CB1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B3C084F-5A8F-483C-A9C8-1ACB3418CB1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B3C084F-5A8F-483C-A9C8-1ACB3418CB1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BF19C8-09B8-459E-8120-9DA6DE6704B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BF19C8-09B8-459E-8120-9DA6DE6704B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BF19C8-09B8-459E-8120-9DA6DE6704B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BF19C8-09B8-459E-8120-9DA6DE6704B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56BD36FD-0231-4497-A875-2A0E95845338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56BD36FD-0231-4497-A875-2A0E95845338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56BD36FD-0231-4497-A875-2A0E95845338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56BD36FD-0231-4497-A875-2A0E95845338}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A4E699-C3DE-448A-948F-0159990042C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A4E699-C3DE-448A-948F-0159990042C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A4E699-C3DE-448A-948F-0159990042C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A4E699-C3DE-448A-948F-0159990042C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6244D3A7-9340-403C-BF16-1B7861D43A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6244D3A7-9340-403C-BF16-1B7861D43A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6244D3A7-9340-403C-BF16-1B7861D43A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6244D3A7-9340-403C-BF16-1B7861D43A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDC79D1F-6A2C-42E0-AA1C-D28278251A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDC79D1F-6A2C-42E0-AA1C-D28278251A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDC79D1F-6A2C-42E0-AA1C-D28278251A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDC79D1F-6A2C-42E0-AA1C-D28278251A36}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
