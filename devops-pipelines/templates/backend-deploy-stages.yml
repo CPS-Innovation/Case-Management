@@ -33,6 +33,8 @@ parameters:
     default: ''
   - name: dependsOn
     type: string
+  - name: buildArtifact
+    type: string
 
 stages:
 - stage: Approve_Deployment_${{ parameters.environment }}
@@ -45,8 +47,8 @@ stages:
       notifyUsers: ${{ parameters.notifyUsers }}
       approvers: ${{ parameters.approvers }}
 
-- stage:  Deploy_Function_Apps_${{ parameters.environment }}
-  displayName: '${{ parameters.environment }} - Deploy Function Apps'
+- stage:  Deploy_Backend_${{ parameters.environment }}
+  displayName: '${{ parameters.environment }} - Deploy Backend'
   ${{ if eq(parameters.requireValidation, true) }}:
     dependsOn: 
     - ${{ parameters.dependsOn }}
@@ -59,8 +61,8 @@ stages:
       environment: ${{ parameters.environment }}
   pool: ${{ parameters.agentPool }}
   jobs:
-    - deployment: Deploy_Main_API
-      displayName: '${{ parameters.environment }} - Deploy Main API Function App'
+    - deployment: Deploy_Backend
+      displayName: '${{ parameters.environment }} - Deploy Backend'
       environment: 'CM-Backend-${{ parameters.environment }}'
       strategy:
         runOnce:
@@ -103,10 +105,10 @@ stages:
                   environment: ${{ parameters.environment }}
                   azureSubscription: ${{ parameters.azureSubscription }}
                   functionAppName: 'fa-cm-api-${{ parameters.environment }}'
-                  buildArtifactName: 'cm-main-api-drop'
+                  buildArtifactName: ${{ parameters.buildArtifact }}
                   deployToSlot: ${{ parameters.deployToSlot }}
                   slotName: ${{ parameters.slotName }}
                   
               - template: ./runner-cleanup-steps.yml
                 parameters:
-                  buildArtifact: 'cm-main-api-drop'
+                  buildArtifact: ${{ parameters.buildArtifact }}

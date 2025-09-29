@@ -14,12 +14,12 @@ variables:
 stages:
   - template: ../templates/ui-build-and-deploy-stages.yml
     parameters:
-      environment: dev
+      environment: 'dev'
       requireValidation: false
 
   # - template: ../templates/ui-build-and-deploy-stages.yml
   #   parameters:
-  #     environment: staging
+  #     environment: 'staging'
   #     requireValidation: true
   #     notifyUsers: $(notifyUsers)
   #     approvers: $(approvers)
@@ -28,7 +28,7 @@ stages:
       
   # - template: ../templates/ui-build-and-deploy-stages.yml
   #   parameters:
-  #     environment: prod
+  #     environment: 'prod'
   #     agentPool: 'CM Prod Pool'
   #     requireValidation: true
   #     notifyUsers: $(notifyUsers)
