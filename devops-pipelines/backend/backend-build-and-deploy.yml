@@ -1,0 +1,60 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/backend/*
+
+pr: none
+
+variables:
+  buildConfiguration: 'Release'
+  dotNetVersion: '8.x'
+
+stages:
+  - stage: Build
+    displayName: 'Build Main API'
+    pool: 'CM PreProd Pool'
+    jobs:
+      - job: Build_Main_API
+        displayName: 'Build Main API'
+        steps:
+          - template: ../templates/dotnet-build-steps.yml
+            parameters:
+              projectPath: 'src\backend\Cps.CaseManagement.Api\Cps.CaseManagement.Api.csproj'
+              projectName: 'cm-main-api-drop'
+              buildConfiguration: $(buildConfiguration)
+              dotNetVersion: $(dotNetVersion)
+              useLocalNuGet: true
+              publishOutput: true
+              runTests: false
+  
+      - template: ../templates/backend-deploy-stages.yml
+        parameters:
+          dependsOn: 'Build'        
+          environment: dev
+          requireValidation: false
+
+      # - template: ../templates/backend-deploy-stages.yml
+      #   parameters:
+      #     dependsOn: 'Build'
+      #     environment: staging
+      #     requireValidation: true
+      #     notifyUsers: $(notifyUsers)
+      #     approvers: $(approvers)
+      #     deployToSlot: true
+      #     slotName: 'stg'
+
+      # - template: ../templates/backend-deploy-stages.yml
+      #   parameters:
+      #     dependsOn: 'Build'
+      #     environment: prod
+      #     requireValidation: true
+      #     notifyUsers: $(notifyUsers)
+      #     approvers: $(approvers)
+      #     agentPool: 'CM Prod Pool'
+      #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
+      #     deployToSlot: true
+      #     slotName: 'stg'
