@@ -470,6 +470,42 @@ public class MdsClientTests
         await Assert.ThrowsAsync<InvalidOperationException>(() => _client.GetTitlesAsync(_mdsBaseArgDto));
     }
 
+    [Fact]
+    public async Task GetWMSUnitsAsync_ReturnsExpectedWMSUnits_WhenResponseIsSuccessful()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/wms-units");
+        var expectedUnits = _fixture.CreateMany<WMSUnitEntity>(7).ToList();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetWMSUnitsRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedUnits, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.GetWMSUnitsAsync(_mdsBaseArgDto);
+
+        // Assert
+        var resultList = result.ToList();
+        Assert.Equal(expectedUnits.Count, resultList.Count);
+    }
+
+    [Fact]
+    public async Task GetWMSUnitsAsync_ThrowsMdsClientException_WhenResponseIsNotSuccessful()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/wms-units");
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetWMSUnitsRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(new List<WMSUnitEntity>(), HttpStatusCode.TooManyRequests);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MdsClientException>(() => _client.GetWMSUnitsAsync(_mdsBaseArgDto));
+    }
+
     private void SetupHttpMockResponse<T>(T response, HttpStatusCode statusCode)
     {
         var content = JsonSerializer.Serialize(response);
