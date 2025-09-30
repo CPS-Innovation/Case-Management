@@ -18,4 +18,5 @@ public interface IMdsClient
     Task<IEnumerable<CourtEntity>> GetCourtsAsync(MdsUnitIdArg arg);
     Task<IEnumerable<UnitEntity>> GetUnitsAsync(MdsBaseArgDto arg);
     Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg);
+    Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg);
 }

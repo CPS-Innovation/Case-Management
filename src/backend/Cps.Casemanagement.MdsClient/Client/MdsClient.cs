@@ -85,6 +85,12 @@ public class MdsClient(HttpClient httpClient,
         return await CallMds<IEnumerable<WMSUnitEntity>>(request);
     }
 
+    public async Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg)
+    {
+        var request = _mdsRequestFactory.CreateListCasesByUrnRequest(arg);
+        return await CallMds<IEnumerable<CaseInfoEntity>>(request);
+    }
+
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
         using var response = await CallMds(request);

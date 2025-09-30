@@ -16,4 +16,5 @@ public interface IMdsRequestFactory
     HttpRequestMessage CreateGetCourtsRequest(MdsUnitIdArg arg);
     HttpRequestMessage CreateGetUnitsRequest(MdsBaseArgDto arg);
     HttpRequestMessage CreateGetWMSUnitsRequest(MdsBaseArgDto arg);
+    HttpRequestMessage CreateListCasesByUrnRequest(MdsUrnArg arg);
 }
