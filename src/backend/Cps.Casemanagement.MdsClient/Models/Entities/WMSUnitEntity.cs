@@ -12,6 +12,7 @@ public class WMSUnitEntity
     public long Id { get; set; }
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
+    // Indicates if the unit is a WCU (Witness Care Unit)
     [JsonPropertyName("isWCU")]
     public bool IsWCU { get; set; } = false;
 }
