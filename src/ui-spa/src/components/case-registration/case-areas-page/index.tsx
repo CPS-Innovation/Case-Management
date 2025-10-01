@@ -1,7 +1,7 @@
 import { AutoComplete, BackLink } from "../../govuk";
 import { getCaseAreasAndRegisteringUnits } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
-import { getAreasorDivisions } from "./../../../common/utils/getAreasorDivisions";
+import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
 import styles from "./index.module.scss";
 
 const CaseAreasPage = () => {
@@ -11,7 +11,7 @@ const CaseAreasPage = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
-  const areas = getAreasorDivisions(data || []);
+  const areas = getAreasOrDivisions(data || []);
 
   const suggest = (
     query: string,
@@ -25,9 +25,7 @@ const CaseAreasPage = () => {
       .map((r) => r.areaDescription);
     populateResults(filteredResults);
   };
-  const handleOnConfirm = (value: string) => {
-    console.log("Selected value:", value);
-  };
+
   return (
     <div className={styles.caseAreasPage}>
       <BackLink
@@ -39,11 +37,7 @@ const CaseAreasPage = () => {
       </BackLink>
       <h1>What is the division or area?</h1>
       <div className={styles.autoCompleteContainer}>
-        <AutoComplete
-          id="autocomplete"
-          source={suggest}
-          onConfirm={handleOnConfirm}
-        />
+        <AutoComplete id="autocomplete" source={suggest} onConfirm={() => {}} />
       </div>
     </div>
   );

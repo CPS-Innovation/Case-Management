@@ -130,15 +130,11 @@ const CaseRegistrationPage = () => {
       | "operationNameText",
     value: string,
   ) => {
-    console.log("fieldName", fieldName, "value", value);
-
     dispatch({
       type: "SET_FIELD",
       payload: { field: fieldName, value: value },
     });
   };
-
-  console.log("state", state);
 
   return (
     <div>
