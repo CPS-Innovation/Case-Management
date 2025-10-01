@@ -164,6 +164,14 @@ const CaseRegistrationPage = () => {
                 children: <h2>{`Do you have an operation name?`}</h2>,
               },
             }}
+            errorMessage={
+              formDataErrors["operationNameRadio"]
+                ? {
+                    children:
+                      formDataErrors["operationNameRadio"].errorSummaryText,
+                  }
+                : undefined
+            }
             name="`Do you have an operation name?"
             items={[
               {
@@ -177,6 +185,15 @@ const CaseRegistrationPage = () => {
                       key="operation-name-text"
                       id="operation-name-text"
                       data-testid="operation-name-text"
+                      errorMessage={
+                        formDataErrors["operationNameText"]
+                          ? {
+                              children:
+                                formDataErrors["operationNameText"]
+                                  .errorSummaryText,
+                            }
+                          : undefined
+                      }
                       className="govuk-input--width-20"
                       label={{
                         children: "Operation name",
@@ -208,6 +225,14 @@ const CaseRegistrationPage = () => {
                 children: <h2>{`Do you have any suspect details?`}</h2>,
               },
             }}
+            errorMessage={
+              formDataErrors["suspectDetailsRadio"]
+                ? {
+                    children:
+                      formDataErrors["suspectDetailsRadio"].errorSummaryText,
+                  }
+                : undefined
+            }
             name="Do you have any suspect details?"
             items={[
               {

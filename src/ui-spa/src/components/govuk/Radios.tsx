@@ -11,6 +11,10 @@ export type RadiosProps = {
   hint?: {
     children: React.ReactNode;
   };
+  errorMessage?: {
+    className?: string;
+    children: React.ReactNode;
+  };
   className?: string;
   value: string | undefined;
   name: string;
