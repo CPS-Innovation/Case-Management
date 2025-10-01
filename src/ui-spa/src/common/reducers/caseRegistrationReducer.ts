@@ -1,7 +1,7 @@
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
-  | "operationName";
+  | "operationNameText";
 
 export type CaseRegistrationState = {
   currentPage: "case-registration" | "case-area";
@@ -17,11 +17,6 @@ export const initialState: CaseRegistrationState = {
   operationNameText: "",
 };
 
-export const CaseRegistrationFieldTypes = {
-  operationNameRadio: "operationNameRadio",
-  suspectDetailsRadio: "suspectDetailsRadio",
-  operationNameText: "operationNameText",
-} as const;
 export type CaseRegistrationActions =
   | {
       type: "SET_FIELD";

@@ -2,7 +2,7 @@ import { http, delay, HttpResponse } from "msw";
 import {
   caseAreasAndRegisteringUnitsDev,
   caseAreasAndRegisteringUnitsPlaywright,
-} from "./data";
+} from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
   const isDevMock = () => apiMockSource === "dev";
