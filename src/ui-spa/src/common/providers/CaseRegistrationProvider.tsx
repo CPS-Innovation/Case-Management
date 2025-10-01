@@ -17,15 +17,8 @@ const CaseRegistrationProvider: React.FC<{
   const [state, dispatch] = useReducer(
     caseRegistrationReducer,
     initialState,
-    (init) => {
-      const stored = null;
-      return stored ? { ...init, ...JSON.parse(stored) } : init;
-    },
+    (init) => init,
   );
-
-  useEffect(() => {
-    localStorage.setItem("caseForm", JSON.stringify(state));
-  }, [state]);
 
   const contextValue = useMemo(() => ({ state, dispatch }), [state, dispatch]);
   return (
