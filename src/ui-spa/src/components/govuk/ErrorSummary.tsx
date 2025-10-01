@@ -11,7 +11,7 @@ type ErrorSummaryProps = React.DetailedHTMLProps<
   errorList?: {
     children: ReactNode;
     reactListKey: string;
-    href: string;
+    href?: string;
     "data-testid"?: string;
   }[];
 };
