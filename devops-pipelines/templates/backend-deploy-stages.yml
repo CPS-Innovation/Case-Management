@@ -71,6 +71,9 @@ stages:
               - checkout: self
                 sparseCheckoutDirectories: devops-pipelines/scripts
                 fetchDepth: 1
+              
+              - download: 'current'
+                artifact: ${{ parameters.buildArtifact }}
 
               - task: Bash@3
                 displayName: 'Ensure Azure CLI'
@@ -105,7 +108,7 @@ stages:
                   environment: ${{ parameters.environment }}
                   azureSubscription: ${{ parameters.azureSubscription }}
                   functionAppName: 'fa-cm-api-${{ parameters.environment }}'
-                  buildArtifactName: ${{ parameters.buildArtifact }}
+                  buildArtifact: ${{ parameters.buildArtifact }}
                   deployToSlot: ${{ parameters.deployToSlot }}
                   slotName: ${{ parameters.slotName }}
                   

@@ -24,7 +24,7 @@ stages:
         steps:
           - template: ../templates/dotnet-build-steps.yml
             parameters:
-              projectPath: 'src\backend\Cps.CaseManagement.sln'
+              projectPath: 'src/backend/Cps.CaseManagement.sln'
               projectName: 'Backend Solution'
               buildConfiguration: '$(buildConfiguration)'
               dotNetVersion: $(dotNetVersion)
@@ -40,7 +40,7 @@ stages:
           # Build and publish Main API
           - template: ../templates/dotnet-build-steps.yml
             parameters:
-              projectPath: 'src\backend\Cps.CaseManagement.Api\Cps.CaseManagement.Api.csproj'
+              projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
               projectName: 'cm-main-api-drop'
               buildConfiguration: $(buildConfiguration)
               dotNetVersion: $(dotNetVersion)

@@ -10,9 +10,13 @@ trigger:
 pr: none
 
 variables:
-  buildConfiguration: 'Release'
-  dotNetVersion: '8.x'
-  buildArtifact: 'cm-main-api-drop'
+- group: 'cm-deployment-global'
+- name: 'buildConfiguration'
+  value: 'Release'
+- name: 'dotNetVersion'
+  value: '8.x'
+- name: 'buildArtifact'
+  value: 'cm-main-api-drop'
 
 stages:
   - stage: Build
@@ -24,7 +28,7 @@ stages:
         steps:
           - template: ../templates/dotnet-build-steps.yml
             parameters:
-              projectPath: 'src\backend\Cps.CaseManagement.Api\Cps.CaseManagement.Api.csproj'
+              projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
               projectName: $(buildArtifact)
               buildConfiguration: $(buildConfiguration)
               dotNetVersion: $(dotNetVersion)
@@ -32,33 +36,33 @@ stages:
               publishOutput: true
               runTests: false
   
-      - template: ../templates/backend-deploy-stages.yml
-        parameters:
-          dependsOn: 'Build'        
-          environment: 'dev'
-          requireValidation: false
-          buildArtifact: $(buildArtifact)
+  - template: ../templates/backend-deploy-stages.yml
+    parameters:
+      dependsOn: 'Build'        
+      environment: 'dev'
+      requireValidation: false
+      buildArtifact: $(buildArtifact)
 
-      # - template: ../templates/backend-deploy-stages.yml
-      #   parameters:
-      #     dependsOn: 'Build'
-      #     environment: 'staging'
-      #     requireValidation: true
-      #     notifyUsers: $(notifyUsers)
-      #     approvers: $(approvers)
-      #     deployToSlot: true
-      #     slotName: 'stg'
-      #     buildArtifact: $(buildArtifact)
+  # - template: ../templates/backend-deploy-stages.yml
+  #   parameters:
+  #     dependsOn: 'Build'
+  #     environment: 'staging'
+  #     requireValidation: true
+  #     notifyUsers: $(notifyUsers)
+  #     approvers: $(approvers)
+  #     deployToSlot: true
+  #     slotName: 'stg'
+  #     buildArtifact: $(buildArtifact)
 
-      # - template: ../templates/backend-deploy-stages.yml
-      #   parameters:
-      #     dependsOn: 'Build'
-      #     environment: 'prod'
-      #     requireValidation: true
-      #     notifyUsers: $(notifyUsers)
-      #     approvers: $(approvers)
-      #     agentPool: 'CM Prod Pool'
-      #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
-      #     deployToSlot: true
-      #     slotName: 'stg'
-      #     buildArtifact: $(buildArtifact)
+  # - template: ../templates/backend-deploy-stages.yml
+  #   parameters:
+  #     dependsOn: 'Build'
+  #     environment: 'prod'
+  #     requireValidation: true
+  #     notifyUsers: $(notifyUsers)
+  #     approvers: $(approvers)
+  #     agentPool: 'CM Prod Pool'
+  #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
+  #     deployToSlot: true
+  #     slotName: 'stg'
+  #     buildArtifact: $(buildArtifact)

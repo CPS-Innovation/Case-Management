@@ -1,7 +1,7 @@
 parameters:
   environment: ''
   functionAppName: ''
-  buildArtifactName: ''
+  buildArtifact: ''
   keyVaultName: $(keyVaultName)
   azureSubscription: ''
   resourceGroupName: $(resourceGroupName)
@@ -24,7 +24,7 @@ steps:
       azureSubscription: ${{ parameters.azureSubscription }}
       appType: 'functionApp'
       appName: ${{ parameters.functionAppName }}
-      package: '$(Pipeline.Workspace)/${{ parameters.buildArtifactName }}/*.zip'
+      package: '$(Pipeline.Workspace)/${{ parameters.buildArtifact }}/*.zip'
       runtimeStack: 'DOTNET-ISOLATED|8.0'
       deploymentMethod: 'runFromPackage'
       deployToSlotOrASE: ${{ parameters.deployToSlot }}
