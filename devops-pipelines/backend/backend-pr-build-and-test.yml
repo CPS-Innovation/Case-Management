@@ -6,7 +6,7 @@ pr:
       - main
   paths:
     include:
-      - backend/*
+      - src/backend/*
 
 variables:
   buildConfiguration: 'Release'
