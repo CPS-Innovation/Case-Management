@@ -506,6 +506,50 @@ public class MdsClientTests
         await Assert.ThrowsAsync<MdsClientException>(() => _client.GetWMSUnitsAsync(_mdsBaseArgDto));
     }
 
+    [Fact]
+    public async Task ListCasesByUrnAsync_ReturnsExpectedCases_WhenResponseIsSuccessful()
+    {
+        // Arrange
+        var mdsUrnArg = _fixture.Create<MdsUrnArg>();
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, $"api/urns/{mdsUrnArg.Urn}/case-identifiers");
+        var expectedCases = _fixture.CreateMany<CaseInfoEntity>(5).ToList();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateListCasesByUrnRequest(mdsUrnArg))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedCases, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.ListCasesByUrnAsync(mdsUrnArg);
+
+        // Assert
+        var resultList = result.ToList();
+        Assert.Equal(expectedCases.Count, resultList.Count);
+    }
+
+    [Fact]
+    public async Task ListCasesByUrnAsync_ReturnsEmptyList_WhenNoCasesFound()
+    {
+        // Arrange
+        var mdsUrnArg = _fixture.Create<MdsUrnArg>();
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, $"api/urns/{mdsUrnArg.Urn}/case-identifiers");
+        var expectedCases = new List<CaseInfoEntity>();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateListCasesByUrnRequest(mdsUrnArg))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedCases, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.ListCasesByUrnAsync(mdsUrnArg);
+
+        // Assert
+        var resultList = result.ToList();
+        Assert.Empty(resultList);
+    }
+
     private void SetupHttpMockResponse<T>(T response, HttpStatusCode statusCode)
     {
         var content = JsonSerializer.Serialize(response);

@@ -22,6 +22,7 @@ public class GetCourts(ILogger<GetCourts> logger,
 
   [Function(nameof(GetCourts))]
   [OpenApiOperation(operationId: nameof(GetCourts), tags: ["MDS"], Description = "Gets courts by unit Id.")]
+  [OpenApiParameter(name: "unitId", In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true, Type = typeof(long), Description = "The unit Id to get courts for.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
   [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(CourtEntity[]), Description = ApiResponseDescriptions.Success)]

@@ -23,4 +23,13 @@ public class MdsArgFactory : IMdsArgFactory
         };
     }
 
+    public MdsUrnArg CreateGetByUrnArg(string cmsAuthValues, Guid correlationId, string urn)
+    {
+        return new MdsUrnArg
+        {
+            CmsAuthValues = cmsAuthValues,
+            CorrelationId = correlationId,
+            Urn = urn
+        };
+    }
 }

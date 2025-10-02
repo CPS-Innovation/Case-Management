@@ -42,6 +42,11 @@ public class MdsRequestFactory : IMdsRequestFactory
 
     public HttpRequestMessage CreateGetWMSUnitsRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/wms-units", arg);
+
+    public HttpRequestMessage CreateListCasesByUrnRequest(MdsUrnArg arg) =>
+        BuildRequest(HttpMethod.Get, $"api/urns/{arg.Urn}/case-identifiers", arg);
+
+
     private HttpRequestMessage BuildRequest(HttpMethod method, string path, MdsBaseArgDto arg)
     {
         var request = new HttpRequestMessage(method, path);
