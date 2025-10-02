@@ -22,6 +22,15 @@ stages:
       - job: Build_And_Test_Solution
         displayName: 'Build & Test Solution'
         steps:
+          - script: |
+              echo "####### ls sourcesDirectory ########"
+              ls $(Build.SourcesDirectory)
+
+              echo "ls src/backend"
+              ls $(Build.SourcesDirectory)/src/backend
+              
+            displayName: debug
+
           - template: ../templates/dotnet-build-steps.yml
             parameters:
               projectPath: 'src/backend/Cps.CaseManagement.sln'
