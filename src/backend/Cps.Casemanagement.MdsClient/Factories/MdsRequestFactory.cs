@@ -46,6 +46,9 @@ public class MdsRequestFactory : IMdsRequestFactory
     public HttpRequestMessage CreateListCasesByUrnRequest(MdsUrnArg arg) =>
         BuildRequest(HttpMethod.Get, $"api/urns/{arg.Urn}/case-identifiers", arg);
 
+    public HttpRequestMessage CreateUserDataRequest(MdsBaseArgDto arg) =>
+        BuildRequest(HttpMethod.Get, "api/user-data", arg);
+
 
     private HttpRequestMessage BuildRequest(HttpMethod method, string path, MdsBaseArgDto arg)
     {

@@ -3,6 +3,7 @@ namespace Cps.CaseManagement.MdsClient.Client;
 
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
+using CPS.CaseManagement.MdsClient.Models.Dto;
 
 public interface IMdsClient
 {
@@ -16,7 +17,7 @@ public interface IMdsClient
     Task<IEnumerable<ProsecutorOrCaseworkerEntity>> GetProsecutorsAsync(MdsUnitIdArg arg);
     Task<IEnumerable<ProsecutorOrCaseworkerEntity>> GetCaseworkersAsync(MdsUnitIdArg arg);
     Task<IEnumerable<CourtEntity>> GetCourtsAsync(MdsUnitIdArg arg);
-    Task<IEnumerable<UnitEntity>> GetUnitsAsync(MdsBaseArgDto arg);
+    Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg);
     Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg);
     Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg);
 }
