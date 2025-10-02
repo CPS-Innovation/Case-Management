@@ -8,13 +8,11 @@ import { render, screen } from "@testing-library/react";
 
 const PRIVATE_BETA_USER_GROUP_VALUE = "foo";
 const EXPECTED_APP_TEXT = "app_text";
-
-vi.mock("../../config");
-vi.mock("react-router", () => ({
-  useLocation: () => ({
-    pathname: "",
-  }),
+vi.mock("../../components/Layout", () => ({
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
+vi.mock("../../config");
+
 const mockConfig = config as {
   PRIVATE_BETA_USER_GROUP: string | null;
   PRIVATE_BETA_CONTACT_EMAIL: string | null;

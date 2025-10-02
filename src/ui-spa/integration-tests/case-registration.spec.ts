@@ -1,8 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "./utils/test";
 
-test("has title", async ({ page }) => {
-  await page.goto("http://localhost:5173");
+test.describe("Case Registration", () => {
+  test("has title", async ({ page }) => {
+    await page.goto("http://localhost:5173");
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Case Management/);
+    await expect(page).toHaveTitle(/Case Management/);
+  });
 });

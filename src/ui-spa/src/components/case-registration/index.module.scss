@@ -1,0 +1,20 @@
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  :global(.govuk-form-group) {
+    margin-bottom: 1.25rem;
+    width: 100%;
+  }
+  & h2 {
+    margin: 0;
+  }
+}
+.errorSummaryWrapper {
+  margin-top: 1rem;
+  max-width: 30rem;
+  &:focus {
+    outline: 0.2rem solid #ffdd00;
+  }
+}
