@@ -43,7 +43,6 @@ stages:
               projectName: 'cm-main-api-drop'
               buildConfiguration: $(buildConfiguration)
               dotNetVersion: $(dotNetVersion)
-              useLocalNuGet: true
               publishOutput: false
               runTests: false
 

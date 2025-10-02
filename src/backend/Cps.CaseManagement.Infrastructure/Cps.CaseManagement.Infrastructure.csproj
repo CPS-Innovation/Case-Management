@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CPS.CaseManagement.Domain\CPS.CaseManagement.Domain.csproj" />
-    <ProjectReference Include="..\CPS.CaseManagement.MdsClient\CPS.CaseManagement.MdsClient.csproj" />
+    <ProjectReference Include="..\Cps.CaseManagement.Domain\Cps.CaseManagement.Domain.csproj" />
+    <ProjectReference Include="..\Cps.CaseManagement.MdsClient\Cps.CaseManagement.MdsClient.csproj" />
   </ItemGroup>
 
 </Project>
