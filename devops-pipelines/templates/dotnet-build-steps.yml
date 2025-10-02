@@ -38,7 +38,7 @@ steps:
       inputs:
         command: 'test'
         projects: '${{ parameters.projectPath }}'
-        arguments: '--configuration ${{ parameters.buildConfiguration }} --no-build --collect:"XPlat Code Coverage;Format=cobertura" --settings tests/CodeCoverage.runsettings'
+        arguments: '--configuration ${{ parameters.buildConfiguration }} --no-build --collect:"XPlat Code Coverage;Format=cobertura" --settings src/tests/CodeCoverage.runsettings'
         publishTestResults: true
         testResultsFormat: 'VSTest'
         testResultsFiles: '**/*.trx'
