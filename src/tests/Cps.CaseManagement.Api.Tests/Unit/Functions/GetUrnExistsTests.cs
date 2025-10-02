@@ -10,6 +10,8 @@ using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 using Cps.CaseManagement.Api.Tests.Helpers;
+using Cps.CaseManagement.MdsClient.Exceptions;
+using System.Net;
 
 public class GetUrnExistsTests
 {
@@ -86,6 +88,34 @@ public class GetUrnExistsTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         Assert.False((bool)okResult.Value);
+        _mdsClientMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
+    }
+
+    [Fact]
+    public async Task Run_ThrowsMdsClientException_WhenUrnIsInvalid()
+    {
+        // Arrange
+        var invalidUrn = "123";
+
+        _mdsArgFactoryMock
+            .Setup(f => f.CreateGetByUrnArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Returns(_getByUrnArg);
+
+        _mdsClientMock
+            .Setup(c => c.ListCasesByUrnAsync(_getByUrnArg))
+            .ThrowsAsync(new MdsClientException(HttpStatusCode.BadRequest, new HttpRequestException("Invalid URN format")));
+
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            _correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
+        var httpRequest = HttpRequestStubHelper.CreateHttpRequest(_correlationId);
+
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<MdsClientException>(
+            async () => await _function.Run(httpRequest, functionContext, invalidUrn));
+
+        Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
         _mdsClientMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
     }
 }
