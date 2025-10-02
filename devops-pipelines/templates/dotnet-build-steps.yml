@@ -20,7 +20,7 @@ steps:
     inputs:
       command: 'restore'
       projects: '${{ parameters.projectPath }}'
-      nugetConfigPath: 'src/backend/nuget.config'
+      nugetConfigPath: '$(Pipline.Workspace)/src/backend/nuget.config'
       feedsToUse: 'config'
 
   # Build project
