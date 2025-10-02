@@ -22,37 +22,28 @@ stages:
       - job: Build_And_Test_Solution
         displayName: 'Build & Test Solution'
         steps:
-          - script: |
-              echo "####### pwd sourcesDirectory ########"
-              cd $(Build.SourcesDirectory)
-              pwd
+          - template: ../templates/dotnet-build-steps.yml
+            parameters:
+              projectPath: 'src/backend/Cps.CaseManagement.sln'
+              projectName: 'Backend Solution'
+              buildConfiguration: '$(buildConfiguration)'
+              dotNetVersion: $(dotNetVersion)
+              publishOutput: false
+              runTests: true
+              testResultsDirectory: $(testResultsDirectory)
 
-              echo "ls src/backend/Cps.Casemanagement.Application"
-              ls $(Build.SourcesDirectory)/src/backend/Cps.Casemanagement.Application
-            displayName: debug
-
-      #     - template: ../templates/dotnet-build-steps.yml
-      #       parameters:
-      #         projectPath: 'src/backend/Cps.CaseManagement.sln'
-      #         projectName: 'Backend Solution'
-      #         buildConfiguration: '$(buildConfiguration)'
-      #         dotNetVersion: $(dotNetVersion)
-      #         publishOutput: false
-      #         runTests: true
-      #         testResultsDirectory: $(testResultsDirectory)
-
-      # - job: Build_Main_API
-      #   displayName: 'Build Main API'
-      #   dependsOn: Build_And_Test_Solution
-      #   steps:
-      #     # Build and publish Main API
-      #     - template: ../templates/dotnet-build-steps.yml
-      #       parameters:
-      #         projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
-      #         projectName: 'cm-main-api-drop'
-      #         buildConfiguration: $(buildConfiguration)
-      #         dotNetVersion: $(dotNetVersion)
-      #         useLocalNuGet: true
-      #         publishOutput: false
-      #         runTests: false
+      - job: Build_Main_API
+        displayName: 'Build Main API'
+        dependsOn: Build_And_Test_Solution
+        steps:
+          # Build and publish Main API
+          - template: ../templates/dotnet-build-steps.yml
+            parameters:
+              projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
+              projectName: 'cm-main-api-drop'
+              buildConfiguration: $(buildConfiguration)
+              dotNetVersion: $(dotNetVersion)
+              useLocalNuGet: true
+              publishOutput: false
+              runTests: false
 

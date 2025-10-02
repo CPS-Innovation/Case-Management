@@ -60,7 +60,7 @@ stages:
       - name: nodeVersion
         value: '20.x'
       - name: workingDir
-        value: ui-spa
+        value: 'src/ui-spa'
       steps:
         - checkout: self
           sparseCheckoutDirectories: '$(workingDir)'
