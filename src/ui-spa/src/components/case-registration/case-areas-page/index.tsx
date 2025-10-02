@@ -1,17 +1,18 @@
+import { useContext, useMemo } from "react";
 import { AutoComplete, BackLink } from "../../govuk";
-import { getCaseAreasAndRegisteringUnits } from "../../../apis/gateway-api";
-import { useQuery } from "@tanstack/react-query";
+import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
 import styles from "./index.module.scss";
 
 const CaseAreasPage = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["areas"],
-    queryFn: getCaseAreasAndRegisteringUnits,
-  });
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
 
-  if (isLoading) return <div>Loading...</div>;
-  const areas = getAreasOrDivisions(data || []);
+  const areas = useMemo(() => {
+    if (state.apiData.areasAndRegisteringUnits) {
+      return getAreasOrDivisions(state.apiData.areasAndRegisteringUnits);
+    }
+    return [];
+  }, [state.apiData.areasAndRegisteringUnits]);
 
   const suggest = (
     query: string,
@@ -26,6 +27,17 @@ const CaseAreasPage = () => {
     populateResults(filteredResults);
   };
 
+  const handleAreaConfirm = (value: string) => {
+    console.log("Selected area:", value);
+    dispatch({
+      type: "SET_FIELD",
+      payload: { field: "areaOrDivisionText", value: value },
+    });
+  };
+  console.log(
+    "state.formData.areaOrDivisionText",
+    state.formData.areaOrDivisionText,
+  );
   return (
     <div className={styles.caseAreasPage}>
       <BackLink
@@ -37,7 +49,13 @@ const CaseAreasPage = () => {
       </BackLink>
       <h1>What is the division or area?</h1>
       <div className={styles.autoCompleteContainer}>
-        <AutoComplete id="autocomplete" source={suggest} onConfirm={() => {}} />
+        <AutoComplete
+          id="autocomplete"
+          source={suggest}
+          confirmOnBlur={false}
+          onConfirm={handleAreaConfirm}
+          defaultValue={state.formData.areaOrDivisionText}
+        />
       </div>
     </div>
   );
