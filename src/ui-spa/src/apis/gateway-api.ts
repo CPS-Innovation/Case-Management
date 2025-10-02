@@ -25,7 +25,11 @@ export const getCaseAreasAndRegisteringUnits = async () => {
   });
 
   if (!response.ok) {
-    throw new ApiError(`Getting case areas and re failed`, url, response);
+    throw new ApiError(
+      `Getting case areas and registering units failed`,
+      url,
+      response,
+    );
   }
   return (await response.json()) as CaseAreasAndRegisteringUnits;
 };
