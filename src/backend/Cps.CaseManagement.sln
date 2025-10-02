@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Api", "Cps.CaseManagement.Api\Cps.CaseManagement.Api.csproj", "{17BA4823-C63A-4011-942B-8D97ED0F19BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Application", "Cps.CaseManagement.Application\Cps.CaseManagement.Application.csproj", "{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Application", "Cps.Casemanagement.Application\Cps.CaseManagement.Application.csproj", "{A07A4BDD-4FC2-456B-AD67-FF204BBBAC1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cps.CaseManagement.Domain", "Cps.CaseManagement.Domain\Cps.CaseManagement.Domain.csproj", "{E3553DDA-0424-4ADA-AB13-6F63096E39CD}"
 EndProject
