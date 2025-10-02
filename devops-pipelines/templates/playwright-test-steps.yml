@@ -16,14 +16,14 @@ steps:
       customCommand: 'run ui:integration:ci'
       workingDir: ${{ parameters.workingDir }}
 
-  - publish: '${{ parameters.workingDir }}/playwright/playwright-report'
-    artifact: 'e2e-test-report'
-    displayName: 'Upload E2E Test Report As Pipeline Artifact'  
+  - publish: '${{ parameters.workingDir }}/playwright-report'
+    artifact: 'integration-test-report'
+    displayName: 'Upload Integration Test Report As Pipeline Artifact'  
 
   - task: PublishTestResults@2
-    displayName: 'Publish E2E Test Results'
+    displayName: 'Publish Integration Test Results'
     inputs:
       testResultsFormat: 'JUnit'
-      testResultsFiles: '${{ parameters.workingDir }}/playwright/e2e-test-results.xml'
+      testResultsFiles: '${{ parameters.workingDir }}/integration-test-results.xml'
       publishRunAttachments: true
     condition: always()
