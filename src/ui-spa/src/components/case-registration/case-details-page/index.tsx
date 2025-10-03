@@ -13,7 +13,7 @@ import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
-const CaseAreasPage = () => {
+const CaseDetailsPage = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
@@ -144,7 +144,7 @@ const CaseAreasPage = () => {
       >
         Back
       </BackLink>
-      <h1>What is the division or area?</h1>
+      <h1>Case Details</h1>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -184,4 +184,4 @@ const CaseAreasPage = () => {
   );
 };
 
-export default CaseAreasPage;
+export default CaseDetailsPage;

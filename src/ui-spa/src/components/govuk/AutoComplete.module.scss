@@ -1,0 +1,10 @@
+.autoCompleteWrapper {
+  & :global(.autocomplete__wrapper) {
+    max-width: 400px;
+  }
+  & :global(.govuk-form-group) {
+    & :global(.govuk-input--error) {
+      border: 2px solid #d4351c;
+    }
+  }
+}

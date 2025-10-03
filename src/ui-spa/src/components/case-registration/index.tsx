@@ -274,8 +274,7 @@ const CaseRegistrationPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          {" "}
-          Continue
+          Save and Continue
         </Button>
       </form>
     </div>
