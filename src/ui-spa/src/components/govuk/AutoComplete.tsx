@@ -2,6 +2,7 @@ import Autocomplete from "accessible-autocomplete/react";
 import styles from "./AutoComplete.module.scss";
 type Props = {
   id: string;
+  label?: { children: React.ReactNode };
   inputClasses?: string;
   errorMessage?: string;
   defaultValue?: string;
@@ -14,6 +15,9 @@ export const AutoComplete: React.FC<Props> = (props) => (
   <div
     className={`${styles.autoCompleteWrapper} govuk-form-group  ${props.errorMessage ? "govuk-form-group--error" : ""}`}
   >
+    <label className="govuk-label" htmlFor={props.id}>
+      {props.label?.children}
+    </label>
     {props.errorMessage && (
       <p className="govuk-error-message" data-testid={`${props.id}-error-text`}>
         <span className="govuk-visually-hidden">Error: </span>

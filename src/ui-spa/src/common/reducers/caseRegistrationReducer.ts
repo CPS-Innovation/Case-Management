@@ -4,7 +4,13 @@ export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
   | "operationNameText"
-  | "areaOrDivisionText";
+  | "areaOrDivisionText"
+  | "urnPoliceForceText"
+  | "urnPoliceUnitText"
+  | "urnUniqueReferenceText"
+  | "urnYearReferenceText"
+  | "registeringUnitText"
+  | "witnessCareUnitText";
 
 export type CaseRegistrationState = {
   formData: {
@@ -13,6 +19,12 @@ export type CaseRegistrationState = {
     suspectDetailsRadio: string;
     operationNameText: string;
     areaOrDivisionText: string;
+    urnPoliceForceText?: string;
+    urnPoliceUnitText?: string;
+    urnUniqueReferenceText?: string;
+    urnYearReferenceText?: string;
+    registeringUnitText?: string;
+    witnessCareUnitText?: string;
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
@@ -26,6 +38,12 @@ export const initialState: CaseRegistrationState = {
     suspectDetailsRadio: "",
     operationNameText: "",
     areaOrDivisionText: "",
+    urnPoliceForceText: "",
+    urnPoliceUnitText: "",
+    urnUniqueReferenceText: "",
+    urnYearReferenceText: "",
+    registeringUnitText: "",
+    witnessCareUnitText: "",
   },
   apiData: {
     areasAndRegisteringUnits: null,
