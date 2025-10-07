@@ -43,7 +43,7 @@ export const initialState: CaseRegistrationState = {
     urnPoliceForceText: "",
     urnPoliceUnitText: "",
     urnUniqueReferenceText: "",
-    urnYearReferenceText: "",
+    urnYearReferenceText: String(new Date().getFullYear()).slice(-2),
     registeringUnitText: "",
     witnessCareUnitText: "",
   },

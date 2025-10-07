@@ -329,15 +329,17 @@ const CaseDetailsPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <fieldset
-          className={`govuk-fieldset ${formDataErrors.urnErrorText?.errorSummaryText ? "govuk-form-group--error" : ""}`}
+          className={`govuk-fieldset  govuk-form-group ${formDataErrors.urnErrorText?.errorSummaryText ? "govuk-form-group--error" : ""}`}
         >
           <legend className="govuk-fieldset__legend ">
             <h2>What is the URN?</h2>
           </legend>
-          <p className="govuk-error-message">
-            <span className="govuk-visually-hidden">Error:</span>{" "}
-            {formDataErrors.urnErrorText?.errorSummaryText}
-          </p>
+          {formDataErrors.urnErrorText?.errorSummaryText && (
+            <p className="govuk-error-message">
+              <span className="govuk-visually-hidden">Error:</span>{" "}
+              {formDataErrors.urnErrorText?.errorSummaryText}
+            </p>
+          )}
           <div className={styles.urnInputsWrapper}>
             <Input
               id="urn-police-force-text"
