@@ -70,7 +70,7 @@ export type CaseRegistrationActions =
         areasAndWitnessCareUnits: CaseAreasAndWitnessCareUnits;
       };
     }
-  | { type: "RESET_FORM" };
+  | { type: "RESET_FORM_DATA" };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
 
@@ -107,8 +107,8 @@ export const caseRegistrationReducer = (
       };
     }
 
-    case "RESET_FORM": {
-      return initialState;
+    case "RESET_FORM_DATA": {
+      return { ...state, formData: initialState.formData };
     }
 
     default:
