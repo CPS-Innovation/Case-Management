@@ -20,8 +20,6 @@ steps:
     inputs:
       command: 'restore'
       projects: '${{ parameters.projectPath }}'
-      nugetConfigPath: '$(Build.SourcesDirectory)/src/backend/nuget.config'
-      feedsToUse: 'config'
 
   # Build project
   - task: DotNetCoreCLI@2
