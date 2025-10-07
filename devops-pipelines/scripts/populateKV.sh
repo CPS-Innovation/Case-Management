@@ -22,6 +22,7 @@ set_kv_secret() {
         echo "✅ Secret '$secret_name' set successfully"
     else
         echo "❌ Failed to set secret '$secret_name'"
+        exit 1
     fi
     else
     echo "⚠️ Skipping '$secret_name' - value is empty or not provided"
