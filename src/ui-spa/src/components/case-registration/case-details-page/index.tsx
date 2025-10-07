@@ -15,7 +15,8 @@ import {
 } from "../../govuk";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
+import { getRegisteringUnits } from "../../../common/utils/getRegisteringUnits";
+import { getWitnessCareUnits } from "../../../common/utils/getWitnessCareUnits";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -185,23 +186,53 @@ const CaseDetailsPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const areas = useMemo(() => {
+  const registeringUnits = useMemo(() => {
     if (state.apiData.areasAndRegisteringUnits) {
-      return getAreasOrDivisions(state.apiData.areasAndRegisteringUnits);
+      return getRegisteringUnits(
+        state.apiData.areasAndRegisteringUnits,
+        state.formData.areaOrDivisionText,
+      );
     }
-    return [];
-  }, [state.apiData.areasAndRegisteringUnits]);
+    return [] as { unitId: number; unitDescription: string }[];
+  }, [
+    state.apiData.areasAndRegisteringUnits,
+    state.formData.areaOrDivisionText,
+  ]);
 
-  const suggest = (
+  const registeringUnitSuggest = (
     query: string,
     populateResults: (results: string[]) => void,
   ) => {
-    const results = areas || [];
-    const filteredResults = results
+    const filteredResults = registeringUnits
       .filter((result) =>
-        result.areaDescription.toLowerCase().includes(query.toLowerCase()),
+        result.unitDescription.toLowerCase().includes(query.toLowerCase()),
       )
-      .map((r) => r.areaDescription);
+      .map((r) => r.unitDescription);
+    populateResults(filteredResults);
+  };
+
+  const witnessCareUnits = useMemo(() => {
+    if (state.apiData.areasAndWitnessCareUnits) {
+      return getWitnessCareUnits(
+        state.apiData.areasAndWitnessCareUnits,
+        state.formData.areaOrDivisionText,
+      );
+    }
+    return [] as { wcuId: number; wcuDescription: string }[];
+  }, [
+    state.apiData.areasAndWitnessCareUnits,
+    state.formData.areaOrDivisionText,
+  ]);
+
+  const witnessCareUnitSuggest = (
+    query: string,
+    populateResults: (results: string[]) => void,
+  ) => {
+    const filteredResults = witnessCareUnits
+      .filter((result) =>
+        result.wcuDescription.toLowerCase().includes(query.toLowerCase()),
+      )
+      .map((r) => r.wcuDescription);
     populateResults(filteredResults);
   };
 
@@ -229,10 +260,11 @@ const CaseDetailsPage = () => {
       | "urnYearReferenceText",
     value: string,
   ) => {
-    console.log("Selected URN value:", value);
+    let newValue = value.replace(/[^0-9a-zA-Z]/g, "");
+    if (field !== "urnPoliceUnitText") newValue = newValue.replace(/\D/g, "");
     dispatch({
       type: "SET_FIELD",
-      payload: { field, value },
+      payload: { field, value: newValue },
     });
   };
 
@@ -309,7 +341,6 @@ const CaseDetailsPage = () => {
           <div className={styles.urnInputsWrapper}>
             <Input
               id="urn-police-force-text"
-              type={"number"}
               maxLength={2}
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-force-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-force-text"
@@ -322,7 +353,6 @@ const CaseDetailsPage = () => {
             />
             <Input
               id="urn-police-unit-text"
-              type={"text"}
               maxLength={2}
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-unit-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-unit-text"
@@ -335,7 +365,6 @@ const CaseDetailsPage = () => {
             />
             <Input
               id="urn-unique-reference-text"
-              type="number"
               maxLength={5}
               className={`govuk-input--width-5 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-unique-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-unique-reference-text"
@@ -348,7 +377,6 @@ const CaseDetailsPage = () => {
             />
             <Input
               id="urn-year-reference-text"
-              type="number"
               maxLength={2}
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-year-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-year-reference-text"
@@ -365,7 +393,7 @@ const CaseDetailsPage = () => {
         <AutoComplete
           id="registering-unit-text"
           inputClasses={"govuk-input--error"}
-          source={suggest}
+          source={registeringUnitSuggest}
           confirmOnBlur={false}
           onConfirm={handleRegisteringUnitConfirm}
           defaultValue={state.formData.registeringUnitText}
@@ -380,7 +408,7 @@ const CaseDetailsPage = () => {
         <AutoComplete
           id="witness-care-unit-text"
           inputClasses={"govuk-input--error"}
-          source={suggest}
+          source={witnessCareUnitSuggest}
           confirmOnBlur={false}
           onConfirm={handleWitnessCareUnitConfirm}
           defaultValue={state.formData.witnessCareUnitText}

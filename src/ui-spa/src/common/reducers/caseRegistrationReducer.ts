@@ -1,4 +1,5 @@
 import { type CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
+import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
 
 export type CaseRegistrationField =
   | "operationNameRadio"
@@ -28,6 +29,7 @@ export type CaseRegistrationState = {
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
+    areasAndWitnessCareUnits?: CaseAreasAndWitnessCareUnits | null;
   };
 };
 
@@ -47,6 +49,7 @@ export const initialState: CaseRegistrationState = {
   },
   apiData: {
     areasAndRegisteringUnits: null,
+    areasAndWitnessCareUnits: null,
   },
 };
 
@@ -59,6 +62,12 @@ export type CaseRegistrationActions =
       type: "SET_AREAS_AND_REGISTERING_UNITS";
       payload: {
         areasAndRegisteringUnits: CaseAreasAndRegisteringUnits;
+      };
+    }
+  | {
+      type: "SET_AREAS_AND_WITNESS_CARE_UNITS";
+      payload: {
+        areasAndWitnessCareUnits: CaseAreasAndWitnessCareUnits;
       };
     }
   | { type: "RESET_FORM" };
@@ -85,6 +94,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           areasAndRegisteringUnits: action.payload.areasAndRegisteringUnits,
+        },
+      };
+    }
+    case "SET_AREAS_AND_WITNESS_CARE_UNITS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          areasAndWitnessCareUnits: action.payload.areasAndWitnessCareUnits,
         },
       };
     }

@@ -9,10 +9,12 @@ import {
 import { Input, Radios, Button, ErrorSummary } from "../govuk";
 import { CaseRegistrationFormContext } from "../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../common/reducers/caseRegistrationReducer";
-import { getCaseAreasAndRegisteringUnits } from "../../apis/gateway-api";
+import {
+  getCaseAreasAndRegisteringUnits,
+  getCaseAreasAndWitnessCareUnits,
+} from "../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { isAreaSensitive } from "../../common/utils/isAreaSensitive";
-
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -32,11 +34,16 @@ const CaseRegistrationPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
-  const { data, isLoading } = useQuery({
+  const { data: areasData, isLoading: isAreaDataLoading } = useQuery({
     queryKey: ["areas"],
     queryFn: getCaseAreasAndRegisteringUnits,
   });
 
+  const { data: witnessCareUnitsData, isLoading: isWitnessCareUnitsLoading } =
+    useQuery({
+      queryKey: ["witness-care-units"],
+      queryFn: getCaseAreasAndWitnessCareUnits,
+    });
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -129,15 +136,26 @@ const CaseRegistrationPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!isLoading && data) {
+    if (!isAreaDataLoading && areasData) {
       dispatch({
         type: "SET_AREAS_AND_REGISTERING_UNITS",
         payload: {
-          areasAndRegisteringUnits: data,
+          areasAndRegisteringUnits: areasData,
         },
       });
     }
-  }, [data, dispatch, isLoading]);
+  }, [areasData, dispatch, isAreaDataLoading]);
+
+  useEffect(() => {
+    if (!isWitnessCareUnitsLoading && witnessCareUnitsData) {
+      dispatch({
+        type: "SET_AREAS_AND_WITNESS_CARE_UNITS",
+        payload: {
+          areasAndWitnessCareUnits: witnessCareUnitsData,
+        },
+      });
+    }
+  }, [witnessCareUnitsData, dispatch, isWitnessCareUnitsLoading]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
