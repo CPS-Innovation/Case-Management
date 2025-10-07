@@ -102,6 +102,7 @@ stages:
                     bash $(scripts_directory)/populateKV.sh
                 env:
                   KEY_VAULT_NAME: $(keyVaultName)
+                  MDS_OPTIONS_ACCESS_KEY: $(MdsOptionsAccessKey)
                   
               - template: ./fa-deploy-steps.yml
                 parameters:
