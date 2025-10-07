@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/ui-spa/*
+
+pr: none
+
+variables:
+  - group: cm-deployment-global
+
+stages:
+  - template: ../templates/ui-build-and-deploy-stages.yml
+    parameters:
+      environment: 'dev'
+      requireValidation: false
+
+  # - template: ../templates/ui-build-and-deploy-stages.yml
+  #   parameters:
+  #     environment: 'staging'
+  #     requireValidation: true
+  #     notifyUsers: $(notifyUsers)
+  #     approvers: $(approvers)
+  #     deployToSlot: true
+  #     slotName: 'stg'
+      
+  # - template: ../templates/ui-build-and-deploy-stages.yml
+  #   parameters:
+  #     environment: 'prod'
+  #     agentPool: 'CM Prod Pool'
+  #     requireValidation: true
+  #     notifyUsers: $(notifyUsers)
+  #     approvers: $(approvers)
+  #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
+  #     deployToSlot: true
+  #     slotName: 'stg'
