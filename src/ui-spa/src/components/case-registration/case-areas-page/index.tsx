@@ -7,7 +7,6 @@ import {
   useEffect,
 } from "react";
 import { AutoComplete, BackLink, Button, ErrorSummary } from "../../govuk";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
 import { useNavigate } from "react-router-dom";
@@ -43,31 +42,26 @@ const CaseAreasPage = () => {
   );
 
   const validateFormData = (
-    state: CaseRegistrationState,
-    inputValue: string,
+    areas: {
+      areaId: number;
+      areaDescription: string;
+    }[],
+    inputAreaValue: string,
   ) => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { areaOrDivisionText },
-    } = state;
 
-    if (!areaOrDivisionText) {
+    if (!inputAreaValue) {
       errors.areaOrDivisionText = {
         errorSummaryText: "Case area should not be empty",
         hasLink: true,
       };
-    } else if (areaOrDivisionText !== inputValue) {
-      if (!inputValue) {
-        errors.areaOrDivisionText = {
-          errorSummaryText: "Case area should not be empty",
-          hasLink: true,
-        };
-      } else {
-        errors.areaOrDivisionText = {
-          errorSummaryText: "Case area is invalid",
-          hasLink: true,
-        };
-      }
+    } else if (
+      areas.findIndex((area) => area.areaDescription === inputAreaValue) === -1
+    ) {
+      errors.areaOrDivisionText = {
+        errorSummaryText: "Case area is invalid",
+        hasLink: true,
+      };
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
@@ -89,16 +83,16 @@ const CaseAreasPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
 
-  useEffect(() => {
-    if (errorList.length) errorSummaryRef.current?.focus();
-  }, [errorList]);
-
   const areas = useMemo(() => {
     if (state.apiData.areasAndRegisteringUnits) {
       return getAreasOrDivisions(state.apiData.areasAndRegisteringUnits);
     }
     return [];
   }, [state.apiData.areasAndRegisteringUnits]);
+
+  useEffect(() => {
+    if (errorList.length) errorSummaryRef.current?.focus();
+  }, [errorList]);
 
   const suggest = (
     query: string,
@@ -127,12 +121,13 @@ const CaseAreasPage = () => {
       "area-or-division-text",
     ) as HTMLInputElement | null;
     const inputValue = input?.value ?? "";
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: "areaOrDivisionText", value: inputValue },
-    });
+    if (inputValue !== state.formData.areaOrDivisionText)
+      dispatch({
+        type: "SET_FIELD",
+        payload: { field: "areaOrDivisionText", value: inputValue },
+      });
 
-    if (!validateFormData(state, inputValue)) return;
+    if (!validateFormData(areas, inputValue)) return;
     return navigate("/case-registration/case-details");
   };
   return (

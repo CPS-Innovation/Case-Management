@@ -55,3 +55,21 @@ export const getCaseAreasAndWitnessCareUnits = async () => {
   }
   return (await response.json()) as CaseAreasAndWitnessCareUnits;
 };
+
+export const validateUrn = async (urn: string) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/urns/${urn}/exist`;
+
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(`URN validation failed`, url, response);
+  }
+  return (await response.json()) as { exists: boolean };
+};
+// v1/urns/{urn}/exist

@@ -2,7 +2,7 @@ import { getWitnessCareUnits } from "./getWitnessCareUnits";
 import type { CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
 
 describe("getWitnessCareUnits", () => {
-  it("returns unique wcuId and wcuDescription for a given area", () => {
+  it("returns unique unitId and unitDescription for a given area", () => {
     const input: CaseAreasAndWitnessCareUnits = [
       {
         areaId: 1,
@@ -43,8 +43,8 @@ describe("getWitnessCareUnits", () => {
     const result = getWitnessCareUnits(input, "North");
 
     expect(result).toEqual([
-      { wcuId: 101, wcuDescription: "desc1" },
-      { wcuId: 104, wcuDescription: "desc4" },
+      { unitId: 101, unitDescription: "desc1" },
+      { unitId: 104, unitDescription: "desc4" },
     ]);
   });
 

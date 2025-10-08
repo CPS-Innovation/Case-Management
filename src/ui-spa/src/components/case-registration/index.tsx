@@ -14,7 +14,7 @@ import {
   getCaseAreasAndWitnessCareUnits,
 } from "../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
-import { isAreaSensitive } from "../../common/utils/isAreaSensitive";
+import { useISAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -33,6 +33,7 @@ const CaseRegistrationPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const isAreaSensitive = useISAreaSensitive();
 
   const { data: areasData, isLoading: isAreaDataLoading } = useQuery({
     queryKey: ["areas"],
@@ -159,9 +160,9 @@ const CaseRegistrationPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const isSensitive = isAreaSensitive(state.apiData.areasAndRegisteringUnits);
+
     if (!validateFormData(state)) return;
-    if (!isSensitive) return navigate("/case-registration/areas");
+    if (!isAreaSensitive) return navigate("/case-registration/areas");
     return navigate("/case-registration/case-details");
   };
 
