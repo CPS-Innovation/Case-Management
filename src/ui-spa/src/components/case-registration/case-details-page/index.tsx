@@ -248,16 +248,22 @@ const CaseDetailsPage = () => {
         };
       }
     }
-    if (
-      witnessCareUnitInputValue &&
-      witnessCareUnits.findIndex(
-        (wcu) => wcu.unitDescription === witnessCareUnitInputValue,
-      ) === -1
-    ) {
-      errors.witnessCareUnitErrorText = {
-        errorSummaryText: "Witness care unit is invalid",
-        hasLink: true,
-      };
+    if (witnessCareUnits.length) {
+      if (!witnessCareUnitInputValue) {
+        errors.witnessCareUnitErrorText = {
+          errorSummaryText: "Witness care unit should not be empty",
+          hasLink: true,
+        };
+      } else if (
+        witnessCareUnits.findIndex(
+          (wcu) => wcu.unitDescription === witnessCareUnitInputValue,
+        ) === -1
+      ) {
+        errors.witnessCareUnitErrorText = {
+          errorSummaryText: "Witness care unit is invalid",
+          hasLink: true,
+        };
+      }
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
@@ -422,20 +428,22 @@ const CaseDetailsPage = () => {
           />
         )}
 
-        <AutoComplete
-          id="witness-care-unit-text"
-          inputClasses={"govuk-input--error"}
-          source={witnessCareUnitSuggest}
-          confirmOnBlur={false}
-          onConfirm={handleWitnessCareUnitConfirm}
-          defaultValue={state.formData.witnessCareUnitText}
-          label={{ children: <h2>What is the witness care unit (WCU)?</h2> }}
-          errorMessage={
-            formDataErrors["witnessCareUnitErrorText"]
-              ? formDataErrors["witnessCareUnitErrorText"].errorSummaryText
-              : undefined
-          }
-        />
+        {!!witnessCareUnits.length && (
+          <AutoComplete
+            id="witness-care-unit-text"
+            inputClasses={"govuk-input--error"}
+            source={witnessCareUnitSuggest}
+            confirmOnBlur={false}
+            onConfirm={handleWitnessCareUnitConfirm}
+            defaultValue={state.formData.witnessCareUnitText}
+            label={{ children: <h2>What is the witness care unit (WCU)?</h2> }}
+            errorMessage={
+              formDataErrors["witnessCareUnitErrorText"]
+                ? formDataErrors["witnessCareUnitErrorText"].errorSummaryText
+                : undefined
+            }
+          />
+        )}
 
         <Button type="submit" onClick={() => handleSubmit}>
           Save and Continue
