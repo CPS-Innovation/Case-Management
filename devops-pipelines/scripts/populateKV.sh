@@ -1,13 +1,18 @@
 #!/bin/bash
-
 echo "Initializing Key Vault secrets from Azure DevOps variable groups..."
 echo "🔐 Only storing sensitive secrets in Key Vault"
 
-# Function to safely set Key Vault secret
+# Hash table of secret keys to their secret values
+declare -A secrets_array=(
+    [MDSOptions--AccessKey]=$MDS_OPTIONS_ACCESS_KEY
+)
+
+exit_code=0
+
+# Function to safely set Key Vault secrets
 set_kv_secret() {
     local secret_name="$1"
     local secret_value="$2"
-    local description="$3"
     
     if [ -n "$secret_value" ] && [ "$secret_value" != "" ] && [ "$secret_value" != "null" ]; then
     echo "Setting Key Vault secret: $secret_name"
@@ -15,28 +20,32 @@ set_kv_secret() {
         --vault-name "$KEY_VAULT_NAME" \
         --name "$secret_name" \
         --value "$secret_value" \
-        --description "$description" \
         --output none
     
-    if [ $? -eq 0 ]; then
-        echo "✅ Secret '$secret_name' set successfully"
+        if [ $? -eq 0 ]; then
+            echo "✅ Secret '$secret_name' set successfully"
+        else
+            exit_code=1
+            exit_message="❌ Failed to set secret '$secret_name'"
+            echo $exit_message
+        fi
     else
-        echo "❌ Failed to set secret '$secret_name'"
-        exit 1
-    fi
-    else
-    echo "⚠️ Skipping '$secret_name' - value is empty or not provided"
+        exit_code=1
+        exit_message="⚠️ Skipping '$secret_name' - value is empty or not provided"
+        echo $exit_message
     fi
 }
 
-echo "📋 Setting storage connection secrets..."
-
-# MDS API Credentials
-set_kv_secret "MDSOptions--AccessKey" "$MDS_OPTIONS_ACCESS_KEY" "MDS API access key"
-
-
-echo "✅ Key Vault secret initialization completed"
+echo "📋 Setting KV secrets..."
+for key in "${!secrets_array[@]}"; do
+    set_kv_secret "$key" "${secrets_array[$key]}"
+done
 
 # List all secrets that were set (names only, not values)
 echo "📋 Current Key Vault secrets:"
 az keyvault secret list --vault-name "$KEY_VAULT_NAME" --query "[].name" -o table
+
+if [ "$exit_code" -eq 1 ]; then
+    echo "Some secrets were not set: $exit_message"
+    exit 1
+fi
