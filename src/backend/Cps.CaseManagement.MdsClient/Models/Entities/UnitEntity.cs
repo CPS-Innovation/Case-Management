@@ -8,6 +8,8 @@ public class UnitEntity
     public long AreaId { get; set; }
     [JsonPropertyName("areaDescription")]
     public string AreaDescription { get; set; } = string.Empty;
+    [JsonPropertyName("areaIsSensitive")]
+    public bool AreaIsSensitive { get; set; }
     [JsonPropertyName("id")]
     public long Id { get; set; }
     [JsonPropertyName("description")]

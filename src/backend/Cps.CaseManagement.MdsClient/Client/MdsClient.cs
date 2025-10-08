@@ -6,6 +6,7 @@ using Cps.CaseManagement.MdsClient.Exceptions;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
+using CPS.CaseManagement.MdsClient.Models.Dto;
 
 public class MdsClient(HttpClient httpClient,
     IMdsRequestFactory mdsRequestFactory) : IMdsClient
@@ -73,10 +74,25 @@ public class MdsClient(HttpClient httpClient,
         return await CallMds<IEnumerable<CourtEntity>>(request);
     }
 
-    public async Task<IEnumerable<UnitEntity>> GetUnitsAsync(MdsBaseArgDto arg)
+    public async Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg)
     {
         var request = _mdsRequestFactory.CreateGetUnitsRequest(arg);
-        return await CallMds<IEnumerable<UnitEntity>>(request);
+        var unitRequest = _mdsRequestFactory.CreateGetUnitsRequest(arg);
+        var allUnitsTask = CallMds<IEnumerable<UnitEntity>>(unitRequest);
+
+        var userDataRequest = _mdsRequestFactory.CreateUserDataRequest(arg);
+        var userDataTask = CallMds<UserDataEntity>(userDataRequest);
+
+        await Task.WhenAll(allUnitsTask, userDataTask);
+
+        var allUnits = await allUnitsTask;
+        var userData = await userDataTask;
+
+        return new UnitsDto
+        {
+            AllUnits = allUnits.ToList(),
+            HomeUnit = allUnits.FirstOrDefault(u => u.Id == userData.HomeUnit.UnitId)
+        };
     }
 
     public async Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg)

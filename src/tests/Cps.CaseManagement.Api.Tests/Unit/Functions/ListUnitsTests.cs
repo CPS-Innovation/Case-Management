@@ -10,6 +10,7 @@ using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
+using CPS.CaseManagement.MdsClient.Models.Dto;
 
 public class ListUnitsTests
 {
@@ -32,7 +33,7 @@ public class ListUnitsTests
     public async Task Run_ReturnsOkObjectResult_WithExpectedUnits()
     {
         // Arrange
-        var expectedUnits = _fixture.Create<UnitEntity[]>();
+        var expectedUnits = _fixture.Create<UnitsDto>();
         var correlationId = _fixture.Create<Guid>();
         var cmsAuthValues = _fixture.Create<string>();
         var baseArg = _fixture.Create<MdsBaseArgDto>();
