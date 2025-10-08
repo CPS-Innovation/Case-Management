@@ -108,7 +108,6 @@ const CaseAreasPage = () => {
   };
 
   const handleAreaConfirm = (value: string) => {
-    console.log("Selected area:", value);
     dispatch({
       type: "SET_FIELD",
       payload: { field: "areaOrDivisionText", value: value },
@@ -161,9 +160,6 @@ const CaseAreasPage = () => {
           confirmOnBlur={false}
           onConfirm={handleAreaConfirm}
           defaultValue={state.formData.areaOrDivisionText}
-          handleInputChange={(e) => {
-            console.log("Input changed:", e.target.value);
-          }}
           errorMessage={
             formDataErrors["areaOrDivisionText"]
               ? formDataErrors["areaOrDivisionText"].errorSummaryText

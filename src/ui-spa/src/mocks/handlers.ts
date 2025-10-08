@@ -24,8 +24,7 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
-    http.get(`${baseUrl}/api/v1/urns/:urn/exist`, async ({ params }) => {
-      console.log(`Checking existence of URN: ${params.urn}`);
+    http.get(`${baseUrl}/api/v1/urns/:urn/exist`, async () => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json({ exists: true });
     }),

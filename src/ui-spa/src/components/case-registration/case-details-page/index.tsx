@@ -145,7 +145,6 @@ const CaseDetailsPage = () => {
   };
 
   const handleWitnessCareUnitConfirm = (value: string) => {
-    console.log("Selected witness care unit:", value);
     dispatch({
       type: "SET_FIELD",
       payload: { field: "witnessCareUnitText", value: value },
@@ -153,7 +152,6 @@ const CaseDetailsPage = () => {
   };
 
   const handleRegisteringUnitConfirm = (value: string) => {
-    console.log("Selected registering unit:", value);
     dispatch({
       type: "SET_FIELD",
       payload: { field: "registeringUnitText", value: value },
