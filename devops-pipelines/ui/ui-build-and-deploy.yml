@@ -17,14 +17,14 @@ stages:
       environment: 'dev'
       requireValidation: false
 
-  # - template: ../templates/ui-build-and-deploy-stages.yml
-  #   parameters:
-  #     environment: 'staging'
-  #     requireValidation: true
-  #     notifyUsers: $(notifyUsers)
-  #     approvers: $(approvers)
-  #     deployToSlot: true
-  #     slotName: 'stg'
+  - template: ../templates/ui-build-and-deploy-stages.yml
+    parameters:
+      environment: 'staging'
+      requireValidation: true
+      notifyUsers: $(notifyUsers)
+      approvers: $(approvers)
+      deployToSlot: true
+      slotName: 'stg'
       
   # - template: ../templates/ui-build-and-deploy-stages.yml
   #   parameters:
