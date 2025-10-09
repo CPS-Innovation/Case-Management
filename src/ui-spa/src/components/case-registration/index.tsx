@@ -9,7 +9,13 @@ import {
 import { Input, Radios, Button, ErrorSummary } from "../govuk";
 import { CaseRegistrationFormContext } from "../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../common/reducers/caseRegistrationReducer";
-
+import {
+  getCaseAreasAndRegisteringUnits,
+  getCaseAreasAndWitnessCareUnits,
+} from "../../apis/gateway-api";
+import { useQuery } from "@tanstack/react-query";
+import { useIsAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
+import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
 const CaseRegistrationPage = () => {
@@ -26,7 +32,19 @@ const CaseRegistrationPage = () => {
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
+  const navigate = useNavigate();
+  const isAreaSensitive = useIsAreaSensitive();
 
+  const { data: areasData, isLoading: isAreaDataLoading } = useQuery({
+    queryKey: ["areas"],
+    queryFn: getCaseAreasAndRegisteringUnits,
+  });
+
+  const { data: witnessCareUnitsData, isLoading: isWitnessCareUnitsLoading } =
+    useQuery({
+      queryKey: ["witness-care-units"],
+      queryFn: getCaseAreasAndWitnessCareUnits,
+    });
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -64,31 +82,31 @@ const CaseRegistrationPage = () => {
 
   const validateFormData = (state: CaseRegistrationState) => {
     const errors: FormDataErrors = {};
-    if (!state.operationNameRadio) {
+    const {
+      formData: { operationNameRadio, suspectDetailsRadio, operationNameText },
+    } = state;
+    if (!operationNameRadio) {
       errors.operationNameRadio = {
         errorSummaryText: "Please select an option for operation name",
         inputErrorText: "Please select an option",
         hasLink: true,
       };
     }
-    if (!state.suspectDetailsRadio) {
+    if (!suspectDetailsRadio) {
       errors.suspectDetailsRadio = {
         errorSummaryText: "Please select an option for suspect details",
         inputErrorText: "Please select an option",
         hasLink: true,
       };
     }
-    if (
-      state.operationNameRadio === "no" &&
-      state.suspectDetailsRadio === "no"
-    ) {
+    if (operationNameRadio === "no" && suspectDetailsRadio === "no") {
       errors.genericError = {
         errorSummaryText: "Add an operation name or suspect details",
         hasLink: false,
       };
     }
 
-    if (state.operationNameRadio == "yes" && !state.operationNameText) {
+    if (operationNameRadio == "yes" && !operationNameText) {
       errors.operationNameText = {
         errorSummaryText: "Operation name should not be empty",
         hasLink: true,
@@ -118,9 +136,34 @@ const CaseRegistrationPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  useEffect(() => {
+    if (!isAreaDataLoading && areasData) {
+      dispatch({
+        type: "SET_AREAS_AND_REGISTERING_UNITS",
+        payload: {
+          areasAndRegisteringUnits: areasData,
+        },
+      });
+    }
+  }, [areasData, dispatch, isAreaDataLoading]);
+
+  useEffect(() => {
+    if (!isWitnessCareUnitsLoading && witnessCareUnitsData) {
+      dispatch({
+        type: "SET_AREAS_AND_WITNESS_CARE_UNITS",
+        payload: {
+          areasAndWitnessCareUnits: witnessCareUnitsData,
+        },
+      });
+    }
+  }, [witnessCareUnitsData, dispatch, isWitnessCareUnitsLoading]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    validateFormData(state);
+
+    if (!validateFormData(state)) return;
+    if (!isAreaSensitive) return navigate("/case-registration/areas");
+    return navigate("/case-registration/case-details");
   };
 
   const setFormValue = (
@@ -196,7 +239,7 @@ const CaseRegistrationPage = () => {
                       }}
                       name="operation-name"
                       type="text"
-                      value={state.operationNameText}
+                      value={state.formData.operationNameText}
                       onChange={(value: string) => {
                         setFormValue("operationNameText", value);
                       }}
@@ -210,7 +253,7 @@ const CaseRegistrationPage = () => {
                 "data-testid": "radio-operation-name-no",
               },
             ]}
-            value={state.operationNameRadio}
+            value={state.formData.operationNameRadio}
             onChange={(value) => {
               if (value) setFormValue("operationNameRadio", value);
             }}
@@ -243,15 +286,14 @@ const CaseRegistrationPage = () => {
                 "data-testid": "suspect-details-radio-no",
               },
             ]}
-            value={state.suspectDetailsRadio}
+            value={state.formData.suspectDetailsRadio}
             onChange={(value) => {
               if (value) setFormValue("suspectDetailsRadio", value);
             }}
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          {" "}
-          Continue
+          Save and Continue
         </Button>
       </form>
     </div>

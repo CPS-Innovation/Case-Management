@@ -32,7 +32,7 @@ export type InputProps = Omit<
 
 export const Input: React.FC<InputProps> = ({ onChange, ...props }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-    onChange && onChange(event.target.value);
+    onChange?.(event.target.value);
 
   return <GDS.Input {...props} onChange={handleChange}></GDS.Input>;
 };

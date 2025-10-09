@@ -12,9 +12,9 @@ describe("caseRegistrationReducer", () => {
       payload: { field: "operationNameRadio", value: "yes" },
     };
     const state = caseRegistrationReducer(initialState, action);
-    expect(state.operationNameRadio).toBe("yes");
-    expect(state.suspectDetailsRadio).toBe("");
-    expect(state.operationNameText).toBe("");
+    expect(state.formData.operationNameRadio).toBe("yes");
+    expect(state.formData.suspectDetailsRadio).toBe("");
+    expect(state.formData.operationNameText).toBe("");
   });
 
   it("should set suspectDetailsRadio", () => {
@@ -23,7 +23,7 @@ describe("caseRegistrationReducer", () => {
       payload: { field: "suspectDetailsRadio", value: "Area 51" },
     };
     const state = caseRegistrationReducer(initialState, action);
-    expect(state.suspectDetailsRadio).toBe("Area 51");
+    expect(state.formData.suspectDetailsRadio).toBe("Area 51");
   });
 
   it("should set operationNameText", () => {
@@ -32,19 +32,50 @@ describe("caseRegistrationReducer", () => {
       payload: { field: "operationNameText", value: "Operation Thunder" },
     };
     const state = caseRegistrationReducer(initialState, action);
-    expect(state.operationNameText).toBe("Operation Thunder");
+    expect(state.formData.operationNameText).toBe("Operation Thunder");
   });
 
   it("should reset the form", () => {
-    const modifiedState: CaseRegistrationState = {
-      currentPage: "case-area",
-      operationNameRadio: "yes",
-      suspectDetailsRadio: "Area 51",
-      operationNameText: "Operation Thunder",
+    const apiData = {
+      areasAndRegisteringUnits: {
+        allUnits: [
+          {
+            areaId: 1,
+            areaDescription: "Area 51",
+            areaIsSensitive: false,
+            id: 1,
+            description: "Area 51",
+          },
+        ],
+
+        homeUnit: {
+          areaId: 1,
+          areaDescription: "Area 51",
+          areaIsSensitive: false,
+          id: 1,
+          description: "Area 51",
+        },
+      },
     };
-    const action: CaseRegistrationActions = { type: "RESET_FORM" };
+    const modifiedState: CaseRegistrationState = {
+      formData: {
+        currentPage: "case-area",
+        operationNameRadio: "yes",
+        suspectDetailsRadio: "Area 51",
+        operationNameText: "Operation Thunder",
+        areaOrDivisionText: "Division A",
+        urnPoliceForceText: "Force X",
+        urnPoliceUnitText: "Unit Y",
+        urnUniqueReferenceText: "12345",
+        urnYearReferenceText: "24",
+        registeringUnitText: "Reg Unit 1",
+        witnessCareUnitText: "Witness Unit 1",
+      },
+      apiData: apiData,
+    };
+    const action: CaseRegistrationActions = { type: "RESET_FORM_DATA" };
     const state = caseRegistrationReducer(modifiedState, action);
-    expect(state).toEqual(initialState);
+    expect(state).toEqual({ ...initialState, apiData });
   });
 
   it("should return current state for unknown action", () => {

@@ -1,8 +1,8 @@
-import { getAreasOrDivisions } from "./getAreasOrDivisions";
+import { getRegisteringUnits } from "./getRegisteringUnits";
 import type { CaseAreasAndRegisteringUnits } from "../types/responses/CaseAreasAndRegisteringUnits";
 
-describe("getAreasOrDivisions", () => {
-  it("returns unique areaId and areaDescription pairs", () => {
+describe("getRegisteringUnits", () => {
+  it("returns unique unitId and unitDescription for a given area", () => {
     const input: CaseAreasAndRegisteringUnits = {
       allUnits: [
         {
@@ -49,12 +49,11 @@ describe("getAreasOrDivisions", () => {
         areaIsSensitive: false,
       },
     };
-    const result = getAreasOrDivisions(input);
+    const result = getRegisteringUnits(input, "North");
 
     expect(result).toEqual([
-      { areaId: 1, areaDescription: "North" },
-      { areaId: 2, areaDescription: "South" },
-      { areaId: 3, areaDescription: "East" },
+      { unitId: 101, unitDescription: "desc1" },
+      { unitId: 103, unitDescription: "desc3" },
     ]);
   });
 
@@ -77,8 +76,8 @@ describe("getAreasOrDivisions", () => {
         areaIsSensitive: false,
       },
     };
-    expect(getAreasOrDivisions(input)).toEqual([
-      { areaId: 5, areaDescription: "West" },
+    expect(getRegisteringUnits(input, "West")).toEqual([
+      { unitId: 201, unitDescription: "desc6" },
     ]);
   });
 });

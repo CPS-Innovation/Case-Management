@@ -8,17 +8,21 @@ import {
 describe("CaseRegistrationProvider", () => {
   it("provides initial state to children", () => {
     const TestComponent = () => {
-      const { state } = useContext(CaseRegistrationFormContext);
+      const {
+        state: { formData },
+      } = useContext(CaseRegistrationFormContext);
       return (
         <div>
-          <span data-testid="currentPage">{state.currentPage}</span>
+          <span data-testid="currentPage">{formData.currentPage}</span>
           <span data-testid="operationNameRadio">
-            {state.operationNameRadio}
+            {formData.operationNameRadio}
           </span>
           <span data-testid="suspectDetailsRadio">
-            {state.suspectDetailsRadio}
+            {formData.suspectDetailsRadio}
           </span>
-          <span data-testid="operationNameText">{state.operationNameText}</span>
+          <span data-testid="operationNameText">
+            {formData.operationNameText}
+          </span>
         </div>
       );
     };
@@ -39,7 +43,10 @@ describe("CaseRegistrationProvider", () => {
 
   it("updates state when dispatch is called", () => {
     const TestComponent = () => {
-      const { state, dispatch } = useContext(CaseRegistrationFormContext);
+      const {
+        state: { formData },
+        dispatch,
+      } = useContext(CaseRegistrationFormContext);
       return (
         <div>
           <button
@@ -53,7 +60,7 @@ describe("CaseRegistrationProvider", () => {
             Set Operation Name Radio
           </button>
           <span data-testid="operationNameRadio">
-            {state.operationNameRadio}
+            {formData.operationNameRadio}
           </span>
         </div>
       );
