@@ -7,12 +7,14 @@ using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 using CPS.CaseManagement.MdsClient.Models.Dto;
+using Microsoft.Extensions.Logging;
 
 public class MdsClient(HttpClient httpClient,
-    IMdsRequestFactory mdsRequestFactory) : IMdsClient
+    IMdsRequestFactory mdsRequestFactory, ILogger<MdsClient> logger) : IMdsClient
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly IMdsRequestFactory _mdsRequestFactory = mdsRequestFactory;
+    private readonly ILogger<MdsClient> _logger = logger;
 
     public async Task<IEnumerable<TitleEntity>> GetTitlesAsync(MdsBaseArgDto arg)
     {
@@ -76,22 +78,37 @@ public class MdsClient(HttpClient httpClient,
 
     public async Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg)
     {
-        var request = _mdsRequestFactory.CreateGetUnitsRequest(arg);
-        var unitRequest = _mdsRequestFactory.CreateGetUnitsRequest(arg);
-        var allUnitsTask = CallMds<IEnumerable<UnitEntity>>(unitRequest);
+        ArgumentNullException.ThrowIfNull(arg);
 
-        var userDataRequest = _mdsRequestFactory.CreateUserDataRequest(arg);
-        var userDataTask = CallMds<UserDataEntity>(userDataRequest);
+        var unitsTask = CallMds<IEnumerable<UnitEntity>>(
+            _mdsRequestFactory.CreateGetUnitsRequest(arg));
 
-        await Task.WhenAll(allUnitsTask, userDataTask);
+        var userTask = CallMds<UserDataEntity>(
+            _mdsRequestFactory.CreateUserDataRequest(arg));
 
-        var allUnits = await allUnitsTask;
-        var userData = await userDataTask;
+        var combined = Task.WhenAll(unitsTask, userTask);
+
+        try
+        {
+            await combined.ConfigureAwait(false);
+        }
+        catch
+        {
+            _logger.LogError(combined.Exception, "MDS multi-call failed for GetUnitsAsync");
+            throw;
+        }
+
+        var allUnits = (await unitsTask.ConfigureAwait(false))?.ToList()
+                       ?? new List<UnitEntity>();
+
+        var homeUnitId = (await userTask.ConfigureAwait(false))?.HomeUnit?.UnitId;
 
         return new UnitsDto
         {
-            AllUnits = allUnits.ToList(),
-            HomeUnit = allUnits.FirstOrDefault(u => u.Id == userData.HomeUnit.UnitId)
+            AllUnits = allUnits,
+            HomeUnit = homeUnitId is not null
+                ? allUnits.FirstOrDefault(u => u.Id == homeUnitId)
+                : null
         };
     }
 
