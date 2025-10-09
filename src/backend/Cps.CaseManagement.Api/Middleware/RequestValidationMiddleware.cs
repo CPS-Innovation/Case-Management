@@ -33,10 +33,10 @@ public sealed partial class RequestValidationMiddleware(IAuthorizationValidator 
 
         context.SetRequestContext(correlationId, cmsAuthValues, username);
 
-        // if (!isAuthenticated && !_unauthenticatedRoutes.Contains(httpRequestData.Url.AbsolutePath))
-        // {
-        //     throw new CpsAuthenticationException();
-        // }
+        if (!isAuthenticated && !_unauthenticatedRoutes.Contains(httpRequestData.Url.AbsolutePath))
+        {
+            throw new CpsAuthenticationException();
+        }
 
         await next(context);
     }
