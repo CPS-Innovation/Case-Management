@@ -1,7 +1,7 @@
 import { useMemo, useContext } from "react";
 import { CaseRegistrationFormContext } from "../providers/CaseRegistrationProvider";
 
-export const useISAreaSensitive = () => {
+export const useIsAreaSensitive = () => {
   const { state } = useContext(CaseRegistrationFormContext);
   const isAreaSensitive = useMemo(() => {
     return state.apiData.areasAndRegisteringUnits?.homeUnit.areaIsSensitive;

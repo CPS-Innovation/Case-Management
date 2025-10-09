@@ -1,9 +1,9 @@
 import { renderHook } from "@testing-library/react";
-import { useISAreaSensitive } from "./useIsAreaSensitive";
-import { CaseRegistrationFormContext } from "../../common/providers/CaseRegistrationProvider";
+import { useIsAreaSensitive } from "./useIsAreaSensitive";
+import { CaseRegistrationFormContext } from "../providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../reducers/caseRegistrationReducer";
 
-describe("useISAreaSensitive", () => {
+describe("useIsAreaSensitive", () => {
   it("returns true if areaIsSensitive is true", () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <CaseRegistrationFormContext.Provider
@@ -24,7 +24,7 @@ describe("useISAreaSensitive", () => {
       </CaseRegistrationFormContext.Provider>
     );
 
-    const { result } = renderHook(() => useISAreaSensitive(), { wrapper });
+    const { result } = renderHook(() => useIsAreaSensitive(), { wrapper });
     expect(result.current).toBe(true);
   });
 
@@ -46,7 +46,7 @@ describe("useISAreaSensitive", () => {
       </CaseRegistrationFormContext.Provider>
     );
 
-    const { result } = renderHook(() => useISAreaSensitive(), { wrapper });
+    const { result } = renderHook(() => useIsAreaSensitive(), { wrapper });
     expect(result.current).toBe(false);
   });
 
@@ -62,7 +62,7 @@ describe("useISAreaSensitive", () => {
       </CaseRegistrationFormContext.Provider>
     );
 
-    const { result } = renderHook(() => useISAreaSensitive(), { wrapper });
+    const { result } = renderHook(() => useIsAreaSensitive(), { wrapper });
     expect(result.current).toBeUndefined();
   });
 });

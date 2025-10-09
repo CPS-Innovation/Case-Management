@@ -17,7 +17,7 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getRegisteringUnits } from "../../../common/utils/getRegisteringUnits";
 import { getWitnessCareUnits } from "../../../common/utils/getWitnessCareUnits";
-import { useISAreaSensitive } from "../../../common/hooks/useIsAreaSensitive";
+import { useIsAreaSensitive } from "../../../common/hooks/useIsAreaSensitive";
 import { useQuery } from "@tanstack/react-query";
 import { validateUrn } from "../../../apis/gateway-api";
 import { useNavigate } from "react-router-dom";
@@ -39,7 +39,7 @@ const CaseDetailsPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const isAreaSensitive = useISAreaSensitive();
+  const isAreaSensitive = useIsAreaSensitive();
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
