@@ -530,34 +530,29 @@ public class MdsClientTests
             .Returns(mockUserDataRequest);
 
         var unitsContent = JsonSerializer.Serialize(expectedUnits);
-        var callCount = 0;
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>()
-            )
-            .ReturnsAsync(() =>
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/units")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
             {
-                callCount++;
-                if (callCount == 1)
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = HttpStatusCode.OK,
-                        Content = new StringContent(unitsContent)
-                    };
-                }
-                else
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = HttpStatusCode.InternalServerError,
-                        Content = new StringContent("Server error")
-                    };
-                }
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(unitsContent, Encoding.UTF8, "application/json")
+            });
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/userdata")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                Content = new StringContent("Server error")
             });
 
         // Act & Assert
@@ -599,33 +594,28 @@ public class MdsClientTests
         var unitsContent = JsonSerializer.Serialize(expectedUnits);
         var userDataContent = JsonSerializer.Serialize(expectedUserData);
 
-        var callCount = 0;
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>()
-            )
-            .ReturnsAsync(() =>
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/units")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
             {
-                callCount++;
-                if (callCount == 1)
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = HttpStatusCode.OK,
-                        Content = new StringContent(unitsContent)
-                    };
-                }
-                else
-                {
-                    return new HttpResponseMessage
-                    {
-                        StatusCode = HttpStatusCode.OK,
-                        Content = new StringContent(userDataContent)
-                    };
-                }
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(unitsContent, Encoding.UTF8, "application/json")
+            });
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/userdata")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(userDataContent, Encoding.UTF8, "application/json")
             });
 
         // Act
