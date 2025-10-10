@@ -4,6 +4,8 @@ import {
   caseAreasAndRegisteringUnitsPlaywright,
   caseAreasAndWitnessCareUnitsDev,
   caseAreasAndWitnessCareUnitsPlaywright,
+  courtLocationsDev,
+  courtLocationsPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -27,6 +29,13 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
     http.get(`${baseUrl}/api/v1/urns/:urn/exist`, async () => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json({ exists: true });
+    }),
+    http.get(`${baseUrl}/api/v1/courts/:registeringUnitId`, async () => {
+      const results = isDevMock()
+        ? courtLocationsDev
+        : courtLocationsPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
     }),
   ];
 };

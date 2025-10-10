@@ -9,6 +9,7 @@ import {
 import { AutoComplete, BackLink, Button, ErrorSummary } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
+import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -43,8 +44,8 @@ const CaseAreasPage = () => {
 
   const validateFormData = (
     areas: {
-      areaId: number;
-      areaDescription: string;
+      id: number;
+      description: string;
     }[],
     inputAreaValue: string,
   ) => {
@@ -56,7 +57,7 @@ const CaseAreasPage = () => {
         hasLink: true,
       };
     } else if (
-      areas.findIndex((area) => area.areaDescription === inputAreaValue) === -1
+      areas.findIndex((area) => area.description === inputAreaValue) === -1
     ) {
       errors.areaOrDivisionText = {
         errorSummaryText: "Case area is invalid",
@@ -101,16 +102,20 @@ const CaseAreasPage = () => {
     const results = areas || [];
     const filteredResults = results
       .filter((result) =>
-        result.areaDescription.toLowerCase().includes(query.toLowerCase()),
+        result.description.toLowerCase().includes(query.toLowerCase()),
       )
-      .map((r) => r.areaDescription);
+      .map((r) => r.description);
     populateResults(filteredResults);
   };
 
   const handleAreaConfirm = (value: string) => {
+    const { id, description } = getSelectedUnit(areas, value);
     dispatch({
       type: "SET_FIELD",
-      payload: { field: "areaOrDivisionText", value: value },
+      payload: {
+        field: "areaOrDivisionText",
+        value: { id, description },
+      },
     });
   };
 
@@ -120,11 +125,16 @@ const CaseAreasPage = () => {
       "area-or-division-text",
     ) as HTMLInputElement | null;
     const inputValue = input?.value ?? "";
-    if (inputValue !== state.formData.areaOrDivisionText)
+    if (inputValue !== state.formData.areaOrDivisionText.description) {
+      const { id, description } = getSelectedUnit(areas, inputValue);
       dispatch({
         type: "SET_FIELD",
-        payload: { field: "areaOrDivisionText", value: inputValue },
+        payload: {
+          field: "areaOrDivisionText",
+          value: { id, description },
+        },
       });
+    }
 
     if (!validateFormData(areas, inputValue)) return;
     return navigate("/case-registration/case-details");
@@ -159,7 +169,7 @@ const CaseAreasPage = () => {
           source={suggest}
           confirmOnBlur={false}
           onConfirm={handleAreaConfirm}
-          defaultValue={state.formData.areaOrDivisionText}
+          defaultValue={state.formData.areaOrDivisionText.description}
           errorMessage={
             formDataErrors["areaOrDivisionText"]
               ? formDataErrors["areaOrDivisionText"].errorSummaryText

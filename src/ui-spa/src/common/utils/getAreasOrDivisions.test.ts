@@ -52,9 +52,9 @@ describe("getAreasOrDivisions", () => {
     const result = getAreasOrDivisions(input);
 
     expect(result).toEqual([
-      { areaId: 1, areaDescription: "North" },
-      { areaId: 2, areaDescription: "South" },
-      { areaId: 3, areaDescription: "East" },
+      { id: 1, description: "North" },
+      { id: 2, description: "South" },
+      { id: 3, description: "East" },
     ]);
   });
 
@@ -78,7 +78,7 @@ describe("getAreasOrDivisions", () => {
       },
     };
     expect(getAreasOrDivisions(input)).toEqual([
-      { areaId: 5, areaDescription: "West" },
+      { id: 5, description: "West" },
     ]);
   });
 });

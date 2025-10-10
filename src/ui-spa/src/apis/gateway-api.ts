@@ -3,6 +3,7 @@ import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../config";
 import { getAccessToken } from "../auth";
 import { type CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
 import { type CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
+import { type CourtLocations } from "../common/types/responses/CourtLocations";
 import { ApiError } from "../common/errors/ApiError";
 
 export const CORRELATION_ID = "Correlation-Id";
@@ -72,4 +73,23 @@ export const validateUrn = async (urn: string) => {
   }
   return (await response.json()) as { exists: boolean };
 };
-// v1/urns/{urn}/exist
+
+export const getCourtsByUnitId = async (registeringUnitId: number) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/courts/${registeringUnitId}`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(
+      `getting courts by unit ID failed`,
+      `${registeringUnitId}`,
+      response,
+    );
+  }
+  return (await response.json()) as CourtLocations;
+};

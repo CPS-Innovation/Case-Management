@@ -52,8 +52,8 @@ describe("getRegisteringUnits", () => {
     const result = getRegisteringUnits(input, "North");
 
     expect(result).toEqual([
-      { unitId: 101, unitDescription: "desc1" },
-      { unitId: 103, unitDescription: "desc3" },
+      { id: 101, description: "desc1" },
+      { id: 103, description: "desc3" },
     ]);
   });
 
@@ -77,7 +77,7 @@ describe("getRegisteringUnits", () => {
       },
     };
     expect(getRegisteringUnits(input, "West")).toEqual([
-      { unitId: 201, unitDescription: "desc6" },
+      { id: 201, description: "desc6" },
     ]);
   });
 });

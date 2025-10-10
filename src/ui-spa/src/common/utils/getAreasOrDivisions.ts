@@ -1,12 +1,12 @@
 import { type CaseAreasAndRegisteringUnits } from "../types/responses/CaseAreasAndRegisteringUnits";
 
 export const getAreasOrDivisions = (data: CaseAreasAndRegisteringUnits) => {
-  return data.allUnits.reduce<{ areaId: number; areaDescription: string }[]>(
+  return data.allUnits.reduce<{ id: number; description: string }[]>(
     (acc, item) => {
-      if (!acc.some((a) => a.areaId === item.areaId)) {
+      if (!acc.some((a) => a.id === item.areaId)) {
         acc.push({
-          areaId: item.areaId,
-          areaDescription: item.areaDescription,
+          id: item.areaId,
+          description: item.areaDescription,
         });
       }
       return acc;
