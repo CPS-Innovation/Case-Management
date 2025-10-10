@@ -31,7 +31,7 @@ export type CaseRegistrationState = {
     registeringUnitText?: { id: number | null; description: string };
     witnessCareUnitText?: { id: number | null; description: string };
     firstHearingRadio?: string;
-    firstHearingCourtLocationText?: string;
+    firstHearingCourtLocationText?: { id: number | null; description: string };
     firstHearingDateText?: string;
   };
   apiData: {
@@ -55,7 +55,7 @@ export const initialState: CaseRegistrationState = {
     registeringUnitText: { id: null, description: "" },
     witnessCareUnitText: { id: null, description: "" },
     firstHearingRadio: "",
-    firstHearingCourtLocationText: "",
+    firstHearingCourtLocationText: { id: null, description: "" },
     firstHearingDateText: "",
   },
   apiData: {

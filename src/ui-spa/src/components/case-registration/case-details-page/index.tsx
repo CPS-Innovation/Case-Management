@@ -344,6 +344,7 @@ const CaseDetailsPage = () => {
           errorIds: ["urn-unique-reference-text"],
         },
       }));
+      return;
     }
     return navigate("/case-registration/first-hearing", { replace: true });
   };
