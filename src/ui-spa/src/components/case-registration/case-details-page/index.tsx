@@ -18,6 +18,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { getRegisteringUnits } from "../../../common/utils/getRegisteringUnits";
 import { getWitnessCareUnits } from "../../../common/utils/getWitnessCareUnits";
 import { useIsAreaSensitive } from "../../../common/hooks/useIsAreaSensitive";
+import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { useQuery } from "@tanstack/react-query";
 import { validateUrn } from "../../../apis/gateway-api";
 import { useNavigate } from "react-router-dom";
@@ -99,10 +100,10 @@ const CaseDetailsPage = () => {
     if (state.apiData.areasAndRegisteringUnits) {
       return getRegisteringUnits(
         state.apiData.areasAndRegisteringUnits,
-        state.formData.areaOrDivisionText,
+        state.formData.areaOrDivisionText.description,
       );
     }
-    return [] as { unitId: number; unitDescription: string }[];
+    return [] as { id: number; description: string }[];
   }, [
     state.apiData.areasAndRegisteringUnits,
     state.formData.areaOrDivisionText,
@@ -112,10 +113,10 @@ const CaseDetailsPage = () => {
     if (state.apiData.areasAndWitnessCareUnits) {
       return getWitnessCareUnits(
         state.apiData.areasAndWitnessCareUnits,
-        state.formData.areaOrDivisionText,
+        state.formData.areaOrDivisionText.description,
       );
     }
-    return [] as { unitId: number; unitDescription: string }[];
+    return [] as { id: number; description: string }[];
   }, [
     state.apiData.areasAndWitnessCareUnits,
     state.formData.areaOrDivisionText,
@@ -126,9 +127,9 @@ const CaseDetailsPage = () => {
   ) => {
     const filteredResults = registeringUnits
       .filter((result) =>
-        result.unitDescription.toLowerCase().includes(query.toLowerCase()),
+        result.description.toLowerCase().includes(query.toLowerCase()),
       )
-      .map((r) => r.unitDescription);
+      .map((r) => r.description);
     populateResults(filteredResults);
   };
 
@@ -138,23 +139,34 @@ const CaseDetailsPage = () => {
   ) => {
     const filteredResults = witnessCareUnits
       .filter((result) =>
-        result.unitDescription.toLowerCase().includes(query.toLowerCase()),
+        result.description.toLowerCase().includes(query.toLowerCase()),
       )
-      .map((r) => r.unitDescription);
+      .map((r) => r.description);
     populateResults(filteredResults);
   };
 
   const handleWitnessCareUnitConfirm = (value: string) => {
+    const { id, description } = getSelectedUnit(witnessCareUnits, value);
     dispatch({
       type: "SET_FIELD",
-      payload: { field: "witnessCareUnitText", value: value },
+      payload: {
+        field: "witnessCareUnitText",
+        value: {
+          id,
+          description,
+        },
+      },
     });
   };
 
   const handleRegisteringUnitConfirm = (value: string) => {
+    const { id, description } = getSelectedUnit(registeringUnits, value);
     dispatch({
       type: "SET_FIELD",
-      payload: { field: "registeringUnitText", value: value },
+      payload: {
+        field: "registeringUnitText",
+        value: { id, description },
+      },
     });
   };
 
@@ -237,7 +249,7 @@ const CaseDetailsPage = () => {
         };
       } else if (
         registeringUnits.findIndex(
-          (ru) => ru.unitDescription === registeringUnitInputValue,
+          (ru) => ru.description === registeringUnitInputValue,
         ) === -1
       ) {
         errors.registeringUnitErrorText = {
@@ -254,7 +266,7 @@ const CaseDetailsPage = () => {
         };
       } else if (
         witnessCareUnits.findIndex(
-          (wcu) => wcu.unitDescription === witnessCareUnitInputValue,
+          (wcu) => wcu.description === witnessCareUnitInputValue,
         ) === -1
       ) {
         errors.witnessCareUnitErrorText = {
@@ -276,28 +288,43 @@ const CaseDetailsPage = () => {
       "registering-unit-text",
     ) as HTMLInputElement | null;
     const registeringUnitInputValue = registeringUnitInput?.value ?? "";
-    if (state.formData.registeringUnitText !== registeringUnitInputValue)
+    if (
+      state.formData.registeringUnitText?.description !==
+      registeringUnitInputValue
+    ) {
+      const { id, description } = getSelectedUnit(
+        registeringUnits,
+        registeringUnitInputValue,
+      );
       dispatch({
         type: "SET_FIELD",
         payload: {
           field: "registeringUnitText",
-          value: registeringUnitInputValue,
+          value: { id, description },
         },
       });
+    }
     const witnessCareUnitInput = document.getElementById(
       "witness-care-unit-text",
     ) as HTMLInputElement;
 
     const witnessCareUnitInputValue = witnessCareUnitInput?.value ?? "";
-    if (state.formData.witnessCareUnitText !== witnessCareUnitInputValue)
+    if (
+      state.formData.witnessCareUnitText?.description !==
+      witnessCareUnitInputValue
+    ) {
+      const { id, description } = getSelectedUnit(
+        witnessCareUnits,
+        witnessCareUnitInputValue,
+      );
       dispatch({
         type: "SET_FIELD",
         payload: {
           field: "witnessCareUnitText",
-          value: witnessCareUnitInputValue,
+          value: { id, description },
         },
       });
-
+    }
     if (
       !validateFormData(
         state,
@@ -317,8 +344,9 @@ const CaseDetailsPage = () => {
           errorIds: ["urn-unique-reference-text"],
         },
       }));
+      return;
     }
-    return navigate("/case-registration/case-details");
+    return navigate("/case-registration/first-hearing", { replace: true });
   };
 
   return (
@@ -416,7 +444,7 @@ const CaseDetailsPage = () => {
             source={registeringUnitSuggest}
             confirmOnBlur={false}
             onConfirm={handleRegisteringUnitConfirm}
-            defaultValue={state.formData.registeringUnitText}
+            defaultValue={state.formData.registeringUnitText?.description}
             label={{ children: <h2>What is the registering unit?</h2> }}
             errorMessage={
               formDataErrors["registeringUnitErrorText"]
@@ -433,7 +461,7 @@ const CaseDetailsPage = () => {
             source={witnessCareUnitSuggest}
             confirmOnBlur={false}
             onConfirm={handleWitnessCareUnitConfirm}
-            defaultValue={state.formData.witnessCareUnitText}
+            defaultValue={state.formData.witnessCareUnitText?.description}
             label={{ children: <h2>What is the witness care unit (WCU)?</h2> }}
             errorMessage={
               formDataErrors["witnessCareUnitErrorText"]

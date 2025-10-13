@@ -1,5 +1,6 @@
 import { type CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
 import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
+import type { CourtLocations } from "../types/responses/CourtLocations";
 
 export type CaseRegistrationField =
   | "operationNameRadio"
@@ -11,7 +12,10 @@ export type CaseRegistrationField =
   | "urnUniqueReferenceText"
   | "urnYearReferenceText"
   | "registeringUnitText"
-  | "witnessCareUnitText";
+  | "witnessCareUnitText"
+  | "firstHearingRadio"
+  | "firstHearingCourtLocationText"
+  | "firstHearingDateText";
 
 export type CaseRegistrationState = {
   formData: {
@@ -19,17 +23,21 @@ export type CaseRegistrationState = {
     operationNameRadio: string;
     suspectDetailsRadio: string;
     operationNameText: string;
-    areaOrDivisionText: string;
+    areaOrDivisionText: { id: number | null; description: string };
     urnPoliceForceText?: string;
     urnPoliceUnitText?: string;
     urnUniqueReferenceText?: string;
     urnYearReferenceText?: string;
-    registeringUnitText?: string;
-    witnessCareUnitText?: string;
+    registeringUnitText?: { id: number | null; description: string };
+    witnessCareUnitText?: { id: number | null; description: string };
+    firstHearingRadio?: string;
+    firstHearingCourtLocationText?: { id: number | null; description: string };
+    firstHearingDateText?: string;
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
     areasAndWitnessCareUnits?: CaseAreasAndWitnessCareUnits | null;
+    courtLocations?: CourtLocations | null;
   };
 };
 
@@ -39,24 +47,31 @@ export const initialState: CaseRegistrationState = {
     operationNameRadio: "",
     suspectDetailsRadio: "",
     operationNameText: "",
-    areaOrDivisionText: "",
+    areaOrDivisionText: { id: null, description: "" },
     urnPoliceForceText: "",
     urnPoliceUnitText: "",
     urnUniqueReferenceText: "",
     urnYearReferenceText: String(new Date().getFullYear()).slice(-2),
-    registeringUnitText: "",
-    witnessCareUnitText: "",
+    registeringUnitText: { id: null, description: "" },
+    witnessCareUnitText: { id: null, description: "" },
+    firstHearingRadio: "",
+    firstHearingCourtLocationText: { id: null, description: "" },
+    firstHearingDateText: "",
   },
   apiData: {
     areasAndRegisteringUnits: null,
     areasAndWitnessCareUnits: null,
+    courtLocations: null,
   },
 };
 
 export type CaseRegistrationActions =
   | {
       type: "SET_FIELD";
-      payload: { field: CaseRegistrationField; value: string };
+      payload: {
+        field: CaseRegistrationField;
+        value: { id: number | null; description: string } | string;
+      };
     }
   | {
       type: "SET_AREAS_AND_REGISTERING_UNITS";
@@ -68,6 +83,12 @@ export type CaseRegistrationActions =
       type: "SET_AREAS_AND_WITNESS_CARE_UNITS";
       payload: {
         areasAndWitnessCareUnits: CaseAreasAndWitnessCareUnits;
+      };
+    }
+  | {
+      type: "SET_COURT_LOCATIONS";
+      payload: {
+        courtLocations: CourtLocations;
       };
     }
   | { type: "RESET_FORM_DATA" };
@@ -103,6 +124,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           areasAndWitnessCareUnits: action.payload.areasAndWitnessCareUnits,
+        },
+      };
+    }
+    case "SET_COURT_LOCATIONS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          courtLocations: action.payload.courtLocations,
         },
       };
     }

@@ -4,20 +4,17 @@ export const getWitnessCareUnits = (
   data: CaseAreasAndWitnessCareUnits,
   selectedArea: string,
 ) => {
-  return data.reduce<{ unitId: number; unitDescription: string }[]>(
-    (acc, item) => {
-      if (
-        !acc.some((a) => a.unitId === item.id) &&
-        item.areaDescription === selectedArea &&
-        item.isWCU
-      ) {
-        acc.push({
-          unitId: item.id,
-          unitDescription: item.description,
-        });
-      }
-      return acc;
-    },
-    [],
-  );
+  return data.reduce<{ id: number; description: string }[]>((acc, item) => {
+    if (
+      !acc.some((a) => a.id === item.id) &&
+      item.areaDescription === selectedArea &&
+      item.isWCU
+    ) {
+      acc.push({
+        id: item.id,
+        description: item.description,
+      });
+    }
+    return acc;
+  }, []);
 };

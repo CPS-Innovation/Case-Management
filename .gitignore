@@ -304,6 +304,7 @@ src/ui-spa/playwright-report/
 src/ui-spa/blob-report/
 src/ui-spa/playwright/.cache/
 src/ui-spa/playwright/.auth/
+src/ui-spa/integration-test-results.xml
 
 
 # Vite

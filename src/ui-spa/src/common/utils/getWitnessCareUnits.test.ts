@@ -43,8 +43,8 @@ describe("getWitnessCareUnits", () => {
     const result = getWitnessCareUnits(input, "North");
 
     expect(result).toEqual([
-      { unitId: 101, unitDescription: "desc1" },
-      { unitId: 104, unitDescription: "desc4" },
+      { id: 101, description: "desc1" },
+      { id: 104, description: "desc4" },
     ]);
   });
 

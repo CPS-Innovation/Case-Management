@@ -4,15 +4,15 @@ export const getRegisteringUnits = (
   data: CaseAreasAndRegisteringUnits,
   selectedArea: string,
 ) => {
-  return data.allUnits.reduce<{ unitId: number; unitDescription: string }[]>(
+  return data.allUnits.reduce<{ id: number; description: string }[]>(
     (acc, item) => {
       if (
-        !acc.some((a) => a.unitId === item.id) &&
+        !acc.some((a) => a.id === item.id) &&
         item.areaDescription === selectedArea
       ) {
         acc.push({
-          unitId: item.id,
-          unitDescription: item.description,
+          id: item.id,
+          description: item.description,
         });
       }
       return acc;
