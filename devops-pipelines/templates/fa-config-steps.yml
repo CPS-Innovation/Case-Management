@@ -44,6 +44,16 @@ steps:
             "slotSetting": false
           },
           {
+            "name": "RedirectUrl__CaseworkApp",
+            "value": "$(RedirectUrlCaseworkApp)",
+            "slotSetting": false
+          },
+          {
+            "name": "RedirectUrl__CaseManagementUi",
+            "value": "$(RedirectUrlCaseManagementUi)",
+            "slotSetting": false
+          },
+          {
             "name": "FUNCTIONS_EXTENSION_VERSION",
             "value": "~4",
             "slotSetting": false
