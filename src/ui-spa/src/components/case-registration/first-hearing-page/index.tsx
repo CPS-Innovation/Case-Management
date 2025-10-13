@@ -89,19 +89,10 @@ const FirstHearingPage = () => {
       formData: { firstHearingRadio, firstHearingDateText },
     } = state;
 
-    console.log("form state:", state.formData);
     if (!firstHearingRadio) {
       errors.firstHearingRadio = {
         errorSummaryText: "Please select an option for first hearing",
         inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-
-    if (firstHearingRadio == "yes" && !firstHearingDateText) {
-      errors.firstHearingDateText = {
-        errorSummaryText: "Please select a date for first hearing",
-        inputErrorText: "Please select a date",
         hasLink: true,
       };
     }
@@ -123,6 +114,14 @@ const FirstHearingPage = () => {
           hasLink: true,
         };
       }
+    }
+
+    if (firstHearingRadio == "yes" && !firstHearingDateText) {
+      errors.firstHearingDateText = {
+        errorSummaryText: "Please select a date for first hearing",
+        inputErrorText: "Please select a date",
+        hasLink: true,
+      };
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
@@ -188,7 +187,6 @@ const FirstHearingPage = () => {
   };
 
   const handleDateChange = (value: string) => {
-    console.log("Date changed:", value);
     setFormValue("firstHearingDateText", value);
   };
 
@@ -303,12 +301,18 @@ const FirstHearingPage = () => {
                       }
                     />,
                     <DateInputNative
-                      key="first-hearing-date"
-                      id="first-hearing-date"
+                      key="first-hearing-dat-text"
+                      id="first-hearing-date-text"
                       label={<h2>Date</h2>}
                       value={state.formData.firstHearingDateText}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleDateChange(e.target.value)
+                      }
+                      errorMessage={
+                        formDataErrors["firstHearingDateText"]
+                          ? formDataErrors["firstHearingDateText"]
+                              .errorSummaryText
+                          : undefined
                       }
                     />,
                   ],
