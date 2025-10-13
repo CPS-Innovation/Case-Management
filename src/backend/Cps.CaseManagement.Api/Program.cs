@@ -11,6 +11,7 @@ using Cps.CaseManagement.Api.Middleware;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
 using Cps.CaseManagement.MdsClient.Extensions;
 using Cps.CaseManagement.Api.OpenApi;
+using Cps.CaseManagement.Api.Services;
 
 using var loggerFactory = LoggerFactory.Create(configure => configure.AddConsole());
 var logger = loggerFactory.CreateLogger("Configuration");
@@ -72,8 +73,10 @@ var host = new HostBuilder()
                         new OpenIdConnectConfigurationRetriever(),
                         new HttpDocumentRetriever());
         });
-        
+
         services.AddMdsClient(configuration);
+        services.AddScoped<IInitService, InitService>();
+
         services.AddSingleton<IOpenApiConfigurationOptions, CaseManagementApiOpenApiConfigurationOptions>();
     })
     .Build();

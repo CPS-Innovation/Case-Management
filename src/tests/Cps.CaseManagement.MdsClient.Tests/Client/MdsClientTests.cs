@@ -723,6 +723,113 @@ public class MdsClientTests
         Assert.Empty(resultList);
     }
 
+    [Fact]
+    public async Task GetCmsModernTokenAsync_ThrowsHttpExceptionWhenResponseStatusCodeIsNotSuccess()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/cms-modern-token");
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetCmsModernTokenRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        var tokenResponse = _fixture.Create<CmsModernTokenEntity>();
+        SetupHttpMockResponse(tokenResponse, HttpStatusCode.BadRequest);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MdsClientException>(() => _client.GetCmsModernTokenAsync(_mdsBaseArgDto));
+    }
+
+    [Fact]
+    public async Task GetCmsModernTokenAsync_ReturnsToken_WhenResponseIsSuccessful()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/cms-modern-token");
+        var expectedToken = _fixture.Create<string>();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetCmsModernTokenRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        var tokenResponse = new CmsModernTokenEntity
+        {
+            CmsModernToken = expectedToken
+        };
+
+        SetupHttpMockResponse(tokenResponse, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.GetCmsModernTokenAsync(_mdsBaseArgDto);
+
+        // Assert
+        Assert.Equal(expectedToken, result);
+    }
+
+    [Fact]
+    public async Task GetCmsModernTokenAsync_ReturnsNull_WhenTokenIsNull()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/cms-modern-token");
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetCmsModernTokenRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        var tokenResponse = new CmsModernTokenEntity
+        {
+            CmsModernToken = null!
+        };
+
+        SetupHttpMockResponse(tokenResponse, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.GetCmsModernTokenAsync(_mdsBaseArgDto);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetCmsModernTokenAsync_ReturnsEmptyString_WhenTokenIsEmpty()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/cms-modern-token");
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetCmsModernTokenRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        var tokenResponse = new CmsModernTokenEntity
+        {
+            CmsModernToken = string.Empty
+        };
+
+        SetupHttpMockResponse(tokenResponse, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.GetCmsModernTokenAsync(_mdsBaseArgDto);
+
+        // Assert
+        Assert.Equal(string.Empty, result);
+    }
+
+    [Fact]
+    public async Task GetCmsModernTokenAsync_ThrowsUnauthorizedException_WhenStatusCodeIsUnauthorized()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/cms-modern-token");
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetCmsModernTokenRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        var tokenResponse = _fixture.Create<CmsModernTokenEntity>();
+        SetupHttpMockResponse(tokenResponse, HttpStatusCode.Unauthorized);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<CmsUnauthorizedException>(() => _client.GetCmsModernTokenAsync(_mdsBaseArgDto));
+    }
+
     private void SetupHttpMockResponse<T>(T response, HttpStatusCode statusCode)
     {
         var content = JsonSerializer.Serialize(response);
