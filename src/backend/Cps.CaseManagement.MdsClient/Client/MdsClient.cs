@@ -124,6 +124,12 @@ public class MdsClient(HttpClient httpClient,
         return await CallMds<IEnumerable<CaseInfoEntity>>(request);
     }
 
+    public async Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg)
+    {
+        var response = await CallMds<CmsModernTokenEntity>(_mdsRequestFactory.CreateGetCmsModernTokenRequest(arg));
+        return response.CmsModernToken;
+    }
+
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
         using var response = await CallMds(request);

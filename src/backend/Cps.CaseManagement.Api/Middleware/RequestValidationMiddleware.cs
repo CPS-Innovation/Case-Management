@@ -12,7 +12,7 @@ namespace Cps.CaseManagement.Api.Middleware;
 
 public sealed partial class RequestValidationMiddleware(IAuthorizationValidator authorizationValidator) : IFunctionsWorkerMiddleware
 {
-    private readonly string[] _unauthenticatedRoutes = ["/api/status", "/api/swagger/ui", "/api/swagger.json"];
+    private readonly string[] _unauthenticatedRoutes = ["/api/status", "/api/swagger/ui", "/api/swagger.json", "/api/v1/init"];
 
     public async Task Invoke(FunctionContext context, FunctionExecutionDelegate next)
     {

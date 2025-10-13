@@ -49,6 +49,9 @@ public class MdsRequestFactory : IMdsRequestFactory
     public HttpRequestMessage CreateUserDataRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/user-data", arg);
 
+    public HttpRequestMessage CreateGetCmsModernTokenRequest(MdsBaseArgDto arg) =>
+        BuildRequest(HttpMethod.Get, "api/user/cms-modern-token", arg);
+
     private HttpRequestMessage BuildRequest(HttpMethod method, string path, MdsBaseArgDto arg)
     {
         var request = new HttpRequestMessage(method, path);
