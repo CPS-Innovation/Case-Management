@@ -227,7 +227,7 @@ const FirstHearingPage = () => {
     if (!validateFormData(state, courtLocations, inputCourtLocationValue))
       return;
 
-    return navigate("/case-registration/case-details");
+    return navigate("/case-registration/case-complexity");
   };
 
   return (
