@@ -37,7 +37,7 @@ export const getCaseAreasAndRegisteringUnits = async () => {
 };
 
 export const getCaseAreasAndWitnessCareUnits = async () => {
-  const url = `${GATEWAY_BASE_URL}/api/v1/witness-care-units`;
+  const url = `${GATEWAY_BASE_URL}/api/v1/wms-units`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -58,7 +58,7 @@ export const getCaseAreasAndWitnessCareUnits = async () => {
 };
 
 export const validateUrn = async (urn: string) => {
-  const url = `${GATEWAY_BASE_URL}/api/v1/urns/${urn}/exist`;
+  const url = `${GATEWAY_BASE_URL}/api/v1/urns/${urn}/exists`;
 
   const response = await fetch(url, {
     method: "GET",
