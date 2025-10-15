@@ -1,6 +1,8 @@
 namespace Cps.CaseManagement.MdsClient.Factories;
 
 using Cps.CaseManagement.MdsClient.Models.Args;
+using Cps.CaseManagement.MdsClient.Models.Constants;
+using Microsoft.AspNetCore.WebUtilities;
 
 public class MdsRequestFactory : IMdsRequestFactory
 {
@@ -51,6 +53,32 @@ public class MdsRequestFactory : IMdsRequestFactory
 
     public HttpRequestMessage CreateGetCmsModernTokenRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/user/cms-modern-token", arg);
+
+    public HttpRequestMessage CreateSearchOffencesRequest(MdsOffenceSearchArg arg)
+    {
+        var queryParams = new Dictionary<string, string?>
+        {
+            [OffenceSearchQueryParameters.Code] = arg.Code,
+            [OffenceSearchQueryParameters.Legislation] = arg.Legislation,
+            [OffenceSearchQueryParameters.LegislationPartialSearch] = arg.LegislationPartialSearch?.ToString().ToLower(),
+            [OffenceSearchQueryParameters.Description] = arg.Description,
+            [OffenceSearchQueryParameters.DescriptionPartialSearch] = arg.DescriptionPartialSearch?.ToString().ToLower(),
+            [OffenceSearchQueryParameters.Keywords] = arg.Keywords?.Length > 0 ? string.Join(",", arg.Keywords) : null,
+            [OffenceSearchQueryParameters.FromDate] = arg.FromDate?.ToString("yyyy-MM-dd"),
+            [OffenceSearchQueryParameters.ToDate] = arg.ToDate?.ToString("yyyy-MM-dd"),
+            [OffenceSearchQueryParameters.Page] = arg.Page?.ToString(),
+            [OffenceSearchQueryParameters.ItemsPerPage] = arg.ItemsPerPage?.ToString(),
+            [OffenceSearchQueryParameters.OrderBy] = arg.Order?.ToString(),
+            [OffenceSearchQueryParameters.IsAscendingOrder] = arg.IsAscending?.ToString().ToLower(),
+            [OffenceSearchQueryParameters.Multisearch] = arg.Multisearch,
+            [OffenceSearchQueryParameters.MultisearchPartialSearch] = arg.MultisearchPartialSearch?.ToString().ToLower()
+        };
+
+        var path = QueryHelpers.AddQueryString("api/case/offences",
+            queryParams.Where(p => !string.IsNullOrWhiteSpace(p.Value)));
+
+        return BuildRequest(HttpMethod.Get, path, arg);
+    }
 
     private HttpRequestMessage BuildRequest(HttpMethod method, string path, MdsBaseArgDto arg)
     {

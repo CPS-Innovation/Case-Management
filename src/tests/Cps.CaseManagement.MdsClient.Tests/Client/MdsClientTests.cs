@@ -830,6 +830,73 @@ public class MdsClientTests
         await Assert.ThrowsAsync<CmsUnauthorizedException>(() => _client.GetCmsModernTokenAsync(_mdsBaseArgDto));
     }
 
+    [Fact]
+    public async Task SearchOffences_ReturnsExpectedOffences_WhenResponseIsSuccessful()
+    {
+        // Arrange
+        var mdsOffenceSearchArg = _fixture.Build<MdsOffenceSearchArg>()
+            .With(x => x.FromDate, DateOnly.FromDateTime(DateTime.Now.AddDays(-1)))
+            .With(x => x.ToDate, DateOnly.FromDateTime(DateTime.Now))
+            .Create();
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/case/offences");
+        var expectedOffences = _fixture.Create<OffencesEntity>();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateSearchOffencesRequest(mdsOffenceSearchArg))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedOffences, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.SearchOffences(mdsOffenceSearchArg);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedOffences.Offences?.Count(), result.Offences?.Count());
+    }
+
+    [Fact]
+    public async Task SearchOffences_ThrowsCmsUnauthorizedException_WhenResponseIsUnauthorized()
+    {
+        // Arrange
+        var mdsOffenceSearchArg = _fixture.Build<MdsOffenceSearchArg>()
+            .With(x => x.FromDate, DateOnly.FromDateTime(DateTime.Now.AddDays(-1)))
+            .With(x => x.ToDate, DateOnly.FromDateTime(DateTime.Now))
+            .Create();
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/case/offences");
+        var expectedOffences = _fixture.Create<OffencesEntity>();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateSearchOffencesRequest(mdsOffenceSearchArg))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedOffences, HttpStatusCode.Unauthorized);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<CmsUnauthorizedException>(() => _client.SearchOffences(mdsOffenceSearchArg));
+    }
+
+    [Fact]
+    public async Task SearchOffences_ThrowsMdsClientException_WhenResponseIsNotSuccessful()
+    {
+        // Arrange
+        var mdsOffenceSearchArg = _fixture.Build<MdsOffenceSearchArg>()
+            .With(x => x.FromDate, DateOnly.FromDateTime(DateTime.Now.AddDays(-1)))
+            .With(x => x.ToDate, DateOnly.FromDateTime(DateTime.Now))
+            .Create();
+        var mockRequest = new HttpRequestMessage(HttpMethod.Post, "api/offences/search");
+        var expectedOffences = _fixture.Create<OffencesEntity>();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateSearchOffencesRequest(mdsOffenceSearchArg))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedOffences, HttpStatusCode.InternalServerError);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MdsClientException>(() => _client.SearchOffences(mdsOffenceSearchArg));
+    }
+
     private void SetupHttpMockResponse<T>(T response, HttpStatusCode statusCode)
     {
         var content = JsonSerializer.Serialize(response);

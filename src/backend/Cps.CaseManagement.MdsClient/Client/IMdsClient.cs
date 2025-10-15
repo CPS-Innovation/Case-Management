@@ -21,4 +21,5 @@ public interface IMdsClient
     Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg);
     Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg);
     Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg);
+    Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg);
 }

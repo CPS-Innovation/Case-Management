@@ -130,6 +130,12 @@ public class MdsClient(HttpClient httpClient,
         return response.CmsModernToken;
     }
 
+    public async Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg)
+    {
+        var request = _mdsRequestFactory.CreateSearchOffencesRequest(arg);
+        return await CallMds<OffencesEntity>(request);
+    }
+
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
         using var response = await CallMds(request);
