@@ -121,7 +121,7 @@ const CaseComplexityPage = () => {
   return (
     <div>
       <BackLink
-        to="/case-registration/case-details"
+        to="/case-registration/first-hearing"
         replace
         state={{ isRouteValid: true }}
       >
