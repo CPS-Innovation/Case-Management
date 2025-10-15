@@ -21,14 +21,14 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
-    http.get(`${baseUrl}/api/v1/witness-care-units`, async () => {
+    http.get(`${baseUrl}/api/v1/wms-units`, async () => {
       const results = isDevMock()
         ? caseAreasAndWitnessCareUnitsDev
         : caseAreasAndWitnessCareUnitsPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
-    http.get(`${baseUrl}/api/v1/urns/:urn/exist`, async () => {
+    http.get(`${baseUrl}/api/v1/urns/:urn/exists`, async () => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json({ exists: false });
     }),
