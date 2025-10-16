@@ -190,6 +190,24 @@ public class ListAvailableOffencesTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedResult, okResult.Value);
 
+        _mdsArgFactoryMock.Verify(f => f.CreateOffenceSearchArg(
+            _testCmsAuthValues,
+            _testCorrelationId,
+            null,
+            null,
+            false,
+            null,
+            false,
+            It.IsAny<string[]>(),
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            false), Times.Once);
+
         _mdsClientMock.Verify(c => c.SearchOffences(expectedArg), Times.Once);
     }
 }
