@@ -25,9 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CPS.CaseManagement.Application\CPS.CaseManagement.Application.csproj" />
-    <ProjectReference Include="..\CPS.CaseManagement.Domain\CPS.CaseManagement.Domain.csproj" />
-    <ProjectReference Include="..\CPS.CaseManagement.Infrastructure\CPS.CaseManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cps.CaseManagement.Application\Cps.CaseManagement.Application.csproj" />
+    <ProjectReference Include="..\Cps.CaseManagement.Domain\Cps.CaseManagement.Domain.csproj" />
+    <ProjectReference Include="..\Cps.CaseManagement.Infrastructure\Cps.CaseManagement.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

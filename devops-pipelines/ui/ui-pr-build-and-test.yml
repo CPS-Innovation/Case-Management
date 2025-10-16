@@ -1,0 +1,81 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - src/ui-spa/*
+
+pool: 'CM PreProd Pool'
+
+variables:
+  - name: nodeVersion
+    value: '20.x'
+  - name: workingDir
+    value: src/ui-spa
+
+stages:
+  - stage: Build_and_Test_UI
+    displayName: 'Build & Test UI SPA'
+    jobs:
+      - job: Build_and_Test
+        displayName: 'Build & Test App'
+        steps:
+          - checkout: self
+            sparseCheckoutDirectories: src/ui-spa devops-pipelines/scripts
+
+          - task: UseNode@1
+            displayName: 'Use Node.js'
+            inputs:
+              version: '$(nodeVersion)'
+
+          - task: Npm@1
+            displayName: 'Clean Install NPM Dependencies'
+            inputs:
+              command: 'ci'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Lint Code'
+            inputs:
+              command: 'custom'
+              customCommand: 'run lint'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Build Web App Package'
+            inputs:
+              command: 'custom'
+              customCommand: 'run build'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Run UI Unit Tests'
+            inputs:
+              command: 'custom'
+              customCommand: 'run coverage'
+              workingDir: '$(workingDir)'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish UI Test Results'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'src/ui-spa/coverage/unit-test-results.xml'
+              publishRunAttachments: true
+            condition: always()
+          
+          - task: UseDotNet@2
+            displayName: 'Use .NET SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '8.x'
+
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish UI Code Coverage'
+            inputs:
+              summaryFileLocation: 'src/ui-spa/coverage/cobertura-coverage.xml'
+            condition: always()
+
+          - template: ../templates/playwright-test-steps.yml

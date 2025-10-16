@@ -10,8 +10,8 @@ public class BaseOpenApiConfigurationOptions : IOpenApiConfigurationOptions
     public virtual OpenApiInfo Info { get; set; } = new OpenApiInfo
     {
         Version = "1.0.0",
-        Title = "CPS Complex Cases API",
-        Description = "HTTP API Endpoints for Complex Cases system.",
+        Title = "CPS Case Management API",
+        Description = "HTTP API Endpoints for Case Management system.",
         TermsOfService = null,
         Contact = new OpenApiContact()
         {

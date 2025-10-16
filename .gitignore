@@ -289,6 +289,8 @@ coverage
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
 .idea
 .DS_Store
 *.suo
@@ -297,12 +299,13 @@ coverage
 *.sw?
 
 # Playwright
-ui-spa/playwright/test-results/
-ui-spa/playwright/playwright-report/
-ui-spa/blob-report/
-ui-spa/playwright/.cache/
-ui-spa/playwright-report/
-ui-spa/playwright/e2e-test-results.xml
+src/ui-spa/test-results/
+src/ui-spa/playwright-report/
+src/ui-spa/blob-report/
+src/ui-spa/playwright/.cache/
+src/ui-spa/playwright/.auth/
+src/ui-spa/integration-test-results.xml
+
 
 # Vite
 ui-spa/.vite/deps/

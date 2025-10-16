@@ -32,6 +32,7 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
                 BadRequestException _ => HttpStatusCode.BadRequest,
                 ArgumentNullException or BadRequestException _ => HttpStatusCode.BadRequest,
                 CmsUnauthorizedException or CpsAuthenticationException _ => HttpStatusCode.Unauthorized,
+                MdsClientException mds => mds.StatusCode,
                 _ => HttpStatusCode.InternalServerError,
             };
 
@@ -59,7 +60,7 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
                 var invocationResult = context.GetInvocationResult();
 
                 var httpOutputBindingFromMultipleOutputBindings = GetHttpOutputBindingFromMultipleOutputBinding(context);
-                
+
                 if (httpOutputBindingFromMultipleOutputBindings is not null)
                 {
                     httpOutputBindingFromMultipleOutputBindings.Value = newHttpResponse;
