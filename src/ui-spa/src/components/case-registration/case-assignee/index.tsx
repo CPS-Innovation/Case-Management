@@ -13,25 +13,28 @@ import {
   ErrorSummary,
   BackLink,
 } from "../../govuk";
-import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
-import { getCourtsByUnitId } from "../../../apis/gateway-api";
+import {
+  getCaseProsecutors,
+  getCaseCaseworkers,
+} from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
-const FirstHearingPage = () => {
+const CaseAssigneePage = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
     hasLink: boolean;
   };
   type FormDataErrors = {
-    firstHearingRadio?: ErrorText;
-    firstHearingCourtLocationText?: ErrorText;
-    firstHearingDateText?: ErrorText;
+    caseProsecutorRadio?: ErrorText;
+    caseInvestigatorRadio?: ErrorText;
+    caseProsecutorText?: ErrorText;
+    caseCaseworkerText?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -41,11 +44,18 @@ const FirstHearingPage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const { data: courtLocationsData, isLoading: isCourtLocationsLoading } =
+  const { data: caseProsecutorsData, isLoading: isCaseProsecutorsLoading } =
     useQuery({
-      queryKey: ["court-locations", registeringUnitId],
+      queryKey: ["case-prosecutors", registeringUnitId],
       enabled: !!registeringUnitId,
-      queryFn: () => getCourtsByUnitId(registeringUnitId!),
+      queryFn: () => getCaseProsecutors(registeringUnitId!),
+    });
+
+  const { data: caseCaseworkersData, isLoading: isCaseCaseworkersLoading } =
+    useQuery({
+      queryKey: ["case-caseworkers", registeringUnitId],
+      enabled: !!registeringUnitId,
+      queryFn: () => getCaseCaseworkers(registeringUnitId!),
     });
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -53,23 +63,23 @@ const FirstHearingPage = () => {
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
       switch (errorKey) {
-        case "firstHearingRadio":
+        case "caseProsecutorRadio":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            href: "#first-hearing-radio-yes",
-            "data-testid": "first-hearing-radio-link",
+            href: "#case-prosecutor-radio-yes",
+            "data-testid": "case-prosecutor-radio-link",
           };
-        case "firstHearingCourtLocationText":
+        case "caseProsecutorText":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            href: "#first-hearing-court-location-text",
-            "data-testid": "first-hearing-court-location-text-link",
+            href: "#case-prosecutor-text",
+            "data-testid": "case-prosecutor-text-link",
           };
-        case "firstHearingDateText":
+        case "caseCaseworkerText":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            href: "#first-hearing-date-text",
-            "data-testid": "first-hearing-date-text-link",
+            href: "#case-caseworker-text",
+            "data-testid": "case-caseworker-text-link",
           };
 
         default:
@@ -81,47 +91,40 @@ const FirstHearingPage = () => {
 
   const validateFormData = (
     state: CaseRegistrationState,
-    courtLocations: { id: number; description: string }[],
-    inputCourtLocationValue: string,
+    prosecutors: { id: number; description: string }[],
+    inputProsecutorValue: string,
   ) => {
     const errors: FormDataErrors = {};
     const {
-      formData: { firstHearingRadio, firstHearingDateText },
+      formData: { caseProsecutorRadio, caseProsecutorText },
     } = state;
 
-    if (!firstHearingRadio) {
-      errors.firstHearingRadio = {
-        errorSummaryText: "Please select an option for first hearing",
+    if (!caseProsecutorRadio) {
+      errors.caseProsecutorRadio = {
+        errorSummaryText:
+          "Please select an option for case prosecutor or caseworker",
         inputErrorText: "Please select an option",
         hasLink: true,
       };
     }
 
-    if (firstHearingRadio === "yes") {
-      if (!inputCourtLocationValue) {
-        errors.firstHearingCourtLocationText = {
+    if (caseProsecutorRadio === "yes") {
+      if (!caseProsecutorText) {
+        errors.caseProsecutorText = {
           errorSummaryText: "Please select a court location for first hearing",
           inputErrorText: "Please select a court location",
           hasLink: true,
         };
       } else if (
-        courtLocations.findIndex(
-          (cl) => cl.description === inputCourtLocationValue,
+        prosecutors.findIndex(
+          (cl) => cl.description === inputProsecutorValue,
         ) === -1
       ) {
-        errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Court location is invalid",
+        errors.caseProsecutorText = {
+          errorSummaryText: "Prosecutor name is invalid",
           hasLink: true,
         };
       }
-    }
-
-    if (firstHearingRadio == "yes" && !firstHearingDateText) {
-      errors.firstHearingDateText = {
-        errorSummaryText: "Please select a date for first hearing",
-        inputErrorText: "Please select a date",
-        hasLink: true,
-      };
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
@@ -129,18 +132,37 @@ const FirstHearingPage = () => {
     setFormDataErrors(errors);
     return isValid;
   };
-  const courtLocations = useMemo(() => {
-    if (state.apiData.courtLocations) {
-      return state.apiData.courtLocations;
+  const prosecutors = useMemo(() => {
+    if (state.apiData.caseProsecutors) {
+      return state.apiData.caseProsecutors;
     }
     return [] as { id: number; description: string }[];
-  }, [state.apiData.courtLocations]);
+  }, [state.apiData.caseProsecutors]);
 
-  const courtLocationsSuggest = (
+  const caseworkers = useMemo(() => {
+    if (state.apiData.caseCaseworkers) {
+      return state.apiData.caseCaseworkers;
+    }
+    return [] as { id: number; description: string }[];
+  }, [state.apiData.caseCaseworkers]);
+
+  const caseProsecutorSuggest = (
     query: string,
     populateResults: (results: string[]) => void,
   ) => {
-    const filteredResults = courtLocations
+    const filteredResults = prosecutors
+      .filter((result) =>
+        result.description.toLowerCase().includes(query.toLowerCase()),
+      )
+      .map((r) => r.description);
+    populateResults(filteredResults);
+  };
+
+  const caseCaseworkerSuggest = (
+    query: string,
+    populateResults: (results: string[]) => void,
+  ) => {
+    const filteredResults = caseworkers
       .filter((result) =>
         result.description.toLowerCase().includes(query.toLowerCase()),
       )
@@ -166,18 +188,29 @@ const FirstHearingPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!isCourtLocationsLoading && courtLocationsData) {
+    if (!isCaseProsecutorsLoading && caseProsecutorsData) {
       dispatch({
-        type: "SET_COURT_LOCATIONS",
+        type: "SET_CASE_PROSECUTORS",
         payload: {
-          courtLocations: courtLocationsData,
+          caseProsecutors: caseProsecutorsData,
         },
       });
     }
-  }, [courtLocationsData, dispatch, isCourtLocationsLoading]);
+  }, [caseProsecutorsData, dispatch, isCaseProsecutorsLoading]);
+
+  useEffect(() => {
+    if (!isCaseCaseworkersLoading && caseCaseworkersData) {
+      dispatch({
+        type: "SET_CASE_CASEWORKERS",
+        payload: {
+          caseCaseworkers: caseCaseworkersData,
+        },
+      });
+    }
+  }, [caseCaseworkersData, dispatch, isCaseCaseworkersLoading]);
 
   const setFormValue = (
-    fieldName: "firstHearingRadio" | "firstHearingDateText",
+    fieldName: "caseProsecutorRadio" | "caseInvestigatorRadio",
     value: string,
   ) => {
     dispatch({
@@ -186,16 +219,23 @@ const FirstHearingPage = () => {
     });
   };
 
-  const handleDateChange = (value: string) => {
-    setFormValue("firstHearingDateText", value);
-  };
-
-  const handleCourtLocationConfirm = (value: string) => {
-    const { id, description } = getSelectedUnit(courtLocations, value);
+  const handleCaseProsecutorConfirm = (value: string) => {
+    const { id, description } = getSelectedUnit(prosecutors, value);
     dispatch({
       type: "SET_FIELD",
       payload: {
-        field: "firstHearingCourtLocationText",
+        field: "caseProsecutorText",
+        value: { id, description },
+      },
+    });
+  };
+
+  const handleCaseCaseworkerConfirm = (value: string) => {
+    const { id, description } = getSelectedUnit(caseworkers, value);
+    dispatch({
+      type: "SET_FIELD",
+      payload: {
+        field: "caseCaseworkerText",
         value: { id, description },
       },
     });
@@ -203,37 +243,36 @@ const FirstHearingPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const input = document.getElementById(
-      "first-hearing-court-location-text",
+    const prosecutorInput = document.getElementById(
+      "case-prosecutor-text",
     ) as HTMLInputElement | null;
-    const inputCourtLocationValue = input?.value ?? "";
+    const inputCourtLocationValue = prosecutorInput?.value ?? "";
     if (
       inputCourtLocationValue !==
       state.formData.firstHearingCourtLocationText?.description
     ) {
       const { id, description } = getSelectedUnit(
-        courtLocations,
+        prosecutors,
         inputCourtLocationValue,
       );
       dispatch({
         type: "SET_FIELD",
         payload: {
-          field: "firstHearingCourtLocationText",
+          field: "caseCaseworkerText",
           value: { id, description },
         },
       });
     }
 
-    if (!validateFormData(state, courtLocations, inputCourtLocationValue))
-      return;
+    if (!validateFormData(state, prosecutors, inputCourtLocationValue)) return;
 
     return navigate("/case-registration/case-complexity");
   };
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div className={styles.caseAssigneePage}>
       <BackLink
-        to="/case-registration/case-details"
+        to="/case-registration/case-monitoring-codes"
         replace
         state={{ isRouteValid: true }}
       >
@@ -246,7 +285,7 @@ const FirstHearingPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"case-assignee-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -257,36 +296,35 @@ const FirstHearingPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Do you have details of the first hearing?</h1>,
+                children: <h1>Who is working on the case?</h1>,
               },
             }}
             errorMessage={
-              formDataErrors["firstHearingRadio"]
+              formDataErrors["caseProsecutorRadio"]
                 ? {
                     children:
-                      formDataErrors["firstHearingRadio"].errorSummaryText,
+                      formDataErrors["caseProsecutorRadio"].errorSummaryText,
                   }
                 : undefined
             }
-            name="Do you have details of the first hearing?"
+            name="case-prosecutor-radio"
             items={[
               {
-                id: "first-hearing-radio-yes",
+                id: "case-prosecutor-radio-yes",
                 children: "Yes",
                 value: "yes",
-                "data-testid": "first-hearing-radio-yes",
+                "data-testid": "case-prosecutor-radio-yes",
                 conditional: {
                   children: [
                     <AutoComplete
-                      key="first-hearing-court-location-text"
-                      id="first-hearing-court-location-text"
+                      key="case-prosecutor-text"
+                      id="case-prosecutor-text"
                       inputClasses={"govuk-input--error"}
-                      source={courtLocationsSuggest}
+                      source={caseProsecutorSuggest}
                       confirmOnBlur={false}
-                      onConfirm={handleCourtLocationConfirm}
+                      onConfirm={handleCaseProsecutorConfirm}
                       defaultValue={
-                        state.formData.firstHearingCourtLocationText
-                          ?.description
+                        state.formData.caseProsecutorText?.description
                       }
                       label={{
                         children: (
@@ -294,23 +332,28 @@ const FirstHearingPage = () => {
                         ),
                       }}
                       errorMessage={
-                        formDataErrors["firstHearingCourtLocationText"]
-                          ? formDataErrors["firstHearingCourtLocationText"]
+                        formDataErrors["caseProsecutorText"]
+                          ? formDataErrors["caseProsecutorText"]
                               .errorSummaryText
                           : undefined
                       }
                     />,
-                    <DateInputNative
-                      key="first-hearing-dat-text"
-                      id="first-hearing-date-text"
-                      label={<h2>Date</h2>}
-                      value={state.formData.firstHearingDateText}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        handleDateChange(e.target.value)
+                    <AutoComplete
+                      key="case-worker-text"
+                      id="case-worker-text"
+                      inputClasses={"govuk-input--error"}
+                      source={caseCaseworkerSuggest}
+                      confirmOnBlur={false}
+                      onConfirm={handleCaseCaseworkerConfirm}
+                      defaultValue={
+                        state.formData.caseCaseworkerText?.description
                       }
+                      label={{
+                        children: <h2>What is the case worker&#39;s name?</h2>,
+                      }}
                       errorMessage={
-                        formDataErrors["firstHearingDateText"]
-                          ? formDataErrors["firstHearingDateText"]
+                        formDataErrors["caseCaseworkerText"]
+                          ? formDataErrors["caseCaseworkerText"]
                               .errorSummaryText
                           : undefined
                       }
@@ -321,12 +364,12 @@ const FirstHearingPage = () => {
               {
                 children: "No",
                 value: "no",
-                "data-testid": "radio-operation-name-no",
+                "data-testid": "case-prosecutor-radio-no",
               },
             ]}
-            value={state.formData.firstHearingRadio}
+            value={state.formData.caseProsecutorRadio}
             onChange={(value) => {
-              if (value) setFormValue("firstHearingRadio", value);
+              if (value) setFormValue("caseProsecutorRadio", value);
             }}
           ></Radios>
         </div>
@@ -338,4 +381,4 @@ const FirstHearingPage = () => {
   );
 };
 
-export default FirstHearingPage;
+export default CaseAssigneePage;

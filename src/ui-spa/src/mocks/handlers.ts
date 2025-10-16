@@ -8,6 +8,8 @@ import {
   courtLocationsPlaywright,
   caseComplexitiesDev,
   caseComplexitiesPlaywright,
+  caseMonitoringCodesDev,
+  caseMonitoringCodesPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -43,6 +45,13 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       const results = isDevMock()
         ? caseComplexitiesDev
         : caseComplexitiesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/monitoring-codes`, async () => {
+      const results = isDevMock()
+        ? caseMonitoringCodesDev
+        : caseMonitoringCodesPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),

@@ -2,6 +2,9 @@ import { type CaseAreasAndRegisteringUnits } from "../../common/types/responses/
 import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
 import type { CourtLocations } from "../types/responses/CourtLocations";
 import { type CaseComplexities } from "../types/responses/CaseComplexities";
+import { type CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes";
+import { type CaseProsecutors } from "../types/responses/CaseProsecutors";
+import { type CaseCaseworkers } from "../types/responses/CaseCaseworkers";
 
 export type CaseRegistrationField =
   | "operationNameRadio"
@@ -17,7 +20,12 @@ export type CaseRegistrationField =
   | "firstHearingRadio"
   | "firstHearingCourtLocationText"
   | "firstHearingDateText"
-  | "caseComplexityRadio";
+  | "caseComplexityRadio"
+  | "caseMonitoringCodesCheckboxes"
+  | "caseProsecutorRadio"
+  | "caseInvestigatorRadio"
+  | "caseProsecutorText"
+  | "caseCaseworkerText";
 
 export type CaseRegistrationState = {
   formData: {
@@ -26,22 +34,30 @@ export type CaseRegistrationState = {
     suspectDetailsRadio: string;
     operationNameText: string;
     areaOrDivisionText: { id: number | null; description: string };
-    urnPoliceForceText?: string;
-    urnPoliceUnitText?: string;
-    urnUniqueReferenceText?: string;
-    urnYearReferenceText?: string;
-    registeringUnitText?: { id: number | null; description: string };
-    witnessCareUnitText?: { id: number | null; description: string };
-    firstHearingRadio?: string;
-    firstHearingCourtLocationText?: { id: number | null; description: string };
-    firstHearingDateText?: string;
-    caseComplexityRadio?: string;
+    urnPoliceForceText: string;
+    urnPoliceUnitText: string;
+    urnUniqueReferenceText: string;
+    urnYearReferenceText: string;
+    registeringUnitText: { id: number | null; description: string };
+    witnessCareUnitText: { id: number | null; description: string };
+    firstHearingRadio: string;
+    firstHearingCourtLocationText: { id: number | null; description: string };
+    firstHearingDateText: string;
+    caseComplexityRadio: string;
+    caseMonitoringCodesCheckboxes: string[];
+    caseProsecutorRadio: string;
+    caseInvestigatorRadio: string;
+    caseProsecutorText: { id: number | null; description: string };
+    caseCaseworkerText: { id: number | null; description: string };
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
     areasAndWitnessCareUnits?: CaseAreasAndWitnessCareUnits | null;
     courtLocations?: CourtLocations | null;
     caseComplexities?: CaseComplexities | null;
+    caseMonitoringCodes?: CaseMonitoringCodes | null;
+    caseProsecutors?: CaseProsecutors | null;
+    caseCaseworkers?: CaseCaseworkers | null;
   };
 };
 
@@ -61,12 +77,22 @@ export const initialState: CaseRegistrationState = {
     firstHearingRadio: "",
     firstHearingCourtLocationText: { id: null, description: "" },
     firstHearingDateText: "",
+    caseComplexityRadio: "",
+    caseMonitoringCodesCheckboxes: [],
+    caseInvestigatorRadio: "",
+    caseProsecutorRadio: "",
+    caseProsecutorText: { id: null, description: "" },
+    caseCaseworkerText: { id: null, description: "" },
   },
+
   apiData: {
     areasAndRegisteringUnits: null,
     areasAndWitnessCareUnits: null,
     courtLocations: null,
     caseComplexities: null,
+    caseMonitoringCodes: null,
+    caseProsecutors: null,
+    caseCaseworkers: null,
   },
 };
 
@@ -75,7 +101,7 @@ export type CaseRegistrationActions =
       type: "SET_FIELD";
       payload: {
         field: CaseRegistrationField;
-        value: { id: number | null; description: string } | string;
+        value: { id: number | null; description: string } | string | string[];
       };
     }
   | {
@@ -100,6 +126,24 @@ export type CaseRegistrationActions =
       type: "SET_CASE_COMPLEXITIES";
       payload: {
         caseComplexities: CaseComplexities;
+      };
+    }
+  | {
+      type: "SET_CASE_MONITORING_CODES";
+      payload: {
+        caseMonitoringCodes: CaseMonitoringCodes;
+      };
+    }
+  | {
+      type: "SET_CASE_PROSECUTORS";
+      payload: {
+        caseProsecutors: CaseProsecutors;
+      };
+    }
+  | {
+      type: "SET_CASE_CASEWORKERS";
+      payload: {
+        caseCaseworkers: CaseCaseworkers;
       };
     }
   | { type: "RESET_FORM_DATA" };
@@ -153,6 +197,34 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           caseComplexities: action.payload.caseComplexities,
+        },
+      };
+    }
+    case "SET_CASE_MONITORING_CODES": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          caseMonitoringCodes: action.payload.caseMonitoringCodes,
+        },
+      };
+    }
+
+    case "SET_CASE_PROSECUTORS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          caseProsecutors: action.payload.caseProsecutors,
+        },
+      };
+    }
+    case "SET_CASE_CASEWORKERS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          caseCaseworkers: action.payload.caseCaseworkers,
         },
       };
     }

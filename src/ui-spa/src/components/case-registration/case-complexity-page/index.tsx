@@ -115,11 +115,11 @@ const CaseComplexityPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/monitoring-codes");
+    return navigate("/case-registration/case-monitoring-codes");
   };
 
   return (
-    <div>
+    <div className={styles.caseComplexityPage}>
       <BackLink
         to="/case-registration/first-hearing"
         replace

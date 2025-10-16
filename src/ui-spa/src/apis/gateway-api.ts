@@ -5,7 +5,10 @@ import { type CaseAreasAndRegisteringUnits } from "../common/types/responses/Cas
 import { type CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
 import { type CourtLocations } from "../common/types/responses/CourtLocations";
 import { type CaseComplexities } from "../common/types/responses/CaseComplexities";
+import { type CaseMonitoringCodes } from "../common/types/responses/CaseMonitoringCodes";
 import { ApiError } from "../common/errors/ApiError";
+import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors";
+import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -105,4 +108,52 @@ export const getCaseComplexities = async () => {
     throw new ApiError(`getting complexities failed`, url, response);
   }
   return (await response.json()) as CaseComplexities;
+};
+
+export const getCaseMonitoringCodes = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/monitoring-codes`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(`getting monitoring codes failed`, url, response);
+  }
+  return (await response.json()) as CaseMonitoringCodes;
+};
+
+export const getCaseProsecutors = async (registeringUnitId: number) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/prosecutors/${registeringUnitId}`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(`getting prosecutors by unit ID failed`, url, response);
+  }
+  return (await response.json()) as CaseProsecutors;
+};
+
+export const getCaseCaseworkers = async (registeringUnitId: number) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/caseworkers/${registeringUnitId}`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(`getting caseworkers by unit ID failed`, url, response);
+  }
+  return (await response.json()) as CaseCaseworkers;
 };
