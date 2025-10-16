@@ -16,8 +16,10 @@ public class OffenceEntity
     public string? Code { get; set; }
     [JsonPropertyName("description")]
     public string? Description { get; set; }
+    [JsonPropertyName("legislation")]
+    public string? Legislation { get; set; }
     [JsonPropertyName("dppConsent")]
-    public bool? DPPConsent { get; set; }
+    public string? DPPConsent { get; set; }
     [JsonPropertyName("effectiveFromDate")]
     public DateTime? EffectiveFromDate { get; set; }
     [JsonPropertyName("effectiveToDate")]
