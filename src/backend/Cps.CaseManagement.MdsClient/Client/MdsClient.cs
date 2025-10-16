@@ -130,6 +130,12 @@ public class MdsClient(HttpClient httpClient,
         return response.CmsModernToken;
     }
 
+    public async Task<IEnumerable<PoliceUnitEntity>> GetPoliceUnitsAsync(MdsBaseArgDto arg)
+    {
+        var request = _mdsRequestFactory.CreateGetPoliceUnitsRequest(arg);
+        return await CallMds<IEnumerable<PoliceUnitEntity>>(request);
+    }
+
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
         using var response = await CallMds(request);
