@@ -135,6 +135,11 @@ public class MdsClient(HttpClient httpClient,
         var request = _mdsRequestFactory.CreateGetPoliceUnitsRequest(arg);
         return await CallMds<IEnumerable<PoliceUnitEntity>>(request);
     }
+    public async Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg)
+    {
+        var request = _mdsRequestFactory.CreateSearchOffencesRequest(arg);
+        return await CallMds<OffencesEntity>(request);
+    }
 
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
