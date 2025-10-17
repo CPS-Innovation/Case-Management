@@ -151,7 +151,7 @@ const CaseMonitoringCodesPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/monitoring-codes");
+    return navigate("/case-registration/case-assignee");
   };
 
   return (

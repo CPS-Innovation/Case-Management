@@ -1,10 +1,11 @@
-import { type CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
-import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
+import type { CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
+import type { CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
 import type { CourtLocations } from "../types/responses/CourtLocations";
-import { type CaseComplexities } from "../types/responses/CaseComplexities";
-import { type CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes";
-import { type CaseProsecutors } from "../types/responses/CaseProsecutors";
-import { type CaseCaseworkers } from "../types/responses/CaseCaseworkers";
+import type { CaseComplexities } from "../types/responses/CaseComplexities";
+import type { CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes";
+import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
+import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
+import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
 
 export type CaseRegistrationField =
   | "operationNameRadio"
@@ -25,7 +26,8 @@ export type CaseRegistrationField =
   | "caseProsecutorRadio"
   | "caseInvestigatorRadio"
   | "caseProsecutorText"
-  | "caseCaseworkerText";
+  | "caseCaseworkerText"
+  | "caseInvestigatorTitleSelect";
 
 export type CaseRegistrationState = {
   formData: {
@@ -49,6 +51,10 @@ export type CaseRegistrationState = {
     caseInvestigatorRadio: string;
     caseProsecutorText: { id: number | null; description: string };
     caseCaseworkerText: { id: number | null; description: string };
+    caseInvestigatorTitleSelect: {
+      shortCode: number | null;
+      description: string;
+    };
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
@@ -58,6 +64,7 @@ export type CaseRegistrationState = {
     caseMonitoringCodes?: CaseMonitoringCodes | null;
     caseProsecutors?: CaseProsecutors | null;
     caseCaseworkers?: CaseCaseworkers | null;
+    caseInvestigatorTitles?: InvestigatorTitles | null;
   };
 };
 
@@ -83,6 +90,7 @@ export const initialState: CaseRegistrationState = {
     caseProsecutorRadio: "",
     caseProsecutorText: { id: null, description: "" },
     caseCaseworkerText: { id: null, description: "" },
+    caseInvestigatorTitleSelect: { shortCode: null, description: "" },
   },
 
   apiData: {
@@ -93,6 +101,7 @@ export const initialState: CaseRegistrationState = {
     caseMonitoringCodes: null,
     caseProsecutors: null,
     caseCaseworkers: null,
+    caseInvestigatorTitles: null,
   },
 };
 
@@ -101,7 +110,11 @@ export type CaseRegistrationActions =
       type: "SET_FIELD";
       payload: {
         field: CaseRegistrationField;
-        value: { id: number | null; description: string } | string | string[];
+        value:
+          | { id: number | null; description: string }
+          | { shortCode: string | null; description: string }
+          | string
+          | string[];
       };
     }
   | {
@@ -146,7 +159,15 @@ export type CaseRegistrationActions =
         caseCaseworkers: CaseCaseworkers;
       };
     }
-  | { type: "RESET_FORM_DATA" };
+  | {
+      type: "SET_CASE_INVESTIGATOR_TITLES";
+      payload: {
+        caseInvestigatorTitles: InvestigatorTitles;
+      };
+    }
+  | {
+      type: "RESET_FORM_DATA";
+    };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
 
@@ -225,6 +246,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           caseCaseworkers: action.payload.caseCaseworkers,
+        },
+      };
+    }
+    case "SET_CASE_INVESTIGATOR_TITLES": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          caseInvestigatorTitles: action.payload.caseInvestigatorTitles,
         },
       };
     }

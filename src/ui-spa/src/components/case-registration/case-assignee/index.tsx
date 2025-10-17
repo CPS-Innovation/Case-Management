@@ -12,13 +12,16 @@ import {
   Button,
   ErrorSummary,
   BackLink,
+  Select,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
+import { getSelectedInvestigatorTitle } from "../../../common/utils/getSelectedInvestigatorTitle";
 import {
   getCaseProsecutors,
   getCaseCaseworkers,
+  getInvestigatorTitles,
 } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +38,7 @@ const CaseAssigneePage = () => {
     caseInvestigatorRadio?: ErrorText;
     caseProsecutorText?: ErrorText;
     caseCaseworkerText?: ErrorText;
+    caseInvestigatorTitleSelect?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -57,6 +61,15 @@ const CaseAssigneePage = () => {
       enabled: !!registeringUnitId,
       queryFn: () => getCaseCaseworkers(registeringUnitId!),
     });
+
+  const {
+    data: caseInvestigatorTitlesData,
+    isLoading: isCaseInvestigatorTitlesLoading,
+  } = useQuery({
+    queryKey: ["case-investigator-titles"],
+
+    queryFn: () => getInvestigatorTitles(),
+  });
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -81,6 +94,12 @@ const CaseAssigneePage = () => {
             href: "#case-caseworker-text",
             "data-testid": "case-caseworker-text-link",
           };
+        case "caseInvestigatorTitleSelect":
+          return {
+            children: formDataErrors[errorKey]?.errorSummaryText,
+            href: "#case-investigator-title-select",
+            "data-testid": "case-investigator-title-select-link",
+          };
 
         default:
           return null;
@@ -93,10 +112,11 @@ const CaseAssigneePage = () => {
     state: CaseRegistrationState,
     prosecutors: { id: number; description: string }[],
     inputProsecutorValue: string,
+    inputCaseworkerValue: string,
   ) => {
     const errors: FormDataErrors = {};
     const {
-      formData: { caseProsecutorRadio, caseProsecutorText },
+      formData: { caseProsecutorRadio, caseInvestigatorRadio },
     } = state;
 
     if (!caseProsecutorRadio) {
@@ -109,13 +129,17 @@ const CaseAssigneePage = () => {
     }
 
     if (caseProsecutorRadio === "yes") {
-      if (!caseProsecutorText) {
-        errors.caseProsecutorText = {
-          errorSummaryText: "Please select a court location for first hearing",
-          inputErrorText: "Please select a court location",
+      if (!inputProsecutorValue && !inputCaseworkerValue) {
+        errors.caseProsecutorRadio = {
+          errorSummaryText:
+            "Please complete one of the values or select ‘No’ to the question",
+          inputErrorText:
+            "Please complete one of the values or select ‘No’ to the question",
           hasLink: true,
         };
-      } else if (
+      }
+      if (
+        inputProsecutorValue &&
         prosecutors.findIndex(
           (cl) => cl.description === inputProsecutorValue,
         ) === -1
@@ -125,6 +149,27 @@ const CaseAssigneePage = () => {
           hasLink: true,
         };
       }
+
+      if (
+        inputCaseworkerValue &&
+        caseworkers.findIndex(
+          (cl) => cl.description === inputCaseworkerValue,
+        ) === -1
+      ) {
+        errors.caseCaseworkerText = {
+          errorSummaryText: "Caseworker name is invalid",
+          hasLink: true,
+        };
+      }
+    }
+
+    if (!caseInvestigatorRadio) {
+      errors.caseInvestigatorRadio = {
+        errorSummaryText:
+          "Please select an option for add a police officer or investigator?",
+        inputErrorText: "Please select an option",
+        hasLink: true,
+      };
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
@@ -145,6 +190,13 @@ const CaseAssigneePage = () => {
     }
     return [] as { id: number; description: string }[];
   }, [state.apiData.caseCaseworkers]);
+
+  const investigatorTitles = useMemo(() => {
+    if (state.apiData.caseInvestigatorTitles) {
+      return state.apiData.caseInvestigatorTitles;
+    }
+    return [] as { shortCode: string; description: string }[];
+  }, [state.apiData.caseInvestigatorTitles]);
 
   const caseProsecutorSuggest = (
     query: string,
@@ -209,6 +261,17 @@ const CaseAssigneePage = () => {
     }
   }, [caseCaseworkersData, dispatch, isCaseCaseworkersLoading]);
 
+  useEffect(() => {
+    if (!isCaseInvestigatorTitlesLoading && caseInvestigatorTitlesData) {
+      dispatch({
+        type: "SET_CASE_INVESTIGATOR_TITLES",
+        payload: {
+          caseInvestigatorTitles: caseInvestigatorTitlesData,
+        },
+      });
+    }
+  }, [caseInvestigatorTitlesData, dispatch, isCaseInvestigatorTitlesLoading]);
+
   const setFormValue = (
     fieldName: "caseProsecutorRadio" | "caseInvestigatorRadio",
     value: string,
@@ -241,19 +304,35 @@ const CaseAssigneePage = () => {
     });
   };
 
+  const handleCaseInvestigatorTitleConfirm = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { shortCode, description } = getSelectedInvestigatorTitle(
+      investigatorTitles,
+      event.target.value,
+    );
+    dispatch({
+      type: "SET_FIELD",
+      payload: {
+        field: "caseInvestigatorTitleSelect",
+        value: { shortCode, description },
+      },
+    });
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const prosecutorInput = document.getElementById(
       "case-prosecutor-text",
     ) as HTMLInputElement | null;
-    const inputCourtLocationValue = prosecutorInput?.value ?? "";
+    const inputProsecutorValue = prosecutorInput?.value ?? "";
     if (
-      inputCourtLocationValue !==
+      inputProsecutorValue !==
       state.formData.firstHearingCourtLocationText?.description
     ) {
       const { id, description } = getSelectedUnit(
         prosecutors,
-        inputCourtLocationValue,
+        inputProsecutorValue,
       );
       dispatch({
         type: "SET_FIELD",
@@ -264,7 +343,37 @@ const CaseAssigneePage = () => {
       });
     }
 
-    if (!validateFormData(state, prosecutors, inputCourtLocationValue)) return;
+    const caseworkerInput = document.getElementById(
+      "case-caseworker-text",
+    ) as HTMLInputElement | null;
+    const inputCaseworkerValue = caseworkerInput?.value ?? "";
+
+    if (
+      inputCaseworkerValue !==
+      state.formData.firstHearingCourtLocationText?.description
+    ) {
+      const { id, description } = getSelectedUnit(
+        caseworkers,
+        inputCaseworkerValue,
+      );
+      dispatch({
+        type: "SET_FIELD",
+        payload: {
+          field: "caseCaseworkerText",
+          value: { id, description },
+        },
+      });
+    }
+
+    if (
+      !validateFormData(
+        state,
+        prosecutors,
+        inputProsecutorValue,
+        inputCaseworkerValue,
+      )
+    )
+      return;
 
     return navigate("/case-registration/case-complexity");
   };
@@ -291,12 +400,15 @@ const CaseAssigneePage = () => {
           />
         </div>
       )}
+      <h1>Who is working on the case?</h1>
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Who is working on the case?</h1>,
+                children: (
+                  <h2>Do you want to add a prosecutor or caseworker?</h2>
+                ),
               },
             }}
             errorMessage={
@@ -327,9 +439,7 @@ const CaseAssigneePage = () => {
                         state.formData.caseProsecutorText?.description
                       }
                       label={{
-                        children: (
-                          <h2>What is the first hearing court location?</h2>
-                        ),
+                        children: <span>Prosecutor name</span>,
                       }}
                       errorMessage={
                         formDataErrors["caseProsecutorText"]
@@ -339,8 +449,8 @@ const CaseAssigneePage = () => {
                       }
                     />,
                     <AutoComplete
-                      key="case-worker-text"
-                      id="case-worker-text"
+                      key="case-caseworker-text"
+                      id="case-caseworker-text"
                       inputClasses={"govuk-input--error"}
                       source={caseCaseworkerSuggest}
                       confirmOnBlur={false}
@@ -349,7 +459,7 @@ const CaseAssigneePage = () => {
                         state.formData.caseCaseworkerText?.description
                       }
                       label={{
-                        children: <h2>What is the case worker&#39;s name?</h2>,
+                        children: <span>Caseworker name</span>,
                       }}
                       errorMessage={
                         formDataErrors["caseCaseworkerText"]
@@ -370,6 +480,68 @@ const CaseAssigneePage = () => {
             value={state.formData.caseProsecutorRadio}
             onChange={(value) => {
               if (value) setFormValue("caseProsecutorRadio", value);
+            }}
+          ></Radios>
+          <Radios
+            fieldset={{
+              legend: {
+                children: (
+                  <h2>Do you want to add a police officer or investigator?</h2>
+                ),
+              },
+            }}
+            errorMessage={
+              formDataErrors["caseInvestigatorRadio"]
+                ? {
+                    children:
+                      formDataErrors["caseInvestigatorRadio"].errorSummaryText,
+                  }
+                : undefined
+            }
+            name="case-investigator-radio"
+            items={[
+              {
+                id: "case-investigator-radio-yes",
+                children: "Yes",
+                value: "yes",
+                "data-testid": "case-investigator-radio-yes",
+                conditional: {
+                  children: [
+                    <Select
+                      key="case-investigator-title-select"
+                      className="govuk-input--width-20 "
+                      label={{
+                        htmlFor: "case-investigator-title-select",
+                        children: "Select Title",
+                        className: styles.investigatorTitleSelectLabel,
+                      }}
+                      id="case-investigator-title-select"
+                      data-testid="case-investigator-title-select"
+                      items={investigatorTitles.map((title) => ({
+                        value: title.shortCode,
+                        children: title.description,
+                      }))}
+                      formGroup={{
+                        className: styles.select,
+                      }}
+                      onChange={handleCaseInvestigatorTitleConfirm}
+                      value={
+                        state.formData.caseInvestigatorTitleSelect.shortCode ??
+                        ""
+                      }
+                    />,
+                  ],
+                },
+              },
+              {
+                children: "No",
+                value: "no",
+                "data-testid": "case-investigator-radio-no",
+              },
+            ]}
+            value={state.formData.caseInvestigatorRadio}
+            onChange={(value) => {
+              if (value) setFormValue("caseInvestigatorRadio", value);
             }}
           ></Radios>
         </div>

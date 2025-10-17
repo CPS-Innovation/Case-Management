@@ -1,4 +1,4 @@
-.caseDetailsPage {
+.caseAssigneePage {
   .inputWrapper {
     display: flex;
     flex-direction: column;
@@ -7,6 +7,10 @@
     :global(.govuk-form-group) {
       margin-bottom: 1.25rem;
       width: 100%;
+    }
+    :global(.govuk-select) {
+      width: 100%;
+      max-width: 41ex;
     }
     & h2 {
       font-size: 1.1875rem;

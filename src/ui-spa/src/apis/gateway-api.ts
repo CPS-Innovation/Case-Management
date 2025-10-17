@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
 import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../config";
 import { getAccessToken } from "../auth";
-import { type CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
-import { type CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
-import { type CourtLocations } from "../common/types/responses/CourtLocations";
-import { type CaseComplexities } from "../common/types/responses/CaseComplexities";
-import { type CaseMonitoringCodes } from "../common/types/responses/CaseMonitoringCodes";
+import type { CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
+import type { CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
+import type { CourtLocations } from "../common/types/responses/CourtLocations";
+import type { CaseComplexities } from "../common/types/responses/CaseComplexities";
+import type { CaseMonitoringCodes } from "../common/types/responses/CaseMonitoringCodes";
 import { ApiError } from "../common/errors/ApiError";
 import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors";
 import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
+import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -156,4 +157,19 @@ export const getCaseCaseworkers = async (registeringUnitId: number) => {
     throw new ApiError(`getting caseworkers by unit ID failed`, url, response);
   }
   return (await response.json()) as CaseCaseworkers;
+};
+
+export const getInvestigatorTitles = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/titles`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting investigator titles failed`, url, response);
+  }
+  return (await response.json()) as InvestigatorTitles;
 };
