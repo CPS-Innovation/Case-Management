@@ -303,6 +303,22 @@ const CaseAssigneePage = () => {
     }
   }, [caseInvestigatorTitlesData, dispatch, isCaseInvestigatorTitlesLoading]);
 
+  useEffect(() => {
+    if (
+      !state.formData.caseInvestigatorPoliceUnitText &&
+      state.formData.urnPoliceUnitText
+    ) {
+      dispatch({
+        type: "SET_FIELD",
+        payload: {
+          field: "caseInvestigatorPoliceUnitText",
+          value: state.formData.urnPoliceUnitText,
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const setFormValue = (
     fieldName:
       | "caseProsecutorRadio"
@@ -314,9 +330,17 @@ const CaseAssigneePage = () => {
       | "caseInvestigatorPoliceUnitText",
     value: string,
   ) => {
+    let inputValue = value.replace(/[^0-9a-zA-Z]/g, "");
+    if (
+      fieldName === "caseInvestigatorFirstNameText" ||
+      fieldName === "caseInvestigatorLastNameText"
+    ) {
+      inputValue = inputValue.replace(/\d/g, "");
+    }
+
     dispatch({
       type: "SET_FIELD",
-      payload: { field: fieldName, value: value },
+      payload: { field: fieldName, value: inputValue },
     });
   };
 
