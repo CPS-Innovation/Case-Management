@@ -3,7 +3,7 @@ namespace Cps.CaseManagement.Api.Functions;
 using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
-using Cps.CaseManagement.MdsClient.Client;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Constants;
 using Cps.CaseManagement.MdsClient.Models.Entities;
@@ -16,11 +16,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
-  IMdsClient mdsClient,
+  IMdsService mdsService,
   IMdsArgFactory mdsArgFactory)
 {
     private readonly ILogger<ListAvailableOffences> _logger = logger;
-    private readonly IMdsClient _mdsClient = mdsClient;
+    private readonly IMdsService _mdsService = mdsService;
     private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
 
     [Function(nameof(ListAvailableOffences))]
@@ -72,7 +72,7 @@ public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
             bool.TryParse(req.Query[OffenceSearchQueryParameters.MultisearchPartialSearch], out var multisearchPartial) ? multisearchPartial : false
         );
 
-        var result = await _mdsClient.SearchOffences(arg);
+        var result = await _mdsService.SearchOffences(arg);
 
         return new OkObjectResult(result);
     }

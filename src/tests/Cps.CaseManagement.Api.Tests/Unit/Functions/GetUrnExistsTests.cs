@@ -5,18 +5,18 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Cps.CaseManagement.MdsClient.Models.Entities;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.MdsClient.Exceptions;
 using System.Net;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class GetUrnExistsTests
 {
     private readonly Mock<ILogger<GetUrnExists>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly GetUrnExists _function;
@@ -28,10 +28,10 @@ public class GetUrnExistsTests
     public GetUrnExistsTests()
     {
         _loggerMock = new Mock<ILogger<GetUrnExists>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
-        _function = new GetUrnExists(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
+        _function = new GetUrnExists(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object);
 
         _correlationId = _fixture.Create<Guid>();
         _cmsAuthValues = _fixture.Create<string>();
@@ -43,13 +43,13 @@ public class GetUrnExistsTests
     public async Task Run_ReturnsOkObjectResult_WithTrue_WhenUrnExists()
     {
         // Arrange
-        var cases = _fixture.Create<CaseInfoEntity[]>();
+        var cases = _fixture.Create<CaseInfoDto[]>();
 
         _mdsArgFactoryMock
             .Setup(f => f.CreateGetByUrnArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(_getByUrnArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.ListCasesByUrnAsync(_getByUrnArg))
             .ReturnsAsync(cases);
 
@@ -63,7 +63,7 @@ public class GetUrnExistsTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         Assert.True((bool)okResult.Value);
-        _mdsClientMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
     }
 
     [Fact]
@@ -74,9 +74,9 @@ public class GetUrnExistsTests
             .Setup(f => f.CreateGetByUrnArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(_getByUrnArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.ListCasesByUrnAsync(_getByUrnArg))
-            .ReturnsAsync(Array.Empty<CaseInfoEntity>());
+            .ReturnsAsync(Array.Empty<CaseInfoDto>());
 
         var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(_correlationId, _fixture.Create<string>(), _fixture.Create<string>());
         var httpRequest = HttpRequestStubHelper.CreateHttpRequest(_correlationId);
@@ -88,7 +88,7 @@ public class GetUrnExistsTests
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.NotNull(okResult.Value);
         Assert.False((bool)okResult.Value);
-        _mdsClientMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public class GetUrnExistsTests
             .Setup(f => f.CreateGetByUrnArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(_getByUrnArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.ListCasesByUrnAsync(_getByUrnArg))
             .ThrowsAsync(new MdsClientException(HttpStatusCode.BadRequest, new HttpRequestException("Invalid URN format")));
 
@@ -116,6 +116,6 @@ public class GetUrnExistsTests
             async () => await _function.Run(httpRequest, functionContext, invalidUrn));
 
         Assert.Equal(HttpStatusCode.BadRequest, exception.StatusCode);
-        _mdsClientMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.ListCasesByUrnAsync(_getByUrnArg), Times.Once);
     }
 }

@@ -5,17 +5,17 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using CPS.CaseManagement.MdsClient.Models.Dto;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class ListUnitsTests
 {
     private readonly Mock<ILogger<ListUnits>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly ListUnits _function;
@@ -23,10 +23,10 @@ public class ListUnitsTests
     public ListUnitsTests()
     {
         _loggerMock = new Mock<ILogger<ListUnits>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
-        _function = new ListUnits(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
+        _function = new ListUnits(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class ListUnitsTests
             .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
             .Returns(baseArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.GetUnitsAsync(baseArg))
             .ReturnsAsync(expectedUnits);
 
@@ -55,6 +55,6 @@ public class ListUnitsTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedUnits, okResult.Value);
-        _mdsClientMock.Verify(c => c.GetUnitsAsync(baseArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.GetUnitsAsync(baseArg), Times.Once);
     }
 }

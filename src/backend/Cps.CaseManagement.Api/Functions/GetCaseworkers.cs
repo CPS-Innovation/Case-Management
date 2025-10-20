@@ -3,7 +3,7 @@ namespace Cps.CaseManagement.Api.Functions;
 using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
-using Cps.CaseManagement.MdsClient.Client;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +13,11 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 
 public class GetCaseworkers(ILogger<GetCaseworkers> logger,
-  IMdsClient mdsClient,
+  IMdsService mdsService,
   IMdsArgFactory mdsArgFactory)
 {
   private readonly ILogger<GetCaseworkers> _logger = logger;
-  private readonly IMdsClient _mdsClient = mdsClient;
+  private readonly IMdsService _mdsService = mdsService;
   private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
 
   [Function(nameof(GetCaseworkers))]
@@ -36,7 +36,7 @@ public class GetCaseworkers(ILogger<GetCaseworkers> logger,
 
     var arg = _mdsArgFactory.CreateGetByUnitIdArg(context.CmsAuthValues, context.CorrelationId, unitId);
 
-    var result = await _mdsClient.GetCaseworkersAsync(arg);
+    var result = await _mdsService.GetCaseworkersAsync(arg);
 
     return new OkObjectResult(result);
   }

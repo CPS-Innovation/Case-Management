@@ -3,6 +3,7 @@ namespace Cps.CaseManagement.Api.Functions;
 using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Entities;
@@ -13,17 +14,19 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 
 public class ListTitles(ILogger<ListTitles> logger,
-  IMdsClient mdsClient,
+  IMdsService mdsService,
   IMdsArgFactory mdsArgFactory)
 {
   private readonly ILogger<ListTitles> _logger = logger;
-  private readonly IMdsClient _mdsClient = mdsClient;
+  private readonly IMdsService _mdsService = mdsService;
   private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
+  private const string IsPoliceTitleQueryParameter = "isPoliceTitle";
 
   [Function(nameof(ListTitles))]
   [OpenApiOperation(operationId: nameof(ListTitles), tags: ["MDS"], Description = "Gets the list of titles from CMS.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
   [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
+  [OpenApiParameter(name: IsPoliceTitleQueryParameter, In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter titles by police title flag. If not provided, returns all titles.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(TitleEntity[]), Description = ApiResponseDescriptions.Success)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.Unauthorized)]
@@ -33,7 +36,14 @@ public class ListTitles(ILogger<ListTitles> logger,
   {
     var context = functionContext.GetRequestContext();
 
-    var result = await _mdsClient.GetTitlesAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId));
+    bool? isPoliceTitle = null;
+    if (req.Query.TryGetValue(IsPoliceTitleQueryParameter, out var policeTitleValue) &&
+        bool.TryParse(policeTitleValue.FirstOrDefault(), out var parsed))
+    {
+      isPoliceTitle = parsed;
+    }
+
+    var result = await _mdsService.GetTitlesAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId), isPoliceTitle);
 
     return new OkObjectResult(result);
   }

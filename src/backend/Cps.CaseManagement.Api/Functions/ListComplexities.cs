@@ -3,7 +3,7 @@ namespace Cps.CaseManagement.Api.Functions;
 using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
-using Cps.CaseManagement.MdsClient.Client;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +13,11 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 
 public class ListComplexities(ILogger<ListComplexities> logger,
-  IMdsClient mdsClient,
+  IMdsService mdsService,
   IMdsArgFactory mdsArgFactory)
 {
   private readonly ILogger<ListComplexities> _logger = logger;
-  private readonly IMdsClient _mdsClient = mdsClient;
+  private readonly IMdsService _mdsService = mdsService;
   private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
 
   [Function(nameof(ListComplexities))]
@@ -33,7 +33,7 @@ public class ListComplexities(ILogger<ListComplexities> logger,
   {
     var context = functionContext.GetRequestContext();
 
-    var result = await _mdsClient.GetComplexityCodesAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId));
+    var result = await _mdsService.GetComplexityCodesAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId));
 
     return new OkObjectResult(result);
   }

@@ -6,7 +6,6 @@ using Cps.CaseManagement.MdsClient.Exceptions;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using CPS.CaseManagement.MdsClient.Models.Dto;
 using Microsoft.Extensions.Logging;
 
 public class MdsClient(HttpClient httpClient,
@@ -76,40 +75,18 @@ public class MdsClient(HttpClient httpClient,
         return await CallMds<IEnumerable<CourtEntity>>(request);
     }
 
-    public async Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg)
+    public async Task<IEnumerable<UnitEntity>> GetUnitsAsync(MdsBaseArgDto arg)
     {
         ArgumentNullException.ThrowIfNull(arg);
+        var request = _mdsRequestFactory.CreateGetUnitsRequest(arg);
+        return await CallMds<IEnumerable<UnitEntity>>(request);
+    }
 
-        var unitsTask = CallMds<IEnumerable<UnitEntity>>(
-            _mdsRequestFactory.CreateGetUnitsRequest(arg));
-
-        var userTask = CallMds<UserDataEntity>(
-            _mdsRequestFactory.CreateUserDataRequest(arg));
-
-        var combined = Task.WhenAll(unitsTask, userTask);
-
-        try
-        {
-            await combined.ConfigureAwait(false);
-        }
-        catch
-        {
-            _logger.LogError(combined.Exception, "MDS multi-call failed for GetUnitsAsync");
-            throw;
-        }
-
-        var allUnits = (await unitsTask.ConfigureAwait(false))?.ToList()
-                       ?? new List<UnitEntity>();
-
-        var homeUnitId = (await userTask.ConfigureAwait(false))?.HomeUnit?.UnitId;
-
-        return new UnitsDto
-        {
-            AllUnits = allUnits,
-            HomeUnit = homeUnitId is not null
-                ? allUnits.FirstOrDefault(u => u.Id == homeUnitId)
-                : null
-        };
+    public async Task<UserDataEntity> GetUserDataAsync(MdsBaseArgDto arg)
+    {
+        ArgumentNullException.ThrowIfNull(arg);
+        var request = _mdsRequestFactory.CreateUserDataRequest(arg);
+        return await CallMds<UserDataEntity>(request);
     }
 
     public async Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg)
