@@ -831,6 +831,69 @@ public class MdsClientTests
     }
 
     [Fact]
+    public async Task GetPoliceUnitsAsync_ReturnsExpectedPoliceUnits_WhenResponseIsSuccessful()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/police-units");
+        var expectedPoliceUnits = _fixture.CreateMany<PoliceUnitEntity>(4).ToList();
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(expectedPoliceUnits, HttpStatusCode.OK);
+
+        // Act
+        var result = await _client.GetPoliceUnitsAsync(_mdsBaseArgDto);
+
+        // Assert
+        var resultList = result.ToList();
+        Assert.Equal(expectedPoliceUnits.Count, resultList.Count);
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task GetPoliceUnitsAsync_ThrowsCmsUnauthorizedException_WhenResponseIsUnauthorized()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/police-units");
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(new List<PoliceUnitEntity>(), HttpStatusCode.Unauthorized);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<CmsUnauthorizedException>(() => _client.GetPoliceUnitsAsync(_mdsBaseArgDto));
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public async Task GetPoliceUnitsAsync_ThrowsMdsClientException_WhenResponseIsNotSuccessful()
+    {
+        // Arrange
+        var mockRequest = new HttpRequestMessage(HttpMethod.Get, "api/police-units");
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto))
+            .Returns(mockRequest);
+
+        SetupHttpMockResponse(new List<PoliceUnitEntity>(), HttpStatusCode.InternalServerError);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MdsClientException>(() => _client.GetPoliceUnitsAsync(_mdsBaseArgDto));
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
+    }
+
+    [Fact]
     public async Task SearchOffences_ReturnsExpectedOffences_WhenResponseIsSuccessful()
     {
         // Arrange

@@ -6,7 +6,7 @@ public class TitleEntity
 {
     [JsonPropertyName("shortCode")]
     public string ShortCode { get; set; } = string.Empty;
-    [JsonPropertyName("description")]   
+    [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
     [JsonPropertyName("isPoliceTitle")]
     public bool IsPoliceTitle { get; set; } = false;
