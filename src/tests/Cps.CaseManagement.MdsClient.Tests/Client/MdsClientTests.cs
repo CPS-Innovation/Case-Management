@@ -849,6 +849,10 @@ public class MdsClientTests
         // Assert
         var resultList = result.ToList();
         Assert.Equal(expectedPoliceUnits.Count, resultList.Count);
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -864,6 +868,10 @@ public class MdsClientTests
 
         // Act & Assert
         await Assert.ThrowsAsync<CmsUnauthorizedException>(() => _client.GetPoliceUnitsAsync(_mdsBaseArgDto));
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
     }
 
     [Fact]
@@ -879,6 +887,10 @@ public class MdsClientTests
 
         // Act & Assert
         await Assert.ThrowsAsync<MdsClientException>(() => _client.GetPoliceUnitsAsync(_mdsBaseArgDto));
+        _mdsRequestFactoryMock.Verify(
+            f => f.CreateGetPoliceUnitsRequest(_mdsBaseArgDto),
+            Times.Once);
+        _mdsRequestFactoryMock.VerifyNoOtherCalls();
     }
 
     [Fact]
