@@ -27,7 +27,12 @@ export type CaseRegistrationField =
   | "caseInvestigatorRadio"
   | "caseProsecutorText"
   | "caseCaseworkerText"
-  | "caseInvestigatorTitleSelect";
+  | "caseInvestigatorTitleSelect"
+  | "caseInvestigatorFirstNameText"
+  | "caseInvestigatorLastNameText"
+  | "caseInvestigatorShoulderNameText"
+  | "caseInvestigatorShoulderNumberText"
+  | "caseInvestigatorPoliceUnitText";
 
 export type CaseRegistrationState = {
   formData: {
@@ -55,6 +60,11 @@ export type CaseRegistrationState = {
       shortCode: number | null;
       description: string;
     };
+    caseInvestigatorFirstNameText: string;
+    caseInvestigatorLastNameText: string;
+    caseInvestigatorShoulderNameText: string;
+    caseInvestigatorShoulderNumberText: string;
+    caseInvestigatorPoliceUnitText: string;
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
@@ -91,6 +101,11 @@ export const initialState: CaseRegistrationState = {
     caseProsecutorText: { id: null, description: "" },
     caseCaseworkerText: { id: null, description: "" },
     caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+    caseInvestigatorFirstNameText: "",
+    caseInvestigatorLastNameText: "",
+    caseInvestigatorShoulderNameText: "",
+    caseInvestigatorShoulderNumberText: "",
+    caseInvestigatorPoliceUnitText: "",
   },
 
   apiData: {

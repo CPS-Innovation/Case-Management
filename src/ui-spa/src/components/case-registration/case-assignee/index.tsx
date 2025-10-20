@@ -13,6 +13,7 @@ import {
   ErrorSummary,
   BackLink,
   Select,
+  Input,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
@@ -39,6 +40,7 @@ const CaseAssigneePage = () => {
     caseProsecutorText?: ErrorText;
     caseCaseworkerText?: ErrorText;
     caseInvestigatorTitleSelect?: ErrorText;
+    caseInvestigatorLastNameText?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -100,6 +102,19 @@ const CaseAssigneePage = () => {
             href: "#case-investigator-title-select",
             "data-testid": "case-investigator-title-select-link",
           };
+        case "caseInvestigatorRadio":
+          return {
+            children: formDataErrors[errorKey]?.errorSummaryText,
+            href: "#case-investigator-radio-yes",
+            "data-testid": "case-investigator-radio-link",
+          };
+
+        case "caseInvestigatorLastNameText":
+          return {
+            children: formDataErrors[errorKey]?.errorSummaryText,
+            href: "#case-investigator-lastname-text",
+            "data-testid": "case-investigator-lastname-text-link",
+          };
 
         default:
           return null;
@@ -116,8 +131,14 @@ const CaseAssigneePage = () => {
   ) => {
     const errors: FormDataErrors = {};
     const {
-      formData: { caseProsecutorRadio, caseInvestigatorRadio },
+      formData: {
+        caseProsecutorRadio,
+        caseInvestigatorRadio,
+        caseInvestigatorLastNameText,
+      },
     } = state;
+    console.log("caseProsecutorRadio", caseProsecutorRadio);
+    console.log("caseInvestigatorRadio", caseInvestigatorRadio);
 
     if (!caseProsecutorRadio) {
       errors.caseProsecutorRadio = {
@@ -172,6 +193,16 @@ const CaseAssigneePage = () => {
       };
     }
 
+    if (caseInvestigatorRadio === "yes") {
+      if (!caseInvestigatorLastNameText) {
+        errors.caseInvestigatorLastNameText = {
+          errorSummaryText:
+            "Please enter a last name for the police officer or investigator",
+          inputErrorText: "Please enter a last name",
+          hasLink: true,
+        };
+      }
+    }
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
 
     setFormDataErrors(errors);
@@ -273,7 +304,14 @@ const CaseAssigneePage = () => {
   }, [caseInvestigatorTitlesData, dispatch, isCaseInvestigatorTitlesLoading]);
 
   const setFormValue = (
-    fieldName: "caseProsecutorRadio" | "caseInvestigatorRadio",
+    fieldName:
+      | "caseProsecutorRadio"
+      | "caseInvestigatorRadio"
+      | "caseInvestigatorFirstNameText"
+      | "caseInvestigatorLastNameText"
+      | "caseInvestigatorShoulderNameText"
+      | "caseInvestigatorShoulderNumberText"
+      | "caseInvestigatorPoliceUnitText",
     value: string,
   ) => {
     dispatch({
@@ -529,6 +567,78 @@ const CaseAssigneePage = () => {
                         state.formData.caseInvestigatorTitleSelect.shortCode ??
                         ""
                       }
+                    />,
+                    <Input
+                      key="case-investigator-firstname-text"
+                      id="case-investigator-firstname-text"
+                      data-testid="case-investigator-firstname-text"
+                      className="govuk-input--width-20"
+                      label={{
+                        children: "First name(optional)",
+                      }}
+                      name="case-investigator-firstname"
+                      type="text"
+                      value={state.formData.caseInvestigatorFirstNameText}
+                      onChange={(value: string) => {
+                        setFormValue("caseInvestigatorFirstNameText", value);
+                      }}
+                    />,
+                    <Input
+                      key="case-investigator-lastname-text"
+                      id="case-investigator-lastname-text"
+                      data-testid="case-investigator-lastname-text"
+                      className="govuk-input--width-20"
+                      label={{
+                        children: "Last name",
+                      }}
+                      errorMessage={
+                        formDataErrors["caseInvestigatorLastNameText"]
+                          ? {
+                              children:
+                                formDataErrors["caseInvestigatorLastNameText"]
+                                  .errorSummaryText,
+                            }
+                          : undefined
+                      }
+                      name="case-investigator-lastname"
+                      type="text"
+                      value={state.formData.caseInvestigatorLastNameText}
+                      onChange={(value: string) => {
+                        setFormValue("caseInvestigatorLastNameText", value);
+                      }}
+                    />,
+                    <Input
+                      key="case-investigator-shoulder-number-text"
+                      id="case-investigator-shoulder-number-text"
+                      data-testid="case-investigator-shoulder-number-text"
+                      className="govuk-input--width-20"
+                      label={{
+                        children: "Shoulder number(optional)",
+                      }}
+                      name="case-investigator-shoulder-number"
+                      type="text"
+                      value={state.formData.caseInvestigatorShoulderNumberText}
+                      onChange={(value: string) => {
+                        setFormValue(
+                          "caseInvestigatorShoulderNumberText",
+                          value,
+                        );
+                      }}
+                    />,
+                    <Input
+                      key="case-investigator-police-unit-text"
+                      id="case-investigator-police-unit-text"
+                      data-testid="case-investigator-police-unit-text"
+                      className="govuk-input--width-20"
+                      label={{
+                        children: "Police unit(optional)",
+                      }}
+                      name="case-investigator-police-unit"
+                      type="text"
+                      value={state.formData.caseInvestigatorPoliceUnitText}
+                      onChange={(value: string) => {
+                        setFormValue("caseInvestigatorPoliceUnitText", value);
+                      }}
                     />,
                   ],
                 },
