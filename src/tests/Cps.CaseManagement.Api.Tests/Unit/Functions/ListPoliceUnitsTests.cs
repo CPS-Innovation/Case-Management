@@ -38,14 +38,14 @@ public class ListPoliceUnitsTests
         var baseArg = _fixture.Create<MdsBaseArgDto>();
 
         _mdsArgFactoryMock
-            .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
+            .Setup(f => f.CreateBaseArg(cmsAuthValues, It.IsAny<Guid>()))
             .Returns(baseArg);
 
         _mdsServiceMock
             .Setup(c => c.GetPoliceUnitsAsync(baseArg))
             .ReturnsAsync(expectedUnits);
 
-        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, _fixture.Create<string>(), _fixture.Create<string>());
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, cmsAuthValues, _fixture.Create<string>());
         var httpRequest = HttpRequestStubHelper.CreateHttpRequest(correlationId);
 
         // Act
@@ -54,6 +54,10 @@ public class ListPoliceUnitsTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedUnits, okResult.Value);
+
+        _mdsArgFactoryMock.Verify(f => f.CreateBaseArg(cmsAuthValues, correlationId), Times.Once);
         _mdsServiceMock.Verify(c => c.GetPoliceUnitsAsync(baseArg), Times.Once);
+        _mdsServiceMock.VerifyNoOtherCalls();
+        _mdsArgFactoryMock.VerifyNoOtherCalls();
     }
 }
