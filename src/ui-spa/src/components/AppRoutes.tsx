@@ -6,6 +6,7 @@ import FirstHearingPage from "./case-registration/first-hearing-page";
 import CaseComplexityPage from "./case-registration/case-complexity-page";
 import CaseMonitoringCodesPage from "./case-registration/case-monitoring-codes";
 import CaseAssigneePage from "./case-registration/case-assignee";
+import CaseSummaryPage from "./case-registration/case-summary-page";
 
 const AppRoutes = () => {
   return (
@@ -26,16 +27,16 @@ const AppRoutes = () => {
         element={<CaseComplexityPage />}
       />
       <Route
-        path="/case-registration/case-complexity"
-        element={<CaseComplexityPage />}
-      />
-      <Route
         path="/case-registration/case-monitoring-codes"
         element={<CaseMonitoringCodesPage />}
       />
       <Route
         path="/case-registration/case-assignee"
         element={<CaseAssigneePage />}
+      />
+      <Route
+        path="/case-registration/case-summary"
+        element={<CaseSummaryPage />}
       />
 
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

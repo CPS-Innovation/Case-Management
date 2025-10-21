@@ -13,3 +13,4 @@ export { NotificationBanner } from "./NotificationBanner";
 export { Details } from "./Details";
 export { SkipLink } from "./SkipLink";
 export { AutoComplete } from "./AutoComplete";
+export { SummaryList } from "./SummaryList";

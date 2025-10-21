@@ -34,38 +34,40 @@ export type CaseRegistrationField =
   | "caseInvestigatorShoulderNumberText"
   | "caseInvestigatorPoliceUnitText";
 
-export type CaseRegistrationState = {
-  formData: {
-    currentPage: "case-registration" | "case-area";
-    operationNameRadio: string;
-    suspectDetailsRadio: string;
-    operationNameText: string;
-    areaOrDivisionText: { id: number | null; description: string };
-    urnPoliceForceText: string;
-    urnPoliceUnitText: string;
-    urnUniqueReferenceText: string;
-    urnYearReferenceText: string;
-    registeringUnitText: { id: number | null; description: string };
-    witnessCareUnitText: { id: number | null; description: string };
-    firstHearingRadio: string;
-    firstHearingCourtLocationText: { id: number | null; description: string };
-    firstHearingDateText: string;
-    caseComplexityRadio: string;
-    caseMonitoringCodesCheckboxes: string[];
-    caseProsecutorRadio: string;
-    caseInvestigatorRadio: string;
-    caseProsecutorText: { id: number | null; description: string };
-    caseCaseworkerText: { id: number | null; description: string };
-    caseInvestigatorTitleSelect: {
-      shortCode: number | null;
-      description: string;
-    };
-    caseInvestigatorFirstNameText: string;
-    caseInvestigatorLastNameText: string;
-    caseInvestigatorShoulderNameText: string;
-    caseInvestigatorShoulderNumberText: string;
-    caseInvestigatorPoliceUnitText: string;
+export type CaseRegistrationFormData = {
+  currentPage: "case-registration" | "case-area";
+  operationNameRadio: string;
+  suspectDetailsRadio: string;
+  operationNameText: string;
+  areaOrDivisionText: { id: number | null; description: string };
+  urnPoliceForceText: string;
+  urnPoliceUnitText: string;
+  urnUniqueReferenceText: string;
+  urnYearReferenceText: string;
+  registeringUnitText: { id: number | null; description: string };
+  witnessCareUnitText: { id: number | null; description: string };
+  firstHearingRadio: string;
+  firstHearingCourtLocationText: { id: number | null; description: string };
+  firstHearingDateText: string;
+  caseComplexityRadio: string;
+  caseMonitoringCodesCheckboxes: string[];
+  caseProsecutorRadio: string;
+  caseInvestigatorRadio: string;
+  caseProsecutorText: { id: number | null; description: string };
+  caseCaseworkerText: { id: number | null; description: string };
+  caseInvestigatorTitleSelect: {
+    shortCode: number | null;
+    description: string;
   };
+  caseInvestigatorFirstNameText: string;
+  caseInvestigatorLastNameText: string;
+  caseInvestigatorShoulderNameText: string;
+  caseInvestigatorShoulderNumberText: string;
+  caseInvestigatorPoliceUnitText: string;
+};
+
+export type CaseRegistrationState = {
+  formData: CaseRegistrationFormData;
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
     areasAndWitnessCareUnits?: CaseAreasAndWitnessCareUnits | null;

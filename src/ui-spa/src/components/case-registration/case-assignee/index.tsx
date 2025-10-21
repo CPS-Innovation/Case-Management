@@ -224,7 +224,9 @@ const CaseAssigneePage = () => {
 
   const investigatorTitles = useMemo(() => {
     if (state.apiData.caseInvestigatorTitles) {
-      return state.apiData.caseInvestigatorTitles;
+      return state.apiData.caseInvestigatorTitles.filter(
+        (title) => title.isPoliceTitle,
+      );
     }
     return [] as { shortCode: string; description: string }[];
   }, [state.apiData.caseInvestigatorTitles]);
@@ -437,7 +439,7 @@ const CaseAssigneePage = () => {
     )
       return;
 
-    return navigate("/case-registration/case-complexity");
+    return navigate("/case-registration/case-summary");
   };
 
   return (
