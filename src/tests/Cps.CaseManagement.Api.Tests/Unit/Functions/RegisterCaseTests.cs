@@ -18,7 +18,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -45,30 +44,11 @@ public class RegisterCaseTest
         _function = new RegisterCase(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object, _requestValidatorMock.Object);
     }
 
-    private static HttpRequest CreateHttpRequestFromJson(object obj, Guid correlationId)
-    {
-        var context = new DefaultHttpContext();
-        var req = HttpRequestStubHelper.CreateHttpRequest(correlationId);
-        req.ContentType = "application/json";
-        if (obj != null)
-        {
-            var json = JsonSerializer.Serialize(obj);
-            var bytes = Encoding.UTF8.GetBytes(json);
-            req.Body = new MemoryStream(bytes);
-            req.Body.Position = 0;
-        }
-        else
-        {
-            req.Body = new MemoryStream();
-        }
-        return req;
-    }
-
     [Fact]
     public async Task Run_InvalidRequest_ReturnsBadRequest()
     {
         // Arrange
-        var validationErrors = _fixture.CreateMany<string>(2).ToList();
+        var validationErrors = new[] { "err1", "err2" }.ToList();
         var caseDetails = _fixture.Create<CaseRegistrationRequest>();
         var correlationId = _fixture.Create<Guid>();
 
@@ -80,7 +60,7 @@ public class RegisterCaseTest
                 ValidationErrors = validationErrors,
                 Value = caseDetails
             });
-        
+
         var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, _fixture.Create<string>(), _fixture.Create<string>());
         var httpRequest = CreateHttpRequestFromJson(caseDetails, correlationId);
 
@@ -96,11 +76,8 @@ public class RegisterCaseTest
     public async Task Run_MdsException_ReturnsBadRequest()
     {
         // Arrange
-        var validationErrors = _fixture.CreateMany<string>(2).ToList();
-        var caseDetails = _fixture.Create<CaseRegistrationRequest>();
+        var caseDetails = CreateValidCaseRegistrationRequest();
         var correlationId = _fixture.Create<Guid>();
-        var cmsAuthValues = _fixture.Create<string>();
-        var baseArg = _fixture.Create<MdsBaseArgDto>();
 
         _requestValidatorMock
             .Setup(x => x.GetJsonBody<CaseRegistrationRequest, CaseRegistrationRequestValidator>(It.IsAny<HttpRequest>()))
@@ -121,17 +98,16 @@ public class RegisterCaseTest
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result);
+        _mdsClientMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
+        _requestValidatorMock.Verify(v => v.GetJsonBody<CaseRegistrationRequest, CaseRegistrationRequestValidator>(It.IsAny<HttpRequest>()), Times.Once);
     }
 
     [Fact]
     public async Task Run_WithValidRequest_ReturnsOkObjectResult()
     {
         // Arrange
-        var validationErrors = _fixture.CreateMany<string>(2).ToList();
-        var caseDetails = _fixture.Create<CaseRegistrationRequest>();
+        var caseDetails = CreateValidCaseRegistrationRequest();
         var correlationId = _fixture.Create<Guid>();
-        var cmsAuthValues = _fixture.Create<string>();
-        var baseArg = _fixture.Create<MdsBaseArgDto>();
 
         _requestValidatorMock
             .Setup(x => x.GetJsonBody<CaseRegistrationRequest, CaseRegistrationRequestValidator>(It.IsAny<HttpRequest>()))
@@ -152,5 +128,63 @@ public class RegisterCaseTest
 
         // Assert
         Assert.IsType<OkObjectResult>(result);
+        _mdsArgFactoryMock.Verify(f => f.CreateRegisterCaseArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CaseRegistrationRequest>()), Times.Once);
+        _mdsClientMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
+    }
+
+    private static HttpRequest CreateHttpRequestFromJson(object obj, Guid correlationId)
+    {
+        var req = HttpRequestStubHelper.CreateHttpRequest(correlationId);
+        req.ContentType = "application/json";
+        if (obj != null)
+        {
+            var json = JsonSerializer.Serialize(obj);
+            var bytes = Encoding.UTF8.GetBytes(json);
+            req.Body = new MemoryStream(bytes);
+            req.Body.Position = 0;
+        }
+        else
+        {
+            req.Body = new MemoryStream();
+        }
+        return req;
+    }
+
+    private static CaseRegistrationRequest CreateValidCaseRegistrationRequest()
+    {
+        return new CaseRegistrationRequest
+        {
+            Urn = new CaseRegistrationUrn
+            {
+                UniqueRef = "12345",
+                Year = 30,
+                PoliceForce = "AA",
+                PoliceUnit = "BB"
+            },
+            RegisteringAreaId = 1,
+            RegisteringUnitId = 2,
+            Defendants = new List<CaseRegistrationDefendant>
+            {
+                new CaseRegistrationDefendant
+                {
+                    Surname = "Smith",
+                    Charges = new List<CaseRegistrationCharge>
+                    {
+                        new CaseRegistrationCharge
+                        {
+                            OffenceCode = "CODE1",
+                            OffenceDescription = "Description",
+                            OffenceId = "ID1",
+                            DateFrom = DateTime.Today,
+                            Comment = "Comment"
+                        }
+                    }
+                }
+            },
+            MonitoringCodes = new List<CaseRegistrationMonitoringCode>
+            {
+                new CaseRegistrationMonitoringCode("MON1", true)
+            }
+        };
     }
 }
