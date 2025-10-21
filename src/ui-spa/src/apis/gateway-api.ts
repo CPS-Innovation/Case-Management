@@ -4,6 +4,7 @@ import { getAccessToken } from "../auth";
 import { type CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
 import { type CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
 import { type CourtLocations } from "../common/types/responses/CourtLocations";
+import { type CaseComplexities } from "../common/types/responses/CaseComplexities";
 import { ApiError } from "../common/errors/ApiError";
 
 export const CORRELATION_ID = "Correlation-Id";
@@ -85,11 +86,23 @@ export const getCourtsByUnitId = async (registeringUnitId: number) => {
   });
 
   if (!response.ok) {
-    throw new ApiError(
-      `getting courts by unit ID failed`,
-      `${registeringUnitId}`,
-      response,
-    );
+    throw new ApiError(`getting courts by unit ID failed`, url, response);
   }
   return (await response.json()) as CourtLocations;
+};
+
+export const getCaseComplexities = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/complexities`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+
+  if (!response.ok) {
+    throw new ApiError(`getting complexities failed`, url, response);
+  }
+  return (await response.json()) as CaseComplexities;
 };

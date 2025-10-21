@@ -6,6 +6,8 @@ import {
   caseAreasAndWitnessCareUnitsPlaywright,
   courtLocationsDev,
   courtLocationsPlaywright,
+  caseComplexitiesDev,
+  caseComplexitiesPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -34,6 +36,13 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       const results = isDevMock()
         ? courtLocationsDev
         : courtLocationsPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/complexities`, async () => {
+      const results = isDevMock()
+        ? caseComplexitiesDev
+        : caseComplexitiesPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
