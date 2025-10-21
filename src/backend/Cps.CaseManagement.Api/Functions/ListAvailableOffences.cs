@@ -26,7 +26,7 @@ public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
     [Function(nameof(ListAvailableOffences))]
     [OpenApiOperation(operationId: nameof(ListAvailableOffences), tags: ["MDS"], Description = "List all available offences")]
     [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-    [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = ParameterLocation.Header, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
+    [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
     [OpenApiParameter(OffenceSearchQueryParameters.Code, In = ParameterLocation.Query, Type = typeof(string), Description = "The Code of the charge.", Required = false)]
     [OpenApiParameter(OffenceSearchQueryParameters.Legislation, In = ParameterLocation.Query, Type = typeof(string), Description = "The Legisation of the charge.", Required = false)]
     [OpenApiParameter(OffenceSearchQueryParameters.LegislationPartialSearch, In = ParameterLocation.Query, Type = typeof(bool), Description = "Whether the \"word-by-word\" search by Legislation is partial (words match partially).", Required = true)]

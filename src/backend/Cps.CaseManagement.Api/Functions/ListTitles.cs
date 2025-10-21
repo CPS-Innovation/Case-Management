@@ -25,7 +25,7 @@ public class ListTitles(ILogger<ListTitles> logger,
   [Function(nameof(ListTitles))]
   [OpenApiOperation(operationId: nameof(ListTitles), tags: ["MDS"], Description = "Gets the list of titles from CMS.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-  [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
+  [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiParameter(name: IsPoliceTitleQueryParameter, In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter titles by police title flag. If not provided, returns all titles.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(TitleEntity[]), Description = ApiResponseDescriptions.Success)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
