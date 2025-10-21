@@ -1,6 +1,7 @@
 namespace Cps.CaseManagement.MdsClient.Factories;
 
 using Cps.CaseManagement.MdsClient.Models.Args;
+using Cps.CaseManagement.MdsClient.Models.Entities;
 
 public class MdsArgFactory : IMdsArgFactory
 {
@@ -30,6 +31,16 @@ public class MdsArgFactory : IMdsArgFactory
             CmsAuthValues = cmsAuthValues,
             CorrelationId = correlationId,
             Urn = urn
+        };
+    }
+
+    public MdsRegisterCaseArg CreateRegisterCaseArg(string cmsAuthValues, Guid correlationId, CaseRegistrationRequest caseDetails)
+    {
+        return new MdsRegisterCaseArg
+        {
+            CmsAuthValues = cmsAuthValues,
+            CorrelationId = correlationId,
+            CaseDetails = caseDetails
         };
     }
 }

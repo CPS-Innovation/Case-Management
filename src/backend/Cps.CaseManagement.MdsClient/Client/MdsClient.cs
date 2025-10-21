@@ -130,6 +130,13 @@ public class MdsClient(HttpClient httpClient,
         return response.CmsModernToken;
     }
 
+    public async Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg)
+    {
+        var response = await CallMds<CaseRegistrationResponseDto>(
+            _mdsRequestFactory.CreateRegisterCaseRequest(arg));
+        return response;
+    }
+
     private async Task<T> CallMds<T>(HttpRequestMessage request)
     {
         using var response = await CallMds(request);

@@ -1,5 +1,7 @@
 namespace Cps.CaseManagement.MdsClient.Factories;
 
+using System.Text;
+using System.Text.Json;
 using Cps.CaseManagement.MdsClient.Models.Args;
 
 public class MdsRequestFactory : IMdsRequestFactory
@@ -51,6 +53,13 @@ public class MdsRequestFactory : IMdsRequestFactory
 
     public HttpRequestMessage CreateGetCmsModernTokenRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/user/cms-modern-token", arg);
+
+    public HttpRequestMessage CreateRegisterCaseRequest(MdsRegisterCaseArg arg)
+    {
+        var request = BuildRequest(HttpMethod.Post, "api/cases", arg);
+        request.Content = new StringContent(JsonSerializer.Serialize(arg.CaseDetails), Encoding.UTF8, "application/json");
+        return request;
+    }
 
     private HttpRequestMessage BuildRequest(HttpMethod method, string path, MdsBaseArgDto arg)
     {
