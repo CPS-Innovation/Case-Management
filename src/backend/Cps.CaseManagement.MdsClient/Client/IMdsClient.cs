@@ -22,4 +22,6 @@ public interface IMdsClient
     Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg);
     Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg);
     Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg);
+    Task<IEnumerable<PoliceUnitEntity>> GetPoliceUnitsAsync(MdsBaseArgDto arg);
+    Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg);
 }

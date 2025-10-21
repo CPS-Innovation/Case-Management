@@ -20,4 +20,6 @@ public interface IMdsRequestFactory
     HttpRequestMessage CreateUserDataRequest(MdsBaseArgDto arg);
     HttpRequestMessage CreateGetCmsModernTokenRequest(MdsBaseArgDto arg);
     HttpRequestMessage CreateRegisterCaseRequest(MdsRegisterCaseArg arg);
+    HttpRequestMessage CreateGetPoliceUnitsRequest(MdsBaseArgDto arg);
+    HttpRequestMessage CreateSearchOffencesRequest(MdsOffenceSearchArg arg);
 }

@@ -1,6 +1,7 @@
 import { type CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
 import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
 import type { CourtLocations } from "../types/responses/CourtLocations";
+import { type CaseComplexities } from "../types/responses/CaseComplexities";
 
 export type CaseRegistrationField =
   | "operationNameRadio"
@@ -15,7 +16,8 @@ export type CaseRegistrationField =
   | "witnessCareUnitText"
   | "firstHearingRadio"
   | "firstHearingCourtLocationText"
-  | "firstHearingDateText";
+  | "firstHearingDateText"
+  | "caseComplexityRadio";
 
 export type CaseRegistrationState = {
   formData: {
@@ -33,11 +35,13 @@ export type CaseRegistrationState = {
     firstHearingRadio?: string;
     firstHearingCourtLocationText?: { id: number | null; description: string };
     firstHearingDateText?: string;
+    caseComplexityRadio?: string;
   };
   apiData: {
     areasAndRegisteringUnits: CaseAreasAndRegisteringUnits | null;
     areasAndWitnessCareUnits?: CaseAreasAndWitnessCareUnits | null;
     courtLocations?: CourtLocations | null;
+    caseComplexities?: CaseComplexities | null;
   };
 };
 
@@ -62,6 +66,7 @@ export const initialState: CaseRegistrationState = {
     areasAndRegisteringUnits: null,
     areasAndWitnessCareUnits: null,
     courtLocations: null,
+    caseComplexities: null,
   },
 };
 
@@ -89,6 +94,12 @@ export type CaseRegistrationActions =
       type: "SET_COURT_LOCATIONS";
       payload: {
         courtLocations: CourtLocations;
+      };
+    }
+  | {
+      type: "SET_CASE_COMPLEXITIES";
+      payload: {
+        caseComplexities: CaseComplexities;
       };
     }
   | { type: "RESET_FORM_DATA" };
@@ -133,6 +144,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           courtLocations: action.payload.courtLocations,
+        },
+      };
+    }
+    case "SET_CASE_COMPLEXITIES": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          caseComplexities: action.payload.caseComplexities,
         },
       };
     }
