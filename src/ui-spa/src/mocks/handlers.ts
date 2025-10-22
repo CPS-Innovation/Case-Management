@@ -55,6 +55,10 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
+    http.post(`${baseUrl}/api/v1/cases`, async () => {
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json({ success: true });
+    }),
   ];
 };
 

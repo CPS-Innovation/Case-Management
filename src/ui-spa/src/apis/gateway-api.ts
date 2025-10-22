@@ -10,6 +10,7 @@ import { ApiError } from "../common/errors/ApiError";
 import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors";
 import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
 import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
+import type { CaseRegistration } from "../common/types/requests/CaseRegistration";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -172,4 +173,20 @@ export const getInvestigatorTitles = async () => {
     throw new ApiError(`getting investigator titles failed`, url, response);
   }
   return (await response.json()) as InvestigatorTitles;
+};
+
+export const submitCaseRegistration = async (data: CaseRegistration) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/cases`;
+  const response = await fetch(url, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new ApiError(`registering case api failed `, url, response);
+  }
+  return (await response.json()) as { success: boolean };
 };

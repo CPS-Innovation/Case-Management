@@ -56,7 +56,7 @@ export type CaseRegistrationFormData = {
   caseProsecutorText: { id: number | null; description: string };
   caseCaseworkerText: { id: number | null; description: string };
   caseInvestigatorTitleSelect: {
-    shortCode: number | null;
+    shortCode: string | null;
     description: string;
   };
   caseInvestigatorFirstNameText: string;

@@ -14,3 +14,4 @@ export { Details } from "./Details";
 export { SkipLink } from "./SkipLink";
 export { AutoComplete } from "./AutoComplete";
 export { SummaryList } from "./SummaryList";
+export { Panel } from "./Panel";

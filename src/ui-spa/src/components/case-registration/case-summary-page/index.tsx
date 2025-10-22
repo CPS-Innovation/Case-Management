@@ -7,15 +7,27 @@ import {
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhoseWorkingOnTheCaseSummaryListRows,
 } from "./utils/getSummaryListRows";
+import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
+import { submitCaseRegistration } from "../../../apis/gateway-api";
+import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
 const CaseSummaryPage = () => {
   const { state } = useContext(CaseRegistrationFormContext);
+  const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    //return navigate("/case-registration/case-monitoring-codes");
+    const requestData = getCaseRegistrationRequestData(
+      state.formData,
+      state.apiData.caseMonitoringCodes!,
+    );
+
+    const result = await submitCaseRegistration(requestData);
+
+    if (result.success)
+      navigate("/case-registration/case-registration-confirmation");
   };
 
   const caseDetailsSummaryListRows = useMemo(
