@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { Button, BackLink, SummaryList } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import {
@@ -8,6 +8,7 @@ import {
   getWhoseWorkingOnTheCaseSummaryListRows,
 } from "./utils/getSummaryListRows";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
+import { useMutation } from "@tanstack/react-query";
 import { submitCaseRegistration } from "../../../apis/gateway-api";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -15,6 +16,16 @@ import styles from "./index.module.scss";
 const CaseSummaryPage = () => {
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+
+  const submitCaseRegistrationMutation = useMutation({
+    mutationFn: submitCaseRegistration,
+  });
+
+  useEffect(() => {
+    if (submitCaseRegistrationMutation.error) {
+      throw submitCaseRegistrationMutation.error;
+    }
+  }, [submitCaseRegistrationMutation.error]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -24,10 +35,14 @@ const CaseSummaryPage = () => {
       state.apiData.caseMonitoringCodes!,
     );
 
-    const result = await submitCaseRegistration(requestData);
-
-    if (result.success)
-      navigate("/case-registration/case-registration-confirmation");
+    submitCaseRegistrationMutation.mutate(requestData, {
+      onSuccess: (data) => {
+        if (data.success) {
+          console.log("Case registration submitted successfully:", data);
+          navigate("/case-registration/case-registration-confirmation");
+        }
+      },
+    });
   };
 
   const caseDetailsSummaryListRows = useMemo(
@@ -58,6 +73,7 @@ const CaseSummaryPage = () => {
         to="/case-registration/case-assignee"
         replace
         state={{ isRouteValid: true }}
+        disabled={submitCaseRegistrationMutation.isPending}
       >
         Back
       </BackLink>
@@ -74,7 +90,11 @@ const CaseSummaryPage = () => {
         <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
         <h2>Working on the case</h2>
         <SummaryList rows={whoseWorkingOnTheCaseSummaryListRows} />
-        <Button type="submit" onClick={() => handleSubmit}>
+        <Button
+          type="submit"
+          onClick={() => handleSubmit}
+          disabled={submitCaseRegistrationMutation.isPending}
+        >
           Accept and create
         </Button>
       </form>

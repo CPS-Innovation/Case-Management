@@ -27,11 +27,19 @@ const CaseComplexityPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
-  const { data: caseComplexitiesData, isLoading: isCaseComplexitiesLoading } =
-    useQuery({
-      queryKey: ["case-complexities"],
-      queryFn: () => getCaseComplexities(),
-    });
+  const {
+    data: caseComplexitiesData,
+    isLoading: isCaseComplexitiesLoading,
+    error: caseComplexitiesError,
+  } = useQuery({
+    queryKey: ["case-complexities"],
+    queryFn: () => getCaseComplexities(),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (caseComplexitiesError) throw caseComplexitiesError;
+  }, [caseComplexitiesError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 

@@ -50,28 +50,47 @@ const CaseAssigneePage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const { data: caseProsecutorsData, isLoading: isCaseProsecutorsLoading } =
-    useQuery({
-      queryKey: ["case-prosecutors", registeringUnitId],
-      enabled: !!registeringUnitId,
-      queryFn: () => getCaseProsecutors(registeringUnitId!),
-    });
+  const {
+    data: caseProsecutorsData,
+    isLoading: isCaseProsecutorsLoading,
+    error: caseProsecutorsError,
+  } = useQuery({
+    queryKey: ["case-prosecutors", registeringUnitId],
+    enabled: !!registeringUnitId,
+    queryFn: () => getCaseProsecutors(registeringUnitId!),
+    retry: false,
+  });
 
-  const { data: caseCaseworkersData, isLoading: isCaseCaseworkersLoading } =
-    useQuery({
-      queryKey: ["case-caseworkers", registeringUnitId],
-      enabled: !!registeringUnitId,
-      queryFn: () => getCaseCaseworkers(registeringUnitId!),
-    });
+  const {
+    data: caseCaseworkersData,
+    isLoading: isCaseCaseworkersLoading,
+    error: caseCaseworkersError,
+  } = useQuery({
+    queryKey: ["case-caseworkers", registeringUnitId],
+    enabled: !!registeringUnitId,
+    queryFn: () => getCaseCaseworkers(registeringUnitId!),
+    retry: false,
+  });
 
   const {
     data: caseInvestigatorTitlesData,
     isLoading: isCaseInvestigatorTitlesLoading,
+    error: caseInvestigatorTitlesError,
   } = useQuery({
     queryKey: ["case-investigator-titles"],
-
     queryFn: () => getInvestigatorTitles(),
+    retry: false,
   });
+
+  useEffect(() => {
+    if (caseProsecutorsError) throw caseProsecutorsError;
+  }, [caseProsecutorsError]);
+  useEffect(() => {
+    if (caseCaseworkersError) throw caseCaseworkersError;
+  }, [caseCaseworkersError]);
+  useEffect(() => {
+    if (caseInvestigatorTitlesError) throw caseInvestigatorTitlesError;
+  }, [caseInvestigatorTitlesError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 

@@ -91,6 +91,7 @@ export const getCourtsByUnitId = async (registeringUnitId: number) => {
   });
 
   if (!response.ok) {
+    console.log("response>>>>>", response);
     throw new ApiError(`getting courts by unit ID failed`, url, response);
   }
   return (await response.json()) as CourtLocations;

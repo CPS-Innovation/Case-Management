@@ -39,7 +39,9 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
         ? courtLocationsDev
         : courtLocationsPlaywright;
       await delay(RESPONSE_DELAY);
+      console.log("results", results);
       return HttpResponse.json(results);
+      // return new HttpResponse(null, { status: 500 });
     }),
     http.get(`${baseUrl}/api/v1/complexities`, async () => {
       const results = isDevMock()
@@ -55,9 +57,22 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
+    http.get(`${baseUrl}/api/v1/prosecutors/:registeringUnitId`, async () => {
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json([]);
+    }),
+    http.get(`${baseUrl}/api/v1/caseworkers/:registeringUnitId`, async () => {
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json([]);
+    }),
+    http.get(`${baseUrl}/api/v1/titles`, async () => {
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json([]);
+    }),
     http.post(`${baseUrl}/api/v1/cases`, async () => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json({ success: true });
+      // return new HttpResponse(null, { status: 500 });
     }),
   ];
 };

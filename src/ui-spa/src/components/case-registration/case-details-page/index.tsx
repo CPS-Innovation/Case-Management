@@ -44,13 +44,14 @@ const CaseDetailsPage = () => {
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
-  const { refetch: refetchValidationUrn } = useQuery({
+  const { refetch: refetchValidateUrn } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
       validateUrn(
         `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
       ),
     enabled: false,
+    retry: false,
   });
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
@@ -333,7 +334,10 @@ const CaseDetailsPage = () => {
       )
     )
       return;
-    const { data } = await refetchValidationUrn();
+    const { data, error: validateUrnError } = await refetchValidateUrn();
+    if (validateUrnError) {
+      throw validateUrnError;
+    }
     if (data?.exists) {
       setFormDataErrors((prev) => ({
         ...prev,

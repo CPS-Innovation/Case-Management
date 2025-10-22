@@ -20,6 +20,7 @@ import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getCourtsByUnitId } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { ApiError } from "../../../common/errors/ApiError";
 import styles from "./index.module.scss";
 
 const FirstHearingPage = () => {
@@ -41,12 +42,20 @@ const FirstHearingPage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const { data: courtLocationsData, isLoading: isCourtLocationsLoading } =
-    useQuery({
-      queryKey: ["court-locations", registeringUnitId],
-      enabled: !!registeringUnitId,
-      queryFn: () => getCourtsByUnitId(registeringUnitId!),
-    });
+  const {
+    data: courtLocationsData,
+    isLoading: isCourtLocationsLoading,
+    error: courtLocationsError,
+  } = useQuery({
+    queryKey: ["court-locations", registeringUnitId],
+    enabled: !!registeringUnitId,
+    queryFn: () => getCourtsByUnitId(registeringUnitId!),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (courtLocationsError) throw courtLocationsError;
+  }, [courtLocationsError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 

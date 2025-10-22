@@ -31,10 +31,16 @@ const CaseMonitoringCodesPage = () => {
   const {
     data: caseMonitoringCodesData,
     isLoading: isCaseMonitoringCodesLoading,
+    error: caseMonitoringCodesError,
   } = useQuery({
     queryKey: ["case-monitoring-codes"],
     queryFn: () => getCaseMonitoringCodes(),
+    retry: false,
   });
+
+  useEffect(() => {
+    if (caseMonitoringCodesError) throw caseMonitoringCodesError;
+  }, [caseMonitoringCodesError]);
 
   const isOptional = useMemo(
     () => state.formData.suspectDetailsRadio === "yes",
