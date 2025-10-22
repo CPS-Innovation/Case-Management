@@ -351,15 +351,6 @@ public class CaseRegistrationRequestValidatorTests
     }
 
     [Fact]
-    public void Defendants_Empty_ShouldFail()
-    {
-        var req = GetValidRequest();
-        req.Defendants = new List<CaseRegistrationDefendant>();
-        var result = _validator.TestValidate(req);
-        result.ShouldHaveValidationErrorFor(x => x.Defendants);
-    }
-
-    [Fact]
     public void MonitoringCodes_Empty_ShouldFail()
     {
         var req = GetValidRequest();

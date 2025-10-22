@@ -32,10 +32,10 @@ public class CaseRegistrationRequest
     public DateTime? HearingDate { get; set; }
 
     [JsonPropertyName("defendants")]
-    public ICollection<CaseRegistrationDefendant> Defendants { get; set; } = [];
+    public ICollection<CaseRegistrationDefendant>? Defendants { get; set; } = [];
 
     [JsonPropertyName("victims")]
-    public ICollection<CaseRegistrationVictim> Victims { get; set; } = [];
+    public ICollection<CaseRegistrationVictim>? Victims { get; set; } = [];
 
     [JsonPropertyName("complexity")]
     public string Complexity { get; set; } = string.Empty;
