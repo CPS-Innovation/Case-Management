@@ -22,6 +22,7 @@ public class MdsMapper : IMdsMapper
             ShortCode = entity.ShortCode,
             Description = ReferenceDataDescriptions.GetTitleDescription(entity.ShortCode),
             Display = ReferenceDataDescriptions.GetTitleDisplayName(entity.ShortCode),
+            IsPoliceTitle = entity.IsPoliceTitle
         };
     }
 
@@ -107,6 +108,7 @@ public class MdsMapper : IMdsMapper
             AreaDescription = entity.AreaDescription,
             Id = entity.Id,
             Description = entity.Description,
+            IsWCU = entity.IsWCU
         };
     }
 

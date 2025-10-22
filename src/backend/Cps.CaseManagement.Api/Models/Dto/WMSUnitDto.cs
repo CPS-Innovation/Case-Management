@@ -12,4 +12,6 @@ public class WMSUnitDto
     public long Id { get; set; }
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
+    [JsonPropertyName("isWCU")]
+    public bool IsWCU { get; set; }
 }

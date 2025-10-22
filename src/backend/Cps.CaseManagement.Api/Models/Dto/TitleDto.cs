@@ -10,4 +10,6 @@ public class TitleDto
     public string Description { get; set; } = string.Empty;
     [JsonPropertyName("display")]
     public string Display { get; set; } = string.Empty;
+    [JsonPropertyName("isPoliceTitle")]
+    public bool? IsPoliceTitle { get; set; }
 }

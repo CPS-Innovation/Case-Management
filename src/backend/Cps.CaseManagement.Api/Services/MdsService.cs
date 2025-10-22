@@ -104,10 +104,15 @@ public class MdsService(IMdsClient mdsClient, IMdsMapper mdsMapper, ILogger<MdsS
         return _mdsMapper.MapUnitsAndUserDataToDto(allUnits, homeUnitId);
     }
 
-    public async Task<IEnumerable<WMSUnitDto>> GetWMSUnitsAsync(MdsBaseArgDto arg)
+    public async Task<IEnumerable<WMSUnitDto>> GetWMSUnitsAsync(MdsBaseArgDto arg, bool? isWCU = null)
     {
         _logger.LogDebug("Fetching WMS units from MDS");
         var entities = await _mdsClient.GetWMSUnitsAsync(arg);
+
+        if (isWCU.HasValue)
+        {
+            entities = entities.Where(e => e.IsWCU == isWCU.Value);
+        }
 
         return entities.Select(e => _mdsMapper.MapWMSUnitEntityToDto(e));
     }

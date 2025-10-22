@@ -20,7 +20,7 @@ public interface IMdsService
     Task<IEnumerable<ProsecutorOrCaseworkerDto>> GetCaseworkersAsync(MdsUnitIdArg arg);
     Task<IEnumerable<CourtDto>> GetCourtsAsync(MdsUnitIdArg arg);
     Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg);
-    Task<IEnumerable<WMSUnitDto>> GetWMSUnitsAsync(MdsBaseArgDto arg);
+    Task<IEnumerable<WMSUnitDto>> GetWMSUnitsAsync(MdsBaseArgDto arg, bool? isWCU = null);
     Task<IEnumerable<CaseInfoDto>> ListCasesByUrnAsync(MdsUrnArg arg);
     Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg);
     Task<IEnumerable<PoliceUnitDto>> GetPoliceUnitsAsync(MdsBaseArgDto arg);

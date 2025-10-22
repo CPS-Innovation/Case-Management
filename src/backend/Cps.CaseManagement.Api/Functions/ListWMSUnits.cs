@@ -19,9 +19,11 @@ public class ListWMSUnits(ILogger<ListWMSUnits> logger,
   private readonly ILogger<ListWMSUnits> _logger = logger;
   private readonly IMdsService _mdsService = mdsService;
   private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
+  private const string IsWcuQueryParameter = "IsWCU";
 
   [Function(nameof(ListWMSUnits))]
   [OpenApiOperation(operationId: nameof(ListWMSUnits), tags: ["MDS"], Description = "Gets the list of WMS units from CMS.")]
+  [OpenApiParameter(name: IsWcuQueryParameter, In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter WMS units by WCU flag. If not provided, returns all WMS units.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
   [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(WMSUnitEntity[]), Description = ApiResponseDescriptions.Success)]
@@ -33,7 +35,14 @@ public class ListWMSUnits(ILogger<ListWMSUnits> logger,
   {
     var context = functionContext.GetRequestContext();
 
-    var result = await _mdsService.GetWMSUnitsAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId));
+    bool? isWCU = null;
+    if (req.Query.TryGetValue(IsWcuQueryParameter, out var isWcuValue) &&
+        bool.TryParse(isWcuValue.FirstOrDefault(), out var parsed))
+    {
+      isWCU = parsed;
+    }
+
+    var result = await _mdsService.GetWMSUnitsAsync(_mdsArgFactory.CreateBaseArg(context.CmsAuthValues, context.CorrelationId), isWCU);
 
     return new OkObjectResult(result);
   }
