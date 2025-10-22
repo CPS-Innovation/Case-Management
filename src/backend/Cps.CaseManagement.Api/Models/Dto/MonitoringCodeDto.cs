@@ -9,4 +9,6 @@ public class MonitoringCodeDto
 
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
+    [JsonPropertyName("display")]
+    public string Display { get; set; } = string.Empty;
 }

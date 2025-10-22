@@ -34,14 +34,27 @@ public static class ReferenceDataDescriptions
         { "UN", "Unspecified" }
     };
 
+    private static readonly Dictionary<string, string> MonitoringCodeDescriptions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { "CAOP", "Crime Against an Older Person" },
+        { "NFS", "Non Fatal Strangulation/Suffocation" },
+        { "POFC", "Proceeds of Crime Statistics" },
+        { "RTCC", "Real Time Case Conversation" },
+        { "SUCA", "Substantial Charge Alteration" },
+        { "VIVM", "Vulnerable/Intimidated victim or witness" }
+    };
+
     public static string GetTitleDescription(string code) =>
         GetDescription(TitleDescriptions, code);
 
     public static string GetTitleDisplayName(string code) =>
-        GetDisplayName(TitleDescriptions, code);
+        GetDescriptionWithCode(TitleDescriptions, code);
 
-    public static string GetOffenderCategoryDisplayName(string code) =>
-        GetDisplayName(OffenderCategoryDescriptions, code);
+    public static string GetOffenderCategoryDisplay(string code) =>
+        GetDescription(OffenderCategoryDescriptions, code);
+
+    public static string GetMonitoringCodeDisplay(string code, string defaultDescription) =>
+           GetDescriptionWithFallback(MonitoringCodeDescriptions, code, defaultDescription);
 
     private static string GetDescription(Dictionary<string, string> dictionary, string code)
     {
@@ -50,7 +63,14 @@ public static class ReferenceDataDescriptions
             : code;
     }
 
-    private static string GetDisplayName(Dictionary<string, string> dictionary, string code)
+    private static string GetDescriptionWithFallback(Dictionary<string, string> dictionary, string code, string fallback)
+    {
+        return dictionary.TryGetValue(code, out var description)
+            ? description
+            : fallback;
+    }
+
+    private static string GetDescriptionWithCode(Dictionary<string, string> dictionary, string code)
     {
         var description = GetDescription(dictionary, code);
         return description.Equals(code, StringComparison.OrdinalIgnoreCase)

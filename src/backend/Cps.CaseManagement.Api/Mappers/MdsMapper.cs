@@ -58,6 +58,7 @@ public class MdsMapper : IMdsMapper
         {
             Code = entity.Code,
             Description = entity.Description,
+            Display = ReferenceDataDescriptions.GetMonitoringCodeDisplay(entity.Code, entity.Description)
         };
     }
 
@@ -76,7 +77,7 @@ public class MdsMapper : IMdsMapper
         {
             ShortCode = entity.ShortCode,
             Description = entity.Description,
-            Display = ReferenceDataDescriptions.GetOffenderCategoryDisplayName(entity.ShortCode)
+            Display = ReferenceDataDescriptions.GetOffenderCategoryDisplay(entity.ShortCode)
         };
     }
 
