@@ -6,7 +6,7 @@ import {
 } from "./caseRegistrationReducer";
 
 describe("caseRegistrationReducer", () => {
-  it("should set operationNameRadio", () => {
+  it("should set formData operationNameRadio using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
       type: "SET_FIELD",
       payload: { field: "operationNameRadio", value: "yes" },
@@ -17,7 +17,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.operationNameText).toBe("");
   });
 
-  it("should set suspectDetailsRadio", () => {
+  it("should set formData suspectDetailsRadio data using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
       type: "SET_FIELD",
       payload: { field: "suspectDetailsRadio", value: "Area 51" },
@@ -26,7 +26,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspectDetailsRadio).toBe("Area 51");
   });
 
-  it("should set operationNameText", () => {
+  it("should set formDataoperationNameText data using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
       type: "SET_FIELD",
       payload: { field: "operationNameText", value: "Operation Thunder" },
@@ -59,7 +59,6 @@ describe("caseRegistrationReducer", () => {
     };
     const modifiedState: CaseRegistrationState = {
       formData: {
-        currentPage: "case-area",
         operationNameRadio: "yes",
         suspectDetailsRadio: "Area 51",
         operationNameText: "Operation Thunder",
@@ -100,5 +99,161 @@ describe("caseRegistrationReducer", () => {
     // @ts-expect-error Testing unknown action type
     const state = caseRegistrationReducer(initialState, { type: "UNKNOWN" });
     expect(state).toBe(initialState);
+  });
+
+  it("Should set  apisData areasAndRegisteringUnits data using SET_AREAS_AND_REGISTERING_UNITS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_AREAS_AND_REGISTERING_UNITS",
+      payload: {
+        areasAndRegisteringUnits: {
+          allUnits: [
+            {
+              areaId: 1,
+              areaDescription: "Area 51",
+              areaIsSensitive: false,
+              id: 1,
+              description: "Area 51",
+            },
+          ],
+
+          homeUnit: {
+            areaId: 1,
+            areaDescription: "Area 51",
+            areaIsSensitive: false,
+            id: 1,
+            description: "Area 51",
+          },
+        },
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.areasAndRegisteringUnits).toEqual(
+      action.payload.areasAndRegisteringUnits,
+    );
+  });
+
+  it("Should set apiData areasAndWitnessCareUnits data using SET_AREAS_AND_WITNESS_CARE_UNITS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_AREAS_AND_WITNESS_CARE_UNITS",
+      payload: {
+        areasAndWitnessCareUnits: [
+          {
+            areaId: 1,
+            areaDescription: "Area 51",
+            id: 1,
+            description: "Area 51",
+            isWCU: true,
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.areasAndWitnessCareUnits).toEqual(
+      action.payload.areasAndWitnessCareUnits,
+    );
+  });
+
+  it("Should set apiData courtLocations data using SET_COURT_LOCATIONS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_COURT_LOCATIONS",
+      payload: {
+        courtLocations: [
+          {
+            id: 1,
+            description: "Court A",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.courtLocations).toEqual(action.payload.courtLocations);
+  });
+  it("Should set apiData caseComplexities data using SET_CASE_COMPLEXITIES", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_COMPLEXITIES",
+      payload: {
+        caseComplexities: [
+          {
+            shortCode: "HIGH",
+            description: "High",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.caseComplexities).toEqual(
+      action.payload.caseComplexities,
+    );
+  });
+  it("Should set apiData caseMonitoringCodes data using SET_CASE_MONITORING_CODES", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_MONITORING_CODES",
+      payload: {
+        caseMonitoringCodes: [
+          {
+            code: "Ab",
+            description: "abcdef",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.caseMonitoringCodes).toEqual(
+      action.payload.caseMonitoringCodes,
+    );
+  });
+
+  it("Should set apiData caseProsecutors data using SET_CASE_PROSECUTORS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_PROSECUTORS",
+      payload: {
+        caseProsecutors: [
+          {
+            id: 1,
+            description: "Prosecutor A",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.caseProsecutors).toEqual(
+      action.payload.caseProsecutors,
+    );
+  });
+
+  it("Should set apiData caseCaseworkers data using SET_CASE_CASEWORKERS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_CASEWORKERS",
+      payload: {
+        caseCaseworkers: [
+          {
+            id: 1,
+            description: "Caseworker A",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.caseCaseworkers).toEqual(
+      action.payload.caseCaseworkers,
+    );
+  });
+  it("Should set apiData caseInvestigatorTitles data using SET_CASE_INVESTIGATOR_TITLES", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_INVESTIGATOR_TITLES",
+      payload: {
+        caseInvestigatorTitles: [
+          {
+            shortCode: "INVESTIGATOR_A",
+            description: "Investigator A",
+            isPoliceTitle: true,
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.caseInvestigatorTitles).toEqual(
+      action.payload.caseInvestigatorTitles,
+    );
   });
 });
