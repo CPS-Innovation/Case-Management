@@ -18,6 +18,7 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    settings: { react: { version: "detect" } },
     plugins: {
       react: pluginReact,
       "react-hooks": pluginReactHooks,
@@ -42,6 +43,13 @@ export default defineConfig([
       "react/prop-types": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+    },
+  },
+  {
+    files: ["**/utils/test.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "react-hooks/rules-of-hooks": "off"
     },
   },
 ]);
