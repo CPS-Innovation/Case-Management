@@ -35,7 +35,6 @@ export type CaseRegistrationField =
   | "caseInvestigatorPoliceUnitText";
 
 export type CaseRegistrationFormData = {
-  currentPage: "case-registration" | "case-area";
   operationNameRadio: string;
   suspectDetailsRadio: string;
   operationNameText: string;
@@ -82,7 +81,6 @@ export type CaseRegistrationState = {
 
 export const initialState: CaseRegistrationState = {
   formData: {
-    currentPage: "case-registration",
     operationNameRadio: "",
     suspectDetailsRadio: "",
     operationNameText: "",
