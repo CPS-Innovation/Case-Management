@@ -11,21 +11,17 @@ import {
   submitCaseRegistration,
 } from "./gateway-api";
 import { ApiError } from "../common/errors/ApiError";
-import { before, mock } from "node:test";
 
-// mock getAccessToken to return a predictable token
 vi.mock("../auth", () => ({
   getAccessToken: vi.fn().mockResolvedValue("access-token"),
 }));
 
-// mock uuid v4 to return a stable id
 vi.mock("uuid", () => ({
   v4: () => "mock-uuid",
 }));
 
 describe("gateway-api", () => {
   beforeEach(() => {
-    // reset/assign fetch mock
     globalThis.fetch = vi.fn();
   });
 
@@ -56,7 +52,6 @@ describe("gateway-api", () => {
       }),
     );
   });
-
   it("getCaseAreasAndRegisteringUnits - failure throws ApiError", async () => {
     (globalThis.fetch as any).mockResolvedValue({
       ok: false,
@@ -67,7 +62,6 @@ describe("gateway-api", () => {
       ApiError,
     );
   });
-
   it("getCaseAreasAndWitnessCareUnits - success", async () => {
     const mockBody = [
       {
@@ -106,7 +100,6 @@ describe("gateway-api", () => {
       ApiError,
     );
   });
-
   it("validateUrn - success", async () => {
     const mockBody = { exists: true };
     (globalThis.fetch as any).mockResolvedValue({
@@ -135,7 +128,6 @@ describe("gateway-api", () => {
 
     await expect(validateUrn("URN123")).rejects.toBeInstanceOf(ApiError);
   });
-
   it("getCourtsByUnitId - success", async () => {
     const mockBody = [{ courtId: 1, courtName: "Court A" }];
     (globalThis.fetch as any).mockResolvedValue({
@@ -164,7 +156,6 @@ describe("gateway-api", () => {
 
     await expect(getCourtsByUnitId(20)).rejects.toBeInstanceOf(ApiError);
   });
-
   it("getCaseComplexities - success", async () => {
     const mockBody = [
       { shortCode: "A", description: "Low" },
