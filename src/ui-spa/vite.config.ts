@@ -48,7 +48,7 @@ export default defineConfig(({ command, mode }) => {
         enabled: true,
         reporter: ["text", "json", "html", "cobertura"],
         provider: "v8",
-        reportsDirectory: "coverage/unit",
+        reportsDirectory: "./coverage/unit",
         include: ["src/**/*.{ts,tsx,js,jsx}"],
         exclude: [
           "src/**/*.{test,spec}.ts",

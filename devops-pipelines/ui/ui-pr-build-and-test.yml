@@ -15,6 +15,8 @@ variables:
     value: '20.x'
   - name: workingDir
     value: src/ui-spa
+  - name: covDir
+    value: 'coverage'
 
 stages:
   - stage: Build_and_Test_UI
