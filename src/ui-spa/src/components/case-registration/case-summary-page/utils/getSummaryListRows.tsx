@@ -14,7 +14,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: <Link to={"/case-registration/areas"}>Change</Link>,
+            children: <span>Change</span>,
+            to: "/case-registration/areas",
             visuallyHiddenText: "Edit Case Area",
           },
         ],
@@ -29,9 +30,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-details"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",
           },
         ],
@@ -45,9 +45,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-details"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Registering Unit",
           },
         ],
@@ -61,9 +60,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-details"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Witness Care Unit",
           },
         ],
@@ -77,7 +75,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: <Link to={"/case-registration"}>Change</Link>,
+            children: <span>Change</span>,
+            to: "/case-registration",
             visuallyHiddenText: "Edit Operation Name",
           },
         ],
@@ -92,9 +91,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/first-hearing"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/first-hearing",
             visuallyHiddenText: "Edit First Hearing Court Location",
           },
         ],
@@ -108,9 +106,8 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/first-hearing"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/first-hearing",
             visuallyHiddenText: "Edit First Hearing Date",
           },
         ],
@@ -132,7 +129,8 @@ export const getSuspectSummaryListRows = (
       actions: {
         items: [
           {
-            children: <Link to={"/case-registration"}>Change</Link>,
+            children: <span>Change</span>,
+            to: "/case-registration",
             visuallyHiddenText: "Edit Suspect Details",
           },
         ],
@@ -159,9 +157,8 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-complexity"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-complexity",
             visuallyHiddenText: "Edit Case Complexity",
           },
         ],
@@ -181,11 +178,8 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-monitoring-codes"}>
-                Change
-              </Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-monitoring-codes",
             visuallyHiddenText: "Edit Monitoring Codes",
           },
         ],
@@ -208,9 +202,8 @@ export const getWhoseWorkingOnTheCaseSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-assignee"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Prosecutor",
           },
         ],
@@ -224,9 +217,8 @@ export const getWhoseWorkingOnTheCaseSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-assignee"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Caseworker",
           },
         ],
@@ -240,9 +232,8 @@ export const getWhoseWorkingOnTheCaseSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-assignee"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Police officer or investigator",
           },
         ],
@@ -256,9 +247,8 @@ export const getWhoseWorkingOnTheCaseSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-assignee"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Shoulder Number",
           },
         ],
@@ -272,9 +262,8 @@ export const getWhoseWorkingOnTheCaseSummaryListRows = (
       actions: {
         items: [
           {
-            children: (
-              <Link to={"/case-registration/case-assignee"}>Change</Link>
-            ),
+            children: <span>Change</span>,
+            to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Police Unit",
           },
         ],

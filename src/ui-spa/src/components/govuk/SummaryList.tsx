@@ -8,7 +8,7 @@ type Props = {
     actions: {
       items: {
         children: React.ReactNode;
-
+        to?: string;
         visuallyHiddenText?: string;
       }[];
     };
