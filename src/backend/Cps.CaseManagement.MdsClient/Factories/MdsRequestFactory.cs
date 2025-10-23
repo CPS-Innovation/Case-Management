@@ -1,5 +1,7 @@
 namespace Cps.CaseManagement.MdsClient.Factories;
 
+using System.Text;
+using System.Text.Json;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Constants;
 using Microsoft.AspNetCore.WebUtilities;
@@ -54,8 +56,16 @@ public class MdsRequestFactory : IMdsRequestFactory
     public HttpRequestMessage CreateGetCmsModernTokenRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/user/cms-modern-token", arg);
 
+    public HttpRequestMessage CreateRegisterCaseRequest(MdsRegisterCaseArg arg)
+    {
+        var request = BuildRequest(HttpMethod.Post, "api/cases", arg);
+        request.Content = new StringContent(JsonSerializer.Serialize(arg.CaseDetails), Encoding.UTF8, "application/json");
+        return request;
+    }
+
     public HttpRequestMessage CreateGetPoliceUnitsRequest(MdsBaseArgDto arg) =>
         BuildRequest(HttpMethod.Get, "api/police-units", arg);
+        
     public HttpRequestMessage CreateSearchOffencesRequest(MdsOffenceSearchArg arg)
     {
         var queryParams = new Dictionary<string, string?>
