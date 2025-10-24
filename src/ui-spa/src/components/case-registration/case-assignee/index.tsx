@@ -458,14 +458,15 @@ const CaseAssigneePage = () => {
     )
       return;
 
-    return navigate("/case-registration/case-summary");
+    return navigate("/case-registration/case-summary", {
+      state: { isRouteValid: true },
+    });
   };
 
   return (
     <div className={styles.caseAssigneePage}>
       <BackLink
         to="/case-registration/case-monitoring-codes"
-        replace
         state={{ isRouteValid: true }}
       >
         Back

@@ -158,14 +158,15 @@ const CaseMonitoringCodesPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/case-assignee");
+    return navigate("/case-registration/case-assignee", {
+      state: { isRouteValid: true },
+    });
   };
 
   return (
     <div className={styles.caseMonitoringCodesPage}>
       <BackLink
         to="/case-registration/case-complexity"
-        replace
         state={{ isRouteValid: true }}
       >
         Back

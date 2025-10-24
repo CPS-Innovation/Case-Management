@@ -38,8 +38,9 @@ const CaseSummaryPage = () => {
     submitCaseRegistrationMutation.mutate(requestData, {
       onSuccess: (data) => {
         if (data.success) {
-          console.log("Case registration submitted successfully:", data);
-          navigate("/case-registration/case-registration-confirmation");
+          navigate("/case-registration/case-registration-confirmation", {
+            state: { isRouteValid: true },
+          });
         }
       },
     });
@@ -71,7 +72,6 @@ const CaseSummaryPage = () => {
     <div className={styles.caseComplexityPage}>
       <BackLink
         to="/case-registration/case-assignee"
-        replace
         state={{ isRouteValid: true }}
         disabled={submitCaseRegistrationMutation.isPending}
       >

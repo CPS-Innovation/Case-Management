@@ -1,5 +1,4 @@
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
-import { Link } from "react-router";
 
 export const getCaseDetailsSummaryListRows = (
   formData: CaseRegistrationFormData,
