@@ -30,7 +30,7 @@ export type CheckboxesProps = Omit<
   idPrefix?: string;
   items: CheckBoxesItems[];
 
-  name: string;
+  name?: string;
   onChange?: (ev: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (ev: React.FocusEvent<HTMLInputElement>) => void;
   describedByProp?: string;

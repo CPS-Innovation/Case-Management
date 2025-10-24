@@ -228,7 +228,6 @@ const CaseRegistrationPage = () => {
                   }
                 : undefined
             }
-            name="`Do you have an operation name?"
             items={[
               {
                 id: "operation-name-radio-yes",
@@ -254,7 +253,6 @@ const CaseRegistrationPage = () => {
                       label={{
                         children: "Operation name",
                       }}
-                      name="operation-name"
                       type="text"
                       value={state.formData.operationNameText}
                       onChange={(value: string) => {
@@ -289,7 +287,6 @@ const CaseRegistrationPage = () => {
                   }
                 : undefined
             }
-            name="Do you have any suspect details?"
             items={[
               {
                 children: "Yes",

@@ -502,7 +502,6 @@ const CaseAssigneePage = () => {
                   }
                 : undefined
             }
-            name="case-prosecutor-radio"
             items={[
               {
                 id: "case-prosecutor-radio-yes",
@@ -581,7 +580,6 @@ const CaseAssigneePage = () => {
                   }
                 : undefined
             }
-            name="case-investigator-radio"
             items={[
               {
                 id: "case-investigator-radio-yes",
@@ -621,7 +619,6 @@ const CaseAssigneePage = () => {
                       label={{
                         children: "First name(optional)",
                       }}
-                      name="case-investigator-firstname"
                       type="text"
                       value={state.formData.caseInvestigatorFirstNameText}
                       onChange={(value: string) => {
@@ -645,7 +642,6 @@ const CaseAssigneePage = () => {
                             }
                           : undefined
                       }
-                      name="case-investigator-lastname"
                       type="text"
                       value={state.formData.caseInvestigatorLastNameText}
                       onChange={(value: string) => {
@@ -660,7 +656,6 @@ const CaseAssigneePage = () => {
                       label={{
                         children: "Shoulder number(optional)",
                       }}
-                      name="case-investigator-shoulder-number"
                       type="text"
                       value={state.formData.caseInvestigatorShoulderNumberText}
                       onChange={(value: string) => {
@@ -678,7 +673,6 @@ const CaseAssigneePage = () => {
                       label={{
                         children: "Police unit(optional)",
                       }}
-                      name="case-investigator-police-unit"
                       type="text"
                       value={state.formData.caseInvestigatorPoliceUnitText}
                       onChange={(value: string) => {

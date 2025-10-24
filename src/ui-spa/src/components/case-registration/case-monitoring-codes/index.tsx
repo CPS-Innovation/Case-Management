@@ -207,7 +207,6 @@ const CaseMonitoringCodesPage = () => {
                   }
                 : undefined
             }
-            name="caseMonitoringCodes"
             items={caseMonitoringCodes.map((monitoringCodes, index) => ({
               id: `case-monitoring-codes-${index}`,
               children: monitoringCodes.description,

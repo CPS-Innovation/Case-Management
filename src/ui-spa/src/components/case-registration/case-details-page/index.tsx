@@ -396,7 +396,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-force-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-force-text"
               label={{ children: "Police force" }}
-              name="urn-part-1"
               value={state.formData.urnPoliceForceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceForceText", val)
@@ -408,7 +407,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-unit-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-unit-text"
               label={{ children: "Police Unit" }}
-              name="urn-part-2"
               value={state.formData.urnPoliceUnitText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceUnitText", val)
@@ -420,7 +418,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-5 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-unique-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-unique-reference-text"
               label={{ children: "Unique Reference" }}
-              name="urn-part-3"
               value={state.formData.urnUniqueReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnUniqueReferenceText", val)
@@ -432,7 +429,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-year-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-year-reference-text"
               label={{ children: "Year Reference" }}
-              name="urn-part-4"
               value={state.formData.urnYearReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnYearReferenceText", val)

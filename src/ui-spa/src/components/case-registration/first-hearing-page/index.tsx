@@ -276,7 +276,6 @@ const FirstHearingPage = () => {
                   }
                 : undefined
             }
-            name="Do you have details of the first hearing?"
             items={[
               {
                 id: "first-hearing-radio-yes",

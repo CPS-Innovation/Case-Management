@@ -164,7 +164,6 @@ const CaseComplexityPage = () => {
                   }
                 : undefined
             }
-            name="caseComplexityRadio"
             items={caseComplexities.map((complexity, index) => ({
               id: `case-complexity-radio-${index}`,
               children: complexity.description,
