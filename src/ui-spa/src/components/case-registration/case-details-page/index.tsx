@@ -44,7 +44,7 @@ const CaseDetailsPage = () => {
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
-  const { refetch: refetchValidateUrn } = useQuery({
+  const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
       validateUrn(
@@ -92,6 +92,10 @@ const CaseDetailsPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+
+  useEffect(() => {
+    if (validateUrnError) throw validateUrnError;
+  }, [validateUrnError]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -179,8 +183,9 @@ const CaseDetailsPage = () => {
       | "urnYearReferenceText",
     value: string,
   ) => {
-    let newValue = value.replace(/[^0-9a-zA-Z]/g, "");
-    if (field !== "urnPoliceUnitText") newValue = newValue.replace(/\D/g, "");
+    let newValue = value.replaceAll(/[^0-9a-zA-Z]/g, "");
+    if (field !== "urnPoliceUnitText")
+      newValue = newValue.replaceAll(/\D/g, "");
     dispatch({
       type: "SET_FIELD",
       payload: { field, value: newValue },
@@ -249,9 +254,9 @@ const CaseDetailsPage = () => {
           hasLink: true,
         };
       } else if (
-        registeringUnits.findIndex(
+        !registeringUnits.some(
           (ru) => ru.description === registeringUnitInputValue,
-        ) === -1
+        )
       ) {
         errors.registeringUnitErrorText = {
           errorSummaryText: "Registering unit is invalid",
@@ -266,9 +271,9 @@ const CaseDetailsPage = () => {
           hasLink: true,
         };
       } else if (
-        witnessCareUnits.findIndex(
+        !witnessCareUnits.some(
           (wcu) => wcu.description === witnessCareUnitInputValue,
-        ) === -1
+        )
       ) {
         errors.witnessCareUnitErrorText = {
           errorSummaryText: "Witness care unit is invalid",
@@ -285,6 +290,7 @@ const CaseDetailsPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     const registeringUnitInput = document.getElementById(
       "registering-unit-text",
     ) as HTMLInputElement | null;
@@ -334,10 +340,7 @@ const CaseDetailsPage = () => {
       )
     )
       return;
-    const { data, error: validateUrnError } = await refetchValidateUrn();
-    if (validateUrnError) {
-      throw validateUrnError;
-    }
+    const { data } = await refetchValidateUrn();
     if (data?.exists) {
       setFormDataErrors((prev) => ({
         ...prev,

@@ -37,10 +37,6 @@ const CaseComplexityPage = () => {
     retry: false,
   });
 
-  useEffect(() => {
-    if (caseComplexitiesError) throw caseComplexitiesError;
-  }, [caseComplexitiesError]);
-
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -95,6 +91,10 @@ const CaseComplexityPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+
+  useEffect(() => {
+    if (caseComplexitiesError) throw caseComplexitiesError;
+  }, [caseComplexitiesError]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();

@@ -38,10 +38,6 @@ const CaseMonitoringCodesPage = () => {
     retry: false,
   });
 
-  useEffect(() => {
-    if (caseMonitoringCodesError) throw caseMonitoringCodesError;
-  }, [caseMonitoringCodesError]);
-
   const isOptional = useMemo(
     () => state.formData.suspectDetailsRadio === "yes",
     [state.formData.suspectDetailsRadio],
@@ -63,25 +59,6 @@ const CaseMonitoringCodesPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
-    const errors: FormDataErrors = {};
-    const {
-      formData: { caseMonitoringCodesCheckboxes },
-    } = state;
-
-    if (!caseMonitoringCodesCheckboxes?.length) {
-      errors.caseMonitoringCodesCheckboxes = {
-        errorSummaryText: "Please select at least one monitoring code",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-
-    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
-
-    setFormDataErrors(errors);
-    return isValid;
-  };
   const caseMonitoringCodes = useMemo(() => {
     if (state.apiData.caseMonitoringCodes) {
       return state.apiData.caseMonitoringCodes;
@@ -101,6 +78,10 @@ const CaseMonitoringCodesPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+
+  useEffect(() => {
+    if (caseMonitoringCodesError) throw caseMonitoringCodesError;
+  }, [caseMonitoringCodesError]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -150,6 +131,26 @@ const CaseMonitoringCodesPage = () => {
       type: "SET_FIELD",
       payload: { field: fieldName, value: newValues },
     });
+  };
+
+  const validateFormData = (state: CaseRegistrationState) => {
+    const errors: FormDataErrors = {};
+    const {
+      formData: { caseMonitoringCodesCheckboxes },
+    } = state;
+
+    if (!caseMonitoringCodesCheckboxes?.length) {
+      errors.caseMonitoringCodesCheckboxes = {
+        errorSummaryText: "Please select at least one monitoring code",
+        inputErrorText: "Please select an option",
+        hasLink: true,
+      };
+    }
+
+    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
+
+    setFormDataErrors(errors);
+    return isValid;
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -219,7 +220,6 @@ const CaseMonitoringCodesPage = () => {
             }))}
             onChange={(event) => {
               const { value } = event.target;
-              console.log("event.target.id", event.target.id, ":value", value);
               if (value) setFormValue("caseMonitoringCodesCheckboxes", value);
             }}
           />
