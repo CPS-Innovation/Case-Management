@@ -35,7 +35,7 @@ parameters:
 stages:
 - stage: Approve_Deployment_${{ parameters.environment }}
   displayName: 'CM ${{ parameters.environment }} - Approve Deployment'
-  condition: ${{ eq(parameters.requireValidation, true) }}
+  condition: and(succeeded(), ${{ eq(parameters.requireValidation, true) }})
   jobs:
   - template: ./manual-validation-jobs.yml
     parameters:
