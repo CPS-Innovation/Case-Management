@@ -1,7 +1,7 @@
+namespace Cps.CaseManagement.Api.Models.Dto;
+
 using System.Text.Json.Serialization;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-
-namespace CPS.CaseManagement.MdsClient.Models.Dto;
 
 public class UnitsDto
 {

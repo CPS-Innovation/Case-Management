@@ -428,30 +428,19 @@ public class MdsClientTests
     {
         // Arrange
         var mockUnitsRequest = new HttpRequestMessage(HttpMethod.Get, "api/units");
-        var mockUserDataRequest = new HttpRequestMessage(HttpMethod.Get, "api/userdata");
-        var expectedUnits = _fixture.CreateMany<UnitEntity>(7).ToList();
-        var homeUnitId = expectedUnits[2].Id; // Pick one unit as home unit
-        var expectedUserData = new UserDataEntity
-        {
-            HomeUnit = new HomeUnitEntity { UnitId = homeUnitId }
-        };
+        var expectedUnits = _fixture.CreateMany<UnitEntity>(5).ToList();
 
         _mdsRequestFactoryMock
             .Setup(f => f.CreateGetUnitsRequest(_mdsBaseArgDto))
             .Returns(mockUnitsRequest);
 
-        _mdsRequestFactoryMock
-            .Setup(f => f.CreateUserDataRequest(_mdsBaseArgDto))
-            .Returns(mockUserDataRequest);
-
         var unitsContent = JsonSerializer.Serialize(expectedUnits);
-        var userDataContent = JsonSerializer.Serialize(expectedUserData);
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/units")),
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.Contains("/api/units")),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
@@ -459,54 +448,34 @@ public class MdsClientTests
                 Content = new StringContent(unitsContent, Encoding.UTF8, "application/json")
             });
 
-        _httpMessageHandlerMock
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/userdata")),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(userDataContent, Encoding.UTF8, "application/json")
-            });
-
         // Act
         var result = await _client.GetUnitsAsync(_mdsBaseArgDto);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedUnits.Count, result.AllUnits.Count);
-        Assert.NotNull(result.HomeUnit);
-        Assert.Equal(homeUnitId, result.HomeUnit.Id);
+        Assert.Equal(expectedUnits.Count(), result.Count());
+        Assert.Equal(expectedUnits.Select(u => u.Id), result.Select(r => r.Id));
     }
 
     [Fact]
-    public async Task GetUnitsAsync_ThrowsMdsClientException_WhenUnitsRequestFails()
+    public async Task GetUnitsAsync_ThrowsMdsClientException_WhenRequestFails()
     {
         // Arrange
         var mockUnitsRequest = new HttpRequestMessage(HttpMethod.Get, "api/units");
-        var mockUserDataRequest = new HttpRequestMessage(HttpMethod.Get, "api/userdata");
 
         _mdsRequestFactoryMock
             .Setup(f => f.CreateGetUnitsRequest(_mdsBaseArgDto))
             .Returns(mockUnitsRequest);
-
-        _mdsRequestFactoryMock
-            .Setup(f => f.CreateUserDataRequest(_mdsBaseArgDto))
-            .Returns(mockUserDataRequest);
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>()
-            )
+                ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
-                StatusCode = HttpStatusCode.TooManyRequests,
-                Content = new StringContent("Rate limit exceeded")
+                StatusCode = HttpStatusCode.InternalServerError
             });
 
         // Act & Assert
@@ -514,103 +483,23 @@ public class MdsClientTests
     }
 
     [Fact]
-    public async Task GetUnitsAsync_ThrowsMdsClientException_WhenUserDataRequestFails()
+    public async Task GetUserDataAsync_ReturnsExpectedData_WhenResponseIsSuccessful()
     {
         // Arrange
-        var mockUnitsRequest = new HttpRequestMessage(HttpMethod.Get, "api/units");
         var mockUserDataRequest = new HttpRequestMessage(HttpMethod.Get, "api/userdata");
-        var expectedUnits = _fixture.CreateMany<UnitEntity>(7).ToList();
-
-        _mdsRequestFactoryMock
-            .Setup(f => f.CreateGetUnitsRequest(_mdsBaseArgDto))
-            .Returns(mockUnitsRequest);
+        var expectedUserData = _fixture.Create<UserDataEntity>();
 
         _mdsRequestFactoryMock
             .Setup(f => f.CreateUserDataRequest(_mdsBaseArgDto))
             .Returns(mockUserDataRequest);
 
-        var unitsContent = JsonSerializer.Serialize(expectedUnits);
-
-        _httpMessageHandlerMock
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/units")),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(unitsContent, Encoding.UTF8, "application/json")
-            });
-
-        _httpMessageHandlerMock
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/userdata")),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.InternalServerError,
-                Content = new StringContent("Server error")
-            });
-
-        // Act & Assert
-        await Assert.ThrowsAsync<MdsClientException>(() => _client.GetUnitsAsync(_mdsBaseArgDto));
-    }
-
-    [Fact]
-    public async Task GetUnitsAsync_ReturnsNullHomeUnit_WhenHomeUnitIdNotFound()
-    {
-        // Arrange
-        var mockUnitsRequest = new HttpRequestMessage(HttpMethod.Get, "api/units");
-        var mockUserDataRequest = new HttpRequestMessage(HttpMethod.Get, "api/userdata");
-        var nonExistentUnitId = 99999;
-
-        var expectedUnits = new List<UnitEntity>
-        {
-            new UnitEntity { Id = 1, Description = "Unit 1" },
-            new UnitEntity { Id = 2, Description = "Unit 2" },
-            new UnitEntity { Id = 3, Description = "Unit 3" },
-            new UnitEntity { Id = 4, Description = "Unit 4" },
-            new UnitEntity { Id = 5, Description = "Unit 5" },
-            new UnitEntity { Id = 6, Description = "Unit 6" },
-            new UnitEntity { Id = 7, Description = "Unit 7" }
-        };
-
-        var expectedUserData = new UserDataEntity
-        {
-            HomeUnit = new HomeUnitEntity { UnitId = nonExistentUnitId }
-        };
-
-        _mdsRequestFactoryMock
-            .Setup(f => f.CreateGetUnitsRequest(_mdsBaseArgDto))
-            .Returns(mockUnitsRequest);
-
-        _mdsRequestFactoryMock
-            .Setup(f => f.CreateUserDataRequest(_mdsBaseArgDto))
-            .Returns(mockUserDataRequest);
-
-        var unitsContent = JsonSerializer.Serialize(expectedUnits);
         var userDataContent = JsonSerializer.Serialize(expectedUserData);
 
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/units")),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(unitsContent, Encoding.UTF8, "application/json")
-            });
-
-        _httpMessageHandlerMock
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.EndsWith("/api/userdata")),
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.Contains("/api/userdata")),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
@@ -619,12 +508,36 @@ public class MdsClientTests
             });
 
         // Act
-        var result = await _client.GetUnitsAsync(_mdsBaseArgDto);
+        var result = await _client.GetUserDataAsync(_mdsBaseArgDto);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedUnits.Count, result.AllUnits.Count);
-        Assert.Null(result.HomeUnit);
+        Assert.Equal(expectedUserData.HomeUnit.UnitId, result.HomeUnit.UnitId);
+    }
+
+    [Fact]
+    public async Task GetUserDataAsync_ThrowsMdsClientException_WhenRequestFails()
+    {
+        // Arrange
+        var mockUserDataRequest = new HttpRequestMessage(HttpMethod.Get, "api/userdata");
+
+        _mdsRequestFactoryMock
+            .Setup(f => f.CreateUserDataRequest(_mdsBaseArgDto))
+            .Returns(mockUserDataRequest);
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.Is<HttpRequestMessage>(m => m.RequestUri!.AbsolutePath.Contains("/api/userdata")),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadGateway
+            });
+
+        // Act & Assert
+        await Assert.ThrowsAsync<MdsClientException>(() => _client.GetUserDataAsync(_mdsBaseArgDto));
     }
 
     [Fact]

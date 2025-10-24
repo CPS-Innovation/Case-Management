@@ -5,16 +5,16 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
-using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Cps.CaseManagement.MdsClient.Models.Entities;
+using Cps.CaseManagement.Api.Tests.Helpers;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class ListWMSUnitsTests
 {
     private readonly Mock<ILogger<ListWMSUnits>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly ListWMSUnits _function;
@@ -22,17 +22,17 @@ public class ListWMSUnitsTests
     public ListWMSUnitsTests()
     {
         _loggerMock = new Mock<ILogger<ListWMSUnits>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
-        _function = new ListWMSUnits(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
+        _function = new ListWMSUnits(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object);
     }
 
     [Fact]
-    public async Task Run_ReturnsOkObjectResult_WithExpectedWMSUnits()
+    public async Task Run_ReturnsOkObjectResult_WithExpectedWMSUnits_WhenNoFilterProvided()
     {
         // Arrange
-        var expectedUnits = _fixture.Create<WMSUnitEntity[]>();
+        var expectedUnits = _fixture.Create<WMSUnitDto[]>();
         var correlationId = _fixture.Create<Guid>();
         var cmsAuthValues = _fixture.Create<string>();
         var baseArg = _fixture.Create<MdsBaseArgDto>();
@@ -41,11 +41,14 @@ public class ListWMSUnitsTests
             .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
             .Returns(baseArg);
 
-        _mdsClientMock
-            .Setup(c => c.GetWMSUnitsAsync(baseArg))
+        _mdsServiceMock
+            .Setup(c => c.GetWMSUnitsAsync(baseArg, null))
             .ReturnsAsync(expectedUnits);
 
-        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, _fixture.Create<string>(), _fixture.Create<string>());
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
         var httpRequest = HttpRequestStubHelper.CreateHttpRequest(correlationId);
 
         // Act
@@ -54,6 +57,138 @@ public class ListWMSUnitsTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedUnits, okResult.Value);
-        _mdsClientMock.Verify(c => c.GetWMSUnitsAsync(baseArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.GetWMSUnitsAsync(baseArg, null), Times.Once);
+    }
+
+    [Fact]
+    public async Task Run_ReturnsOkObjectResult_WithWCUUnitsOnly_WhenIsWCUIsTrue()
+    {
+        // Arrange
+        var expectedUnits = _fixture.Create<WMSUnitDto[]>();
+        var correlationId = _fixture.Create<Guid>();
+        var baseArg = _fixture.Create<MdsBaseArgDto>();
+
+        _mdsArgFactoryMock
+            .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
+            .Returns(baseArg);
+
+        _mdsServiceMock
+            .Setup(c => c.GetWMSUnitsAsync(baseArg, true))
+            .ReturnsAsync(expectedUnits);
+
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
+        var httpRequest = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(
+            new Dictionary<string, string> { { "IsWCU", "true" } },
+            correlationId);
+
+        // Act
+        var result = await _function.Run(httpRequest, functionContext);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(expectedUnits, okResult.Value);
+        _mdsServiceMock.Verify(c => c.GetWMSUnitsAsync(baseArg, true), Times.Once);
+    }
+
+    [Fact]
+    public async Task Run_ReturnsOkObjectResult_WithNonWCUUnitsOnly_WhenIsWCUIsFalse()
+    {
+        // Arrange
+        var expectedUnits = _fixture.Create<WMSUnitDto[]>();
+        var correlationId = _fixture.Create<Guid>();
+        var baseArg = _fixture.Create<MdsBaseArgDto>();
+
+        _mdsArgFactoryMock
+            .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
+            .Returns(baseArg);
+
+        _mdsServiceMock
+            .Setup(c => c.GetWMSUnitsAsync(baseArg, false))
+            .ReturnsAsync(expectedUnits);
+
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
+        var httpRequest = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(
+            new Dictionary<string, string> { { "IsWCU", "false" } },
+            correlationId);
+
+        // Act
+        var result = await _function.Run(httpRequest, functionContext);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(expectedUnits, okResult.Value);
+        _mdsServiceMock.Verify(c => c.GetWMSUnitsAsync(baseArg, false), Times.Once);
+    }
+
+    [Fact]
+    public async Task Run_ReturnsOkObjectResult_WithAllWMSUnits_WhenIsWCUIsInvalid()
+    {
+        // Arrange
+        var expectedUnits = _fixture.Create<WMSUnitDto[]>();
+        var correlationId = _fixture.Create<Guid>();
+        var baseArg = _fixture.Create<MdsBaseArgDto>();
+
+        _mdsArgFactoryMock
+            .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
+            .Returns(baseArg);
+
+        _mdsServiceMock
+            .Setup(c => c.GetWMSUnitsAsync(baseArg, null))
+            .ReturnsAsync(expectedUnits);
+
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
+        var httpRequest = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(
+            new Dictionary<string, string> { { "IsWCU", "invalid" } },
+            correlationId);
+
+        // Act
+        var result = await _function.Run(httpRequest, functionContext);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(expectedUnits, okResult.Value);
+        _mdsServiceMock.Verify(c => c.GetWMSUnitsAsync(baseArg, null), Times.Once);
+    }
+
+    [Fact]
+    public async Task Run_ReturnsOkObjectResult_WithAllWMSUnits_WhenIsWCUIsEmpty()
+    {
+        // Arrange
+        var expectedUnits = _fixture.Create<WMSUnitDto[]>();
+        var correlationId = _fixture.Create<Guid>();
+        var baseArg = _fixture.Create<MdsBaseArgDto>();
+
+        _mdsArgFactoryMock
+            .Setup(f => f.CreateBaseArg(It.IsAny<string>(), It.IsAny<Guid>()))
+            .Returns(baseArg);
+
+        _mdsServiceMock
+            .Setup(c => c.GetWMSUnitsAsync(baseArg, null))
+            .ReturnsAsync(expectedUnits);
+
+        var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(
+            correlationId,
+            _fixture.Create<string>(),
+            _fixture.Create<string>());
+        var httpRequest = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(
+            new Dictionary<string, string> { { "IsWCU", "" } },
+            correlationId);
+
+        // Act
+        var result = await _function.Run(httpRequest, functionContext);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(expectedUnits, okResult.Value);
+        _mdsServiceMock.Verify(c => c.GetWMSUnitsAsync(baseArg, null), Times.Once);
     }
 }

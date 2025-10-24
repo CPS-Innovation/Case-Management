@@ -5,16 +5,16 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Cps.CaseManagement.MdsClient.Models.Entities;
 using Cps.CaseManagement.Api.Tests.Helpers;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class GetCaseworkersTests
 {
     private readonly Mock<ILogger<GetCaseworkers>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly GetCaseworkers _function;
@@ -22,17 +22,17 @@ public class GetCaseworkersTests
     public GetCaseworkersTests()
     {
         _loggerMock = new Mock<ILogger<GetCaseworkers>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
-        _function = new GetCaseworkers(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
+        _function = new GetCaseworkers(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object);
     }
 
     [Fact]
     public async Task Run_ReturnsOkObjectResult_WithExpectedCaseworkers()
     {
         // Arrange
-        var expectedCaseworkers = _fixture.Create<ProsecutorOrCaseworkerEntity[]>();
+        var expectedCaseworkers = _fixture.Create<ProsecutorOrCaseworkerDto[]>();
         var correlationId = _fixture.Create<Guid>();
         var cmsAuthValues = _fixture.Create<string>();
         var unitId = _fixture.Create<long>();
@@ -42,7 +42,7 @@ public class GetCaseworkersTests
             .Setup(f => f.CreateGetByUnitIdArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<long>()))
             .Returns(getByUnitIdArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.GetCaseworkersAsync(getByUnitIdArg))
             .ReturnsAsync(expectedCaseworkers);
 
@@ -55,6 +55,6 @@ public class GetCaseworkersTests
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(expectedCaseworkers, okResult.Value);
-        _mdsClientMock.Verify(c => c.GetCaseworkersAsync(getByUnitIdArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.GetCaseworkersAsync(getByUnitIdArg), Times.Once);
     }
 }

@@ -6,18 +6,17 @@ using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
 using Cps.CaseManagement.Api.Tests.Helpers;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
-using Cps.CaseManagement.MdsClient.Models.Entities;
 using Cps.CaseManagement.MdsClient.Models.Enums;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Constants;
-
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class ListAvailableOffencesTests
 {
     private readonly Mock<ILogger<ListAvailableOffences>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly IFixture _fixture;
     private readonly ListAvailableOffences _function;
@@ -28,7 +27,7 @@ public class ListAvailableOffencesTests
     public ListAvailableOffencesTests()
     {
         _loggerMock = new Mock<ILogger<ListAvailableOffences>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
 
@@ -41,7 +40,7 @@ public class ListAvailableOffencesTests
 
         _function = new ListAvailableOffences(
             _loggerMock.Object,
-            _mdsClientMock.Object,
+            _mdsServiceMock.Object,
             _mdsArgFactoryMock.Object);
     }
 
@@ -87,7 +86,7 @@ public class ListAvailableOffencesTests
         var request = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(queryParams, _testCorrelationId);
 
         var expectedArg = _fixture.Create<MdsOffenceSearchArg>();
-        var expectedResult = _fixture.Create<OffencesEntity>();
+        var expectedResult = _fixture.Create<OffencesDto>();
 
         _mdsArgFactoryMock
             .Setup(f => f.CreateOffenceSearchArg(
@@ -109,7 +108,7 @@ public class ListAvailableOffencesTests
                 multisearchPartialSearch))
             .Returns(expectedArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.SearchOffences(expectedArg))
             .ReturnsAsync(expectedResult);
 
@@ -138,7 +137,7 @@ public class ListAvailableOffencesTests
             multisearch,
             multisearchPartialSearch), Times.Once);
 
-        _mdsClientMock.Verify(c => c.SearchOffences(expectedArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.SearchOffences(expectedArg), Times.Once);
     }
 
     [Fact]
@@ -157,7 +156,7 @@ public class ListAvailableOffencesTests
         var request = HttpRequestStubHelper.CreateHttpRequestWithQueryParameters(queryParams, _testCorrelationId);
 
         var expectedArg = _fixture.Create<MdsOffenceSearchArg>();
-        var expectedResult = _fixture.Create<OffencesEntity>();
+        var expectedResult = _fixture.Create<OffencesDto>();
 
         _mdsArgFactoryMock
             .Setup(f => f.CreateOffenceSearchArg(
@@ -179,7 +178,7 @@ public class ListAvailableOffencesTests
                 false))
             .Returns(expectedArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.SearchOffences(expectedArg))
             .ReturnsAsync(expectedResult);
 
@@ -208,6 +207,6 @@ public class ListAvailableOffencesTests
             null,
             false), Times.Once);
 
-        _mdsClientMock.Verify(c => c.SearchOffences(expectedArg), Times.Once);
+        _mdsServiceMock.Verify(c => c.SearchOffences(expectedArg), Times.Once);
     }
 }

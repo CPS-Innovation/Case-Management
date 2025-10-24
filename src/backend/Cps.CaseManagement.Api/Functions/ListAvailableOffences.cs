@@ -3,7 +3,7 @@ namespace Cps.CaseManagement.Api.Functions;
 using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
-using Cps.CaseManagement.MdsClient.Client;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Constants;
 using Cps.CaseManagement.MdsClient.Models.Entities;
@@ -16,17 +16,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
-  IMdsClient mdsClient,
+  IMdsService mdsService,
   IMdsArgFactory mdsArgFactory)
 {
     private readonly ILogger<ListAvailableOffences> _logger = logger;
-    private readonly IMdsClient _mdsClient = mdsClient;
+    private readonly IMdsService _mdsService = mdsService;
     private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
 
     [Function(nameof(ListAvailableOffences))]
     [OpenApiOperation(operationId: nameof(ListAvailableOffences), tags: ["MDS"], Description = "List all available offences")]
     [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-    [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = ParameterLocation.Header, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
+    [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
     [OpenApiParameter(OffenceSearchQueryParameters.Code, In = ParameterLocation.Query, Type = typeof(string), Description = "The Code of the charge.", Required = false)]
     [OpenApiParameter(OffenceSearchQueryParameters.Legislation, In = ParameterLocation.Query, Type = typeof(string), Description = "The Legisation of the charge.", Required = false)]
     [OpenApiParameter(OffenceSearchQueryParameters.LegislationPartialSearch, In = ParameterLocation.Query, Type = typeof(bool), Description = "Whether the \"word-by-word\" search by Legislation is partial (words match partially).", Required = true)]
@@ -72,7 +72,7 @@ public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
             bool.TryParse(req.Query[OffenceSearchQueryParameters.MultisearchPartialSearch], out var multisearchPartial) ? multisearchPartial : false
         );
 
-        var result = await _mdsClient.SearchOffences(arg);
+        var result = await _mdsService.SearchOffences(arg);
 
         return new OkObjectResult(result);
     }

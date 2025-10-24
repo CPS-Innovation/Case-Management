@@ -5,16 +5,16 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Cps.CaseManagement.MdsClient.Models.Entities;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 public class ListPoliceUnitsTests
 {
     private readonly Mock<ILogger<ListPoliceUnits>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly ListPoliceUnits _function;
@@ -22,26 +22,26 @@ public class ListPoliceUnitsTests
     public ListPoliceUnitsTests()
     {
         _loggerMock = new Mock<ILogger<ListPoliceUnits>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
-        _function = new ListPoliceUnits(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
+        _function = new ListPoliceUnits(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object);
     }
 
     [Fact]
     public async Task Run_ReturnsOkObjectResult_WithExpectedPoliceUnits()
     {
         // Arrange
-        var expectedUnits = _fixture.Create<PoliceUnitEntity[]>();
+        var expectedUnits = _fixture.Create<PoliceUnitDto[]>();
         var correlationId = _fixture.Create<Guid>();
         var cmsAuthValues = _fixture.Create<string>();
         var baseArg = _fixture.Create<MdsBaseArgDto>();
 
         _mdsArgFactoryMock
-            .Setup(f => f.CreateBaseArg(cmsAuthValues, correlationId))
+            .Setup(f => f.CreateBaseArg(cmsAuthValues, It.IsAny<Guid>()))
             .Returns(baseArg);
 
-        _mdsClientMock
+        _mdsServiceMock
             .Setup(c => c.GetPoliceUnitsAsync(baseArg))
             .ReturnsAsync(expectedUnits);
 
@@ -56,8 +56,8 @@ public class ListPoliceUnitsTests
         Assert.Equal(expectedUnits, okResult.Value);
 
         _mdsArgFactoryMock.Verify(f => f.CreateBaseArg(cmsAuthValues, correlationId), Times.Once);
-        _mdsClientMock.Verify(c => c.GetPoliceUnitsAsync(baseArg), Times.Once);
-        _mdsClientMock.VerifyNoOtherCalls();
+        _mdsServiceMock.Verify(c => c.GetPoliceUnitsAsync(baseArg), Times.Once);
+        _mdsServiceMock.VerifyNoOtherCalls();
         _mdsArgFactoryMock.VerifyNoOtherCalls();
     }
 }
