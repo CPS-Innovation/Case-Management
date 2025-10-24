@@ -5,7 +5,7 @@ import {
   getCaseDetailsSummaryListRows,
   getSuspectSummaryListRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
-  getWhoseWorkingOnTheCaseSummaryListRows,
+  getWhosIsWorkingOnTheCaseSummaryListRows,
 } from "./utils/getSummaryListRows";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
 import { useMutation } from "@tanstack/react-query";
@@ -65,7 +65,7 @@ const CaseSummaryPage = () => {
     [state.formData, state.apiData.caseMonitoringCodes],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
-    () => getWhoseWorkingOnTheCaseSummaryListRows(state.formData),
+    () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData),
     [state.formData],
   );
   return (

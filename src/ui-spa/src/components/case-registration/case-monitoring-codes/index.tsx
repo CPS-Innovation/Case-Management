@@ -115,10 +115,6 @@ const CaseMonitoringCodesPage = () => {
     fieldName: "caseMonitoringCodesCheckboxes",
     value: string,
   ) => {
-    console.log(
-      "checkboxes value :",
-      state.formData.caseMonitoringCodesCheckboxes,
-    );
     const currentValues = state.formData.caseMonitoringCodesCheckboxes ?? [];
     let newValues: string[] = [];
     if (currentValues.includes(value)) {

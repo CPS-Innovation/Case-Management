@@ -188,10 +188,11 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   return rows;
 };
 
-export const getWhoseWorkingOnTheCaseSummaryListRows = (
+export const getWhosIsWorkingOnTheCaseSummaryListRows = (
   formData: CaseRegistrationFormData,
 ) => {
   const policeInvestigator = `${formData.caseInvestigatorTitleSelect.description}- ${formData.caseInvestigatorFirstNameText}, ${formData.caseInvestigatorLastNameText}`;
+
   const rows = [
     {
       key: { children: <span>Prosecutor</span> },

@@ -156,8 +156,6 @@ const CaseAssigneePage = () => {
         caseInvestigatorLastNameText,
       },
     } = state;
-    console.log("caseProsecutorRadio", caseProsecutorRadio);
-    console.log("caseInvestigatorRadio", caseInvestigatorRadio);
 
     if (!caseProsecutorRadio) {
       errors.caseProsecutorRadio = {
@@ -394,6 +392,7 @@ const CaseAssigneePage = () => {
       investigatorTitles,
       event.target.value,
     );
+
     dispatch({
       type: "SET_FIELD",
       payload: {

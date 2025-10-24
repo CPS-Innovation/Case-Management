@@ -6,15 +6,15 @@ describe("getSelectedInvestigatorTitle", () => {
     { shortCode: "INV3", description: "Investigator Three" },
   ];
   it("returns the correct title for a given short code", () => {
-    expect(getSelectedInvestigatorTitle(titles, "Investigator One")).toEqual({
+    expect(getSelectedInvestigatorTitle(titles, "INV1")).toEqual({
       shortCode: "INV1",
       description: "Investigator One",
     });
-    expect(getSelectedInvestigatorTitle(titles, "Investigator Two")).toEqual({
+    expect(getSelectedInvestigatorTitle(titles, "INV2")).toEqual({
       shortCode: "INV2",
       description: "Investigator Two",
     });
-    expect(getSelectedInvestigatorTitle(titles, "Investigator Three")).toEqual({
+    expect(getSelectedInvestigatorTitle(titles, "INV3")).toEqual({
       shortCode: "INV3",
       description: "Investigator Three",
     });
