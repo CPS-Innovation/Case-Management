@@ -6,7 +6,6 @@ public class ProsecutorOrCaseworkerDto
 {
     [JsonPropertyName("id")]
     public long Id { get; set; }
-
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
 }

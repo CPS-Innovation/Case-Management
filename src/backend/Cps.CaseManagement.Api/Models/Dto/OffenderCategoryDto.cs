@@ -6,7 +6,6 @@ public class OffenderCategoryDto
 {
     [JsonPropertyName("shortCode")]
     public string ShortCode { get; set; } = string.Empty;
-
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
     [JsonPropertyName("display")]

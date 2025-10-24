@@ -1,4 +1,3 @@
-
 namespace Cps.CaseManagement.Api.Models.Dto;
 
 using System.Text.Json.Serialization;
