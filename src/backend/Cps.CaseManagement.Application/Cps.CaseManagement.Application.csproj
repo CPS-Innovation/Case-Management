@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Cps.CaseManagement.Domain\Cps.CaseManagement.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
+  </ItemGroup>
+
 </Project>
