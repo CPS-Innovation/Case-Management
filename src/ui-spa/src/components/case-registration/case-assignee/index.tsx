@@ -240,12 +240,16 @@ const CaseAssigneePage = () => {
   }, [state.apiData.caseCaseworkers]);
 
   const investigatorTitles = useMemo(() => {
+    const titles = [{ shortCode: "", description: "--Select--" }];
     if (state.apiData.caseInvestigatorTitles) {
-      return state.apiData.caseInvestigatorTitles.filter(
-        (title) => title.isPoliceTitle,
-      );
+      return [
+        ...titles,
+        ...state.apiData.caseInvestigatorTitles.filter(
+          (title) => title.isPoliceTitle,
+        ),
+      ];
     }
-    return [] as { shortCode: string; description: string }[];
+    return titles;
   }, [state.apiData.caseInvestigatorTitles]);
 
   const caseProsecutorSuggest = (
@@ -593,7 +597,7 @@ const CaseAssigneePage = () => {
                       className="govuk-input--width-20 "
                       label={{
                         htmlFor: "case-investigator-title-select",
-                        children: "Select Title",
+                        children: "Rank (optional)",
                         className: styles.investigatorTitleSelectLabel,
                       }}
                       id="case-investigator-title-select"
@@ -601,6 +605,7 @@ const CaseAssigneePage = () => {
                       items={investigatorTitles.map((title) => ({
                         value: title.shortCode,
                         children: title.description,
+                        disabled: !title.shortCode,
                       }))}
                       formGroup={{
                         className: styles.select,
@@ -617,7 +622,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-firstname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "First name(optional)",
+                        children: "First name (optional)",
                       }}
                       type="text"
                       value={state.formData.caseInvestigatorFirstNameText}
@@ -654,7 +659,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-shoulder-number-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Shoulder number(optional)",
+                        children: "Shoulder number (optional)",
                       }}
                       type="text"
                       value={state.formData.caseInvestigatorShoulderNumberText}
@@ -671,7 +676,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-police-unit-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Police unit(optional)",
+                        children: "Police unit (optional)",
                       }}
                       type="text"
                       value={state.formData.caseInvestigatorPoliceUnitText}

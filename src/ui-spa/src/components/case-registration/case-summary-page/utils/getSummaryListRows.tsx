@@ -1,9 +1,69 @@
+import { format } from "date-fns";
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
 
 export const getCaseDetailsSummaryListRows = (
   formData: CaseRegistrationFormData,
 ) => {
   const urn = `${formData.urnPoliceForceText}${formData.urnPoliceUnitText}${formData.urnUniqueReferenceText}/${formData.urnYearReferenceText}`;
+
+  const firstHearingSummary =
+    formData.firstHearingRadio === "yes"
+      ? [
+          {
+            key: { children: <span>First Hearing Court Location</span> },
+            value: {
+              children: (
+                <p>{formData.firstHearingCourtLocationText.description}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Court Location",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+          {
+            key: { children: <span>First Hearing Date</span> },
+            value: {
+              children: (
+                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+        ]
+      : [
+          {
+            key: { children: <span>First Hearing details</span> },
+            value: {
+              children: <p>Not entered</p>,
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+        ];
   const rows = [
     {
       key: { children: <span>Area</span> },
@@ -16,6 +76,7 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/areas",
             visuallyHiddenText: "Edit Case Area",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -32,6 +93,7 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -47,6 +109,7 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Registering Unit",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -62,6 +125,7 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Witness Care Unit",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -69,7 +133,13 @@ export const getCaseDetailsSummaryListRows = (
     {
       key: { children: <span>Operation Name</span> },
       value: {
-        children: <p>{formData.operationNameText}</p>,
+        children: (
+          <p>
+            {formData.operationNameText
+              ? formData.operationNameText
+              : "Not entered"}
+          </p>
+        ),
       },
       actions: {
         items: [
@@ -77,41 +147,12 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration",
             visuallyHiddenText: "Edit Operation Name",
+            state: { isRouteValid: true },
           },
         ],
       },
     },
-
-    {
-      key: { children: <span>First Hearing Court Location</span> },
-      value: {
-        children: <p>{formData.firstHearingCourtLocationText.description}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration/first-hearing",
-            visuallyHiddenText: "Edit First Hearing Court Location",
-          },
-        ],
-      },
-    },
-    {
-      key: { children: <span>First Hearing Date</span> },
-      value: {
-        children: <p>{formData.firstHearingDateText}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration/first-hearing",
-            visuallyHiddenText: "Edit First Hearing Date",
-          },
-        ],
-      },
-    },
+    ...firstHearingSummary,
   ];
   return rows;
 };
@@ -123,7 +164,7 @@ export const getSuspectSummaryListRows = (
     {
       key: { children: <span>Suspects</span> },
       value: {
-        children: <p>{formData.suspectDetailsRadio}</p>,
+        children: <p>{formData.suspectDetailsRadio === "no" ? "No" : "Yes"}</p>,
       },
       actions: {
         items: [
@@ -131,6 +172,7 @@ export const getSuspectSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration",
             visuallyHiddenText: "Edit Suspect Details",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -159,6 +201,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-complexity",
             visuallyHiddenText: "Edit Case Complexity",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -180,6 +223,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-monitoring-codes",
             visuallyHiddenText: "Edit Monitoring Codes",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -188,16 +232,113 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   return rows;
 };
 
+const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
+  if (formData.caseInvestigatorTitleSelect) {
+    return `${formData.caseInvestigatorTitleSelect.description}(${formData.caseInvestigatorTitleSelect.shortCode}) - ${formData.caseInvestigatorLastNameText}, ${formData.caseInvestigatorFirstNameText}`;
+  }
+  if (formData.caseInvestigatorFirstNameText) {
+    return `${formData.caseInvestigatorLastNameText}, ${formData.caseInvestigatorFirstNameText}`;
+  }
+  return formData.caseInvestigatorLastNameText;
+};
+
 export const getWhosIsWorkingOnTheCaseSummaryListRows = (
   formData: CaseRegistrationFormData,
 ) => {
-  const policeInvestigator = `${formData.caseInvestigatorTitleSelect.description}- ${formData.caseInvestigatorFirstNameText}, ${formData.caseInvestigatorLastNameText}`;
+  const investigatorDetailsList =
+    formData.caseInvestigatorRadio === "yes"
+      ? [
+          {
+            key: { children: <span>Police officer or investigator</span> },
+            value: {
+              children: <p>{getInvestigatorSummaryText(formData)}</p>,
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/case-assignee",
+                  visuallyHiddenText: "Edit Police officer or investigator",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+          {
+            key: { children: <span>Shoulder number</span> },
+            value: {
+              children: (
+                <p>
+                  {formData.caseInvestigatorShoulderNumberText
+                    ? formData.caseInvestigatorShoulderNumberText
+                    : "Not entered"}
+                </p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/case-assignee",
+                  visuallyHiddenText: "Edit Shoulder Number",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+          {
+            key: { children: <span>Police Unit</span> },
+            value: {
+              children: (
+                <p>
+                  {formData.caseInvestigatorPoliceUnitText
+                    ? formData.caseInvestigatorPoliceUnitText
+                    : "Not entered"}
+                </p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/case-assignee",
+                  visuallyHiddenText: "Edit Police Unit",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+        ]
+      : [
+          {
+            key: { children: <span>Police officer or investigator</span> },
+            value: {
+              children: <p>Not entered</p>,
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/case-assignee",
+                  visuallyHiddenText: "Edit Police officer or investigator",
+                  state: { isRouteValid: true },
+                },
+              ],
+            },
+          },
+        ];
 
   const rows = [
     {
       key: { children: <span>Prosecutor</span> },
       value: {
-        children: <p>{formData.caseProsecutorText?.description}</p>,
+        children: (
+          <p>
+            {formData.caseProsecutorText.description
+              ? formData.caseProsecutorText.description
+              : "Not entered"}
+          </p>
+        ),
       },
       actions: {
         items: [
@@ -205,6 +346,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Prosecutor",
+            state: { isRouteValid: true },
           },
         ],
       },
@@ -212,7 +354,13 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
     {
       key: { children: <span>Caseworker</span> },
       value: {
-        children: <p>{formData.caseCaseworkerText?.description}</p>,
+        children: (
+          <p>
+            {formData.caseCaseworkerText?.description
+              ? formData.caseCaseworkerText?.description
+              : "Not entered"}
+          </p>
+        ),
       },
       actions: {
         items: [
@@ -220,55 +368,12 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Caseworker",
+            state: { isRouteValid: true },
           },
         ],
       },
     },
-    {
-      key: { children: <span>Police officer or investigator</span> },
-      value: {
-        children: <p>{policeInvestigator}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration/case-assignee",
-            visuallyHiddenText: "Edit Police officer or investigator",
-          },
-        ],
-      },
-    },
-    {
-      key: { children: <span>Shoulder number</span> },
-      value: {
-        children: <p>{formData.caseInvestigatorShoulderNumberText}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration/case-assignee",
-            visuallyHiddenText: "Edit Shoulder Number",
-          },
-        ],
-      },
-    },
-    {
-      key: { children: <span>Police Unit</span> },
-      value: {
-        children: <p>{formData.caseInvestigatorPoliceUnitText}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration/case-assignee",
-            visuallyHiddenText: "Edit Police Unit",
-          },
-        ],
-      },
-    },
+    ...investigatorDetailsList,
   ];
   return rows;
 };
