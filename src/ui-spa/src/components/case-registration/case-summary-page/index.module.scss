@@ -1,4 +1,4 @@
-.caseComplexityPage {
+.caseSummaryPage {
   max-width: 66.66%;
   h2 {
     font-size: 1.5rem;
@@ -17,6 +17,10 @@
   }
   & :global(.govuk-summary-list) {
     margin-bottom: 3.75rem;
+  }
+  & :global(.govuk-tag) {
+    text-transform: inherit;
+    font-weight: normal;
   }
 }
 .errorSummaryWrapper {

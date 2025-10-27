@@ -69,7 +69,7 @@ const CaseSummaryPage = () => {
     [state.formData],
   );
   return (
-    <div className={styles.caseComplexityPage}>
+    <div className={styles.caseSummaryPage}>
       <BackLink
         to="/case-registration/case-assignee"
         state={{ isRouteValid: true }}

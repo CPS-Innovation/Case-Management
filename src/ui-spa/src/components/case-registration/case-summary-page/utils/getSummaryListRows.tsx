@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { Tag } from "../../../../components/govuk";
 
 export const getCaseDetailsSummaryListRows = (
   formData: CaseRegistrationFormData,
@@ -243,7 +244,13 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
 
 const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
   if (formData.caseInvestigatorTitleSelect) {
-    return `${formData.caseInvestigatorTitleSelect.description}(${formData.caseInvestigatorTitleSelect.shortCode}) - ${formData.caseInvestigatorLastNameText}, ${formData.caseInvestigatorFirstNameText}`;
+    return (
+      <>
+        <Tag gdsTagColour="blue">{`${formData.caseInvestigatorTitleSelect.description} (${formData.caseInvestigatorTitleSelect.shortCode})`}</Tag>{" "}
+        - {formData.caseInvestigatorLastNameText},{" "}
+        {formData.caseInvestigatorFirstNameText}
+      </>
+    );
   }
   if (formData.caseInvestigatorFirstNameText) {
     return `${formData.caseInvestigatorLastNameText}, ${formData.caseInvestigatorFirstNameText}`;
