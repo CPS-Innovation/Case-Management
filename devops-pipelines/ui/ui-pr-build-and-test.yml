@@ -15,6 +15,8 @@ variables:
     value: '20.x'
   - name: workingDir
     value: src/ui-spa
+  - name: covDir
+    value: 'coverage'
 
 stages:
   - stage: Build_and_Test_UI
@@ -50,32 +52,96 @@ stages:
               command: 'custom'
               customCommand: 'run build'
               workingDir: '$(workingDir)'
-
+              
+# ---------- UNIT TESTS (Vitest) ----------
           - task: Npm@1
-            displayName: 'Run UI Unit Tests'
+            displayName: 'Run UI Unit Tests with Coverage'
             inputs:
               command: 'custom'
-              customCommand: 'run coverage'
+              customCommand: 'run unit:coverage'
               workingDir: '$(workingDir)'
 
           - task: PublishTestResults@2
-            displayName: 'Publish UI Test Results'
+            displayName: 'Publish Unit Test Results (JUnit)'
             inputs:
               testResultsFormat: 'JUnit'
-              testResultsFiles: 'src/ui-spa/coverage/unit-test-results.xml'
-              publishRunAttachments: true
+              testResultsFiles: '$(workingDir)/unit-test-results.xml'
+              publishRunAttachments: false
             condition: always()
           
           - task: UseDotNet@2
-            displayName: 'Use .NET SDK'
+            displayName: 'Use .NET SDK to publish Code Coverage'
             inputs:
               packageType: 'sdk'
               version: '8.x'
 
-          - task: PublishCodeCoverageResults@2
-            displayName: 'Publish UI Code Coverage'
+          - script: |
+              export PATH="$PATH:$HOME/.dotnet/tools"
+              
+              if ! dotnet reportgenerator --version &> /dev/null; then
+                dotnet tool install --global dotnet-reportgenerator-globaltool
+              fi
+
+              reportgenerator \
+                -reports:"$(covDir)/unit/cobertura-coverage.xml" \
+                -targetdir:"$(covDir)/unit" \
+                -reporttypes:"HtmlInline_AzurePipelines"
+            displayName: 'Generate Unit HTML Coverage Report'
+            workingDirectory: '$(workingDir)'
+          
+          - publish: '$(workingDir)/$(covDir)/unit/index.html'
+            artifact: 'unit-coverage-report'
+            displayName: 'Publish Unit Test Coverage Report as Pipeline Artifact'
+
+# ---------- INTEGRATION TESTS (Playwright) ----------
+          - task: Npm@1
+            displayName: 'Install Playwright Browsers'
             inputs:
-              summaryFileLocation: 'src/ui-spa/coverage/cobertura-coverage.xml'
+              command: 'custom'
+              customCommand: 'exec playwright install -- --with-deps'
+              workingDir: '$(workingDir)'
+
+          - task: Npm@1
+            displayName: 'Run Integration Tests with Coverage'
+            inputs:
+              command: 'custom'
+              customCommand: 'run integration:coverage:cobertura'
+              workingDir: '$(workingDir)'
+          
+          - task: PublishTestResults@2
+            displayName: 'Publish integration Test Results (JUnit)'
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '$(workingDir)/integration-test-results.xml'
+              publishRunAttachments: false
             condition: always()
 
-          - template: ../templates/playwright-test-steps.yml
+          - script: |
+              export PATH="$PATH:$HOME/.dotnet/tools"
+
+              reportgenerator \
+                -reports:"$(covDir)/integration/cobertura-coverage.xml" \
+                -targetdir:"$(covDir)/integration" \
+                -reporttypes:"HtmlInline_AzurePipelines"
+            displayName: 'Generate integration HTML Coverage Report'
+            workingDirectory: '$(workingDir)'
+
+          - publish: '$(workingDir)/$(covDir)/integration/index.html'
+            artifact: 'integration-coverage-report'
+            displayName: 'Publish integration Coverage Report as Pipeline Artifact'
+          
+          - script: |
+              export PATH="$PATH:$HOME/.dotnet/tools"
+
+              reportgenerator \
+                -reports:"$(covDir)/unit/cobertura-coverage.xml;$(covDir)/integration/cobertura-coverage.xml" \
+                -targetdir:"$(covDir)/merged" \
+                -reporttypes:"Cobertura"
+            displayName: 'Generate Combined Coverage Report'
+            workingDirectory: '$(workingDir)'
+
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publish Combined Code Coverage'
+            inputs:
+              summaryFileLocation: '$(workingDir)/$(covDir)/merged/Cobertura.xml'
+              failIfCoverageEmpty: true
