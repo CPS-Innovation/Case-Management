@@ -112,9 +112,19 @@ const CaseComplexityPage = () => {
   }, [caseComplexitiesData, dispatch, isCaseComplexitiesLoading]);
 
   const setFormValue = (fieldName: "caseComplexityRadio", value: string) => {
+    const selectedItem = caseComplexities.find(
+      (complexity) => `${complexity.shortCode}` === value,
+    );
+    if (!selectedItem) return;
     dispatch({
       type: "SET_FIELD",
-      payload: { field: fieldName, value: value },
+      payload: {
+        field: fieldName,
+        value: {
+          shortCode: `${selectedItem.shortCode}`,
+          description: selectedItem.description,
+        },
+      },
     });
   };
 
@@ -171,7 +181,7 @@ const CaseComplexityPage = () => {
               value: complexity.shortCode.toString(),
               "data-testid": `case-complexity-radio-${index}`,
             }))}
-            value={state.formData.caseComplexityRadio}
+            value={state.formData.caseComplexityRadio.shortCode}
             onChange={(value) => {
               if (value) setFormValue("caseComplexityRadio", value);
             }}

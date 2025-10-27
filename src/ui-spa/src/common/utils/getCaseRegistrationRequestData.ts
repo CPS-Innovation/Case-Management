@@ -26,6 +26,7 @@ export const getCaseRegistrationRequestData = (
     courtLocationId: formData.firstHearingCourtLocationText.id!,
     courtLocationName: formData.firstHearingCourtLocationText.description,
     hearingDate: formData.firstHearingDateText,
+    complexity: formData.caseComplexityRadio.shortCode,
     monitoringCodes,
     prosecutorId: formData.caseProsecutorText.id!,
     caseWorker: formData.caseCaseworkerText.id!,

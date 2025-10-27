@@ -12,6 +12,7 @@ export type CaseRegistration = {
   courtLocationId: number;
   courtLocationName: string;
   hearingDate: string;
+  complexity: string;
   monitoringCodes: { code: string; selected: boolean }[];
   prosecutorId: number;
   caseWorker: number;

@@ -48,7 +48,7 @@ export type CaseRegistrationFormData = {
   firstHearingRadio: string;
   firstHearingCourtLocationText: { id: number | null; description: string };
   firstHearingDateText: string;
-  caseComplexityRadio: string;
+  caseComplexityRadio: { shortCode: string; description: string };
   caseMonitoringCodesCheckboxes: string[];
   caseProsecutorRadio: string;
   caseInvestigatorRadio: string;
@@ -94,7 +94,7 @@ export const initialState: CaseRegistrationState = {
     firstHearingRadio: "",
     firstHearingCourtLocationText: { id: null, description: "" },
     firstHearingDateText: "",
-    caseComplexityRadio: "",
+    caseComplexityRadio: { shortCode: "", description: "" },
     caseMonitoringCodesCheckboxes: [],
     caseInvestigatorRadio: "",
     caseProsecutorRadio: "",
@@ -192,10 +192,15 @@ export const caseRegistrationReducer = (
 ): CaseRegistrationState => {
   switch (action.type) {
     case "SET_FIELD": {
+      const resetValues = getResetFieldValues(
+        action.payload.field,
+        action.payload.value as string,
+      );
       return {
         ...state,
         formData: {
           ...state.formData,
+          ...resetValues,
           [action.payload.field]: action.payload.value,
         },
       };
@@ -281,4 +286,34 @@ export const caseRegistrationReducer = (
     default:
       return state;
   }
+};
+
+export const getResetFieldValues = (
+  fieldName: CaseRegistrationField,
+  value: string,
+) => {
+  if (fieldName === "caseProsecutorRadio" && value === "no") {
+    return {
+      caseProsecutorText: { id: null, description: "" },
+      caseCaseworkerText: { id: null, description: "" },
+    };
+  }
+  if (fieldName === "caseInvestigatorRadio" && value === "no") {
+    return {
+      caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+      caseInvestigatorFirstNameText: "",
+      caseInvestigatorLastNameText: "",
+      caseInvestigatorShoulderNameText: "",
+      caseInvestigatorShoulderNumberText: "",
+      caseInvestigatorPoliceUnitText: "",
+    };
+  }
+  if (fieldName === "firstHearingRadio" && value === "no") {
+    return {
+      firstHearingCourtLocationText: { id: null, description: "" },
+      firstHearingDateText: "",
+    };
+  }
+
+  return {};
 };

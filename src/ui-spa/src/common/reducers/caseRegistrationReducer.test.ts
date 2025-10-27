@@ -4,6 +4,7 @@ import {
   type CaseRegistrationActions,
   type CaseRegistrationState,
 } from "./caseRegistrationReducer";
+import { getResetFieldValues } from "./caseRegistrationReducer";
 
 describe("caseRegistrationReducer", () => {
   it("should set formData operationNameRadio using SET_FIELD action", () => {
@@ -72,7 +73,7 @@ describe("caseRegistrationReducer", () => {
         firstHearingRadio: "yes",
         firstHearingCourtLocationText: { id: null, description: "Court A" },
         firstHearingDateText: "2023-01-01",
-        caseComplexityRadio: "high",
+        caseComplexityRadio: { shortCode: "HIGH", description: "High" },
         caseMonitoringCodesCheckboxes: ["code1", "code2"],
         caseProsecutorRadio: "yes",
         caseInvestigatorRadio: "yes",
@@ -255,5 +256,37 @@ describe("caseRegistrationReducer", () => {
     expect(state.apiData.caseInvestigatorTitles).toEqual(
       action.payload.caseInvestigatorTitles,
     );
+  });
+});
+describe("getResetFieldValues", () => {
+  it("should reset caseProsecutorText and caseCaseworkerText when caseProsecutorRadio is 'no'", () => {
+    const result = getResetFieldValues("caseProsecutorRadio", "no");
+    expect(result).toEqual({
+      caseProsecutorText: { id: null, description: "" },
+      caseCaseworkerText: { id: null, description: "" },
+    });
+  });
+  it("should reset caseInvestigator fields when caseInvestigatorRadio is 'no'", () => {
+    const result = getResetFieldValues("caseInvestigatorRadio", "no");
+    expect(result).toEqual({
+      caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+      caseInvestigatorFirstNameText: "",
+      caseInvestigatorLastNameText: "",
+      caseInvestigatorShoulderNameText: "",
+      caseInvestigatorShoulderNumberText: "",
+      caseInvestigatorPoliceUnitText: "",
+    });
+  });
+  it("should reset first hearing fields when firstHearingRadio is 'no'", () => {
+    const result = getResetFieldValues("firstHearingRadio", "no");
+    expect(result).toEqual({
+      firstHearingCourtLocationText: { id: null, description: "" },
+      firstHearingDateText: "",
+    });
+  });
+
+  it("should return an empty object for other fields", () => {
+    const result = getResetFieldValues("operationNameRadio", "yes");
+    expect(result).toEqual({});
   });
 });

@@ -285,31 +285,33 @@ const FirstHearingPage = () => {
                 "data-testid": "first-hearing-radio-yes",
                 conditional: {
                   children: [
-                    <AutoComplete
-                      key="first-hearing-court-location-text"
-                      id="first-hearing-court-location-text"
-                      inputClasses={"govuk-input--error"}
-                      source={courtLocationsSuggest}
-                      confirmOnBlur={false}
-                      onConfirm={handleCourtLocationConfirm}
-                      defaultValue={
-                        state.formData.firstHearingCourtLocationText
-                          ?.description
-                      }
-                      label={{
-                        children: (
-                          <h2>What is the first hearing court location?</h2>
-                        ),
-                      }}
-                      errorMessage={
-                        formDataErrors["firstHearingCourtLocationText"]
-                          ? formDataErrors["firstHearingCourtLocationText"]
-                              .errorSummaryText
-                          : undefined
-                      }
-                    />,
+                    state.formData.firstHearingRadio === "yes" && (
+                      <AutoComplete
+                        key="first-hearing-court-location-text"
+                        id="first-hearing-court-location-text"
+                        inputClasses={"govuk-input--error"}
+                        source={courtLocationsSuggest}
+                        confirmOnBlur={false}
+                        onConfirm={handleCourtLocationConfirm}
+                        defaultValue={
+                          state.formData.firstHearingCourtLocationText
+                            ?.description
+                        }
+                        label={{
+                          children: (
+                            <h2>What is the first hearing court location?</h2>
+                          ),
+                        }}
+                        errorMessage={
+                          formDataErrors["firstHearingCourtLocationText"]
+                            ? formDataErrors["firstHearingCourtLocationText"]
+                                .errorSummaryText
+                            : undefined
+                        }
+                      />
+                    ),
                     <DateInputNative
-                      key="first-hearing-dat-text"
+                      key="first-hearing-date-text"
                       id="first-hearing-date-text"
                       label={<h2>Date</h2>}
                       value={state.formData.firstHearingDateText}

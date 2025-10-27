@@ -353,12 +353,12 @@ const CaseAssigneePage = () => {
       | "caseInvestigatorPoliceUnitText",
     value: string,
   ) => {
-    let inputValue = value.replace(/[^0-9a-zA-Z]/g, "");
+    let inputValue = value.replaceAll(/[^0-9a-zA-Z]/g, "");
     if (
       fieldName === "caseInvestigatorFirstNameText" ||
       fieldName === "caseInvestigatorLastNameText"
     ) {
-      inputValue = inputValue.replace(/\d/g, "");
+      inputValue = inputValue.replaceAll(/\d/g, "");
     }
 
     dispatch({
@@ -514,46 +514,50 @@ const CaseAssigneePage = () => {
                 "data-testid": "case-prosecutor-radio-yes",
                 conditional: {
                   children: [
-                    <AutoComplete
-                      key="case-prosecutor-text"
-                      id="case-prosecutor-text"
-                      inputClasses={"govuk-input--error"}
-                      source={caseProsecutorSuggest}
-                      confirmOnBlur={false}
-                      onConfirm={handleCaseProsecutorConfirm}
-                      defaultValue={
-                        state.formData.caseProsecutorText?.description
-                      }
-                      label={{
-                        children: <span>Prosecutor name</span>,
-                      }}
-                      errorMessage={
-                        formDataErrors["caseProsecutorText"]
-                          ? formDataErrors["caseProsecutorText"]
-                              .errorSummaryText
-                          : undefined
-                      }
-                    />,
-                    <AutoComplete
-                      key="case-caseworker-text"
-                      id="case-caseworker-text"
-                      inputClasses={"govuk-input--error"}
-                      source={caseCaseworkerSuggest}
-                      confirmOnBlur={false}
-                      onConfirm={handleCaseCaseworkerConfirm}
-                      defaultValue={
-                        state.formData.caseCaseworkerText?.description
-                      }
-                      label={{
-                        children: <span>Caseworker name</span>,
-                      }}
-                      errorMessage={
-                        formDataErrors["caseCaseworkerText"]
-                          ? formDataErrors["caseCaseworkerText"]
-                              .errorSummaryText
-                          : undefined
-                      }
-                    />,
+                    state.formData.caseProsecutorRadio === "yes" && (
+                      <AutoComplete
+                        key="case-prosecutor-text"
+                        id="case-prosecutor-text"
+                        inputClasses={"govuk-input--error"}
+                        source={caseProsecutorSuggest}
+                        confirmOnBlur={false}
+                        onConfirm={handleCaseProsecutorConfirm}
+                        defaultValue={
+                          state.formData.caseProsecutorText?.description
+                        }
+                        label={{
+                          children: <span>Prosecutor name</span>,
+                        }}
+                        errorMessage={
+                          formDataErrors["caseProsecutorText"]
+                            ? formDataErrors["caseProsecutorText"]
+                                .errorSummaryText
+                            : undefined
+                        }
+                      />
+                    ),
+                    state.formData.caseProsecutorRadio === "yes" && (
+                      <AutoComplete
+                        key="case-caseworker-text"
+                        id="case-caseworker-text"
+                        inputClasses={"govuk-input--error"}
+                        source={caseCaseworkerSuggest}
+                        confirmOnBlur={false}
+                        onConfirm={handleCaseCaseworkerConfirm}
+                        defaultValue={
+                          state.formData.caseCaseworkerText?.description
+                        }
+                        label={{
+                          children: <span>Caseworker name</span>,
+                        }}
+                        errorMessage={
+                          formDataErrors["caseCaseworkerText"]
+                            ? formDataErrors["caseCaseworkerText"]
+                                .errorSummaryText
+                            : undefined
+                        }
+                      />
+                    ),
                   ],
                 },
               },

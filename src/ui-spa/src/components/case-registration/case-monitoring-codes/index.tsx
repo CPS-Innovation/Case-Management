@@ -61,7 +61,9 @@ const CaseMonitoringCodesPage = () => {
 
   const caseMonitoringCodes = useMemo(() => {
     if (state.apiData.caseMonitoringCodes) {
-      return state.apiData.caseMonitoringCodes;
+      return state.apiData.caseMonitoringCodes.sort((a, b) =>
+        a.description.localeCompare(b.description),
+      );
     }
     return [] as { code: number; description: string }[];
   }, [state.apiData.caseMonitoringCodes]);
@@ -99,7 +101,7 @@ const CaseMonitoringCodesPage = () => {
   }, [caseMonitoringCodesData, dispatch, isCaseMonitoringCodesLoading]);
 
   useEffect(() => {
-    if (!isOptional) {
+    if (!isOptional && !state.formData.caseMonitoringCodesCheckboxes?.length) {
       dispatch({
         type: "SET_FIELD",
         payload: {

@@ -185,15 +185,24 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   formData: CaseRegistrationFormData,
   caseMonitoringCodes: { code: string; description: string }[],
 ) => {
-  const getMonitoringCodeDescription = (code: string) => {
-    const found = caseMonitoringCodes.find((item) => item.code === code);
-    return found ? found.description : code;
+  const sortedMonitoringCodes = () => {
+    const mappedCodes = formData.caseMonitoringCodesCheckboxes.map((code) => {
+      const item = caseMonitoringCodes.find((item) => item.code === code);
+      return item
+        ? { code: item.code, description: item.description }
+        : { code, description: code };
+    });
+
+    return mappedCodes.sort((a, b) => {
+      return a.description.localeCompare(b.description);
+    });
   };
+
   const rows = [
     {
       key: { children: <span>Case Complexity</span> },
       value: {
-        children: <p>{formData.caseComplexityRadio}</p>,
+        children: <p>{formData.caseComplexityRadio?.description}</p>,
       },
       actions: {
         items: [
@@ -211,8 +220,8 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
       value: {
         children: (
           <ul className="govuk-list govuk-list--bullet">
-            {formData.caseMonitoringCodesCheckboxes.map((code) => (
-              <li key={code}>{getMonitoringCodeDescription(code)}</li>
+            {sortedMonitoringCodes().map(({ code, description }) => (
+              <li key={code}>{description}</li>
             ))}
           </ul>
         ),
