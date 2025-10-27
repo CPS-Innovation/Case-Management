@@ -353,16 +353,13 @@ const CaseDetailsPage = () => {
       }));
       return;
     }
-    return navigate("/case-registration/first-hearing", {
-      state: { isRouteValid: true },
-    });
+    return navigate("/case-registration/first-hearing");
   };
 
   return (
     <div className={styles.caseDetailsPage}>
       <BackLink
         to={`${isAreaSensitive ? "/case-registration" : "/case-registration/areas"}`}
-        state={{ isRouteValid: true }}
       >
         Back
       </BackLink>

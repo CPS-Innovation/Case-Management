@@ -179,13 +179,8 @@ const CaseRegistrationPage = () => {
     event.preventDefault();
 
     if (!validateFormData(state)) return;
-    if (!isAreaSensitive)
-      return navigate("/case-registration/areas", {
-        state: { isRouteValid: true },
-      });
-    return navigate("/case-registration/case-details", {
-      state: { isRouteValid: true },
-    });
+    if (!isAreaSensitive) return navigate("/case-registration/areas");
+    return navigate("/case-registration/case-details");
   };
 
   const setFormValue = (

@@ -235,19 +235,12 @@ const FirstHearingPage = () => {
     if (!validateFormData(state, courtLocations, inputCourtLocationValue))
       return;
 
-    return navigate("/case-registration/case-complexity", {
-      state: { isRouteValid: true },
-    });
+    return navigate("/case-registration/case-complexity");
   };
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink
-        to="/case-registration/case-details"
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+      <BackLink to="/case-registration/case-details">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

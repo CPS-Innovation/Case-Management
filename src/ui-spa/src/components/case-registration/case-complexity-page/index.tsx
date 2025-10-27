@@ -133,19 +133,12 @@ const CaseComplexityPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/case-monitoring-codes", {
-      state: { isRouteValid: true },
-    });
+    return navigate("/case-registration/case-monitoring-codes");
   };
 
   return (
     <div className={styles.caseComplexityPage}>
-      <BackLink
-        to="/case-registration/first-hearing"
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+      <BackLink to="/case-registration/first-hearing">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

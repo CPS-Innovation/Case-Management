@@ -137,15 +137,11 @@ const CaseAreasPage = () => {
     }
 
     if (!validateFormData(areas, inputValue)) return;
-    return navigate("/case-registration/case-details", {
-      state: { isRouteValid: true },
-    });
+    return navigate("/case-registration/case-details");
   };
   return (
     <div className={styles.caseAreasPage}>
-      <BackLink to={"/case-registration"} state={{ isRouteValid: true }}>
-        Back
-      </BackLink>
+      <BackLink to={"/case-registration"}>Back</BackLink>
       <h1>What is the division or area?</h1>
       {!!errorList.length && (
         <div

@@ -461,19 +461,12 @@ const CaseAssigneePage = () => {
     )
       return;
 
-    return navigate("/case-registration/case-summary", {
-      state: { isRouteValid: true },
-    });
+    return navigate("/case-registration/case-summary");
   };
 
   return (
     <div className={styles.caseAssigneePage}>
-      <BackLink
-        to="/case-registration/case-monitoring-codes"
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+      <BackLink to="/case-registration/case-monitoring-codes">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
