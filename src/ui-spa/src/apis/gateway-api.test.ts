@@ -16,6 +16,11 @@ vi.mock("../auth", () => ({
   getAccessToken: vi.fn().mockResolvedValue("access-token"),
 }));
 
+vi.mock("../config", () => ({
+  GATEWAY_BASE_URL: "https://mocked-out-api",
+  GATEWAY_SCOPE: "gateway_scope",
+}));
+
 vi.mock("uuid", () => ({
   v4: () => "mock-uuid",
 }));
