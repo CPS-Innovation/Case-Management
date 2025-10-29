@@ -3,7 +3,7 @@ export type CaseRegistration = {
     policeForce: string;
     policeUnit: string;
     uniqueRef: string;
-    year: string;
+    year: number;
   };
   registeringAreaId: number;
   registeringUnitId: number;
@@ -15,7 +15,7 @@ export type CaseRegistration = {
   complexity: string;
   monitoringCodes: { code: string; selected: boolean }[];
   prosecutorId: number;
-  caseWorker: number;
+  caseWorker: string;
   ociRank: string;
   ociSurname: string;
   ociFirstName: string;

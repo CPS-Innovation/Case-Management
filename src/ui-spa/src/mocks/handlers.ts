@@ -38,7 +38,7 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
     }),
     http.get(`${baseUrl}/api/v1/urns/:urn/exists`, async () => {
       await delay(RESPONSE_DELAY);
-      return HttpResponse.json({ exists: false });
+      return HttpResponse.json(false);
     }),
     http.get(`${baseUrl}/api/v1/courts/:registeringUnitId`, async () => {
       const results = isDevMock()

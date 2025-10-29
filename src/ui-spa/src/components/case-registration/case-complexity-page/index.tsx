@@ -59,7 +59,7 @@ const CaseComplexityPage = () => {
       formData: { caseComplexityRadio },
     } = state;
 
-    if (!caseComplexityRadio) {
+    if (!caseComplexityRadio.shortCode) {
       errors.caseComplexityRadio = {
         errorSummaryText: "Please select an option for case complexity",
         inputErrorText: "Please select an option",

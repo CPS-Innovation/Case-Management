@@ -87,6 +87,7 @@ export const getCaseDetailsSummaryListRows = (
       actions: {
         items: [
           {
+            id: "change-urn-link",
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",

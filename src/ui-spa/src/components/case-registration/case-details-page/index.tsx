@@ -341,7 +341,7 @@ const CaseDetailsPage = () => {
     )
       return;
     const { data } = await refetchValidateUrn();
-    if (data?.exists) {
+    if (data) {
       setFormDataErrors((prev) => ({
         ...prev,
         urnErrorText: {

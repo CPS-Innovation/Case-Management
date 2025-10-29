@@ -77,7 +77,8 @@ export const validateUrn = async (urn: string) => {
   if (!response.ok) {
     throw new ApiError(`URN validation failed`, url, response);
   }
-  return (await response.json()) as { exists: boolean };
+
+  return (await response.json()) as boolean;
 };
 
 export const getCourtsByUnitId = async (registeringUnitId: number) => {
