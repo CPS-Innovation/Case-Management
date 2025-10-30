@@ -2,12 +2,11 @@ namespace Cps.CaseManagement.Application.Telemetry;
 
 using System;
 using System.Collections.Generic;
+using Microsoft.ApplicationInsights.DataContracts;
 using AppInsights = Microsoft.ApplicationInsights;
 
 public class TelemetryClient : ITelemetryClient
-{
-    public const string telemetryVersion = nameof(telemetryVersion);
-    public const string Version = "0.1";
+{   
     protected readonly AppInsights.TelemetryClient _telemetryClient;
 
     public TelemetryClient(AppInsights.TelemetryClient telemetryClient)
@@ -25,21 +24,101 @@ public class TelemetryClient : ITelemetryClient
         TrackInternalEvent(telemetryEvent, isFailure: true);
     }
 
-    public void TrackInternalEvent(BaseTelemetryEvent telemetryEvent, bool isFailure = false)
+    public void TrackException(BaseTelemetryEvent telemetryEvent)
     {
         if (telemetryEvent == null)
-        {
             return;
-        }
 
+        var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent, true);
+
+        var exceptionMessage = properties?["exceptionMessage"]?.ToString() ?? "Exception occurred";
+        var exceptionStackTrace = properties?["exceptionStackTrace"]?.ToString() ?? string.Empty;
+        var exception = new Exception(exceptionMessage);
+
+        _telemetryClient.TrackException(exception, properties, metrics);
+    }
+
+    public void TrackMetric(BaseTelemetryEvent telemetryEvent)
+    {
+        if (telemetryEvent == null)
+            return;
+
+        var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent);
+
+        if (metrics == null)
+            return;
+
+        foreach (var metric in metrics)
+        {
+            _telemetryClient.TrackMetric(
+                metric.Key,
+                metric.Value,
+                properties);
+        }
+    }
+
+    public void TrackPageView(BaseTelemetryEvent telemetryEvent)
+    {
+        if (telemetryEvent == null)
+            return;
+
+        var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent);
+
+        var pageName = properties?["pageName"]?.ToString() ?? string.Empty;
+
+        if (string.IsNullOrEmpty(pageName))
+            return;
+
+        _telemetryClient.TrackPageView(pageName);
+    }
+
+    public void TrackTrace(BaseTelemetryEvent telemetryEvent)
+    {
+        if (telemetryEvent == null)
+            return;
+
+        var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent);
+
+        var message = properties?["message"]?.ToString() ?? string.Empty;
+        var severityLevel = properties?["severityLevel"]?.ToString() ?? "Information";
+
+        SeverityLevel appInsightsSeverityLevel = SeverityLevel.Information;
+        Enum.TryParse<SeverityLevel>(severityLevel, true, out appInsightsSeverityLevel);
+
+        _telemetryClient.TrackTrace(message,
+            appInsightsSeverityLevel,
+            properties);
+    }
+
+    private void TrackInternalEvent(BaseTelemetryEvent telemetryEvent, bool isFailure = false)
+    {
+        if (telemetryEvent == null)
+            return;
+
+        var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent, isFailure);
+
+        _telemetryClient.TrackEvent(
+            PrepareEventName(telemetryEvent.EventName),
+            properties,
+            metrics
+        );
+    }
+
+    private (IDictionary<string, string> Properties, IDictionary<string, double>? Metrics) PrepareTelemetryEventProps(BaseTelemetryEvent telemetryEvent, bool isFailure = false)
+    {
         var (properties, metrics) = telemetryEvent.ToTelemetryEventProps();
 
         var nonNullMetrics = metrics.Where(kvp => kvp.Value.HasValue)
                                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value!.Value);
 
-        if (!properties.ContainsKey(telemetryVersion))
+        if (!telemetryEvent.CorrelationId.Equals(Guid.Empty))
         {
-            properties[telemetryVersion] = Version;
+            properties["correlationId"] = telemetryEvent.CorrelationId.ToString();
+        }
+
+        if (telemetryEvent.EventTimestamp != DateTime.MinValue)
+        {
+            properties["eventTimestamp"] = telemetryEvent.EventTimestamp.ToString("dd/MM/yyyy HH:mm:ss.fff");
         }
 
         if (isFailure)
@@ -47,11 +126,7 @@ public class TelemetryClient : ITelemetryClient
             properties["isFailure"] = "true";
         }
 
-        _telemetryClient.TrackEvent(
-            PrepareEventName(telemetryEvent.EventName),
-            PrepareKeyNames(properties),
-            PrepareKeyNames(nonNullMetrics)
-        );
+        return (PrepareKeyNames(properties), PrepareKeyNames(nonNullMetrics));
     }
 
     private static string PrepareEventName(string eventName)

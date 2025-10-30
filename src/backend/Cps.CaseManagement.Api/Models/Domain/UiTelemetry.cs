@@ -1,11 +1,16 @@
 namespace Cps.CaseManagement.Api.Models.Domain;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Cps.CaseManagement.Api.Constants;
 
 public class UiTelemetry
 {
+    [JsonPropertyName("telemetryType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public TelemetryType TelemetryType { get; set; }
-    public string EventName { get; set; } = string.Empty;
+    [JsonPropertyName("eventTimestamp")]
     public DateTime EventTimestamp { get; set; }
-    public Dictionary<string, string> Properties { get; set; } = new();
+    [JsonPropertyName("properties")]
+    public List<Dictionary<string, object>>? Properties { get; set; } = new ();
 }

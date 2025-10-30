@@ -1,16 +1,23 @@
 namespace Cps.CaseManagement.Application.Telemetry;
 
 public class BaseUiTelemetryEvent : BaseTelemetryEvent
-{
-    public Guid CorrelationId { get; set; } 
-    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+{ 
+    public IEnumerable<Dictionary<string, object>> Properties { get; set; } = new List<Dictionary<string, object>>();
 
     public override (IDictionary<string, string> Properties, IDictionary<string, double?> Metrics) ToTelemetryEventProps()
     {
+        var telemetryProperties = Properties.SelectMany(dict => dict)
+                                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        if (telemetryProperties == null || telemetryProperties.Count == 0)
+        {
+            return (new Dictionary<string, string>(), new Dictionary<string, double?>());
+        }
+
         var properties = new Dictionary<string, string>();
         var metrics = new Dictionary<string, double?>();
 
-        foreach (var kvp in Properties)
+        foreach (var kvp in telemetryProperties)
         {
             if (kvp.Value is string stringValue)
             {

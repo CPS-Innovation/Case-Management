@@ -10,6 +10,8 @@ public abstract class BaseTelemetryEvent
         }
     }
 
+    public Guid CorrelationId { get; set; }
+
     public DateTime EventTimestamp { get; set; }
 
     abstract public (IDictionary<string, string> Properties, IDictionary<string, double?> Metrics) ToTelemetryEventProps();
