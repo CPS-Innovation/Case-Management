@@ -81,7 +81,7 @@ describe("caseRegistrationReducer", () => {
         caseCaseworkerText: { id: 1, description: "Caseworker A" },
         caseInvestigatorTitleSelect: {
           shortCode: "INV",
-          description: "Investigator",
+          display: "Investigator",
         },
         caseInvestigatorFirstNameText: "abc",
         caseInvestigatorLastNameText: "def",
@@ -194,6 +194,7 @@ describe("caseRegistrationReducer", () => {
           {
             code: "Ab",
             description: "abcdef",
+            display: "abcdef",
           },
         ],
       },
@@ -247,6 +248,7 @@ describe("caseRegistrationReducer", () => {
           {
             shortCode: "INVESTIGATOR_A",
             description: "Investigator A",
+            display: "Investigator A",
             isPoliceTitle: true,
           },
         ],

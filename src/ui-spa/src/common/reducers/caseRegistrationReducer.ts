@@ -301,7 +301,7 @@ export const getResetFieldValues = (
   }
   if (fieldName === "caseInvestigatorRadio" && value === "no") {
     return {
-      caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+      caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
