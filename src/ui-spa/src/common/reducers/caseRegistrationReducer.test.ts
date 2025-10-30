@@ -271,7 +271,7 @@ describe("getResetFieldValues", () => {
   it("should reset caseInvestigator fields when caseInvestigatorRadio is 'no'", () => {
     const result = getResetFieldValues("caseInvestigatorRadio", "no");
     expect(result).toEqual({
-      caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+      caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
