@@ -107,9 +107,9 @@ public class MdsClient(HttpClient httpClient,
         return response.CmsModernToken;
     }
 
-    public async Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg)
+    public async Task<CaseRegistrationEntity> RegisterCaseAsync(MdsRegisterCaseArg arg)
     {
-        var response = await CallMds<CaseRegistrationResponseDto>(
+        var response = await CallMds<CaseRegistrationEntity>(
             _mdsRequestFactory.CreateRegisterCaseRequest(arg));
         return response;
     }
@@ -119,7 +119,7 @@ public class MdsClient(HttpClient httpClient,
         var request = _mdsRequestFactory.CreateGetPoliceUnitsRequest(arg);
         return await CallMds<IEnumerable<PoliceUnitEntity>>(request);
     }
-    
+
     public async Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg)
     {
         var request = _mdsRequestFactory.CreateSearchOffencesRequest(arg);

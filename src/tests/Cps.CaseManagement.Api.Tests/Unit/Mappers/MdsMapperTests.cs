@@ -1,8 +1,6 @@
 namespace Cps.CaseManagement.Api.Tests.Unit.Mappers;
 
-using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Mappers;
-using Cps.CaseManagement.Api.Models.Dto;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 using AutoFixture;
 
@@ -117,8 +115,8 @@ public class MdsMapperTests
         var result = _mapper.MapOffenderCategoryEntityToDto(entity);
 
         Assert.Equal(entity.ShortCode, result.ShortCode);
-        Assert.Equal(result.Description, "Prolific priority offender");
-        Assert.Equal(result.Display, "Prolific priority offender (PPO)");
+        Assert.Equal("Prolific priority offender", result.Description);
+        Assert.Equal("Prolific priority offender (PPO)", result.Display);
     }
 
     [Fact]
