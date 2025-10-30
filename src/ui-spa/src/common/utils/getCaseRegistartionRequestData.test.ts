@@ -69,10 +69,6 @@ describe("getCaseRegistrationRequestData", () => {
           code: "MC002",
           selected: true,
         },
-        {
-          code: "MC003",
-          selected: false,
-        },
       ],
       complexity: "HIGH",
       ociFirstName: "Investigator",
@@ -159,10 +155,6 @@ describe("getCaseRegistrationRequestData", () => {
         {
           code: "MC002",
           selected: true,
-        },
-        {
-          code: "MC003",
-          selected: false,
         },
       ],
       complexity: "HIGH",

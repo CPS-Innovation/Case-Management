@@ -6,12 +6,16 @@ export const getCaseRegistrationRequestData = (
   formData: CaseRegistrationFormData,
   monitoringCodesData: CaseMonitoringCode[],
 ): CaseRegistration => {
-  const monitoringCodes = monitoringCodesData.map((mCode) => {
-    return {
-      code: mCode.code,
-      selected: formData.caseMonitoringCodesCheckboxes.includes(mCode.code),
-    };
-  });
+  const monitoringCodes = monitoringCodesData
+    .filter((mCode) =>
+      formData.caseMonitoringCodesCheckboxes.includes(mCode.code),
+    )
+    .map((mCode) => {
+      return {
+        code: mCode.code,
+        selected: true,
+      };
+    });
   return {
     urn: {
       policeForce: formData.urnPoliceForceText,
