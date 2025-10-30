@@ -56,7 +56,7 @@ export type CaseRegistrationFormData = {
   caseCaseworkerText: { id: number | null; description: string };
   caseInvestigatorTitleSelect: {
     shortCode: string | null;
-    description: string;
+    display: string;
   };
   caseInvestigatorFirstNameText: string;
   caseInvestigatorLastNameText: string;
@@ -100,7 +100,7 @@ export const initialState: CaseRegistrationState = {
     caseProsecutorRadio: "",
     caseProsecutorText: { id: null, description: "" },
     caseCaseworkerText: { id: null, description: "" },
-    caseInvestigatorTitleSelect: { shortCode: null, description: "" },
+    caseInvestigatorTitleSelect: { shortCode: null, display: "" },
     caseInvestigatorFirstNameText: "",
     caseInvestigatorLastNameText: "",
     caseInvestigatorShoulderNameText: "",
@@ -128,6 +128,7 @@ export type CaseRegistrationActions =
         value:
           | { id: number | null; description: string }
           | { shortCode: string | null; description: string }
+          | { shortCode: string | null; display: string }
           | string
           | string[];
       };

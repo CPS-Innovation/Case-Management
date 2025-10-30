@@ -1,6 +1,7 @@
 export type InvestigatorTitle = {
   shortCode: string;
   description: string;
+  display: string;
   isPoliceTitle: boolean;
 };
 

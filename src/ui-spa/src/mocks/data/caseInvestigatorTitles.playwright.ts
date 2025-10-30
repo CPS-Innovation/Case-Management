@@ -1,13 +1,15 @@
 import { type InvestigatorTitles } from "../../common/types/responses/InvestigatorTitles";
 export const caseInvestigatorTitlesPlaywright: InvestigatorTitles = [
   {
-    shortCode: "IT1",
-    description: "Investigator Title 1",
+    shortCode: "PC",
+    description: "Police Constable",
+    display: "Police Constable",
     isPoliceTitle: true,
   },
   {
-    shortCode: "IT2",
-    description: "Investigator Title 2",
-    isPoliceTitle: false,
+    shortCode: "INS",
+    description: "Inspector",
+    display: "Inspector",
+    isPoliceTitle: true,
   },
 ];

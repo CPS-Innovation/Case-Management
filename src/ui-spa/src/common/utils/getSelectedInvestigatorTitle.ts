@@ -1,13 +1,13 @@
 export const getSelectedInvestigatorTitle = (
-  titles: { shortCode: string; description: string }[],
+  titles: { shortCode: string; display: string }[],
   inputValue: string,
-): { shortCode: string | null; description: string } => {
+): { shortCode: string | null; display: string } => {
   const matchedTitle = titles.find((title) => title.shortCode === inputValue);
   if (matchedTitle) {
     return {
       shortCode: matchedTitle.shortCode,
-      description: matchedTitle.description,
+      display: matchedTitle.display,
     };
   }
-  return { shortCode: null, description: inputValue };
+  return { shortCode: null, display: inputValue };
 };

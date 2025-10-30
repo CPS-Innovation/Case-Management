@@ -11,7 +11,7 @@ describe("getCaseRegistrationRequestData", () => {
       urnPoliceForceText: "PF001",
       urnPoliceUnitText: "PU001",
       urnUniqueReferenceText: "URN001",
-      urnYearReferenceText: "2021",
+      urnYearReferenceText: "21",
       registeringUnitText: { id: 1, description: "Registering Unit 1" },
       witnessCareUnitText: { id: 1, description: "Witness Care Unit 1" },
       firstHearingRadio: "firstHearing",
@@ -25,7 +25,7 @@ describe("getCaseRegistrationRequestData", () => {
       caseCaseworkerText: { id: 1, description: "Caseworker 1" },
       caseInvestigatorTitleSelect: {
         shortCode: "INV001",
-        description: "Investigator 1",
+        display: "Investigator 1",
       },
       caseInvestigatorFirstNameText: "Investigator",
       caseInvestigatorLastNameText: "One",
@@ -37,14 +37,17 @@ describe("getCaseRegistrationRequestData", () => {
       {
         code: "MC001",
         description: "Monitoring Code 1",
+        display: "Monitoring Code 1",
       },
       {
         code: "MC002",
         description: "Monitoring Code 2",
+        display: "Monitoring Code 2",
       },
       {
         code: "MC003",
         description: "Monitoring Code 3",
+        display: "Monitoring Code 3",
       },
     ];
     const result = getCaseRegistrationRequestData(
@@ -53,7 +56,7 @@ describe("getCaseRegistrationRequestData", () => {
     );
     expect(result).toEqual({
       allocateWcuId: 1,
-      caseWorker: 1,
+      caseWorker: "1",
       courtLocationId: 1,
       courtLocationName: "Court Location 1",
       hearingDate: "2021-11-26",
@@ -85,7 +88,7 @@ describe("getCaseRegistrationRequestData", () => {
         policeForce: "PF001",
         policeUnit: "PU001",
         uniqueRef: "URN001",
-        year: "2021",
+        year: 21,
       },
     });
   });

@@ -12,6 +12,7 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getCaseMonitoringCodes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
 import styles from "./index.module.scss";
 const PRE_CHARGE_DECISION_CODE = "CSEA";
 
@@ -65,7 +66,7 @@ const CaseMonitoringCodesPage = () => {
         a.description.localeCompare(b.description),
       );
     }
-    return [] as { code: number; description: string }[];
+    return [] as CaseMonitoringCodes;
   }, [state.apiData.caseMonitoringCodes]);
 
   const errorList = useMemo(() => {
@@ -202,7 +203,7 @@ const CaseMonitoringCodesPage = () => {
             }
             items={caseMonitoringCodes.map((monitoringCodes, index) => ({
               id: `case-monitoring-codes-${index}`,
-              children: monitoringCodes.description,
+              children: monitoringCodes.display,
               value: monitoringCodes.code.toString(),
               "data-testid": `case-monitoring-codes-${index}`,
               checked: state.formData.caseMonitoringCodesCheckboxes?.includes(

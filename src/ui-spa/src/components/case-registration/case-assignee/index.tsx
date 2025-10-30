@@ -240,7 +240,7 @@ const CaseAssigneePage = () => {
   }, [state.apiData.caseCaseworkers]);
 
   const investigatorTitles = useMemo(() => {
-    const titles = [{ shortCode: "", description: "--Select--" }];
+    const titles = [{ shortCode: "", display: "--Select--" }];
     if (state.apiData.caseInvestigatorTitles) {
       return [
         ...titles,
@@ -392,7 +392,7 @@ const CaseAssigneePage = () => {
   const handleCaseInvestigatorTitleConfirm = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    const { shortCode, description } = getSelectedInvestigatorTitle(
+    const { shortCode, display } = getSelectedInvestigatorTitle(
       investigatorTitles,
       event.target.value,
     );
@@ -401,7 +401,7 @@ const CaseAssigneePage = () => {
       type: "SET_FIELD",
       payload: {
         field: "caseInvestigatorTitleSelect",
-        value: { shortCode, description },
+        value: { shortCode, display },
       },
     });
   };
@@ -601,7 +601,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-title-select"
                       items={investigatorTitles.map((title) => ({
                         value: title.shortCode,
-                        children: title.description,
+                        children: title.display,
                         disabled: !title.shortCode,
                       }))}
                       formGroup={{

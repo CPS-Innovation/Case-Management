@@ -20,6 +20,7 @@
   }
   & :global(.govuk-tag) {
     text-transform: inherit;
+    letter-spacing: 0;
     font-weight: normal;
   }
 }
@@ -28,5 +29,8 @@
   max-width: 30rem;
   &:focus {
     outline: 0.2rem solid #ffdd00;
+  }
+  & :global(.govuk-error-summary__body) {
+    margin-top: 1rem;
   }
 }

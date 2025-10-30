@@ -1,28 +1,28 @@
 import { getSelectedInvestigatorTitle } from "./getSelectedInvestigatorTitle";
 describe("getSelectedInvestigatorTitle", () => {
   const titles = [
-    { shortCode: "INV1", description: "Investigator One" },
-    { shortCode: "INV2", description: "Investigator Two" },
-    { shortCode: "INV3", description: "Investigator Three" },
+    { shortCode: "INV1", display: "Investigator One" },
+    { shortCode: "INV2", display: "Investigator Two" },
+    { shortCode: "INV3", display: "Investigator Three" },
   ];
   it("returns the correct title for a given short code", () => {
     expect(getSelectedInvestigatorTitle(titles, "INV1")).toEqual({
       shortCode: "INV1",
-      description: "Investigator One",
+      display: "Investigator One",
     });
     expect(getSelectedInvestigatorTitle(titles, "INV2")).toEqual({
       shortCode: "INV2",
-      description: "Investigator Two",
+      display: "Investigator Two",
     });
     expect(getSelectedInvestigatorTitle(titles, "INV3")).toEqual({
       shortCode: "INV3",
-      description: "Investigator Three",
+      display: "Investigator Three",
     });
   });
   it("returns undefined for an unknown short code", () => {
     expect(getSelectedInvestigatorTitle(titles, "INV4")).toEqual({
       shortCode: null,
-      description: "INV4",
+      display: "INV4",
     });
   });
 });

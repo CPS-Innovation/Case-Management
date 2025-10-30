@@ -29,6 +29,7 @@ const CaseSummaryPage = () => {
   };
   type FormDataErrors = {
     urnErrorText?: ErrorText;
+    genericError?: ErrorText;
   };
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
@@ -46,6 +47,12 @@ const CaseSummaryPage = () => {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: `#${formDataErrors[errorKey]?.errorIds?.[0]}`,
           "data-testid": "urn-error-text-link",
+        };
+      }
+      if (errorKey === "genericError") {
+        return {
+          children: formDataErrors[errorKey]?.errorSummaryText,
+          "data-testid": "generic-error-text",
         };
       }
       return null;
@@ -114,9 +121,17 @@ const CaseSummaryPage = () => {
 
     submitCaseRegistrationMutation.mutate(requestData, {
       onSuccess: (data) => {
-        if (data.success) {
+        if (data.caseId) {
           navigate("/case-registration/case-registration-confirmation");
+          return;
         }
+
+        setFormDataErrors({
+          genericError: {
+            errorSummaryText: "Failed to register a case, please try again",
+            hasLink: false,
+          },
+        });
       },
     });
   };

@@ -85,7 +85,7 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
     }),
     http.post(`${baseUrl}/api/v1/cases`, async () => {
       await delay(RESPONSE_DELAY);
-      return HttpResponse.json({ success: true });
+      return HttpResponse.json({ caseId: 12345 });
       // return new HttpResponse(null, { status: 500 });
     }),
   ];

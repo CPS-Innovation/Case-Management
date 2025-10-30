@@ -189,5 +189,5 @@ export const submitCaseRegistration = async (data: CaseRegistration) => {
   if (!response.ok) {
     throw new ApiError(`registering case api failed `, url, response);
   }
-  return (await response.json()) as { success: boolean };
+  return (await response.json()) as { caseId: number };
 };

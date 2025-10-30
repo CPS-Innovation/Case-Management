@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
+import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
 
 export const getCaseDetailsSummaryListRows = (
   formData: CaseRegistrationFormData,
@@ -176,18 +177,18 @@ export const getSuspectSummaryListRows = (
 
 export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   formData: CaseRegistrationFormData,
-  caseMonitoringCodes: { code: string; description: string }[],
+  caseMonitoringCodes: CaseMonitoringCodes,
 ) => {
   const sortedMonitoringCodes = () => {
     const mappedCodes = formData.caseMonitoringCodesCheckboxes.map((code) => {
       const item = caseMonitoringCodes.find((item) => item.code === code);
       return item
-        ? { code: item.code, description: item.description }
-        : { code, description: code };
+        ? { code: item.code, display: item.display }
+        : { code, display: code };
     });
 
     return mappedCodes.sort((a, b) => {
-      return a.description.localeCompare(b.description);
+      return a.display.localeCompare(b.display);
     });
   };
 
@@ -212,8 +213,8 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
       value: {
         children: (
           <ul className="govuk-list govuk-list--bullet">
-            {sortedMonitoringCodes().map(({ code, description }) => (
-              <li key={code}>{description}</li>
+            {sortedMonitoringCodes().map(({ code, display }) => (
+              <li key={code}>{display}</li>
             ))}
           </ul>
         ),
@@ -236,7 +237,7 @@ const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
   if (formData.caseInvestigatorTitleSelect) {
     return (
       <>
-        <Tag gdsTagColour="blue">{`${formData.caseInvestigatorTitleSelect.description} (${formData.caseInvestigatorTitleSelect.shortCode})`}</Tag>{" "}
+        <Tag gdsTagColour="blue">{`${formData.caseInvestigatorTitleSelect.display}`}</Tag>{" "}
         - {formData.caseInvestigatorLastNameText},{" "}
         {formData.caseInvestigatorFirstNameText}
       </>
