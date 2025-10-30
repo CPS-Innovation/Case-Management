@@ -8,21 +8,21 @@ type DateInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const DateInputNative = forwardRef<HTMLInputElement, DateInputProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, errorMessage, ...props }, ref) => {
     return (
       <div
-        className={`govuk-form-group ${styles.dateInputWrapper} ${props.errorMessage ? "govuk-form-group--error" : ""}`}
+        className={`govuk-form-group ${styles.dateInputWrapper} ${errorMessage ? "govuk-form-group--error" : ""}`}
       >
         <label className="govuk-label" htmlFor={props.id}>
           {props.label}
         </label>
-        {props.errorMessage && (
+        {errorMessage && (
           <p
             className="govuk-error-message"
             data-testid={`${props.id}-error-text`}
           >
             <span className="govuk-visually-hidden">Error: </span>
-            {props.errorMessage}
+            {errorMessage}
           </p>
         )}
         <span className={` govuk-hint ${styles.govukHint}`}>

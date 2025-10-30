@@ -1,7 +1,22 @@
 export const caseComplexitiesDev = [
-  { shortCode: "A", description: "Basic" },
-  { shortCode: "B", description: "Basic +" },
-  { shortCode: "C", description: "Standard" },
-  { shortCode: "D", description: "High" },
-  { shortCode: "E", description: "Complex" },
+  {
+    shortCode: "1",
+    description: "Basic",
+  },
+  {
+    shortCode: "2",
+    description: "Basic +",
+  },
+  {
+    shortCode: "3",
+    description: "Standard",
+  },
+  {
+    shortCode: "4",
+    description: "High",
+  },
+  {
+    shortCode: "5",
+    description: "Complex",
+  },
 ];

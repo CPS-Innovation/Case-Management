@@ -13,7 +13,6 @@ describe("CaseRegistrationProvider", () => {
       } = useContext(CaseRegistrationFormContext);
       return (
         <div>
-          <span data-testid="currentPage">{formData.currentPage}</span>
           <span data-testid="operationNameRadio">
             {formData.operationNameRadio}
           </span>
@@ -33,9 +32,6 @@ describe("CaseRegistrationProvider", () => {
       </CaseRegistrationProvider>,
     );
 
-    expect(screen.getByTestId("currentPage").textContent).toBe(
-      "case-registration",
-    );
     expect(screen.getByTestId("operationNameRadio").textContent).toBe("");
     expect(screen.getByTestId("suspectDetailsRadio").textContent).toBe("");
     expect(screen.getByTestId("operationNameText").textContent).toBe("");

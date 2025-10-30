@@ -44,13 +44,14 @@ const CaseDetailsPage = () => {
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
-  const { refetch: refetchValidationUrn } = useQuery({
+  const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
       validateUrn(
         `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
       ),
     enabled: false,
+    retry: false,
   });
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
@@ -91,6 +92,10 @@ const CaseDetailsPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+
+  useEffect(() => {
+    if (validateUrnError) throw validateUrnError;
+  }, [validateUrnError]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -178,8 +183,9 @@ const CaseDetailsPage = () => {
       | "urnYearReferenceText",
     value: string,
   ) => {
-    let newValue = value.replace(/[^0-9a-zA-Z]/g, "");
-    if (field !== "urnPoliceUnitText") newValue = newValue.replace(/\D/g, "");
+    let newValue = value.replaceAll(/[^0-9a-zA-Z]/g, "");
+    if (field !== "urnPoliceUnitText")
+      newValue = newValue.replaceAll(/\D/g, "");
     dispatch({
       type: "SET_FIELD",
       payload: { field, value: newValue },
@@ -248,9 +254,9 @@ const CaseDetailsPage = () => {
           hasLink: true,
         };
       } else if (
-        registeringUnits.findIndex(
+        !registeringUnits.some(
           (ru) => ru.description === registeringUnitInputValue,
-        ) === -1
+        )
       ) {
         errors.registeringUnitErrorText = {
           errorSummaryText: "Registering unit is invalid",
@@ -265,9 +271,9 @@ const CaseDetailsPage = () => {
           hasLink: true,
         };
       } else if (
-        witnessCareUnits.findIndex(
+        !witnessCareUnits.some(
           (wcu) => wcu.description === witnessCareUnitInputValue,
-        ) === -1
+        )
       ) {
         errors.witnessCareUnitErrorText = {
           errorSummaryText: "Witness care unit is invalid",
@@ -284,6 +290,7 @@ const CaseDetailsPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
     const registeringUnitInput = document.getElementById(
       "registering-unit-text",
     ) as HTMLInputElement | null;
@@ -333,8 +340,8 @@ const CaseDetailsPage = () => {
       )
     )
       return;
-    const { data } = await refetchValidationUrn();
-    if (data?.exists) {
+    const { data } = await refetchValidateUrn();
+    if (data) {
       setFormDataErrors((prev) => ({
         ...prev,
         urnErrorText: {
@@ -346,15 +353,13 @@ const CaseDetailsPage = () => {
       }));
       return;
     }
-    return navigate("/case-registration/first-hearing", { replace: true });
+    return navigate("/case-registration/first-hearing");
   };
 
   return (
     <div className={styles.caseDetailsPage}>
       <BackLink
         to={`${isAreaSensitive ? "/case-registration" : "/case-registration/areas"}`}
-        replace
-        state={{ isRouteValid: true }}
       >
         Back
       </BackLink>
@@ -392,7 +397,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-force-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-force-text"
               label={{ children: "Police force" }}
-              name="urn-part-1"
               value={state.formData.urnPoliceForceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceForceText", val)
@@ -404,7 +408,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-unit-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-unit-text"
               label={{ children: "Police Unit" }}
-              name="urn-part-2"
               value={state.formData.urnPoliceUnitText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceUnitText", val)
@@ -416,7 +419,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-5 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-unique-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-unique-reference-text"
               label={{ children: "Unique Reference" }}
-              name="urn-part-3"
               value={state.formData.urnUniqueReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnUniqueReferenceText", val)
@@ -428,7 +430,6 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-year-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-year-reference-text"
               label={{ children: "Year Reference" }}
-              name="urn-part-4"
               value={state.formData.urnYearReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnYearReferenceText", val)

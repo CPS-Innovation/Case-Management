@@ -35,16 +35,25 @@ const CaseRegistrationPage = () => {
   const navigate = useNavigate();
   const isAreaSensitive = useIsAreaSensitive();
 
-  const { data: areasData, isLoading: isAreaDataLoading } = useQuery({
+  const {
+    data: areasData,
+    isLoading: isAreaDataLoading,
+    error: areaDataError,
+  } = useQuery({
     queryKey: ["areas"],
     queryFn: getCaseAreasAndRegisteringUnits,
+    retry: false,
   });
 
-  const { data: witnessCareUnitsData, isLoading: isWitnessCareUnitsLoading } =
-    useQuery({
-      queryKey: ["witness-care-units"],
-      queryFn: getCaseAreasAndWitnessCareUnits,
-    });
+  const {
+    data: witnessCareUnitsData,
+    isLoading: isWitnessCareUnitsLoading,
+    error: witnessCareUnitsError,
+  } = useQuery({
+    queryKey: ["witness-care-units"],
+    queryFn: getCaseAreasAndWitnessCareUnits,
+    retry: false,
+  });
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -133,6 +142,14 @@ const CaseRegistrationPage = () => {
   }, [formDataErrors, errorSummaryProperties]);
 
   useEffect(() => {
+    if (areaDataError) throw areaDataError;
+  }, [areaDataError]);
+
+  useEffect(() => {
+    if (witnessCareUnitsError) throw witnessCareUnitsError;
+  }, [witnessCareUnitsError]);
+
+  useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
@@ -211,7 +228,6 @@ const CaseRegistrationPage = () => {
                   }
                 : undefined
             }
-            name="`Do you have an operation name?"
             items={[
               {
                 id: "operation-name-radio-yes",
@@ -237,7 +253,6 @@ const CaseRegistrationPage = () => {
                       label={{
                         children: "Operation name",
                       }}
-                      name="operation-name"
                       type="text"
                       value={state.formData.operationNameText}
                       onChange={(value: string) => {
@@ -272,7 +287,6 @@ const CaseRegistrationPage = () => {
                   }
                 : undefined
             }
-            name="Do you have any suspect details?"
             items={[
               {
                 children: "Yes",
