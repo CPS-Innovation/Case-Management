@@ -147,4 +147,11 @@ public class MdsService(IMdsClient mdsClient, IMdsMapper mdsMapper, ILogger<MdsS
 
         return _mdsMapper.MapOffencesEntityToDto(entity);
     }
+
+    public async Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg)
+    {
+        _logger.LogDebug("Registering case in MDS");
+        var entity = await _mdsClient.RegisterCaseAsync(arg);
+        return _mdsMapper.MapCaseRegistrationEntityToDto(entity);
+    }
 }

@@ -25,4 +25,5 @@ public interface IMdsService
     Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg);
     Task<IEnumerable<PoliceUnitDto>> GetPoliceUnitsAsync(MdsBaseArgDto arg);
     Task<OffencesDto> SearchOffences(MdsOffenceSearchArg arg);
+    Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg);
 }

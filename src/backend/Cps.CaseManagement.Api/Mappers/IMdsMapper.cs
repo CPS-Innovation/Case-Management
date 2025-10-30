@@ -19,4 +19,5 @@ public interface IMdsMapper
     PoliceUnitDto MapPoliceUnitEntityToDto(PoliceUnitEntity entity);
     OffencesDto MapOffencesEntityToDto(OffencesEntity entity);
     UnitsDto MapUnitsAndUserDataToDto(IEnumerable<UnitEntity> allUnits, long? homeUnitId);
+    CaseRegistrationResponseDto MapCaseRegistrationEntityToDto(CaseRegistrationEntity entity);
 }

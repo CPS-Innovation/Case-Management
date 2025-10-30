@@ -147,4 +147,13 @@ public class MdsMapper : IMdsMapper
             }).ToArray()
         };
     }
+
+    public CaseRegistrationResponseDto MapCaseRegistrationEntityToDto(CaseRegistrationEntity entity)
+    {
+        return new CaseRegistrationResponseDto
+        {
+            CaseId = entity.CaseId,
+            Urn = entity.Urn
+        };
+    }
 }
