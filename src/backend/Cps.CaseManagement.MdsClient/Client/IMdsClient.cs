@@ -3,7 +3,6 @@ namespace Cps.CaseManagement.MdsClient.Client;
 
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using CPS.CaseManagement.MdsClient.Models.Dto;
 
 public interface IMdsClient
 {
@@ -17,11 +16,12 @@ public interface IMdsClient
     Task<IEnumerable<ProsecutorOrCaseworkerEntity>> GetProsecutorsAsync(MdsUnitIdArg arg);
     Task<IEnumerable<ProsecutorOrCaseworkerEntity>> GetCaseworkersAsync(MdsUnitIdArg arg);
     Task<IEnumerable<CourtEntity>> GetCourtsAsync(MdsUnitIdArg arg);
-    Task<UnitsDto> GetUnitsAsync(MdsBaseArgDto arg);
+    Task<IEnumerable<UnitEntity>> GetUnitsAsync(MdsBaseArgDto arg);
+    Task<UserDataEntity> GetUserDataAsync(MdsBaseArgDto arg);
     Task<IEnumerable<WMSUnitEntity>> GetWMSUnitsAsync(MdsBaseArgDto arg);
     Task<IEnumerable<CaseInfoEntity>> ListCasesByUrnAsync(MdsUrnArg arg);
     Task<string?> GetCmsModernTokenAsync(MdsBaseArgDto arg);
-    Task<CaseRegistrationResponseDto> RegisterCaseAsync(MdsRegisterCaseArg arg);
+    Task<CaseRegistrationEntity> RegisterCaseAsync(MdsRegisterCaseArg arg);
     Task<IEnumerable<PoliceUnitEntity>> GetPoliceUnitsAsync(MdsBaseArgDto arg);
     Task<OffencesEntity> SearchOffences(MdsOffenceSearchArg arg);
 }
