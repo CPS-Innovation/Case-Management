@@ -6,6 +6,8 @@ using AutoFixture;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Functions;
 using Cps.CaseManagement.Api.Helpers;
+using Cps.CaseManagement.Api.Models.Dto;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.Api.Validators;
 using Cps.CaseManagement.Domain.Models;
@@ -13,7 +15,6 @@ using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using CPS.CaseManagement.MdsClient.Models.Dto;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ namespace Cps.CaseManagement.Api.Tests.Unit.Functions;
 public class RegisterCaseTest
 {
     private readonly Mock<ILogger<RegisterCase>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsServiceMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Mock<IRequestValidator> _requestValidatorMock;
     private readonly Fixture _fixture;
@@ -37,11 +38,11 @@ public class RegisterCaseTest
     public RegisterCaseTest()
     {
         _loggerMock = new Mock<ILogger<RegisterCase>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsServiceMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _requestValidatorMock = new Mock<IRequestValidator>();
         _fixture = new Fixture();
-        _function = new RegisterCase(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object, _requestValidatorMock.Object);
+        _function = new RegisterCase(_loggerMock.Object, _mdsServiceMock.Object, _mdsArgFactoryMock.Object, _requestValidatorMock.Object);
     }
 
     [Fact]
@@ -87,7 +88,7 @@ public class RegisterCaseTest
                 Value = caseDetails
             });
 
-        _mdsClientMock.Setup(x => x.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()))
+        _mdsServiceMock.Setup(x => x.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()))
             .ThrowsAsync(new Exception("Error"));
 
         var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, _fixture.Create<string>(), _fixture.Create<string>());
@@ -98,7 +99,7 @@ public class RegisterCaseTest
 
         // Assert
         Assert.IsType<BadRequestObjectResult>(result);
-        _mdsClientMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
+        _mdsServiceMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
         _requestValidatorMock.Verify(v => v.GetJsonBody<CaseRegistrationRequest, CaseRegistrationRequestValidator>(It.IsAny<HttpRequest>()), Times.Once);
     }
 
@@ -117,7 +118,7 @@ public class RegisterCaseTest
                 Value = caseDetails
             });
 
-        _mdsClientMock.Setup(x => x.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()))
+        _mdsServiceMock.Setup(x => x.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()))
             .ReturnsAsync(new CaseRegistrationResponseDto { CaseId = 12345 });
 
         var functionContext = FunctionContextStubHelper.CreateFunctionContextStub(correlationId, _fixture.Create<string>(), _fixture.Create<string>());
@@ -129,7 +130,7 @@ public class RegisterCaseTest
         // Assert
         Assert.IsType<OkObjectResult>(result);
         _mdsArgFactoryMock.Verify(f => f.CreateRegisterCaseArg(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CaseRegistrationRequest>()), Times.Once);
-        _mdsClientMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
+        _mdsServiceMock.Verify(c => c.RegisterCaseAsync(It.IsAny<MdsRegisterCaseArg>()), Times.Once);
     }
 
     private static HttpRequest CreateHttpRequestFromJson(object obj, Guid correlationId)

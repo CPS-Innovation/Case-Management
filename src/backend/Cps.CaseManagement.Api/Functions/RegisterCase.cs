@@ -4,11 +4,12 @@ using System.Net;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Helpers;
+using Cps.CaseManagement.Api.Models.Dto;
+using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.Api.Validators;
 using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using CPS.CaseManagement.MdsClient.Models.Dto;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,10 +18,10 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 
-public class RegisterCase(ILogger<RegisterCase> logger, IMdsClient mdsClient, IMdsArgFactory mdsArgFactory, IRequestValidator requestValidator)
+public class RegisterCase(ILogger<RegisterCase> logger, IMdsService mdsService, IMdsArgFactory mdsArgFactory, IRequestValidator requestValidator)
 {
     private readonly ILogger<RegisterCase> _logger = logger;
-    private readonly IMdsClient _mdsClient = mdsClient;
+    private readonly IMdsService _mdsService = mdsService;
     private readonly IMdsArgFactory _mdsArgFactory = mdsArgFactory;
     private readonly IRequestValidator _requestValidator = requestValidator;
 
@@ -48,7 +49,7 @@ public class RegisterCase(ILogger<RegisterCase> logger, IMdsClient mdsClient, IM
 
         try
         {
-            var result = await _mdsClient.RegisterCaseAsync(
+            var result = await _mdsService.RegisterCaseAsync(
             _mdsArgFactory.CreateRegisterCaseArg(
                 context.CmsAuthValues,
                 context.CorrelationId,

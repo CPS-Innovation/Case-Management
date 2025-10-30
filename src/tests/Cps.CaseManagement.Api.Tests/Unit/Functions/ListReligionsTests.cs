@@ -3,18 +3,18 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using AutoFixture;
 using Cps.CaseManagement.Api.Functions;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Cps.CaseManagement.MdsClient.Models.Entities;
 using Cps.CaseManagement.Api.Tests.Helpers;
+using Cps.CaseManagement.Api.Services;
+using Cps.CaseManagement.Api.Models.Dto;
 
 namespace Cps.CaseManagement.Api.Tests.Unit.Functions;
 
 public class ListReligionsTests
 {
     private readonly Mock<ILogger<ListReligions>> _loggerMock;
-    private readonly Mock<IMdsClient> _mdsClientMock;
+    private readonly Mock<IMdsService> _mdsClientMock;
     private readonly Mock<IMdsArgFactory> _mdsArgFactoryMock;
     private readonly Fixture _fixture;
     private readonly ListReligions _function;
@@ -22,7 +22,7 @@ public class ListReligionsTests
     public ListReligionsTests()
     {
         _loggerMock = new Mock<ILogger<ListReligions>>();
-        _mdsClientMock = new Mock<IMdsClient>();
+        _mdsClientMock = new Mock<IMdsService>();
         _mdsArgFactoryMock = new Mock<IMdsArgFactory>();
         _fixture = new Fixture();
         _function = new ListReligions(_loggerMock.Object, _mdsClientMock.Object, _mdsArgFactoryMock.Object);
@@ -32,7 +32,7 @@ public class ListReligionsTests
     public async Task Run_ReturnsOkObjectResult_WithExpectedReligions()
     {
         // Arrange
-        var expectedReligions = _fixture.Create<ReligionEntity[]>();
+        var expectedReligions = _fixture.Create<ReligionDto[]>();
         var correlationId = _fixture.Create<Guid>();
         var cmsAuthValues = _fixture.Create<string>();
         var baseArg = _fixture.Create<MdsBaseArgDto>();
