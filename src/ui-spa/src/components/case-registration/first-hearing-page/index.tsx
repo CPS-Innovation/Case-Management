@@ -234,6 +234,8 @@ const FirstHearingPage = () => {
 
     if (!validateFormData(state, courtLocations, inputCourtLocationValue))
       return;
+    if (state.formData.suspectDetailsRadio === "yes")
+      return navigate(`/case-registration/suspect-1/add-suspect`);
 
     return navigate("/case-registration/case-complexity");
   };

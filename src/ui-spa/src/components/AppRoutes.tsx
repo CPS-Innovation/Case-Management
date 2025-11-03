@@ -8,6 +8,7 @@ import CaseMonitoringCodesPage from "./case-registration/case-monitoring-codes";
 import CaseAssigneePage from "./case-registration/case-assignee";
 import CaseSummaryPage from "./case-registration/case-summary-page";
 import CaseRegistrationConfirmationPage from "./case-registration/case-registartion-confirmation";
+import AddSuspectPage from "./case-registration/add-suspect";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -43,6 +44,10 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/case-registration-confirmation"
           element={<CaseRegistrationConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/add-suspect"
+          element={<AddSuspectPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

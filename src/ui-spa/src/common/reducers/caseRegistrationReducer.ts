@@ -33,6 +33,39 @@ export type CaseRegistrationField =
   | "caseInvestigatorShoulderNameText"
   | "caseInvestigatorShoulderNumberText"
   | "caseInvestigatorPoliceUnitText";
+export type SuspectAdditionalDetailValue =
+  | "Date of Birth"
+  | "Gender"
+  | "Disability"
+  | "Religion"
+  | "Ethnicity"
+  | "Alias details"
+  | "Serious dangerous offender (SDO)"
+  | "Arrest summons number (ASN)"
+  | "Type of offender";
+type GenderValue = "male" | "female" | "other";
+type GeneralRadioValue = "yes" | "no" | "";
+type SuspectTypeValue = "person" | "company" | "";
+export type SuspectFormData = {
+  addSuspectRadio: SuspectTypeValue;
+  suspectFirstNameText: string;
+  suspectLastNameText: string;
+  suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[];
+  suspectDOBDayText: string;
+  suspectDOBMonthText: string;
+  suspectDOBYearText: string;
+  suspectGenderRadio: GenderValue;
+  suspectDisabilityRadio: GeneralRadioValue;
+  suspectReligionRadio: string;
+  suspectEthinicityRadio: string;
+  aliases: { firstName: string; lastName: string }[];
+  sdoRadio: GeneralRadioValue;
+  asnText: string;
+  offenderTypeRadio: string;
+  suspectCompanyNameText: string;
+};
+
+export type SuspectFieldNames = keyof SuspectFormData;
 
 export type CaseRegistrationFormData = {
   operationNameRadio: string;
@@ -63,6 +96,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNameText: string;
   caseInvestigatorShoulderNumberText: string;
   caseInvestigatorPoliceUnitText: string;
+  suspects: SuspectFormData[];
 };
 
 export type CaseRegistrationState = {
@@ -106,6 +140,7 @@ export const initialState: CaseRegistrationState = {
     caseInvestigatorShoulderNameText: "",
     caseInvestigatorShoulderNumberText: "",
     caseInvestigatorPoliceUnitText: "",
+    suspects: [],
   },
 
   apiData: {
@@ -131,6 +166,14 @@ export type CaseRegistrationActions =
           | { shortCode: string | null; display: string }
           | string
           | string[];
+      };
+    }
+  | {
+      type: "SET_SUSPECT_FIELD";
+      payload: {
+        index: number;
+        field: SuspectFieldNames;
+        value: SuspectAdditionalDetailValue[] | string;
       };
     }
   | {
@@ -203,6 +246,20 @@ export const caseRegistrationReducer = (
           ...state.formData,
           ...resetValues,
           [action.payload.field]: action.payload.value,
+        },
+      };
+    }
+    case "SET_SUSPECT_FIELD": {
+      const suspects = [...state.formData.suspects];
+      suspects[action.payload.index] = {
+        ...suspects[action.payload.index],
+        [action.payload.field]: action.payload.value,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
         },
       };
     }
