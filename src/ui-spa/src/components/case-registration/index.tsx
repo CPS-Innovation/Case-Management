@@ -80,7 +80,6 @@ const CaseRegistrationPage = () => {
         case "genericError":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            "data-testid": "generic-error-text",
           };
         default:
           return null;
@@ -204,6 +203,7 @@ const CaseRegistrationPage = () => {
           ref={errorSummaryRef}
           tabIndex={-1}
           className={styles.errorSummaryWrapper}
+          data-testid="error-summary-wrapper"
         >
           <ErrorSummary
             data-testid={"case-registration-error-summary"}
@@ -265,7 +265,8 @@ const CaseRegistrationPage = () => {
               {
                 children: "No",
                 value: "no",
-                "data-testid": "radio-operation-name-no",
+                id: "operation-name-radio-no",
+                "data-testid": "operation-name-radio-no",
               },
             ]}
             value={state.formData.operationNameRadio}
@@ -297,6 +298,7 @@ const CaseRegistrationPage = () => {
               {
                 children: "No",
                 value: "no",
+                id: "suspect-details-radio-no",
                 "data-testid": "suspect-details-radio-no",
               },
             ]}

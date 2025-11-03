@@ -148,6 +148,7 @@ const CaseAreasPage = () => {
           ref={errorSummaryRef}
           tabIndex={-1}
           className={styles.errorSummaryWrapper}
+          data-testid="error-summary-wrapper"
         >
           <ErrorSummary
             data-testid={"case-area-error-summary"}
@@ -159,6 +160,7 @@ const CaseAreasPage = () => {
       <form onSubmit={handleSubmit}>
         <AutoComplete
           id="area-or-division-text"
+          data-testid="area-or-division-text"
           inputClasses={"govuk-input--error"}
           source={areaSuggests}
           confirmOnBlur={false}
@@ -169,6 +171,11 @@ const CaseAreasPage = () => {
               ? formDataErrors["areaOrDivisionText"].errorSummaryText
               : undefined
           }
+          label={{
+            children: (
+              <span className="govuk-visually-hidden">Area or division</span>
+            ),
+          }}
         />
 
         <Button type="submit" onClick={() => handleSubmit}>

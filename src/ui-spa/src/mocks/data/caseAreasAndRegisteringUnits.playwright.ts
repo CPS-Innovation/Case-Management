@@ -1,39 +1,32 @@
 export const caseAreasAndRegisteringUnitsPlaywright = {
   allUnits: [
     {
-      areaId: 11,
+      areaId: 1002,
+      areaDescription: "Suffolk",
+      areaIsSensitive: false,
+      id: 2003,
+      description: "SuffolkMags",
+    },
+    {
+      areaId: 1001,
+      areaDescription: "Surrey",
+      areaIsSensitive: false,
+      id: 2001,
+      description: "Surrey Trials Unit",
+    },
+    {
+      areaId: 1001,
       areaDescription: "Surrey",
       areaIsSensitive: false,
       id: 2002,
       description: "Guildford Mags",
     },
-    {
-      areaId: 11,
-      areaDescription: "Surrey",
-      areaIsSensitive: false,
-      id: 2003,
-      description: "Reigate Criminal Justice Unit",
-    },
-    {
-      areaId: 11,
-      areaDescription: "Surrey",
-      areaIsSensitive: false,
-      id: 2004,
-      description: "Staines Criminal Justice Unit",
-    },
-    {
-      areaId: 121,
-      areaDescription: "Organised Crime ",
-      areaIsSensitive: false,
-      id: 3001,
-      description: "Organised Crime Unit",
-    },
   ],
   homeUnit: {
-    areaId: 121,
-    areaDescription: "Organised Crime ",
+    areaId: 1001,
+    areaDescription: "Surrey",
     areaIsSensitive: false,
-    id: 3001,
-    description: "Organised Crime Unit",
+    id: 2001,
+    description: "Surrey Trials Unit",
   },
 };
