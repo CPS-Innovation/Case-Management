@@ -11,7 +11,7 @@ export type CaseRegistration = {
   operationName: string;
   courtLocationId: number;
   courtLocationName: string;
-  hearingDate: string;
+  hearingDate: string | null;
   complexity: string;
   monitoringCodes: { code: string; selected: boolean }[];
   prosecutorId: number;

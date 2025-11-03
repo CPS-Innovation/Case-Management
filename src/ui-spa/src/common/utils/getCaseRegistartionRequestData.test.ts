@@ -146,7 +146,7 @@ describe("getCaseRegistrationRequestData", () => {
       caseWorker: "",
       courtLocationId: 0,
       courtLocationName: "",
-      hearingDate: "",
+      hearingDate: null,
       monitoringCodes: [
         {
           code: "MC001",
