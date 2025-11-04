@@ -51,9 +51,6 @@ export type SuspectFormData = {
   suspectFirstNameText: string;
   suspectLastNameText: string;
   suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[];
-  suspectDOBDayText: string;
-  suspectDOBMonthText: string;
-  suspectDOBYearText: string;
   suspectGenderRadio: GenderValue;
   suspectDisabilityRadio: GeneralRadioValue;
   suspectReligionRadio: string;
@@ -63,6 +60,9 @@ export type SuspectFormData = {
   asnText: string;
   offenderTypeRadio: string;
   suspectCompanyNameText: string;
+  suspectDOBDayText: string;
+  suspectDOBMonthText: string;
+  suspectDOBYearText: string;
 };
 
 export type SuspectFieldNames = keyof SuspectFormData;

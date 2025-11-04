@@ -103,7 +103,7 @@ const AddSuspectPage = () => {
     if (!addSuspectRadio) {
       errors.addSuspectRadio = {
         errorSummaryText: "Please select an option for adding a suspect",
-        inputErrorText: "Please select an option",
+        inputErrorText: "Please select an option for adding a suspect",
         hasLink: true,
       };
     }
@@ -111,7 +111,7 @@ const AddSuspectPage = () => {
     if (addSuspectRadio == "person" && !suspectLastNameText) {
       errors.suspectLastNameText = {
         errorSummaryText: "Please add last Name for the suspect",
-        inputErrorText: "Please enter a last name",
+        inputErrorText: "Please add last Name for the suspect",
         hasLink: true,
       };
     }
@@ -119,7 +119,7 @@ const AddSuspectPage = () => {
     if (addSuspectRadio == "company" && !suspectCompanyNameText) {
       errors.suspectCompanyNameText = {
         errorSummaryText: "Please add company Name for the suspect",
-        inputErrorText: "Please enter a company name",
+        inputErrorText: "Please add company Name for the suspect",
         hasLink: true,
       };
     }
@@ -183,7 +183,7 @@ const AddSuspectPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/case-complexity");
+    return navigate(`/case-registration/${suspectId}/suspect-dob`);
   };
 
   const {
