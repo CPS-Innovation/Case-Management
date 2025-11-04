@@ -32,6 +32,7 @@ const AddSuspectPage = () => {
   type FormDataErrors = {
     addSuspectRadio?: ErrorText;
     suspectLastNameText?: ErrorText;
+    suspectCompanyNameText?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -80,6 +81,12 @@ const AddSuspectPage = () => {
             "data-testid": "suspect-last-name-text-link",
           };
 
+        case "suspectCompanyNameText":
+          return {
+            children: formDataErrors[errorKey]?.errorSummaryText,
+            href: "#suspect-company-name-text",
+            "data-testid": "suspect-company-name-text-link",
+          };
         default:
           return null;
       }
@@ -103,8 +110,16 @@ const AddSuspectPage = () => {
 
     if (addSuspectRadio == "person" && !suspectLastNameText) {
       errors.suspectLastNameText = {
-        errorSummaryText: "Please enter a last name for the suspect",
+        errorSummaryText: "Please add last Name for the suspect",
         inputErrorText: "Please enter a last name",
+        hasLink: true,
+      };
+    }
+
+    if (addSuspectRadio == "company" && !suspectCompanyNameText) {
+      errors.suspectCompanyNameText = {
+        errorSummaryText: "Please add company Name for the suspect",
+        inputErrorText: "Please enter a company name",
         hasLink: true,
       };
     }
@@ -139,7 +154,7 @@ const AddSuspectPage = () => {
       | "suspectLastNameText"
       | "suspectAdditionalDetailsCheckboxes"
       | "suspectCompanyNameText",
-    value: SuspectAdditionalDetailValue,
+    value: string | SuspectAdditionalDetailValue[],
   ) => {
     dispatch({
       type: "SET_SUSPECT_FIELD",
@@ -244,6 +259,15 @@ const AddSuspectPage = () => {
                       label={{
                         children: "Last name",
                       }}
+                      errorMessage={
+                        formDataErrors["suspectLastNameText"]
+                          ? {
+                              children:
+                                formDataErrors["suspectLastNameText"]
+                                  .errorSummaryText,
+                            }
+                          : undefined
+                      }
                       type="text"
                       value={suspectLastNameText}
                       onChange={(value: string) => {
@@ -298,6 +322,15 @@ const AddSuspectPage = () => {
                       label={{
                         children: "Company name",
                       }}
+                      errorMessage={
+                        formDataErrors["suspectCompanyNameText"]
+                          ? {
+                              children:
+                                formDataErrors["suspectCompanyNameText"]
+                                  .errorSummaryText,
+                            }
+                          : undefined
+                      }
                       type="text"
                       value={suspectCompanyNameText}
                       onChange={(value: string) => {
