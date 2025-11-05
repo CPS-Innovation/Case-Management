@@ -1,4 +1,4 @@
-namespace Cps.CaseManagement.Application.Extensions;
+namespace Cps.CaseManagement.Infrastructure.Extensions;
 
 public static class ListExtensions
 {

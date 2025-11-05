@@ -13,8 +13,9 @@ using Cps.CaseManagement.Api.Middleware;
 using Cps.CaseManagement.Api.OpenApi;
 using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.Api.Validators;
-using Cps.CaseManagement.Application.Telemetry;
 using Cps.CaseManagement.MdsClient.Extensions;
+using Cps.CaseManagement.Infrastructure.Telemetry;
+using Cps.CaseManagement.Infrastructure.Extensions;
 
 using var loggerFactory = LoggerFactory.Create(configure => configure.AddConsole());
 var logger = loggerFactory.CreateLogger("Configuration");
@@ -77,14 +78,11 @@ var host = new HostBuilder()
                         new HttpDocumentRetriever());
         });
 
+        services.AddTelemetryServices();
         services.AddMdsClient(configuration);
         services.AddScoped<IInitService, InitService>();
-
         services.AddSingleton<IOpenApiConfigurationOptions, CaseManagementApiOpenApiConfigurationOptions>();
-
         services.AddSingleton<IRequestValidator, RequestValidator>();
-        services.AddSingleton<ITelemetryInitializer, TelemetryInitializer>();
-        services.AddSingleton<ITelemetryClient, TelemetryClient>();
     })
     .Build();
 

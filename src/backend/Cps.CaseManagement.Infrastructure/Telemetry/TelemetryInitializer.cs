@@ -1,4 +1,4 @@
-namespace Cps.CaseManagement.Application.Telemetry;
+namespace Cps.CaseManagement.Infrastructure.Telemetry;
 
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;

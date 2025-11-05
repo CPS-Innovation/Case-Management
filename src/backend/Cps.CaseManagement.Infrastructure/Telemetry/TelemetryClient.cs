@@ -1,4 +1,4 @@
-namespace Cps.CaseManagement.Application.Telemetry;
+namespace Cps.CaseManagement.Infrastructure.Telemetry;
 
 using System;
 using System.Collections.Generic;
@@ -6,10 +6,16 @@ using Microsoft.ApplicationInsights.DataContracts;
 using AppInsights = Microsoft.ApplicationInsights;
 
 public class TelemetryClient : ITelemetryClient
-{   
-    protected readonly AppInsights.TelemetryClient _telemetryClient;
+{
+    protected readonly IAppInsightsTelemetryClient _telemetryClient;
 
-    public TelemetryClient(AppInsights.TelemetryClient telemetryClient)
+    private const string ExceptionMessageKey = "exceptionMessage";
+    private const string ExceptionStackTraceKey = "exceptionStackTrace";
+    private const string PageNameKey = "pageName";
+    private const string SeverityLevelKey = "severityLevel";
+    private const string MessageKey = "message";
+
+    public TelemetryClient(IAppInsightsTelemetryClient telemetryClient)
     {
         _telemetryClient = telemetryClient;
     }
@@ -31,8 +37,12 @@ public class TelemetryClient : ITelemetryClient
 
         var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent, true);
 
-        var exceptionMessage = properties?["exceptionMessage"]?.ToString() ?? "Exception occurred";
-        var exceptionStackTrace = properties?["exceptionStackTrace"]?.ToString() ?? string.Empty;
+        var exceptionMessage = "Exception occurred";
+        if (properties != null && properties.ContainsKey(ExceptionMessageKey))
+        {
+            exceptionMessage = properties[ExceptionMessageKey] ?? "Exception occurred";
+        }
+
         var exception = new Exception(exceptionMessage);
 
         _telemetryClient.TrackException(exception, properties, metrics);
@@ -64,7 +74,10 @@ public class TelemetryClient : ITelemetryClient
 
         var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent);
 
-        var pageName = properties?["pageName"]?.ToString() ?? string.Empty;
+        if (!properties.ContainsKey(PageNameKey))
+            return;
+
+        var pageName = properties?[PageNameKey]?.ToString() ?? string.Empty;
 
         if (string.IsNullOrEmpty(pageName))
             return;
@@ -79,11 +92,20 @@ public class TelemetryClient : ITelemetryClient
 
         var (properties, metrics) = PrepareTelemetryEventProps(telemetryEvent);
 
-        var message = properties?["message"]?.ToString() ?? string.Empty;
-        var severityLevel = properties?["severityLevel"]?.ToString() ?? "Information";
+        var message = string.Empty;
+        if (properties != null && properties.ContainsKey(MessageKey))
+        {
+            message = properties[MessageKey] ?? string.Empty;
+        }
 
-        SeverityLevel appInsightsSeverityLevel = SeverityLevel.Information;
-        Enum.TryParse<SeverityLevel>(severityLevel, true, out appInsightsSeverityLevel);
+        var severityLevel = SeverityLevel.Information.ToString();
+        if (properties != null && properties.ContainsKey(SeverityLevelKey))
+        {
+            severityLevel = properties[SeverityLevelKey]?.ToString() ?? SeverityLevel.Information.ToString();
+        }
+
+        TryParseEnum<SeverityLevel>(severityLevel, out var parsedSeverityLevel);
+        var appInsightsSeverityLevel = parsedSeverityLevel ?? SeverityLevel.Information;
 
         _telemetryClient.TrackTrace(message,
             appInsightsSeverityLevel,
@@ -162,7 +184,7 @@ public class TelemetryClient : ITelemetryClient
 
         return ToLowerFirstChar(propertyName);
     }
-    
+
     public static string ToLowerFirstChar(string input)
     {
         if (string.IsNullOrEmpty(input) || char.IsLower(input, 0))
@@ -171,5 +193,18 @@ public class TelemetryClient : ITelemetryClient
         }
 
         return char.ToLower(input[0]) + input.Substring(1);
+    }
+    
+    public static bool TryParseEnum<TEnum>(string value, out TEnum? result) where TEnum : struct, Enum
+    {
+        result = null;
+        
+        if (Enum.TryParse(value, out TEnum parsedEnum))
+        {
+            result = parsedEnum;
+            return true;
+        }
+
+        return false;
     }
 }

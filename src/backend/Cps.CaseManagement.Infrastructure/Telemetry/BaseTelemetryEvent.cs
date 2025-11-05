@@ -1,4 +1,4 @@
-namespace Cps.CaseManagement.Application.Telemetry;
+namespace Cps.CaseManagement.Infrastructure.Telemetry;
 
 public abstract class BaseTelemetryEvent
 {

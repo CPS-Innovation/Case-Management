@@ -6,7 +6,7 @@ namespace Cps.CaseManagement.Api.Functions
     using Cps.CaseManagement.Api.Context;
     using Cps.CaseManagement.Api.Models.Domain;
     using Cps.CaseManagement.Api.TelemetryEvents;
-    using Cps.CaseManagement.Application.Telemetry;
+    using Cps.CaseManagement.Infrastructure.Telemetry;
     using Microsoft.ApplicationInsights;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -32,6 +32,11 @@ namespace Cps.CaseManagement.Api.Functions
 
             using var reader = new StreamReader(req.Body);
             var requestJson = await reader.ReadToEndAsync();
+
+            if (string.IsNullOrWhiteSpace(requestJson))
+            {
+                return new BadRequestObjectResult("Request body is empty.");
+            }
 
             var uiTelemetry = JsonSerializer.Deserialize<UiTelemetry>(requestJson, GetJsonSerializerOptions());
 
@@ -71,7 +76,7 @@ namespace Cps.CaseManagement.Api.Functions
             return new OkResult();
         }
         
-        private JsonSerializerOptions GetJsonSerializerOptions()
+        private static JsonSerializerOptions GetJsonSerializerOptions()
         {
             return new JsonSerializerOptions
             {
