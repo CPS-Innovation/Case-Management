@@ -41,12 +41,20 @@ const FirstHearingPage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const { data: courtLocationsData, isLoading: isCourtLocationsLoading } =
-    useQuery({
-      queryKey: ["court-locations", registeringUnitId],
-      enabled: !!registeringUnitId,
-      queryFn: () => getCourtsByUnitId(registeringUnitId!),
-    });
+  const {
+    data: courtLocationsData,
+    isLoading: isCourtLocationsLoading,
+    error: courtLocationsError,
+  } = useQuery({
+    queryKey: ["court-locations", registeringUnitId],
+    enabled: !!registeringUnitId,
+    queryFn: () => getCourtsByUnitId(registeringUnitId!),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (courtLocationsError) throw courtLocationsError;
+  }, [courtLocationsError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -231,14 +239,8 @@ const FirstHearingPage = () => {
   };
 
   return (
-    <div>
-      <BackLink
-        to="/case-registration/case-details"
-        replace
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+    <div className={styles.caseDetailsPage}>
+      <BackLink to="/case-registration/case-details">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -268,7 +270,6 @@ const FirstHearingPage = () => {
                   }
                 : undefined
             }
-            name="Do you have details of the first hearing?"
             items={[
               {
                 id: "first-hearing-radio-yes",
@@ -277,31 +278,33 @@ const FirstHearingPage = () => {
                 "data-testid": "first-hearing-radio-yes",
                 conditional: {
                   children: [
-                    <AutoComplete
-                      key="first-hearing-court-location-text"
-                      id="first-hearing-court-location-text"
-                      inputClasses={"govuk-input--error"}
-                      source={courtLocationsSuggest}
-                      confirmOnBlur={false}
-                      onConfirm={handleCourtLocationConfirm}
-                      defaultValue={
-                        state.formData.firstHearingCourtLocationText
-                          ?.description
-                      }
-                      label={{
-                        children: (
-                          <h2>What is the first hearing court location?</h2>
-                        ),
-                      }}
-                      errorMessage={
-                        formDataErrors["firstHearingCourtLocationText"]
-                          ? formDataErrors["firstHearingCourtLocationText"]
-                              .errorSummaryText
-                          : undefined
-                      }
-                    />,
+                    state.formData.firstHearingRadio === "yes" && (
+                      <AutoComplete
+                        key="first-hearing-court-location-text"
+                        id="first-hearing-court-location-text"
+                        inputClasses={"govuk-input--error"}
+                        source={courtLocationsSuggest}
+                        confirmOnBlur={false}
+                        onConfirm={handleCourtLocationConfirm}
+                        defaultValue={
+                          state.formData.firstHearingCourtLocationText
+                            ?.description
+                        }
+                        label={{
+                          children: (
+                            <h2>What is the first hearing court location?</h2>
+                          ),
+                        }}
+                        errorMessage={
+                          formDataErrors["firstHearingCourtLocationText"]
+                            ? formDataErrors["firstHearingCourtLocationText"]
+                                .errorSummaryText
+                            : undefined
+                        }
+                      />
+                    ),
                     <DateInputNative
-                      key="first-hearing-dat-text"
+                      key="first-hearing-date-text"
                       id="first-hearing-date-text"
                       label={<h2>Date</h2>}
                       value={state.formData.firstHearingDateText}

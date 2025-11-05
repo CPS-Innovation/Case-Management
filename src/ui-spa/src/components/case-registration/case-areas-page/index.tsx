@@ -42,6 +42,30 @@ const CaseAreasPage = () => {
     [formDataErrors],
   );
 
+  const errorList = useMemo(() => {
+    const validErrorKeys = Object.keys(formDataErrors).filter(
+      (errorKey) => formDataErrors[errorKey as keyof FormDataErrors],
+    );
+
+    const errorSummary = validErrorKeys.map((errorKey, index) => ({
+      reactListKey: `${index}`,
+      ...errorSummaryProperties(errorKey as keyof FormDataErrors)!,
+    }));
+
+    return errorSummary;
+  }, [formDataErrors, errorSummaryProperties]);
+
+  const areas = useMemo(() => {
+    if (state.apiData.areasAndRegisteringUnits) {
+      return getAreasOrDivisions(state.apiData.areasAndRegisteringUnits);
+    }
+    return [];
+  }, [state.apiData.areasAndRegisteringUnits]);
+
+  useEffect(() => {
+    if (errorList.length) errorSummaryRef.current?.focus();
+  }, [errorList]);
+
   const validateFormData = (
     areas: {
       id: number;
@@ -71,31 +95,7 @@ const CaseAreasPage = () => {
     return isValid;
   };
 
-  const errorList = useMemo(() => {
-    const validErrorKeys = Object.keys(formDataErrors).filter(
-      (errorKey) => formDataErrors[errorKey as keyof FormDataErrors],
-    );
-
-    const errorSummary = validErrorKeys.map((errorKey, index) => ({
-      reactListKey: `${index}`,
-      ...errorSummaryProperties(errorKey as keyof FormDataErrors)!,
-    }));
-
-    return errorSummary;
-  }, [formDataErrors, errorSummaryProperties]);
-
-  const areas = useMemo(() => {
-    if (state.apiData.areasAndRegisteringUnits) {
-      return getAreasOrDivisions(state.apiData.areasAndRegisteringUnits);
-    }
-    return [];
-  }, [state.apiData.areasAndRegisteringUnits]);
-
-  useEffect(() => {
-    if (errorList.length) errorSummaryRef.current?.focus();
-  }, [errorList]);
-
-  const suggest = (
+  const areaSuggests = (
     query: string,
     populateResults: (results: string[]) => void,
   ) => {
@@ -141,13 +141,7 @@ const CaseAreasPage = () => {
   };
   return (
     <div className={styles.caseAreasPage}>
-      <BackLink
-        to={"/case-registration"}
-        replace
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+      <BackLink to={"/case-registration"}>Back</BackLink>
       <h1>What is the division or area?</h1>
       {!!errorList.length && (
         <div
@@ -166,7 +160,7 @@ const CaseAreasPage = () => {
         <AutoComplete
           id="area-or-division-text"
           inputClasses={"govuk-input--error"}
-          source={suggest}
+          source={areaSuggests}
           confirmOnBlur={false}
           onConfirm={handleAreaConfirm}
           defaultValue={state.formData.areaOrDivisionText.description}

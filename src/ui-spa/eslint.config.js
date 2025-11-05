@@ -10,46 +10,46 @@ import pluginPrettier from "eslint-plugin-prettier";
 import pluginPrettierRecommented from "eslint-plugin-prettier/recommended";
 
 export default defineConfig([
-  globalIgnores(["dist", "coverage", "public"]),
-  {
-    files: ["**/*.{ts,tsx}"],
+    globalIgnores(["dist", "coverage", "public"]),
+    {
+        files: ["**/*.{ts,tsx}"],
 
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
-    settings: { react: { version: "detect" } },
-    plugins: {
-      react: pluginReact,
-      "react-hooks": pluginReactHooks,
-      prettier: pluginPrettier,
-    },
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactRefresh.configs.vite,
-      pluginReact.configs.flat.recommended,
-      jsxA11y.flatConfigs.recommended,
-      pluginPrettierRecommented,
-    ],
-    rules: {
-      "prettier/prettier": [
-        "error",
-        {
-          endOfLine: "auto",
+        languageOptions: {
+            ecmaVersion: 2020,
+            globals: globals.browser,
         },
-      ],
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+        settings: { react: { version: "detect" } },
+        plugins: {
+            react: pluginReact,
+            "react-hooks": pluginReactHooks,
+            prettier: pluginPrettier,
+        },
+        extends: [
+            js.configs.recommended,
+            tseslint.configs.recommended,
+            reactRefresh.configs.vite,
+            pluginReact.configs.flat.recommended,
+            jsxA11y.flatConfigs.recommended,
+            pluginPrettierRecommented,
+        ],
+        rules: {
+            "prettier/prettier": [
+                "error",
+                {
+                    endOfLine: "auto",
+                },
+            ],
+            "react/react-in-jsx-scope": "off",
+            "react/prop-types": "off",
+            "react-hooks/rules-of-hooks": "error",
+            "react-hooks/exhaustive-deps": "warn",
+        },
     },
-  },
-  {
-    files: ["**/utils/test.ts"],
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "react-hooks/rules-of-hooks": "off"
+    {
+        files: ["**/utils/test.ts", "**/*.test.ts"],
+        rules: {
+            "@typescript-eslint/no-explicit-any": "off",
+            "react-hooks/rules-of-hooks": "off",
+        },
     },
-  },
 ]);

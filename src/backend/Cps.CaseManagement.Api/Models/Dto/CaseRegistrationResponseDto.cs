@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
 using Cps.CaseManagement.MdsClient.Models.Entities;
 
-namespace CPS.CaseManagement.MdsClient.Models.Dto;
+namespace Cps.CaseManagement.Api.Models.Dto;
 
 public class CaseRegistrationResponseDto
 {

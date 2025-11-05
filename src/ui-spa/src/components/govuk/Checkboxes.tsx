@@ -24,13 +24,13 @@ export type CheckboxesProps = Omit<
       HTMLSpanElement
     >;
   };
-  fieldset?: { legend: { children: string } };
+  fieldset?: { legend: { children: React.ReactNode } };
   formGroup?: { className: string };
-  hint?: string;
+  hint?: { children: React.ReactNode };
   idPrefix?: string;
   items: CheckBoxesItems[];
 
-  name: string;
+  name?: string;
   onChange?: (ev: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (ev: React.FocusEvent<HTMLInputElement>) => void;
   describedByProp?: string;

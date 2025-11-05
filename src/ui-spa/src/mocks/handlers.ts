@@ -8,6 +8,14 @@ import {
   courtLocationsPlaywright,
   caseComplexitiesDev,
   caseComplexitiesPlaywright,
+  caseMonitoringCodesDev,
+  caseMonitoringCodesPlaywright,
+  caseCaseworkersDev,
+  caseCaseworkersPlaywright,
+  caseProsecutorsDev,
+  caseProsecutorsPlaywright,
+  caseInvestigatorTitlesDev,
+  caseInvestigatorTitlesPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -30,7 +38,7 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
     }),
     http.get(`${baseUrl}/api/v1/urns/:urn/exists`, async () => {
       await delay(RESPONSE_DELAY);
-      return HttpResponse.json({ exists: false });
+      return HttpResponse.json(false);
     }),
     http.get(`${baseUrl}/api/v1/courts/:registeringUnitId`, async () => {
       const results = isDevMock()
@@ -38,6 +46,7 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
         : courtLocationsPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
+      // return new HttpResponse(null, { status: 500 });
     }),
     http.get(`${baseUrl}/api/v1/complexities`, async () => {
       const results = isDevMock()
@@ -45,6 +54,39 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
         : caseComplexitiesPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/monitoring-codes`, async () => {
+      const results = isDevMock()
+        ? caseMonitoringCodesDev
+        : caseMonitoringCodesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/prosecutors/:registeringUnitId`, async () => {
+      const results = isDevMock()
+        ? caseProsecutorsDev
+        : caseProsecutorsPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/caseworkers/:registeringUnitId`, async () => {
+      const results = isDevMock()
+        ? caseCaseworkersDev
+        : caseCaseworkersPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/titles`, async () => {
+      const results = isDevMock()
+        ? caseInvestigatorTitlesDev
+        : caseInvestigatorTitlesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.post(`${baseUrl}/api/v1/cases`, async () => {
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json({ caseId: 12345 });
+      // return new HttpResponse(null, { status: 500 });
     }),
   ];
 };

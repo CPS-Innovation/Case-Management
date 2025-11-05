@@ -27,11 +27,15 @@ const CaseComplexityPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
-  const { data: caseComplexitiesData, isLoading: isCaseComplexitiesLoading } =
-    useQuery({
-      queryKey: ["case-complexities"],
-      queryFn: () => getCaseComplexities(),
-    });
+  const {
+    data: caseComplexitiesData,
+    isLoading: isCaseComplexitiesLoading,
+    error: caseComplexitiesError,
+  } = useQuery({
+    queryKey: ["case-complexities"],
+    queryFn: () => getCaseComplexities(),
+    retry: false,
+  });
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -55,7 +59,7 @@ const CaseComplexityPage = () => {
       formData: { caseComplexityRadio },
     } = state;
 
-    if (!caseComplexityRadio) {
+    if (!caseComplexityRadio.shortCode) {
       errors.caseComplexityRadio = {
         errorSummaryText: "Please select an option for case complexity",
         inputErrorText: "Please select an option",
@@ -89,6 +93,10 @@ const CaseComplexityPage = () => {
   }, [formDataErrors, errorSummaryProperties]);
 
   useEffect(() => {
+    if (caseComplexitiesError) throw caseComplexitiesError;
+  }, [caseComplexitiesError]);
+
+  useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
@@ -104,9 +112,19 @@ const CaseComplexityPage = () => {
   }, [caseComplexitiesData, dispatch, isCaseComplexitiesLoading]);
 
   const setFormValue = (fieldName: "caseComplexityRadio", value: string) => {
+    const selectedItem = caseComplexities.find(
+      (complexity) => `${complexity.shortCode}` === value,
+    );
+    if (!selectedItem) return;
     dispatch({
       type: "SET_FIELD",
-      payload: { field: fieldName, value: value },
+      payload: {
+        field: fieldName,
+        value: {
+          shortCode: `${selectedItem.shortCode}`,
+          description: selectedItem.description,
+        },
+      },
     });
   };
 
@@ -115,18 +133,12 @@ const CaseComplexityPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate("/case-registration/monitoring-codes");
+    return navigate("/case-registration/case-monitoring-codes");
   };
 
   return (
-    <div>
-      <BackLink
-        to="/case-registration/first-hearing"
-        replace
-        state={{ isRouteValid: true }}
-      >
-        Back
-      </BackLink>
+    <div className={styles.caseComplexityPage}>
+      <BackLink to="/case-registration/first-hearing">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -156,14 +168,13 @@ const CaseComplexityPage = () => {
                   }
                 : undefined
             }
-            name="caseComplexityRadio"
             items={caseComplexities.map((complexity, index) => ({
               id: `case-complexity-radio-${index}`,
               children: complexity.description,
               value: complexity.shortCode.toString(),
               "data-testid": `case-complexity-radio-${index}`,
             }))}
-            value={state.formData.caseComplexityRadio}
+            value={state.formData.caseComplexityRadio.shortCode}
             onChange={(value) => {
               if (value) setFormValue("caseComplexityRadio", value);
             }}

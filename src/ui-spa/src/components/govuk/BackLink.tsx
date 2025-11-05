@@ -9,6 +9,7 @@ export type BackLinkProps = {
   state?: any;
   replace?: boolean;
   children: ReactNode;
+  disabled?: boolean;
 };
 
 export const BackLink: React.FC<BackLinkProps> = (props) => {
