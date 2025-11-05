@@ -6,7 +6,10 @@ import type { CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes
 import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
 import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
 import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
-
+import type { Genders } from "../types/responses/Genders";
+import type { Ethinicities } from "../types/responses/Ethinicities";
+import type { Religions } from "../types/responses/Religions";
+import type { OffenderTypes } from "../types/responses/OffenderTypes";
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
@@ -43,22 +46,22 @@ export type SuspectAdditionalDetailValue =
   | "Serious dangerous offender (SDO)"
   | "Arrest summons number (ASN)"
   | "Type of offender";
-type GenderValue = "male" | "female" | "other";
-type GeneralRadioValue = "yes" | "no" | "";
+
 type SuspectTypeValue = "person" | "company" | "";
+type GeneralRadioValue = "yes" | "no" | "";
 export type SuspectFormData = {
   addSuspectRadio: SuspectTypeValue;
   suspectFirstNameText: string;
   suspectLastNameText: string;
   suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[];
-  suspectGenderRadio: GenderValue;
+  suspectGenderRadio: { shortCode: string; description: string };
   suspectDisabilityRadio: GeneralRadioValue;
-  suspectReligionRadio: string;
-  suspectEthinicityRadio: string;
+  suspectReligionRadio: { shortCode: string; description: string };
+  suspectEthinicityRadio: { shortCode: string; description: string };
   aliases: { firstName: string; lastName: string }[];
-  sdoRadio: GeneralRadioValue;
-  asnText: string;
-  offenderTypeRadio: string;
+  suspectSDORadio: GeneralRadioValue;
+  suspectASNText: string;
+  suspectOffenderTypesRadio: { shortCode: string; description: string };
   suspectCompanyNameText: string;
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
@@ -110,6 +113,10 @@ export type CaseRegistrationState = {
     caseProsecutors?: CaseProsecutors | null;
     caseCaseworkers?: CaseCaseworkers | null;
     caseInvestigatorTitles?: InvestigatorTitles | null;
+    suspectGenders?: Genders | null;
+    suspectEthinicities?: Ethinicities | null;
+    suspectReligions?: Religions | null;
+    suspectOffenderTypes?: OffenderTypes | null;
   };
 };
 
@@ -152,6 +159,10 @@ export const initialState: CaseRegistrationState = {
     caseProsecutors: null,
     caseCaseworkers: null,
     caseInvestigatorTitles: null,
+    suspectGenders: null,
+    suspectEthinicities: null,
+    suspectReligions: null,
+    suspectOffenderTypes: null,
   },
 };
 
@@ -173,7 +184,10 @@ export type CaseRegistrationActions =
       payload: {
         index: number;
         field: SuspectFieldNames;
-        value: SuspectAdditionalDetailValue[] | string;
+        value:
+          | SuspectAdditionalDetailValue[]
+          | string
+          | { shortCode: string; description: string };
       };
     }
   | {
@@ -222,6 +236,30 @@ export type CaseRegistrationActions =
       type: "SET_CASE_INVESTIGATOR_TITLES";
       payload: {
         caseInvestigatorTitles: InvestigatorTitles;
+      };
+    }
+  | {
+      type: "SET_CASE_SUSPECT_GENDERS";
+      payload: {
+        suspectGenders: Genders;
+      };
+    }
+  | {
+      type: "SET_CASE_SUSPECT_ETHINICITIES";
+      payload: {
+        suspectEthinicities: Ethinicities;
+      };
+    }
+  | {
+      type: "SET_CASE_SUSPECT_RELIGIONS";
+      payload: {
+        suspectReligions: Religions;
+      };
+    }
+  | {
+      type: "SET_CASE_SUSPECT_OFFENDER_TYPES";
+      payload: {
+        suspectOffenderTypes: OffenderTypes;
       };
     }
   | {
@@ -339,6 +377,34 @@ export const caseRegistrationReducer = (
 
     case "RESET_FORM_DATA": {
       return { ...state, formData: initialState.formData };
+    }
+
+    case "SET_CASE_SUSPECT_GENDERS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          suspectGenders: action.payload.suspectGenders,
+        },
+      };
+    }
+    case "SET_CASE_SUSPECT_ETHINICITIES": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          suspectEthinicities: action.payload.suspectEthinicities,
+        },
+      };
+    }
+    case "SET_CASE_SUSPECT_RELIGIONS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          suspectReligions: action.payload.suspectReligions,
+        },
+      };
     }
 
     default:

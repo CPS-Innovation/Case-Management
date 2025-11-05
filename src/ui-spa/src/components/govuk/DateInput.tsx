@@ -12,6 +12,7 @@ type DateInputProps = {
     name: string;
     value?: string;
     disabled?: boolean;
+    maxLength?: number;
   }[];
   errorMessage?: {
     children: React.ReactNode;

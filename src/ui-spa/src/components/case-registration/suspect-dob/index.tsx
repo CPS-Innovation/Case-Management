@@ -129,12 +129,16 @@ const SuspectDOBPage = () => {
 
     console.log("event.target.name", event.target.name);
 
+    const value = event.target.value;
+
+    const newValue = value.replaceAll(/\D/g, "");
+
     dispatch({
       type: "SET_SUSPECT_FIELD",
       payload: {
         index: suspectIndex,
         field: field,
-        value: event.target.value,
+        value: newValue,
       },
     });
   };
@@ -144,7 +148,7 @@ const SuspectDOBPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate(`/case-registration/${suspectId}/suspect-DOB`);
+    return navigate(`/case-registration/${suspectId}/suspect-gender`);
   };
 
   const {
@@ -159,9 +163,6 @@ const SuspectDOBPage = () => {
     suspectDOBYearText = "",
   } = suspects[suspectIndex] || {};
 
-  console.log("suspectDOBDayText", suspectDOBDayText);
-  console.log("suspectDOBMonthText", suspectDOBMonthText);
-  console.log("suspectDOBYearText", suspectDOBYearText);
   return (
     <div className={styles.addSuspectPage}>
       <BackLink to="/case-registration/first-hearing">Back</BackLink>
@@ -212,6 +213,7 @@ const SuspectDOBPage = () => {
                 }`,
                 name: "day",
                 value: suspectDOBDayText,
+                maxLength: 2,
               },
               {
                 id: "suspect-DOB-month-text",
@@ -224,6 +226,7 @@ const SuspectDOBPage = () => {
                 }`,
                 name: "month",
                 value: suspectDOBMonthText,
+                maxLength: 2,
               },
               {
                 id: "suspect-DOB-year-text",
@@ -236,6 +239,7 @@ const SuspectDOBPage = () => {
                 }`,
                 name: "year",
                 value: suspectDOBYearText,
+                maxLength: 4,
               },
             ]}
             namePrefix="suspect-DOB"

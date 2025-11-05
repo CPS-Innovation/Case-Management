@@ -16,6 +16,12 @@ import {
   caseProsecutorsPlaywright,
   caseInvestigatorTitlesDev,
   caseInvestigatorTitlesPlaywright,
+  suspectEthnicityDev,
+  suspectEthnicityPlaywright,
+  suspectGenderDev,
+  suspectGenderPlaywright,
+  suspectReligionDev,
+  suspectReligionPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -80,6 +86,25 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       const results = isDevMock()
         ? caseInvestigatorTitlesDev
         : caseInvestigatorTitlesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/genders`, async () => {
+      const results = isDevMock() ? suspectGenderDev : suspectGenderPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/ethnicities`, async () => {
+      const results = isDevMock()
+        ? suspectEthnicityDev
+        : suspectEthnicityPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/religions`, async () => {
+      const results = isDevMock()
+        ? suspectReligionDev
+        : suspectReligionPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),

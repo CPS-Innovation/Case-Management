@@ -1,0 +1,209 @@
+import {
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
+import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
+import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { getReligions } from "../../../apis/gateway-api";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import styles from "./index.module.scss";
+
+const SuspectReligionPage = () => {
+  type ErrorText = {
+    errorSummaryText: string;
+    inputErrorText?: string;
+  };
+  type FormDataErrors = {
+    suspectReligionRadio?: ErrorText;
+  };
+  const errorSummaryRef = useRef<HTMLInputElement>(null);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
+  const navigate = useNavigate();
+  const { suspectId } = useParams<{ suspectId: string }>() as {
+    suspectId: string;
+  };
+
+  const suspectIndex = useMemo(() => {
+    const index = suspectId.replace("suspect-", "");
+    return Number.parseInt(index, 10) - 1;
+  }, [suspectId]);
+
+  const {
+    data: religionsData,
+    isLoading: isReligionsLoading,
+    error: religionsError,
+  } = useQuery({
+    queryKey: ["religion"],
+    enabled: true,
+    queryFn: () => getReligions(),
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (religionsError) throw religionsError;
+  }, [religionsError]);
+
+  const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
+
+  const errorSummaryProperties = useCallback(
+    (errorKey: keyof FormDataErrors) => {
+      if (errorKey === "suspectReligionRadio") {
+        return {
+          children: formDataErrors[errorKey]?.errorSummaryText,
+          href: "#suspect-religion-radio-0",
+          "data-testid": "suspect-religion-radio-link",
+        };
+      }
+
+      return null;
+    },
+    [formDataErrors],
+  );
+
+  const validateFormData = (state: CaseRegistrationState) => {
+    const errors: FormDataErrors = {};
+    const {
+      formData: { suspects },
+    } = state;
+    const { suspectReligionRadio = { shortCode: null, description: "" } } =
+      suspects[suspectIndex] || {};
+
+    if (!suspectReligionRadio.shortCode) {
+      errors.suspectReligionRadio = {
+        errorSummaryText: "Please select an option for suspect religion",
+        inputErrorText: "Please select an option",
+      };
+    }
+
+    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
+
+    setFormDataErrors(errors);
+    return isValid;
+  };
+
+  const errorList = useMemo(() => {
+    const validErrorKeys = Object.keys(formDataErrors).filter(
+      (errorKey) => formDataErrors[errorKey as keyof FormDataErrors],
+    );
+
+    const errorSummary = validErrorKeys.map((errorKey, index) => ({
+      reactListKey: `${index}`,
+      ...errorSummaryProperties(errorKey as keyof FormDataErrors)!,
+    }));
+
+    return errorSummary;
+  }, [formDataErrors, errorSummaryProperties]);
+
+  useEffect(() => {
+    if (errorList.length) errorSummaryRef.current?.focus();
+  }, [errorList]);
+
+  useEffect(() => {
+    if (!isReligionsLoading && religionsData) {
+      dispatch({
+        type: "SET_CASE_SUSPECT_RELIGIONS",
+        payload: {
+          suspectReligions: religionsData,
+        },
+      });
+    }
+  }, [religionsData, dispatch, isReligionsLoading]);
+
+  const religionItems = useMemo(() => {
+    if (!state.apiData.suspectReligions) return [];
+    return state.apiData.suspectReligions.map((religion, index) => ({
+      id: `suspect-religion-radio-${index}`,
+      children: religion.description,
+      value: religion.shortCode,
+      "data-testid": `suspect-religion-radio-${index}`,
+    }));
+  }, [state.apiData.suspectReligions]);
+
+  const setFormValue = (value: string) => {
+    const selectedReligion = state.apiData.suspectReligions?.find(
+      (religion) => religion.shortCode === value,
+    );
+    if (selectedReligion) {
+      dispatch({
+        type: "SET_SUSPECT_FIELD",
+        payload: {
+          index: suspectIndex,
+          field: "suspectReligionRadio",
+          value: selectedReligion,
+        },
+      });
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!validateFormData(state)) return;
+
+    console.log("rrrrrrrrr");
+    return navigate(`/case-registration/suspect-1/suspect-disability`);
+  };
+
+  const {
+    formData: { suspects },
+  } = state;
+
+  const { suspectReligionRadio = { shortCode: null, description: "" } } =
+    suspects[suspectIndex] || {};
+
+  return (
+    <div className={styles.caseDetailsPage}>
+      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
+        Back
+      </BackLink>
+      {!!errorList.length && (
+        <div
+          ref={errorSummaryRef}
+          tabIndex={-1}
+          className={styles.errorSummaryWrapper}
+        >
+          <ErrorSummary
+            data-testid={"suspect-religion-error-summary"}
+            errorList={errorList}
+            titleChildren="There is a problem"
+          />
+        </div>
+      )}
+      <form onSubmit={handleSubmit}>
+        <div className={styles.inputWrapper}>
+          <Radios
+            fieldset={{
+              legend: {
+                children: <h1>what is the suspect religion?</h1>,
+              },
+            }}
+            errorMessage={
+              formDataErrors["suspectReligionRadio"]
+                ? {
+                    children:
+                      formDataErrors["suspectReligionRadio"].errorSummaryText,
+                  }
+                : undefined
+            }
+            items={religionItems}
+            value={suspectReligionRadio.shortCode || ""}
+            onChange={(value) => {
+              if (value) setFormValue(value);
+            }}
+          ></Radios>
+        </div>
+        <Button type="submit" onClick={() => handleSubmit}>
+          Save and Continue
+        </Button>
+      </form>
+    </div>
+  );
+};
+
+export default SuspectReligionPage;

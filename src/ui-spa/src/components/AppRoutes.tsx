@@ -10,6 +10,12 @@ import CaseSummaryPage from "./case-registration/case-summary-page";
 import CaseRegistrationConfirmationPage from "./case-registration/case-registartion-confirmation";
 import AddSuspectPage from "./case-registration/add-suspect";
 import SuspectDOBPage from "./case-registration/suspect-dob";
+import SuspectGenderPage from "./case-registration/suspect-gender";
+import SuspectEthinicityPage from "./case-registration/suspect-ethinicity";
+import SuspectReligionPage from "./case-registration/suspect-religion";
+import SuspectDisabilityPage from "./case-registration/suspect-disability";
+import SuspectSDOPage from "./case-registration/suspect-sdo";
+import SuspectASNPage from "./case-registration/suspect-asn";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -53,6 +59,30 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/:suspectId/suspect-dob"
           element={<SuspectDOBPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-gender"
+          element={<SuspectGenderPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-ethinicity"
+          element={<SuspectEthinicityPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-religion"
+          element={<SuspectReligionPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-disability"
+          element={<SuspectDisabilityPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-sdo"
+          element={<SuspectSDOPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-asn"
+          element={<SuspectASNPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />
