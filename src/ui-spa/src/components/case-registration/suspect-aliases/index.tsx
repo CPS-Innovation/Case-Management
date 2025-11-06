@@ -12,19 +12,23 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
-const SuspectASNPage = () => {
+const SuspectAliasesPage = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
   };
   type FormDataErrors = {
-    suspectASNText?: ErrorText;
+    suspectAliasesLastNameText?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { suspectId } = useParams<{ suspectId: string }>() as {
+  const { suspectId, aliasesId } = useParams<{
     suspectId: string;
+    aliasesId: string;
+  }>() as {
+    suspectId: string;
+    aliasesId: string;
   };
 
   const suspectIndex = useMemo(() => {
@@ -32,18 +36,22 @@ const SuspectASNPage = () => {
     return Number.parseInt(index, 10) - 1;
   }, [suspectId]);
 
+  const aliasesIndex = useMemo(() => {
+    const index = aliasesId.replace("aliases-", "");
+    return Number.parseInt(index, 10) - 1;
+  }, [aliasesId]);
+
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
-      if (errorKey === "suspectASNText") {
+      if (errorKey === "suspectAliasesLastNameText") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#suspect-ASN-text",
-          "data-testid": "suspect-ASN-text",
+          href: "#suspect-aliases-last-name-text",
+          "data-testid": "suspect-aliases-last-name-text",
         };
       }
-
       return null;
     },
     [formDataErrors],
@@ -54,12 +62,13 @@ const SuspectASNPage = () => {
     const {
       formData: { suspects },
     } = state;
-    const { suspectASNText = "" } = suspects[suspectIndex] || {};
+    const { suspectAliases = [] } = suspects[suspectIndex] || {};
+    const { lastName } = suspectAliases[aliasesIndex] || {};
 
-    if (!suspectASNText) {
-      errors.suspectASNText = {
-        errorSummaryText: "Please add the Arrest Summons Number (ASN)",
-        inputErrorText: "Please add the Arrest Summons Number (ASN)",
+    if (!lastName) {
+      errors.suspectAliasesLastNameText = {
+        errorSummaryText: "Please add the last name",
+        inputErrorText: "Please add the last name ",
       };
     }
 
@@ -86,13 +95,19 @@ const SuspectASNPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const setFormValue = (value: string) => {
+  const setFormValue = (key: "firstName" | "lastName", value: string) => {
+    const { suspectAliases = [] } = suspects[suspectIndex] || {};
+    const newAliases = [...suspectAliases];
+    newAliases[aliasesIndex] = {
+      ...newAliases[aliasesIndex],
+      [key]: value,
+    };
     dispatch({
       type: "SET_SUSPECT_FIELD",
       payload: {
         index: suspectIndex,
-        field: "suspectASNText",
-        value: value,
+        field: "suspectAliases",
+        value: newAliases,
       },
     });
   };
@@ -102,18 +117,18 @@ const SuspectASNPage = () => {
 
     if (!validateFormData(state)) return;
 
-    console.log("rrrrrrrrr");
-    return navigate(`/case-registration/suspect-1/suspect-offender`);
+    return navigate(`/case-registration/suspect-1/aliases-summary`);
   };
 
   const {
     formData: { suspects },
   } = state;
 
-  const { suspectASNText = "" } = suspects[suspectIndex] || {};
+  const { suspectAliases = [] } = suspects[suspectIndex] || {};
+  const { firstName = "", lastName = "" } = suspectAliases[aliasesIndex] || {};
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div className={styles.caseSuspectAliasesPage}>
       <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
         Back
       </BackLink>
@@ -124,33 +139,54 @@ const SuspectASNPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-ASN-error-summary"}
+            data-testid={"case-suspect-Aliases-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
         </div>
       )}
       <form onSubmit={handleSubmit}>
+        <h1>What alias does use?</h1>
+        <span className="govuk-hint">
+          You can add more aliases on the next page if needed.
+        </span>
         <div className={styles.inputWrapper}>
           <Input
-            key="suspect-asn-text"
-            id="suspect-asn-text"
-            data-testid="suspect-asn-text"
+            key="suspect-aliases-first-name-text"
+            id="suspect-aliases-first-name-text"
+            data-testid="suspect-aliases-first-name-text"
+            className="govuk-input--width-20"
+            label={{
+              children: <h2>First name</h2>,
+            }}
+            hint={{ children: "Leave blank if you only have one name" }}
+            type="text"
+            value={firstName}
+            onChange={(value: string) => {
+              setFormValue("firstName", value);
+            }}
+          />
+          <Input
+            key="suspect-aliases-last-name-text"
+            id="suspect-aliases-last-name-text"
+            data-testid="suspect-aliases-last-name-text"
+            className="govuk-input--width-20"
             errorMessage={
-              formDataErrors["suspectASNText"]
+              formDataErrors["suspectAliasesLastNameText"]
                 ? {
-                    children: formDataErrors["suspectASNText"].errorSummaryText,
+                    children:
+                      formDataErrors["suspectAliasesLastNameText"]
+                        .errorSummaryText,
                   }
                 : undefined
             }
-            className="govuk-input--width-20"
             label={{
-              children: <h1>What is the Arrest Summons Number (ASN)?</h1>,
+              children: <h2>Last name</h2>,
             }}
             type="text"
-            value={suspectASNText}
+            value={lastName}
             onChange={(value: string) => {
-              setFormValue(value);
+              setFormValue("lastName", value);
             }}
           />
           ,
@@ -163,4 +199,4 @@ const SuspectASNPage = () => {
   );
 };
 
-export default SuspectASNPage;
+export default SuspectAliasesPage;

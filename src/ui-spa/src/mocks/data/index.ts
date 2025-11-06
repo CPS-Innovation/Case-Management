@@ -20,3 +20,5 @@ export { suspectGenderDev } from "./suspectGenders.dev";
 export { suspectGenderPlaywright } from "./suspectGenders.playwright";
 export { suspectReligionDev } from "./suspectReligion.dev";
 export { suspectReligionPlaywright } from "./suspectReligion.playwright";
+export { suspectOffenderTypesDev } from "./suspectOffenderTypes.dev";
+export { suspectOffenderTypesPlaywright } from "./suspectOffenderTypes.playwright";

@@ -16,6 +16,9 @@ import SuspectReligionPage from "./case-registration/suspect-religion";
 import SuspectDisabilityPage from "./case-registration/suspect-disability";
 import SuspectSDOPage from "./case-registration/suspect-sdo";
 import SuspectASNPage from "./case-registration/suspect-asn";
+import SuspectOffenderPage from "./case-registration/suspect-offender";
+import SuspectAliasesPage from "./case-registration/suspect-aliases";
+import SuspectAliasesSummaryPage from "./case-registration/suspect-aliases-summary";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -83,6 +86,18 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/:suspectId/suspect-asn"
           element={<SuspectASNPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/suspect-offender"
+          element={<SuspectOffenderPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/aliases/:aliasesId/add-aliases"
+          element={<SuspectAliasesPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/aliases-summary"
+          element={<SuspectAliasesSummaryPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

@@ -9,7 +9,7 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
-import { getEthnicities } from "../../../apis/gateway-api";
+import { getOffenderTypes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -20,7 +20,7 @@ const SuspectOffenderPage = () => {
     inputErrorText?: string;
   };
   type FormDataErrors = {
-    suspectOffenderRadio?: ErrorText;
+    suspectOffenderTypesRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -41,7 +41,7 @@ const SuspectOffenderPage = () => {
   } = useQuery({
     queryKey: ["offenders"],
     enabled: true,
-    queryFn: () => getEthnicities(),
+    queryFn: () => getOffenderTypes(),
     retry: false,
   });
 
@@ -53,7 +53,7 @@ const SuspectOffenderPage = () => {
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
-      if (errorKey === "suspectOffenderRadio") {
+      if (errorKey === "suspectOffenderTypesRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#suspect-offender-radio-0",
@@ -71,11 +71,11 @@ const SuspectOffenderPage = () => {
     const {
       formData: { suspects },
     } = state;
-    const { suspectOffenderRadio = { shortCode: null, description: "" } } =
+    const { suspectOffenderTypesRadio = { code: null, display: "" } } =
       suspects[suspectIndex] || {};
 
-    if (!suspectOffenderRadio.shortCode) {
-      errors.suspectOffenderRadio = {
+    if (!suspectOffenderTypesRadio.code) {
+      errors.suspectOffenderTypesRadio = {
         errorSummaryText: "Please select an option for suspect offender",
         inputErrorText: "Please select an option",
       };
@@ -107,35 +107,38 @@ const SuspectOffenderPage = () => {
   useEffect(() => {
     if (!isOffendersLoading && offenderData) {
       dispatch({
-        type: "SET_CASE_SUSPECT_OFFENDERS",
+        type: "SET_CASE_SUSPECT_OFFENDER_TYPES",
         payload: {
-          suspectOffenders: offenderData,
+          suspectOffenderTypes: offenderData,
         },
       });
     }
   }, [offenderData, dispatch, isOffendersLoading]);
 
   const offenderItems = useMemo(() => {
-    if (!state.apiData.suspectOffenders) return [];
-    return state.apiData.suspectOffenders.map((offender, index) => ({
+    if (!state.apiData.suspectOffenderTypes) return [];
+    return state.apiData.suspectOffenderTypes.map((offender, index) => ({
       id: `suspect-offender-radio-${index}`,
-      children: offender.description,
-      value: offender.shortCode,
+      children: offender.display,
+      value: offender.code,
       "data-testid": `suspect-offender-radio-${index}`,
     }));
-  }, [state.apiData.suspectOffenders]);
+  }, [state.apiData.suspectOffenderTypes]);
 
   const setFormValue = (value: string) => {
-    const selectedOffender = state.apiData.suspectOffenders?.find(
-      (offender) => offender.shortCode === value,
+    const selectedOffender = state.apiData.suspectOffenderTypes?.find(
+      (offender) => offender.code === value,
     );
     if (selectedOffender) {
       dispatch({
         type: "SET_SUSPECT_FIELD",
         payload: {
           index: suspectIndex,
-          field: "suspectOffenderRadio",
-          value: selectedOffender,
+          field: "suspectOffenderTypesRadio",
+          value: {
+            code: selectedOffender.code,
+            display: selectedOffender.display,
+          },
         },
       });
     }
@@ -147,14 +150,14 @@ const SuspectOffenderPage = () => {
     if (!validateFormData(state)) return;
 
     console.log("rrrrrrrrr");
-    return navigate(`/case-registration/suspect-1/suspect-religion`);
+    return navigate(`/case-registration/suspect-1/suspect-aliases`);
   };
 
   const {
     formData: { suspects },
   } = state;
 
-  const { suspectOffenderRadio = { shortCode: null, description: "" } } =
+  const { suspectOffenderTypesRadio = { code: null, display: "" } } =
     suspects[suspectIndex] || {};
 
   return (
@@ -180,19 +183,20 @@ const SuspectOffenderPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>What is ethnicity?</h1>,
+                children: <h1>What type of offender is this?</h1>,
               },
             }}
             errorMessage={
-              formDataErrors["suspectOffenderRadio"]
+              formDataErrors["suspectOffenderTypesRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectOffenderRadio"].errorSummaryText,
+                      formDataErrors["suspectOffenderTypesRadio"]
+                        .errorSummaryText,
                   }
                 : undefined
             }
             items={offenderItems}
-            value={suspectOffenderRadio.shortCode || ""}
+            value={suspectOffenderTypesRadio.code ?? ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

@@ -22,6 +22,8 @@ import {
   suspectGenderPlaywright,
   suspectReligionDev,
   suspectReligionPlaywright,
+  suspectOffenderTypesDev,
+  suspectOffenderTypesPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -105,6 +107,14 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       const results = isDevMock()
         ? suspectReligionDev
         : suspectReligionPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/offender-categories`, async () => {
+      console.log("offender-categories called");
+      const results = isDevMock()
+        ? suspectOffenderTypesDev
+        : suspectOffenderTypesPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),

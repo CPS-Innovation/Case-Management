@@ -58,10 +58,10 @@ export type SuspectFormData = {
   suspectDisabilityRadio: GeneralRadioValue;
   suspectReligionRadio: { shortCode: string; description: string };
   suspectEthinicityRadio: { shortCode: string; description: string };
-  aliases: { firstName: string; lastName: string }[];
+  suspectAliases: { firstName?: string; lastName: string }[];
   suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
-  suspectOffenderTypesRadio: { shortCode: string; description: string };
+  suspectOffenderTypesRadio: { code: string; display: string };
   suspectCompanyNameText: string;
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
@@ -187,7 +187,9 @@ export type CaseRegistrationActions =
         value:
           | SuspectAdditionalDetailValue[]
           | string
-          | { shortCode: string; description: string };
+          | { shortCode: string; description: string }
+          | { code: string; display: string }
+          | { firstName?: string; lastName: string }[];
       };
     }
   | {
@@ -403,6 +405,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           suspectReligions: action.payload.suspectReligions,
+        },
+      };
+    }
+    case "SET_CASE_SUSPECT_OFFENDER_TYPES": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          suspectOffenderTypes: action.payload.suspectOffenderTypes,
         },
       };
     }

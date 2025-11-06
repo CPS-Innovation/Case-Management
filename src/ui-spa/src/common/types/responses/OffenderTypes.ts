@@ -1,6 +1,7 @@
 export type OffenderType = {
-  shortCode: string;
+  code: string;
   description: string;
+  display: string;
 };
 
 export type OffenderTypes = OffenderType[];

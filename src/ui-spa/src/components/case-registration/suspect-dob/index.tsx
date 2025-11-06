@@ -148,7 +148,9 @@ const SuspectDOBPage = () => {
 
     if (!validateFormData(state)) return;
 
-    return navigate(`/case-registration/${suspectId}/suspect-gender`);
+    return navigate(
+      `/case-registration/suspect-1/aliases/aliases-1/add-aliases`,
+    );
   };
 
   const {

@@ -14,6 +14,7 @@ import type { CaseRegistration } from "../common/types/requests/CaseRegistration
 import type { Genders } from "../common/types/responses/Genders";
 import type { Ethinicities } from "../common/types/responses/Ethinicities";
 import type { Religions } from "../common/types/responses/Religions";
+import type { OffenderTypes } from "../common/types/responses/OffenderTypes";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -222,6 +223,21 @@ export const getReligions = async () => {
     throw new ApiError(`getting religions failed`, url, response);
   }
   return (await response.json()) as Religions;
+};
+
+export const getOffenderTypes = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/offender-categories`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting offender categories failed`, url, response);
+  }
+  return (await response.json()) as OffenderTypes;
 };
 
 export const submitCaseRegistration = async (data: CaseRegistration) => {
