@@ -51,18 +51,9 @@ export const getNextSuspectJourneyRoute = (
     },
   ];
 
-  //   const selected = new Set(suspectAdditionalDetailsCheckboxes || []);
-
-  //   console.log("selected>>>>", selected);
-
   if (!suspectAdditionalDetailsCheckboxes.length) return "/suspect-summary";
 
   const shouldInclude = (description: SuspectAdditionalDetailValue) => {
-    console.log(
-      "suspectAdditionalDetailsCheckboxes>>>>",
-      suspectAdditionalDetailsCheckboxes,
-    );
-    console.log("description>>>>", description);
     return suspectAdditionalDetailsCheckboxes.includes(description);
   };
 
@@ -80,7 +71,9 @@ export const getNextSuspectJourneyRoute = (
   );
 
   if (filteredSequence[currentIndex + 1]?.route) {
+    console.log("next route>>>", filteredSequence[currentIndex + 1].route);
     return `/case-registration/suspect-${currentSuspectIndex}/${filteredSequence[currentIndex + 1].route}`;
   }
-  return `/case-registration/suspect-summary"}`;
+  console.log("summary route>>>");
+  return `/case-registration/suspect-summary`;
 };

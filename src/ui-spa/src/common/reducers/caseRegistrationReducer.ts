@@ -265,6 +265,12 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "SET_REMOVE_SUSPECT";
+      payload: {
+        value: SuspectFormData[];
+      };
+    }
+  | {
       type: "RESET_FORM_DATA";
     };
 
@@ -373,6 +379,15 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           caseInvestigatorTitles: action.payload.caseInvestigatorTitles,
+        },
+      };
+    }
+    case "SET_REMOVE_SUSPECT": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects: action.payload.value,
         },
       };
     }
