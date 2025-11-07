@@ -11,7 +11,7 @@ import CaseRegistrationConfirmationPage from "./case-registration/case-registart
 import AddSuspectPage from "./case-registration/add-suspect";
 import SuspectDOBPage from "./case-registration/suspect-dob";
 import SuspectGenderPage from "./case-registration/suspect-gender";
-import SuspectEthinicityPage from "./case-registration/suspect-ethinicity";
+import SuspectEthnicityPage from "./case-registration/suspect-ethnicity";
 import SuspectReligionPage from "./case-registration/suspect-religion";
 import SuspectDisabilityPage from "./case-registration/suspect-disability";
 import SuspectSDOPage from "./case-registration/suspect-sdo";
@@ -68,8 +68,8 @@ const AppRoutes = () => {
           element={<SuspectGenderPage />}
         />
         <Route
-          path="/case-registration/:suspectId/suspect-ethinicity"
-          element={<SuspectEthinicityPage />}
+          path="/case-registration/:suspectId/suspect-ethnicity"
+          element={<SuspectEthnicityPage />}
         />
         <Route
           path="/case-registration/:suspectId/suspect-religion"
@@ -92,7 +92,7 @@ const AppRoutes = () => {
           element={<SuspectOffenderPage />}
         />
         <Route
-          path="/case-registration/:suspectId/aliases/:aliasesId/add-aliases"
+          path="/case-registration/:suspectId/add-aliases"
           element={<SuspectAliasesPage />}
         />
         <Route

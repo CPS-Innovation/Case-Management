@@ -12,15 +12,16 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getEthnicities } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
 import styles from "./index.module.scss";
 
-const SuspectEthinicityPage = () => {
+const SuspectEthnicityPage = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
   };
   type FormDataErrors = {
-    suspectEthinicityRadio?: ErrorText;
+    suspectEthnicityRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -31,13 +32,13 @@ const SuspectEthinicityPage = () => {
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
   const {
-    data: ethinicityData,
-    isLoading: isEthinicitysLoading,
-    error: ethinicityError,
+    data: ethnicityData,
+    isLoading: isEthnicitysLoading,
+    error: ethnicityError,
   } = useQuery({
     queryKey: ["ethnicities"],
     enabled: true,
@@ -46,14 +47,14 @@ const SuspectEthinicityPage = () => {
   });
 
   useEffect(() => {
-    if (ethinicityError) throw ethinicityError;
-  }, [ethinicityError]);
+    if (ethnicityError) throw ethnicityError;
+  }, [ethnicityError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
-      if (errorKey === "suspectEthinicityRadio") {
+      if (errorKey === "suspectEthnicityRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#suspect-enthinicity-radio-0",
@@ -71,12 +72,12 @@ const SuspectEthinicityPage = () => {
     const {
       formData: { suspects },
     } = state;
-    const { suspectEthinicityRadio = { shortCode: null, description: "" } } =
+    const { suspectEthnicityRadio = { shortCode: null, description: "" } } =
       suspects[suspectIndex] || {};
 
-    if (!suspectEthinicityRadio.shortCode) {
-      errors.suspectEthinicityRadio = {
-        errorSummaryText: "Please select an option for suspect ethinicity",
+    if (!suspectEthnicityRadio.shortCode) {
+      errors.suspectEthnicityRadio = {
+        errorSummaryText: "Please select an option for suspect ethnicity",
         inputErrorText: "Please select an option",
       };
     }
@@ -105,15 +106,15 @@ const SuspectEthinicityPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!isEthinicitysLoading && ethinicityData) {
+    if (!isEthnicitysLoading && ethnicityData) {
       dispatch({
         type: "SET_CASE_SUSPECT_ETHINICITIES",
         payload: {
-          suspectEthinicities: ethinicityData,
+          suspectEthinicities: ethnicityData,
         },
       });
     }
-  }, [ethinicityData, dispatch, isEthinicitysLoading]);
+  }, [ethnicityData, dispatch, isEthnicitysLoading]);
 
   const enthinicityItems = useMemo(() => {
     if (!state.apiData.suspectEthinicities) return [];
@@ -126,16 +127,16 @@ const SuspectEthinicityPage = () => {
   }, [state.apiData.suspectEthinicities]);
 
   const setFormValue = (value: string) => {
-    const selectedEthinicity = state.apiData.suspectEthinicities?.find(
+    const selectedEthnicity = state.apiData.suspectEthinicities?.find(
       (enthinicity) => enthinicity.shortCode === value,
     );
-    if (selectedEthinicity) {
+    if (selectedEthnicity) {
       dispatch({
         type: "SET_SUSPECT_FIELD",
         payload: {
           index: suspectIndex,
-          field: "suspectEthinicityRadio",
-          value: selectedEthinicity,
+          field: "suspectEthnicityRadio",
+          value: selectedEthnicity,
         },
       });
     }
@@ -146,15 +147,19 @@ const SuspectEthinicityPage = () => {
 
     if (!validateFormData(state)) return;
 
-    console.log("rrrrrrrrr");
-    return navigate(`/case-registration/suspect-1/suspect-religion`);
+    const nextRoute = getNextSuspectJourneyRoute(
+      "suspect-ethnicity",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+    return navigate(nextRoute);
   };
 
   const {
     formData: { suspects },
   } = state;
 
-  const { suspectEthinicityRadio = { shortCode: null, description: "" } } =
+  const { suspectEthnicityRadio = { shortCode: null, description: "" } } =
     suspects[suspectIndex] || {};
 
   return (
@@ -184,15 +189,15 @@ const SuspectEthinicityPage = () => {
               },
             }}
             errorMessage={
-              formDataErrors["suspectEthinicityRadio"]
+              formDataErrors["suspectEthnicityRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectEthinicityRadio"].errorSummaryText,
+                      formDataErrors["suspectEthnicityRadio"].errorSummaryText,
                   }
                 : undefined
             }
             items={enthinicityItems}
-            value={suspectEthinicityRadio.shortCode || ""}
+            value={suspectEthnicityRadio.shortCode || ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}
@@ -206,4 +211,4 @@ const SuspectEthinicityPage = () => {
   );
 };
 
-export default SuspectEthinicityPage;
+export default SuspectEthnicityPage;

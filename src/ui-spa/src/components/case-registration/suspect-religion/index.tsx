@@ -12,6 +12,7 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getReligions } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
 import styles from "./index.module.scss";
 
 const SuspectReligionPage = () => {
@@ -31,7 +32,7 @@ const SuspectReligionPage = () => {
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
   const {
@@ -146,8 +147,12 @@ const SuspectReligionPage = () => {
 
     if (!validateFormData(state)) return;
 
-    console.log("rrrrrrrrr");
-    return navigate(`/case-registration/suspect-1/suspect-disability`);
+    const nextRoute = getNextSuspectJourneyRoute(
+      "suspect-religion",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+    return navigate(nextRoute);
   };
 
   const {

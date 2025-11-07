@@ -8,8 +8,7 @@ import {
 } from "react";
 import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
 const SuspectAliasesPage = () => {
@@ -23,23 +22,47 @@ const SuspectAliasesPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { suspectId, aliasesId } = useParams<{
+  const { suspectId } = useParams<{
     suspectId: string;
-    aliasesId: string;
   }>() as {
     suspectId: string;
-    aliasesId: string;
   };
+
+  const [searchParams] = useSearchParams();
+  const aliasParam = searchParams.get("alias");
+  const [alias, setAlias] = useState<{
+    firstName: string;
+    lastName: string;
+  }>({ firstName: "", lastName: "" });
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
-  const aliasesIndex = useMemo(() => {
-    const index = aliasesId.replace("aliases-", "");
-    return Number.parseInt(index, 10) - 1;
-  }, [aliasesId]);
+  const aliasIndex = useMemo(() => {
+    const index = Number.parseInt(aliasParam || "", 10);
+    return Number.isNaN(index) ? null : index;
+  }, [aliasParam]);
+
+  const suspectAliases = useMemo(() => {
+    const {
+      formData: { suspects },
+    } = state;
+    const { suspectAliases = [] } = suspects[suspectIndex] || {};
+
+    return suspectAliases;
+  }, [suspectIndex, state]);
+
+  useEffect(() => {
+    console.log("aliasIndex", aliasIndex, suspectAliases);
+    if (aliasIndex !== null && suspectAliases[aliasIndex]) {
+      setAlias({
+        firstName: suspectAliases[aliasIndex].firstName,
+        lastName: suspectAliases[aliasIndex].lastName,
+      });
+    }
+  }, []);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -57,13 +80,9 @@ const SuspectAliasesPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
-    const { suspectAliases = [] } = suspects[suspectIndex] || {};
-    const { lastName } = suspectAliases[aliasesIndex] || {};
+    const { lastName = "" } = alias || {};
 
     if (!lastName) {
       errors.suspectAliasesLastNameText = {
@@ -96,12 +115,25 @@ const SuspectAliasesPage = () => {
   }, [errorList]);
 
   const setFormValue = (key: "firstName" | "lastName", value: string) => {
-    const { suspectAliases = [] } = suspects[suspectIndex] || {};
-    const newAliases = [...suspectAliases];
-    newAliases[aliasesIndex] = {
-      ...newAliases[aliasesIndex],
+    console.log("key", key, "value", value);
+    setAlias((prevState) => ({
+      ...prevState,
       [key]: value,
-    };
+    }));
+
+    console.log("key", key, "value", value);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!validateFormData()) return;
+    const newAliases = [...suspectAliases];
+    if (aliasIndex === null) {
+      newAliases.push(alias);
+    } else {
+      newAliases[aliasIndex] = alias;
+    }
     dispatch({
       type: "SET_SUSPECT_FIELD",
       payload: {
@@ -110,22 +142,11 @@ const SuspectAliasesPage = () => {
         value: newAliases,
       },
     });
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (!validateFormData(state)) return;
 
     return navigate(`/case-registration/suspect-1/aliases-summary`);
   };
 
-  const {
-    formData: { suspects },
-  } = state;
-
-  const { suspectAliases = [] } = suspects[suspectIndex] || {};
-  const { firstName = "", lastName = "" } = suspectAliases[aliasesIndex] || {};
+  const { firstName = "", lastName = "" } = alias;
 
   return (
     <div className={styles.caseSuspectAliasesPage}>

@@ -10,6 +10,7 @@ import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate, useParams } from "react-router-dom";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
 import styles from "./index.module.scss";
 
 const SuspectSDOPage = () => {
@@ -29,7 +30,7 @@ const SuspectSDOPage = () => {
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -102,8 +103,12 @@ const SuspectSDOPage = () => {
 
     if (!validateFormData(state)) return;
 
-    console.log("rrrrrrrrr");
-    return navigate(`/case-registration/suspect-1/suspect-asn`);
+    const nextRoute = getNextSuspectJourneyRoute(
+      "suspect-sdo",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+    return navigate(nextRoute);
   };
 
   const {

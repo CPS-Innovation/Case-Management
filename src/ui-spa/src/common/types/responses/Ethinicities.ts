@@ -1,6 +1,6 @@
-export type Ethinicity = {
+export type Ethnicity = {
   shortCode: string;
   description: string;
 };
 
-export type Ethinicities = Ethinicity[];
+export type Ethinicities = Ethnicity[];

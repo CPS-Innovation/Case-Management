@@ -57,8 +57,8 @@ export type SuspectFormData = {
   suspectGenderRadio: { shortCode: string; description: string };
   suspectDisabilityRadio: GeneralRadioValue;
   suspectReligionRadio: { shortCode: string; description: string };
-  suspectEthinicityRadio: { shortCode: string; description: string };
-  suspectAliases: { firstName?: string; lastName: string }[];
+  suspectEthnicityRadio: { shortCode: string; description: string };
+  suspectAliases: { firstName: string; lastName: string }[];
   suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
   suspectOffenderTypesRadio: { code: string; display: string };

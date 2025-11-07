@@ -10,6 +10,7 @@ import { Button, ErrorSummary, BackLink, DateInput } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { validateDate } from "../../../common/utils/dateValidation";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -30,7 +31,7 @@ const SuspectDOBPage = () => {
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -127,12 +128,11 @@ const SuspectDOBPage = () => {
       field = "suspectDOBYearText";
     }
 
-    console.log("event.target.name", event.target.name);
-
     const value = event.target.value;
 
     const newValue = value.replaceAll(/\D/g, "");
 
+    console.log("SuspectIdnex>>>>>>>>>", suspectIndex);
     dispatch({
       type: "SET_SUSPECT_FIELD",
       payload: {
@@ -147,10 +147,13 @@ const SuspectDOBPage = () => {
     event.preventDefault();
 
     if (!validateFormData(state)) return;
-
-    return navigate(
-      `/case-registration/suspect-1/aliases/aliases-1/add-aliases`,
+    const nextRoute = getNextSuspectJourneyRoute(
+      "suspect-dob",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
     );
+
+    return navigate(nextRoute);
   };
 
   const {

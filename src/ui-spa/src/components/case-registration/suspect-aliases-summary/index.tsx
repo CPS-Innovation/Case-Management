@@ -11,10 +11,10 @@ import {
   Button,
   ErrorSummary,
   BackLink,
-  LinkButton,
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -38,7 +38,7 @@ const SuspectAliasesSummaryPage = () => {
   const [addMoreAliasesRadio, setAddMoreAliasesRadio] = useState<string>();
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
-    return Number.parseInt(index, 10) - 1;
+    return Number.parseInt(index, 10);
   }, [suspectId]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -106,20 +106,15 @@ const SuspectAliasesSummaryPage = () => {
         items: [
           {
             children: <span>Change</span>,
-            to: "/case-registration",
+            to: `/case-registration/suspect-1/add-aliases?alias=${index}`,
             visuallyHiddenText: "Edit Suspect Details",
           },
           {
-            children: (
-              <LinkButton
-                dataTestId="btn-remove-alias"
-                type="button"
-                ariaLabel="remove a suspect alias"
-                onClick={() => handleRemoveAlias(index)}
-              >
-                Remove
-              </LinkButton>
-            ),
+            children: <span>Remove</span>,
+            to: "#",
+            visuallyHiddenText: "remove a suspect alias",
+            role: "button",
+            onClick: () => handleRemoveAlias(index),
           },
         ],
       },
@@ -148,9 +143,18 @@ const SuspectAliasesSummaryPage = () => {
 
     if (!validateFormData()) return;
 
-    return navigate(
-      `/case-registration/suspect-1/aliases/aliases-1/add-aliases/alias-summary`,
+    if (addMoreAliasesRadio === "yes") {
+      return navigate(`/case-registration/${suspectId}/add-aliases`);
+    }
+
+    const nextRoute = getNextSuspectJourneyRoute(
+      "add-aliases",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
     );
+    return navigate(nextRoute);
+
+    return navigate(`/case-registration/suspect-1/`);
   };
 
   const {
