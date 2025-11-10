@@ -153,13 +153,13 @@ const SuspectAliasesSummaryPage = () => {
       suspectIndex,
     );
     return navigate(nextRoute);
-
-    return navigate(`/case-registration/suspect-1/`);
   };
 
   const {
     formData: { suspects },
   } = state;
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
   const suspectAliases = suspects[suspectIndex]?.suspectAliases || [];
 
   return (
@@ -181,22 +181,39 @@ const SuspectAliasesSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>Aliases for ws ddd</h1>
+        <h1>
+          Aliases for {suspectLastNameText} {suspectFirstNameText}
+        </h1>
         <div>
           <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
         </div>
+        {!suspectAliases.length && <span>There are no aliases</span>}
         <div className={styles.inputWrapper}>
           <Radios
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another alias for ws ddd?</h2>,
+                children: (
+                  <>
+                    {suspectAliases.length ? (
+                      <h2>
+                        Do you need to add another alias for{" "}
+                        {suspectLastNameText} {suspectFirstNameText}?
+                      </h2>
+                    ) : (
+                      <h2>
+                        Do you need to add alias for {suspectLastNameText}{" "}
+                        {suspectFirstNameText}?
+                      </h2>
+                    )}
+                  </>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["addMoreAliasesRadio"]
                 ? {
                     children:
-                      formDataErrors["addMoreAliasesRadio"].errorSummaryText,
+                      formDataErrors["addMoreAliasesRadio"].inputErrorText,
                   }
                 : undefined
             }

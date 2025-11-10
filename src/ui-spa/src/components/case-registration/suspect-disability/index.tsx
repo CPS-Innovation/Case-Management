@@ -59,7 +59,7 @@ const SuspectDisabilityPage = () => {
 
     if (!suspectDisabilityRadio) {
       errors.suspectDisabilityRadio = {
-        errorSummaryText: "Please select an option for suspect disability",
+        errorSummaryText: "Please select an option ",
         inputErrorText: "Please select an option",
       };
     }
@@ -115,7 +115,11 @@ const SuspectDisabilityPage = () => {
     formData: { suspects },
   } = state;
 
-  const { suspectDisabilityRadio = "" } = suspects[suspectIndex] || {};
+  const {
+    suspectDisabilityRadio = "",
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -140,14 +144,19 @@ const SuspectDisabilityPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Does the suspect have a disability?</h1>,
+                children: (
+                  <h1>
+                    Does {suspectLastNameText} {suspectFirstNameText} have a
+                    disability?
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectDisabilityRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectDisabilityRadio"].errorSummaryText,
+                      formDataErrors["suspectDisabilityRadio"].inputErrorText,
                   }
                 : undefined
             }

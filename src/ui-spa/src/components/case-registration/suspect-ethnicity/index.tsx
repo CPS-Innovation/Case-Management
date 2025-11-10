@@ -77,7 +77,7 @@ const SuspectEthnicityPage = () => {
 
     if (!suspectEthnicityRadio.shortCode) {
       errors.suspectEthnicityRadio = {
-        errorSummaryText: "Please select an option for suspect ethnicity",
+        errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
       };
     }
@@ -159,8 +159,11 @@ const SuspectEthnicityPage = () => {
     formData: { suspects },
   } = state;
 
-  const { suspectEthnicityRadio = { shortCode: null, description: "" } } =
-    suspects[suspectIndex] || {};
+  const {
+    suspectEthnicityRadio = { shortCode: null, description: "" },
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -185,14 +188,16 @@ const SuspectEthnicityPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>What is ethnicity?</h1>,
+                children: (
+                  <h1>{`What is ${suspectLastNameText} ${suspectFirstNameText}'s ethnicity?`}</h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectEthnicityRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectEthnicityRadio"].errorSummaryText,
+                      formDataErrors["suspectEthnicityRadio"].inputErrorText,
                   }
                 : undefined
             }

@@ -77,7 +77,7 @@ const SuspectReligionPage = () => {
 
     if (!suspectReligionRadio.shortCode) {
       errors.suspectReligionRadio = {
-        errorSummaryText: "Please select an option for suspect religion",
+        errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
       };
     }
@@ -159,8 +159,11 @@ const SuspectReligionPage = () => {
     formData: { suspects },
   } = state;
 
-  const { suspectReligionRadio = { shortCode: null, description: "" } } =
-    suspects[suspectIndex] || {};
+  const {
+    suspectReligionRadio = { shortCode: null, description: "" },
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -185,14 +188,19 @@ const SuspectReligionPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>what is the suspect religion?</h1>,
+                children: (
+                  <h1>
+                    {`What is ${suspectLastNameText} ${suspectFirstNameText}'s
+                    religion?`}
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectReligionRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectReligionRadio"].errorSummaryText,
+                      formDataErrors["suspectReligionRadio"].inputErrorText,
                   }
                 : undefined
             }

@@ -114,8 +114,11 @@ const SuspectSDOPage = () => {
   const {
     formData: { suspects },
   } = state;
-
-  const { suspectSDORadio = "" } = suspects[suspectIndex] || {};
+  const {
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+    suspectSDORadio = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -140,14 +143,18 @@ const SuspectSDOPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Is a serious dangerous offender (SDO)?</h1>,
+                children: (
+                  <h1>
+                    Is {suspectLastNameText} {suspectFirstNameText} a serious
+                    dangerous offender (SDO)?
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectSDORadio"]
                 ? {
-                    children:
-                      formDataErrors["suspectSDORadio"].errorSummaryText,
+                    children: formDataErrors["suspectSDORadio"].inputErrorText,
                   }
                 : undefined
             }

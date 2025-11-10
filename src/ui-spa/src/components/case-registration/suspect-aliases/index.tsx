@@ -147,6 +147,11 @@ const SuspectAliasesPage = () => {
   };
 
   const { firstName = "", lastName = "" } = alias;
+  const {
+    formData: { suspects },
+  } = state;
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseSuspectAliasesPage}>
@@ -167,7 +172,9 @@ const SuspectAliasesPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>What alias does use?</h1>
+        <h1>
+          What alias does {suspectFirstNameText} {suspectLastNameText} use?
+        </h1>
         <span className="govuk-hint">
           You can add more aliases on the next page if needed.
         </span>
@@ -210,7 +217,6 @@ const SuspectAliasesPage = () => {
               setFormValue("lastName", value);
             }}
           />
-          ,
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
           Save and Continue

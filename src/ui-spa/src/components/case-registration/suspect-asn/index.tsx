@@ -144,7 +144,7 @@ const SuspectASNPage = () => {
             errorMessage={
               formDataErrors["suspectASNText"]
                 ? {
-                    children: formDataErrors["suspectASNText"].errorSummaryText,
+                    children: formDataErrors["suspectASNText"].inputErrorText,
                   }
                 : undefined
             }
@@ -158,7 +158,6 @@ const SuspectASNPage = () => {
               setFormValue(value);
             }}
           />
-          ,
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
           Save and Continue

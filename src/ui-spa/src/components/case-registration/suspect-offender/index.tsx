@@ -77,7 +77,7 @@ const SuspectOffenderPage = () => {
 
     if (!suspectOffenderTypesRadio.code) {
       errors.suspectOffenderTypesRadio = {
-        errorSummaryText: "Please select an option for suspect offender",
+        errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
       };
     }
@@ -162,8 +162,11 @@ const SuspectOffenderPage = () => {
     formData: { suspects },
   } = state;
 
-  const { suspectOffenderTypesRadio = { code: null, display: "" } } =
-    suspects[suspectIndex] || {};
+  const {
+    suspectOffenderTypesRadio = { code: null, display: "" },
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -188,7 +191,12 @@ const SuspectOffenderPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>What type of offender is this?</h1>,
+                children: (
+                  <h1>
+                    What type of offender is {suspectLastNameText}{" "}
+                    {suspectFirstNameText}?
+                  </h1>
+                ),
               },
             }}
             errorMessage={
@@ -196,7 +204,7 @@ const SuspectOffenderPage = () => {
                 ? {
                     children:
                       formDataErrors["suspectOffenderTypesRadio"]
-                        .errorSummaryText,
+                        .inputErrorText,
                   }
                 : undefined
             }

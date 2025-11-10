@@ -77,7 +77,7 @@ const SuspectGenderPage = () => {
 
     if (!suspectGenderRadio.shortCode) {
       errors.suspectGenderRadio = {
-        errorSummaryText: "Please select an option for suspect gender",
+        errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
       };
     }
@@ -159,8 +159,11 @@ const SuspectGenderPage = () => {
     formData: { suspects },
   } = state;
 
-  const { suspectGenderRadio = { shortCode: null, description: "" } } =
-    suspects[suspectIndex] || {};
+  const {
+    suspectGenderRadio = { shortCode: null, description: "" },
+    suspectFirstNameText = "",
+    suspectLastNameText = "",
+  } = suspects[suspectIndex] || {};
 
   return (
     <div className={styles.caseDetailsPage}>
@@ -185,14 +188,18 @@ const SuspectGenderPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Do you have details of the first hearing?</h1>,
+                children: (
+                  <h1>
+                    {`What is ${suspectLastNameText} ${suspectFirstNameText}'s gender?`}
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectGenderRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectGenderRadio"].errorSummaryText,
+                      formDataErrors["suspectGenderRadio"].inputErrorText,
                   }
                 : undefined
             }

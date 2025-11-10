@@ -132,7 +132,6 @@ const SuspectDOBPage = () => {
 
     const newValue = value.replaceAll(/\D/g, "");
 
-    console.log("SuspectIdnex>>>>>>>>>", suspectIndex);
     dispatch({
       type: "SET_SUSPECT_FIELD",
       payload: {
@@ -170,7 +169,7 @@ const SuspectDOBPage = () => {
 
   return (
     <div className={styles.addSuspectPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+      <BackLink to="/case-registration/add-suspect">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -198,7 +197,7 @@ const SuspectDOBPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>{`What is ${suspectFirstNameText} ${suspectLastNameText}'s date of birth?`}</h1>
+                  <h1>{`What is  ${suspectLastNameText} ${suspectFirstNameText}'s date of birth?`}</h1>
                 ),
               },
             }}
