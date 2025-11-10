@@ -1,5 +1,5 @@
-import { type Ethinicities } from "../../common/types/responses/Ethinicities";
-export const suspectEthnicityDev: Ethinicities = [
+import { type Ethnicities } from "../../common/types/responses/Ethnicities";
+export const suspectEthnicitiesDev: Ethnicities = [
   { shortCode: "asian", description: "Asian" },
   { shortCode: "black", description: "Black" },
   { shortCode: "white", description: "White" },

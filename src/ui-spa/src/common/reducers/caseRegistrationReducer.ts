@@ -7,7 +7,7 @@ import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
 import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
 import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
 import type { Genders } from "../types/responses/Genders";
-import type { Ethinicities } from "../types/responses/Ethinicities";
+import type { Ethnicities } from "../types/responses/Ethnicities";
 import type { Religions } from "../types/responses/Religions";
 import type { OffenderTypes } from "../types/responses/OffenderTypes";
 export type CaseRegistrationField =
@@ -114,7 +114,7 @@ export type CaseRegistrationState = {
     caseCaseworkers?: CaseCaseworkers | null;
     caseInvestigatorTitles?: InvestigatorTitles | null;
     suspectGenders?: Genders | null;
-    suspectEthnicities?: Ethinicities | null;
+    suspectEthnicities?: Ethnicities | null;
     suspectReligions?: Religions | null;
     suspectOffenderTypes?: OffenderTypes | null;
   };
@@ -249,7 +249,7 @@ export type CaseRegistrationActions =
   | {
       type: "SET_CASE_SUSPECT_ETHNICITIES";
       payload: {
-        suspectEthnicities: Ethinicities;
+        suspectEthnicities: Ethnicities;
       };
     }
   | {

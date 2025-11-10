@@ -12,7 +12,7 @@ import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers"
 import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
 import type { CaseRegistration } from "../common/types/requests/CaseRegistration";
 import type { Genders } from "../common/types/responses/Genders";
-import type { Ethinicities } from "../common/types/responses/Ethinicities";
+import type { Ethnicities } from "../common/types/responses/Ethnicities";
 import type { Religions } from "../common/types/responses/Religions";
 import type { OffenderTypes } from "../common/types/responses/OffenderTypes";
 
@@ -207,7 +207,7 @@ export const getEthnicities = async () => {
   if (!response.ok) {
     throw new ApiError(`getting ethnicities failed`, url, response);
   }
-  return (await response.json()) as Ethinicities;
+  return (await response.json()) as Ethnicities;
 };
 
 export const getReligions = async () => {

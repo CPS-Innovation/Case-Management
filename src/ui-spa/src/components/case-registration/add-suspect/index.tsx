@@ -100,9 +100,8 @@ const AddSuspectPage = () => {
     } = state;
     const { addSuspectRadio = "", suspectLastNameText = "" } =
       suspects[suspectIndex] || {};
-    console.log("hiiiii````````i", addSuspectRadio);
+
     if (!addSuspectRadio) {
-      console.log("hiiiiii");
       errors.addSuspectRadio = {
         errorSummaryText: "Please select an option for adding a suspect",
         inputErrorText: "Please select an option for adding a suspect",

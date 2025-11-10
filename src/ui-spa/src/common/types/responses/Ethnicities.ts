@@ -3,4 +3,4 @@ export type Ethnicity = {
   description: string;
 };
 
-export type Ethinicities = Ethnicity[];
+export type Ethnicities = Ethnicity[];

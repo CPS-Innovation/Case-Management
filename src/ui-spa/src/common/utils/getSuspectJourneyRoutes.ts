@@ -65,7 +65,6 @@ export const getNextSuspectJourneyRoute = (
     return false;
   });
 
-  console.log("filteredSequence", filteredSequence);
   const currentIndex = filteredSequence.findIndex(
     (item) => item.route === currentRoute,
   );

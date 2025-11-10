@@ -16,8 +16,8 @@ import {
   caseProsecutorsPlaywright,
   caseInvestigatorTitlesDev,
   caseInvestigatorTitlesPlaywright,
-  suspectEthnicityDev,
-  suspectEthnicityPlaywright,
+  suspectEthnicitiesDev,
+  suspectEthnicitiesPlaywright,
   suspectGenderDev,
   suspectGenderPlaywright,
   suspectReligionDev,
@@ -98,8 +98,8 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
     }),
     http.get(`${baseUrl}/api/v1/ethnicities`, async () => {
       const results = isDevMock()
-        ? suspectEthnicityDev
-        : suspectEthnicityPlaywright;
+        ? suspectEthnicitiesDev
+        : suspectEthnicitiesPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),

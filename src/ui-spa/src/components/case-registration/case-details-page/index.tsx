@@ -353,6 +353,8 @@ const CaseDetailsPage = () => {
       }));
       return;
     }
+    if (state.formData.suspectDetailsRadio === "yes")
+      return navigate(`/case-registration/suspect-1/add-suspect`);
     return navigate("/case-registration/first-hearing");
   };
 
