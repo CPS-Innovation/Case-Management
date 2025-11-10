@@ -12,7 +12,10 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getOffenderTypes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import styles from "./index.module.scss";
 
 const SuspectOffenderPage = () => {
@@ -49,6 +52,13 @@ const SuspectOffenderPage = () => {
   useEffect(() => {
     if (offenderError) throw offenderError;
   }, [offenderError]);
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-offender",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -170,9 +180,7 @@ const SuspectOffenderPage = () => {
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

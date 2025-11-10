@@ -10,7 +10,10 @@ import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate, useParams } from "react-router-dom";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import styles from "./index.module.scss";
 
 const SuspectSDOPage = () => {
@@ -32,6 +35,14 @@ const SuspectSDOPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-sdo",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -122,9 +133,7 @@ const SuspectSDOPage = () => {
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

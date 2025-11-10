@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -55,7 +56,6 @@ const SuspectAliasesPage = () => {
   }, [suspectIndex, state]);
 
   useEffect(() => {
-    console.log("aliasIndex", aliasIndex, suspectAliases);
     if (aliasIndex !== null && suspectAliases[aliasIndex]) {
       setAlias({
         firstName: suspectAliases[aliasIndex].firstName,
@@ -64,6 +64,13 @@ const SuspectAliasesPage = () => {
     }
   }, []);
 
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-add-aliases",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -115,13 +122,10 @@ const SuspectAliasesPage = () => {
   }, [errorList]);
 
   const setFormValue = (key: "firstName" | "lastName", value: string) => {
-    console.log("key", key, "value", value);
     setAlias((prevState) => ({
       ...prevState,
       [key]: value,
     }));
-
-    console.log("key", key, "value", value);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -143,7 +147,7 @@ const SuspectAliasesPage = () => {
       },
     });
 
-    return navigate(`/case-registration/suspect-1/aliases-summary`);
+    return navigate(`/case-registration/suspect-1/suspect-aliases-summary`);
   };
 
   const { firstName = "", lastName = "" } = alias;
@@ -155,9 +159,7 @@ const SuspectAliasesPage = () => {
 
   return (
     <div className={styles.caseSuspectAliasesPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

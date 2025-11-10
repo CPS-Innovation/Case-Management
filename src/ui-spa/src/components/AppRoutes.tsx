@@ -93,11 +93,11 @@ const AppRoutes = () => {
           element={<SuspectOffenderPage />}
         />
         <Route
-          path="/case-registration/:suspectId/add-aliases"
+          path="/case-registration/:suspectId/suspect-add-aliases"
           element={<SuspectAliasesPage />}
         />
         <Route
-          path="/case-registration/:suspectId/aliases-summary"
+          path="/case-registration/:suspectId/suspect-aliases-summary"
           element={<SuspectAliasesSummaryPage />}
         />
         <Route

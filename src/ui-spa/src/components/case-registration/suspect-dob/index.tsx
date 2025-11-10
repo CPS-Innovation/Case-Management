@@ -10,7 +10,10 @@ import { Button, ErrorSummary, BackLink, DateInput } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { validateDate } from "../../../common/utils/dateValidation";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -34,6 +37,13 @@ const SuspectDOBPage = () => {
     return Number.parseInt(index, 10);
   }, [suspectId]);
 
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-dob",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(() => {
@@ -169,7 +179,7 @@ const SuspectDOBPage = () => {
 
   return (
     <div className={styles.addSuspectPage}>
-      <BackLink to="/case-registration/add-suspect">Back</BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

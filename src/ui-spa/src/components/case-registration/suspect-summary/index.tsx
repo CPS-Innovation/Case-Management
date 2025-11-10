@@ -14,7 +14,7 @@ import {
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
 import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
 import styles from "./index.module.scss";

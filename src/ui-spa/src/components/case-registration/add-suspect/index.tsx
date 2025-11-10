@@ -19,7 +19,7 @@ import {
   type CaseRegistrationState,
   type SuspectAdditionalDetailValue,
 } from "../../../common/reducers/caseRegistrationReducer";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -41,8 +41,6 @@ const AddSuspectPage = () => {
   const { suspectId } = useParams<{ suspectId: string }>() as {
     suspectId: string;
   };
-
-  console.log("suspectId", suspectId);
 
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
@@ -183,21 +181,20 @@ const AddSuspectPage = () => {
     event.preventDefault();
 
     if (!validateFormData(state)) return;
-    console.log("nextRoute>>>>>000000");
+
     const nextRoute = getNextSuspectJourneyRoute(
       "add-suspect",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
     );
 
-    console.log("nextRoute>>>>>>", nextRoute);
     return navigate(nextRoute);
   };
 
   const {
     formData: { suspects },
   } = state;
-  console.log("suspectIndex", suspects[suspectIndex]);
+
   const {
     addSuspectRadio = "",
     suspectFirstNameText = "",

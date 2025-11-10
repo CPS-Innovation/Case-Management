@@ -111,7 +111,6 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       return HttpResponse.json(results);
     }),
     http.get(`${baseUrl}/api/v1/offender-categories`, async () => {
-      console.log("offender-categories called");
       const results = isDevMock()
         ? suspectOffenderTypesDev
         : suspectOffenderTypesPlaywright;

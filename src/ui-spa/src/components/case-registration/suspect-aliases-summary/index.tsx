@@ -5,6 +5,7 @@ import {
   useContext,
   useCallback,
   useMemo,
+  use,
 } from "react";
 import {
   Radios,
@@ -14,7 +15,7 @@ import {
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -144,11 +145,11 @@ const SuspectAliasesSummaryPage = () => {
     if (!validateFormData()) return;
 
     if (addMoreAliasesRadio === "yes") {
-      return navigate(`/case-registration/${suspectId}/add-aliases`);
+      return navigate(`/case-registration/${suspectId}/suspect-add-aliases`);
     }
 
     const nextRoute = getNextSuspectJourneyRoute(
-      "add-aliases",
+      "suspect-add-aliases",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
     );
@@ -164,7 +165,7 @@ const SuspectAliasesSummaryPage = () => {
 
   return (
     <div className={styles.caseSuspectAliasesPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
+      <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
         Back
       </BackLink>
       {!!errorList.length && (

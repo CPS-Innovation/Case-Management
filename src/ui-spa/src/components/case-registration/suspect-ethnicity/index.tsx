@@ -12,7 +12,10 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getEthnicities } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getNextSuspectJourneyRoute";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import styles from "./index.module.scss";
 
 const SuspectEthnicityPage = () => {
@@ -49,6 +52,14 @@ const SuspectEthnicityPage = () => {
   useEffect(() => {
     if (ethnicityError) throw ethnicityError;
   }, [ethnicityError]);
+
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-ethnicity",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -167,9 +178,7 @@ const SuspectEthnicityPage = () => {
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-DOB`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
