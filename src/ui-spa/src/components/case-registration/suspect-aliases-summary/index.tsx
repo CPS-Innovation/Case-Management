@@ -49,8 +49,8 @@ const SuspectAliasesSummaryPage = () => {
       if (errorKey === "addMoreAliasesRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#add-more-aliases-radio-yes",
-          "data-testid": "add-more-aliases-radio-yes",
+          href: "#suspect-add-more-aliases-radio-yes",
+          "data-testid": "suspect-add-more-aliases-radio-yes",
         };
       }
       return null;

@@ -51,8 +51,8 @@ const SuspectASNPage = () => {
       if (errorKey === "suspectASNText") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#suspect-ASN-text",
-          "data-testid": "suspect-ASN-text",
+          href: "#suspect-asn-text",
+          "data-testid": "suspect-asn-text",
         };
       }
 

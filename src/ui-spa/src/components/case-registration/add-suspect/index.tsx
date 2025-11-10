@@ -98,8 +98,11 @@ const AddSuspectPage = () => {
     const {
       formData: { suspects },
     } = state;
-    const { addSuspectRadio, suspectLastNameText } = suspects[suspectIndex];
+    const { addSuspectRadio = "", suspectLastNameText = "" } =
+      suspects[suspectIndex] || {};
+    console.log("hiiiii````````i", addSuspectRadio);
     if (!addSuspectRadio) {
+      console.log("hiiiiii");
       errors.addSuspectRadio = {
         errorSummaryText: "Please select an option for adding a suspect",
         inputErrorText: "Please select an option for adding a suspect",
@@ -109,16 +112,16 @@ const AddSuspectPage = () => {
 
     if (addSuspectRadio == "person" && !suspectLastNameText) {
       errors.suspectLastNameText = {
-        errorSummaryText: "Please add last Name for the suspect",
-        inputErrorText: "Please add last Name for the suspect",
+        errorSummaryText: "Please add Last name for the suspect",
+        inputErrorText: "Please add Last name for the suspect",
         hasLink: true,
       };
     }
 
     if (addSuspectRadio == "company" && !suspectCompanyNameText) {
       errors.suspectCompanyNameText = {
-        errorSummaryText: "Please add company Name for the suspect",
-        inputErrorText: "Please add company Name for the suspect",
+        errorSummaryText: "Please add Company name for the suspect",
+        inputErrorText: "Please add Company name for the suspect",
         hasLink: true,
       };
     }
@@ -229,8 +232,7 @@ const AddSuspectPage = () => {
             errorMessage={
               formDataErrors["addSuspectRadio"]
                 ? {
-                    children:
-                      formDataErrors["addSuspectRadio"].errorSummaryText,
+                    children: formDataErrors["addSuspectRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -269,7 +271,7 @@ const AddSuspectPage = () => {
                           ? {
                               children:
                                 formDataErrors["suspectLastNameText"]
-                                  .errorSummaryText,
+                                  .inputErrorText,
                             }
                           : undefined
                       }
@@ -332,7 +334,7 @@ const AddSuspectPage = () => {
                           ? {
                               children:
                                 formDataErrors["suspectCompanyNameText"]
-                                  .errorSummaryText,
+                                  .inputErrorText,
                             }
                           : undefined
                       }
