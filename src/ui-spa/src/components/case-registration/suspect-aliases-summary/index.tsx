@@ -107,7 +107,7 @@ const SuspectAliasesSummaryPage = () => {
         items: [
           {
             children: <span>Change</span>,
-            to: `/case-registration/suspect-1/add-aliases?alias=${index}`,
+            to: `/case-registration/suspect-1/suspect-add-aliases?alias=${index}`,
             visuallyHiddenText: "Edit Suspect Details",
           },
           {
@@ -164,7 +164,7 @@ const SuspectAliasesSummaryPage = () => {
   const suspectAliases = suspects[suspectIndex]?.suspectAliases || [];
 
   return (
-    <div className={styles.caseSuspectAliasesPage}>
+    <div className={styles.caseSuspectAliasesSummaryPage}>
       <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
         Back
       </BackLink>
@@ -185,7 +185,7 @@ const SuspectAliasesSummaryPage = () => {
         <h1>
           Aliases for {suspectLastNameText} {suspectFirstNameText}
         </h1>
-        <div>
+        <div className={styles.summaryListWrapper}>
           <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
         </div>
         {!suspectAliases.length && <span>There are no aliases</span>}

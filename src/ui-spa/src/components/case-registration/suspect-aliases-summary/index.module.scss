@@ -1,7 +1,11 @@
-.caseSuspectAliasesPage {
+.caseSuspectAliasesSummaryPage {
   & h1 {
     margin-bottom: 0;
   }
+  .summaryListWrapper {
+    max-width: 65%;
+  }
+
   .inputWrapper {
     display: flex;
     flex-direction: column;

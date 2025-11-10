@@ -129,12 +129,17 @@ const SuspectGenderPage = () => {
 
   const genderItems = useMemo(() => {
     if (!state.apiData.suspectGenders) return [];
-    return state.apiData.suspectGenders.map((gender, index) => ({
-      id: `suspect-gender-radio-${index}`,
-      children: gender.description,
-      value: gender.shortCode,
-      "data-testid": `suspect-gender-radio-${index}`,
-    }));
+    return state.apiData.suspectGenders
+      .filter(
+        (gender) =>
+          gender.description != "Other" && gender.description != "Unknown",
+      )
+      .map((gender, index) => ({
+        id: `suspect-gender-radio-${index}`,
+        children: gender.description,
+        value: gender.shortCode,
+        "data-testid": `suspect-gender-radio-${index}`,
+      }));
   }, [state.apiData.suspectGenders]);
 
   const setFormValue = (value: string) => {

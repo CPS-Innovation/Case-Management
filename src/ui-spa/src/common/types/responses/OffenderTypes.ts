@@ -1,5 +1,5 @@
 export type OffenderType = {
-  code: string;
+  shortCode: string;
   description: string;
   display: string;
 };

@@ -51,7 +51,8 @@ export const getNextSuspectJourneyRoute = (
   suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[],
   currentSuspectIndex: number,
 ): string => {
-  if (!suspectAdditionalDetailsCheckboxes.length) return "/suspect-summary";
+  if (!suspectAdditionalDetailsCheckboxes?.length)
+    return "/case-registration/suspect-summary";
 
   const shouldInclude = (description: SuspectAdditionalDetailValue) => {
     return suspectAdditionalDetailsCheckboxes.includes(description);

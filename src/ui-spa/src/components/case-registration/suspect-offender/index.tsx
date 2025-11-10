@@ -82,10 +82,10 @@ const SuspectOffenderPage = () => {
     const {
       formData: { suspects },
     } = state;
-    const { suspectOffenderTypesRadio = { code: null, display: "" } } =
+    const { suspectOffenderTypesRadio = { shortCode: null, display: "" } } =
       suspects[suspectIndex] || {};
 
-    if (!suspectOffenderTypesRadio.code) {
+    if (!suspectOffenderTypesRadio.shortCode) {
       errors.suspectOffenderTypesRadio = {
         errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
@@ -128,17 +128,19 @@ const SuspectOffenderPage = () => {
 
   const offenderItems = useMemo(() => {
     if (!state.apiData.suspectOffenderTypes) return [];
-    return state.apiData.suspectOffenderTypes.map((offender, index) => ({
-      id: `suspect-offender-radio-${index}`,
-      children: offender.display,
-      value: offender.code,
-      "data-testid": `suspect-offender-radio-${index}`,
-    }));
+    return state.apiData.suspectOffenderTypes
+      .filter((offender) => offender.description != "Unspecified")
+      .map((offender, index) => ({
+        id: `suspect-offender-radio-${index}`,
+        children: offender.display,
+        value: offender.shortCode,
+        "data-testid": `suspect-offender-radio-${index}`,
+      }));
   }, [state.apiData.suspectOffenderTypes]);
 
   const setFormValue = (value: string) => {
     const selectedOffender = state.apiData.suspectOffenderTypes?.find(
-      (offender) => offender.code === value,
+      (offender) => offender.shortCode === value,
     );
     if (selectedOffender) {
       dispatch({
@@ -147,7 +149,7 @@ const SuspectOffenderPage = () => {
           index: suspectIndex,
           field: "suspectOffenderTypesRadio",
           value: {
-            code: selectedOffender.code,
+            shortCode: selectedOffender.shortCode,
             display: selectedOffender.display,
           },
         },
@@ -173,7 +175,7 @@ const SuspectOffenderPage = () => {
   } = state;
 
   const {
-    suspectOffenderTypesRadio = { code: null, display: "" },
+    suspectOffenderTypesRadio = { shortCode: null, display: "" },
     suspectFirstNameText = "",
     suspectLastNameText = "",
   } = suspects[suspectIndex] || {};
@@ -217,7 +219,7 @@ const SuspectOffenderPage = () => {
                 : undefined
             }
             items={offenderItems}
-            value={suspectOffenderTypesRadio.code ?? ""}
+            value={suspectOffenderTypesRadio.shortCode ?? ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

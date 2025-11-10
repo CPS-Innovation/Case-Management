@@ -129,12 +129,18 @@ const SuspectReligionPage = () => {
 
   const religionItems = useMemo(() => {
     if (!state.apiData.suspectReligions) return [];
-    return state.apiData.suspectReligions.map((religion, index) => ({
-      id: `suspect-religion-radio-${index}`,
-      children: religion.description,
-      value: religion.shortCode,
-      "data-testid": `suspect-religion-radio-${index}`,
-    }));
+    return state.apiData.suspectReligions
+      .filter(
+        (religion) =>
+          religion.description != "Not Stated" &&
+          religion.description != "Not Provided",
+      )
+      .map((religion, index) => ({
+        id: `suspect-religion-radio-${index}`,
+        children: religion.description,
+        value: religion.shortCode,
+        "data-testid": `suspect-religion-radio-${index}`,
+      }));
   }, [state.apiData.suspectReligions]);
 
   const setFormValue = (value: string) => {

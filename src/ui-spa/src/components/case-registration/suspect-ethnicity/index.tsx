@@ -40,7 +40,7 @@ const SuspectEthnicityPage = () => {
 
   const {
     data: ethnicityData,
-    isLoading: isEthnicitysLoading,
+    isLoading: isEthnicitiesLoading,
     error: ethnicityError,
   } = useQuery({
     queryKey: ["ethnicities"],
@@ -68,8 +68,8 @@ const SuspectEthnicityPage = () => {
       if (errorKey === "suspectEthnicityRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#suspect-enthinicity-radio-0",
-          "data-testid": "suspect-enthinicity-radio-link",
+          href: "#suspect-ethnicity-radio-0",
+          "data-testid": "suspect-ethnicity-radio-link",
         };
       }
 
@@ -117,29 +117,35 @@ const SuspectEthnicityPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!isEthnicitysLoading && ethnicityData) {
+    if (!isEthnicitiesLoading && ethnicityData) {
       dispatch({
-        type: "SET_CASE_SUSPECT_ETHINICITIES",
+        type: "SET_CASE_SUSPECT_ETHNICITIES",
         payload: {
-          suspectEthinicities: ethnicityData,
+          suspectEthnicities: ethnicityData,
         },
       });
     }
-  }, [ethnicityData, dispatch, isEthnicitysLoading]);
+  }, [ethnicityData, dispatch, isEthnicitiesLoading]);
 
-  const enthinicityItems = useMemo(() => {
-    if (!state.apiData.suspectEthinicities) return [];
-    return state.apiData.suspectEthinicities.map((enthinicity, index) => ({
-      id: `suspect-enthinicity-radio-${index}`,
-      children: enthinicity.description,
-      value: enthinicity.shortCode,
-      "data-testid": `suspect-enthinicity-radio-${index}`,
-    }));
-  }, [state.apiData.suspectEthinicities]);
+  const ethnicityItems = useMemo(() => {
+    if (!state.apiData.suspectEthnicities) return [];
+    return state.apiData.suspectEthnicities
+      .filter(
+        (ethnicity) =>
+          ethnicity.description != "Not stated" &&
+          ethnicity.description != "Not Provided",
+      )
+      .map((ethnicity, index) => ({
+        id: `suspect-ethnicity-radio-${index}`,
+        children: ethnicity.description,
+        value: ethnicity.shortCode,
+        "data-testid": `suspect-ethnicity-radio-${index}`,
+      }));
+  }, [state.apiData.suspectEthnicities]);
 
   const setFormValue = (value: string) => {
-    const selectedEthnicity = state.apiData.suspectEthinicities?.find(
-      (enthinicity) => enthinicity.shortCode === value,
+    const selectedEthnicity = state.apiData.suspectEthnicities?.find(
+      (ethnicity) => ethnicity.shortCode === value,
     );
     if (selectedEthnicity) {
       dispatch({
@@ -210,7 +216,7 @@ const SuspectEthnicityPage = () => {
                   }
                 : undefined
             }
-            items={enthinicityItems}
+            items={ethnicityItems}
             value={suspectEthnicityRadio.shortCode || ""}
             onChange={(value) => {
               if (value) setFormValue(value);

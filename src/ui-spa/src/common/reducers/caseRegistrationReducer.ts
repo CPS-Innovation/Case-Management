@@ -61,7 +61,7 @@ export type SuspectFormData = {
   suspectAliases: { firstName: string; lastName: string }[];
   suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
-  suspectOffenderTypesRadio: { code: string; display: string };
+  suspectOffenderTypesRadio: { shortCode: string; display: string };
   suspectCompanyNameText: string;
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
@@ -114,7 +114,7 @@ export type CaseRegistrationState = {
     caseCaseworkers?: CaseCaseworkers | null;
     caseInvestigatorTitles?: InvestigatorTitles | null;
     suspectGenders?: Genders | null;
-    suspectEthinicities?: Ethinicities | null;
+    suspectEthnicities?: Ethinicities | null;
     suspectReligions?: Religions | null;
     suspectOffenderTypes?: OffenderTypes | null;
   };
@@ -160,7 +160,7 @@ export const initialState: CaseRegistrationState = {
     caseCaseworkers: null,
     caseInvestigatorTitles: null,
     suspectGenders: null,
-    suspectEthinicities: null,
+    suspectEthnicities: null,
     suspectReligions: null,
     suspectOffenderTypes: null,
   },
@@ -188,7 +188,7 @@ export type CaseRegistrationActions =
           | SuspectAdditionalDetailValue[]
           | string
           | { shortCode: string; description: string }
-          | { code: string; display: string }
+          | { shortCode: string; display: string }
           | { firstName?: string; lastName: string }[];
       };
     }
@@ -247,9 +247,9 @@ export type CaseRegistrationActions =
       };
     }
   | {
-      type: "SET_CASE_SUSPECT_ETHINICITIES";
+      type: "SET_CASE_SUSPECT_ETHNICITIES";
       payload: {
-        suspectEthinicities: Ethinicities;
+        suspectEthnicities: Ethinicities;
       };
     }
   | {
@@ -405,12 +405,12 @@ export const caseRegistrationReducer = (
         },
       };
     }
-    case "SET_CASE_SUSPECT_ETHINICITIES": {
+    case "SET_CASE_SUSPECT_ETHNICITIES": {
       return {
         ...state,
         apiData: {
           ...state.apiData,
-          suspectEthinicities: action.payload.suspectEthinicities,
+          suspectEthnicities: action.payload.suspectEthnicities,
         },
       };
     }
