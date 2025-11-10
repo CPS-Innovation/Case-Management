@@ -88,6 +88,7 @@ describe("caseRegistrationReducer", () => {
         caseInvestigatorShoulderNameText: "GHI",
         caseInvestigatorShoulderNumberText: "123",
         caseInvestigatorPoliceUnitText: "Unit Z",
+        suspects: [],
       },
       apiData: apiData,
     };

@@ -62,7 +62,7 @@ const SuspectAliasesPage = () => {
         lastName: suspectAliases[aliasIndex].lastName,
       });
     }
-  }, []);
+  }, [aliasIndex, suspectAliases]);
 
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(

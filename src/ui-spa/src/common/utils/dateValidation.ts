@@ -10,7 +10,7 @@ const isLeapYear = (year: number): boolean => {
 export const validateDate = (
   day: number,
   month: number,
-  year: number
+  year: number,
 ): ValidationResult => {
   const errors = [];
 
