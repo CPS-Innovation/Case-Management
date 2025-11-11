@@ -27,7 +27,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspectDetailsRadio).toBe("Area 51");
   });
 
-  it("should set formDataoperationNameText data using SET_FIELD action", () => {
+  it("should set formData operationNameText data using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
       type: "SET_FIELD",
       payload: { field: "operationNameText", value: "Operation Thunder" },
@@ -101,6 +101,34 @@ describe("caseRegistrationReducer", () => {
     // @ts-expect-error Testing unknown action type
     const state = caseRegistrationReducer(initialState, { type: "UNKNOWN" });
     expect(state).toBe(initialState);
+  });
+
+  it("should set suspect data suspectFirstNameText data using SET_SUSPECT_FIELD action", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_SUSPECT_FIELD",
+      payload: {
+        index: 0,
+        field: "suspectFirstNameText",
+        value: "John",
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.formData.suspects[0].suspectFirstNameText).toBe("John");
+  });
+
+  it("should set suspect data suspectAliases data using SET_SUSPECT_FIELD action", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_SUSPECT_FIELD",
+      payload: {
+        index: 0,
+        field: "suspectAliases",
+        value: [{ firstName: "John", lastName: "Doe" }],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.formData.suspects[0].suspectAliases).toEqual([
+      { firstName: "John", lastName: "Doe" },
+    ]);
   });
 
   it("Should set  apisData areasAndRegisteringUnits data using SET_AREAS_AND_REGISTERING_UNITS", () => {
@@ -258,6 +286,76 @@ describe("caseRegistrationReducer", () => {
     const state = caseRegistrationReducer(initialState, action);
     expect(state.apiData.caseInvestigatorTitles).toEqual(
       action.payload.caseInvestigatorTitles,
+    );
+  });
+
+  it("Should set apiData suspectGenders data using SET_CASE_SUSPECT_GENDERS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_SUSPECT_GENDERS",
+      payload: {
+        suspectGenders: [
+          { shortCode: "male", description: "Male" },
+          { shortCode: "female", description: "Female" },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.suspectGenders).toEqual(action.payload.suspectGenders);
+  });
+
+  it("Should set apiData suspectEthnicities data using SET_CASE_SUSPECT_ETHNICITIES", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_SUSPECT_ETHNICITIES",
+      payload: {
+        suspectEthnicities: [
+          { shortCode: "black", description: "Black" },
+          { shortCode: "white", description: "White" },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.suspectEthnicities).toEqual(
+      action.payload.suspectEthnicities,
+    );
+  });
+
+  it("Should set apiData suspectReligions data using SET_CASE_SUSPECT_RELIGIONS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_SUSPECT_RELIGIONS",
+      payload: {
+        suspectReligions: [
+          { shortCode: "christian", description: "Christian" },
+          { shortCode: "Buddhist", description: "Buddhist" },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.suspectReligions).toEqual(
+      action.payload.suspectReligions,
+    );
+  });
+
+  it("Should set apiData suspectOffenderTypes data using SET_CASE_SUSPECT_OFFENDER_TYPE", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CASE_SUSPECT_OFFENDER_TYPES",
+      payload: {
+        suspectOffenderTypes: [
+          {
+            shortCode: "PPO",
+            description: "Prolific priority offender",
+            display: "Prolific priority offender (PPO)",
+          },
+          {
+            shortCode: "PYO",
+            description: "Prolific youth offender",
+            display: "Prolific youth offender (PYO)",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.suspectOffenderTypes).toEqual(
+      action.payload.suspectOffenderTypes,
     );
   });
 });

@@ -32,5 +32,5 @@ export const validateDate = (
     errors.push("invalid day");
   }
 
-  return { isValid: true, errors: errors };
+  return { isValid: !errors.length, errors: errors };
 };

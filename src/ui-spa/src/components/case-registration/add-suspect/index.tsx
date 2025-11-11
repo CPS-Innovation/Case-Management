@@ -225,7 +225,7 @@ const AddSuspectPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Add Suspect1</h1>,
+                children: <h1>{`Add Suspect ${suspectIndex + 1}`}</h1>,
               },
             }}
             errorMessage={

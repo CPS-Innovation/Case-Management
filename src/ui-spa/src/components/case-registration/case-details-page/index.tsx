@@ -353,8 +353,12 @@ const CaseDetailsPage = () => {
       }));
       return;
     }
-    if (state.formData.suspectDetailsRadio === "yes")
-      return navigate(`/case-registration/suspect-1/add-suspect`);
+    if (state.formData.suspectDetailsRadio === "yes") {
+      const suspectIndex = state.formData.suspects.length
+        ? state.formData.suspects.length - 1
+        : 0;
+      return navigate(`/case-registration/suspect-${suspectIndex}/add-suspect`);
+    }
     return navigate("/case-registration/first-hearing");
   };
 

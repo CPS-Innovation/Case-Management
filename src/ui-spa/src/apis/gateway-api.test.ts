@@ -9,6 +9,10 @@ import {
   getCaseCaseworkers,
   getInvestigatorTitles,
   submitCaseRegistration,
+  getGenders,
+  getEthnicities,
+  getReligions,
+  getOffenderTypes,
 } from "./gateway-api";
 import { ApiError } from "../common/errors/ApiError";
 
@@ -355,5 +359,133 @@ describe("gateway-api", () => {
     await expect(submitCaseRegistration(mockRequest)).rejects.toBeInstanceOf(
       ApiError,
     );
+  });
+
+  it("getGenders - success", async () => {
+    const mockBody = [
+      { shortCode: "male", description: "Male" },
+      { shortCode: "female", description: "Female" },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getGenders();
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/genders",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getGenders - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getGenders()).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it("getEthnicities - success", async () => {
+    const mockBody = [
+      { shortCode: "black", description: "Black" },
+      { shortCode: "white", description: "White" },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getEthnicities();
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/ethnicities",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getEthnicities - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getEthnicities()).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it("getReligions - success", async () => {
+    const mockBody = [
+      { shortCode: "christianity", description: "Christianity" },
+      { shortCode: "Buddhism", description: "Buddhism" },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getReligions();
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/religions",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getReligions - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getReligions()).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it("getOffenderTypes - success", async () => {
+    const mockBody = [
+      { shortCode: "violent", description: "Violent Offender" },
+      { shortCode: "non-violent", description: "Non-Violent Offender" },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getOffenderTypes();
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/offender-categories",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getOffenderTypes - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getOffenderTypes()).rejects.toBeInstanceOf(ApiError);
   });
 });

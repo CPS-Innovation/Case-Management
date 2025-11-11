@@ -51,9 +51,6 @@ export const getNextSuspectJourneyRoute = (
   suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[],
   currentSuspectIndex: number,
 ): string => {
-  if (!suspectAdditionalDetailsCheckboxes?.length)
-    return "/case-registration/suspect-summary";
-
   const shouldInclude = (description: SuspectAdditionalDetailValue) => {
     return suspectAdditionalDetailsCheckboxes.includes(description);
   };
@@ -95,10 +92,6 @@ export const getPreviousSuspectJourneyRoute = (
   const currentIndex = filteredSequence.findIndex(
     (item) => item.route === currentRoute,
   );
-
-  // if (currentIndex === 0) {
-  //   return `/case-registration/suspect-${currentSuspectIndex}/add-suspect`;
-  // }
 
   if (filteredSequence[currentIndex - 1]?.route) {
     return `/case-registration/suspect-${currentSuspectIndex}/${filteredSequence[currentIndex - 1].route}`;
