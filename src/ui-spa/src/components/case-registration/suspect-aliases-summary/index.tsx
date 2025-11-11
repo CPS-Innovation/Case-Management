@@ -107,7 +107,7 @@ const SuspectAliasesSummaryPage = () => {
         items: [
           {
             children: <span>Change</span>,
-            to: `/case-registration/suspect-1/suspect-add-aliases?alias=${index}`,
+            to: `/case-registration/suspect-${suspectIndex}/suspect-add-aliases?alias=${index}`,
             visuallyHiddenText: "Edit Suspect Details",
           },
           {
@@ -145,7 +145,9 @@ const SuspectAliasesSummaryPage = () => {
     if (!validateFormData()) return;
 
     if (addMoreAliasesRadio === "yes") {
-      return navigate(`/case-registration/${suspectId}/suspect-add-aliases`);
+      return navigate(
+        `/case-registration/suspect-${suspectIndex}/suspect-add-aliases`,
+      );
     }
 
     const nextRoute = getNextSuspectJourneyRoute(

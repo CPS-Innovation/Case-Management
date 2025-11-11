@@ -147,7 +147,9 @@ const SuspectAliasesPage = () => {
       },
     });
 
-    return navigate(`/case-registration/suspect-1/suspect-aliases-summary`);
+    return navigate(
+      `/case-registration/suspect-${suspectIndex}/suspect-aliases-summary`,
+    );
   };
 
   const { firstName = "", lastName = "" } = alias;
