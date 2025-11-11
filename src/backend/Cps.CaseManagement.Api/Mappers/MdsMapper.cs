@@ -143,7 +143,8 @@ public class MdsMapper : IMdsMapper
                 Legislation = o.Legislation,
                 DPPConsent = o.DPPConsent,
                 EffectiveFromDate = o.EffectiveFromDate,
-                EffectiveToDate = o.EffectiveToDate
+                EffectiveToDate = o.EffectiveToDate,
+                ModeOfTrial = o.ModeOfTrial
             }).ToArray()
         };
     }
