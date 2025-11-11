@@ -10,7 +10,7 @@ import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const SuspectAliasesPage = () => {
   type ErrorText = {

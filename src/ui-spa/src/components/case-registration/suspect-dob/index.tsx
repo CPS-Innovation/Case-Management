@@ -15,7 +15,7 @@ import {
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const SuspectDOBPage = () => {
   type ErrorText = {
@@ -178,7 +178,7 @@ const SuspectDOBPage = () => {
   } = suspects[suspectIndex] || {};
 
   return (
-    <div className={styles.addSuspectPage}>
+    <div>
       <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div

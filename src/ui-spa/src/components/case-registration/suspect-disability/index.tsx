@@ -14,7 +14,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const SuspectDisabilityPage = () => {
   type ErrorText = {
@@ -133,7 +133,7 @@ const SuspectDisabilityPage = () => {
   } = suspects[suspectIndex] || {};
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div>
       <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div

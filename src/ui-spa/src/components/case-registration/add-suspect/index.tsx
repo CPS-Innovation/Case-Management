@@ -22,7 +22,7 @@ import {
 import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const AddSuspectPage = () => {
   type ErrorText = {

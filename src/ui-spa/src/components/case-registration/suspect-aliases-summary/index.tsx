@@ -16,7 +16,8 @@ import {
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const SuspectAliasesSummaryPage = () => {
   type ErrorText = {
@@ -163,7 +164,7 @@ const SuspectAliasesSummaryPage = () => {
   const suspectAliases = suspects[suspectIndex]?.suspectAliases || [];
 
   return (
-    <div className={styles.caseSuspectAliasesSummaryPage}>
+    <div className={pageStyles.caseSuspectAliasesSummaryPage}>
       <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
         Back
       </BackLink>
@@ -184,7 +185,7 @@ const SuspectAliasesSummaryPage = () => {
         <h1>
           Aliases for {suspectLastNameText} {suspectFirstNameText}
         </h1>
-        <div className={styles.summaryListWrapper}>
+        <div className={pageStyles.summaryListWrapper}>
           <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
         </div>
         {!suspectAliases.length && <span>There are no aliases</span>}
