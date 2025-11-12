@@ -17,7 +17,7 @@ export type RadiosProps = {
   };
   className?: string;
   value: string | undefined;
-  name: string;
+  name?: string;
   items: {
     id?: string;
     reactListKey?: string;

@@ -1,0 +1,15 @@
+.caseRegistrationConfirmationPage {
+  max-width: 66.66%;
+  margin-top: 2rem;
+  & .urnData {
+    display: flex;
+    flex-direction: column;
+  }
+  & .urnLabel {
+    font-size: 2rem;
+    margin: 0;
+  }
+  & .urnValue {
+    font-weight: bold;
+  }
+}

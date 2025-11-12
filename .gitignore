@@ -315,3 +315,4 @@ build-output/
 
 # coverage-reports
 coverage-reports/
+unit-test-results.xml

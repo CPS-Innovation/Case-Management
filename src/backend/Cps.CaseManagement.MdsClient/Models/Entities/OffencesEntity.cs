@@ -24,4 +24,6 @@ public class OffenceEntity
     public DateTime? EffectiveFromDate { get; set; }
     [JsonPropertyName("effectiveToDate")]
     public DateTime? EffectiveToDate { get; set; }
+    [JsonPropertyName("modeOfTrial")]
+    public string? ModeOfTrial { get; set; }
 }

@@ -9,13 +9,14 @@ using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Cps.CaseManagement.Api.Extensions;
 using Cps.CaseManagement.Api.Helpers;
+using Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.Api.Middleware;
 using Cps.CaseManagement.Api.OpenApi;
 using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.Api.Validators;
-using Cps.CaseManagement.MdsClient.Extensions;
-using Cps.CaseManagement.Infrastructure.Telemetry;
 using Cps.CaseManagement.Infrastructure.Extensions;
+using Cps.CaseManagement.Infrastructure.Telemetry;
+using Cps.CaseManagement.MdsClient.Extensions;
 
 using var loggerFactory = LoggerFactory.Create(configure => configure.AddConsole());
 var logger = loggerFactory.CreateLogger("Configuration");
@@ -80,6 +81,8 @@ var host = new HostBuilder()
 
         services.AddTelemetryServices();
         services.AddMdsClient(configuration);
+        services.AddSingleton<IMdsMapper, MdsMapper>();
+        services.AddScoped<IMdsService, MdsService>();
         services.AddScoped<IInitService, InitService>();
         services.AddSingleton<IOpenApiConfigurationOptions, CaseManagementApiOpenApiConfigurationOptions>();
         services.AddSingleton<IRequestValidator, RequestValidator>();
