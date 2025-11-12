@@ -1983,10 +1983,10 @@ export const caseAreasAndRegisteringUnitsDev = {
     },
   ],
   homeUnit: {
-    areaId: 1057708,
-    areaDescription: "Organised Crime Division",
+    areaId: 1008,
+    areaDescription: "CAMBRIDGESHIRE",
     areaIsSensitive: false,
-    id: 1057725,
-    description: "Organised Crime Division London",
+    id: 2033,
+    description: "SOUTHERN CJU (Cambridge)",
   },
 };
