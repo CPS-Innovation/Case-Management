@@ -36,7 +36,7 @@ const SuspectAliasesSummaryPage = () => {
     suspectId: string;
   };
 
-  const [addMoreAliasesRadio, setAddMoreAliasesRadio] = useState<string>();
+  const [addMoreAliasesRadio, setAddMoreAliasesRadio] = useState<string>("");
   const suspectIndex = useMemo(() => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
@@ -236,7 +236,7 @@ const SuspectAliasesSummaryPage = () => {
             ]}
             value={addMoreAliasesRadio}
             onChange={(value) => {
-              setAddMoreAliasesRadio(value);
+              if (value) setAddMoreAliasesRadio(value);
             }}
           ></Radios>
         </div>
