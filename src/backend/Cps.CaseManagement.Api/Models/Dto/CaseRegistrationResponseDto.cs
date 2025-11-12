@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Cps.CaseManagement.MdsClient.Models.Entities;
 
 namespace Cps.CaseManagement.Api.Models.Dto;
 
