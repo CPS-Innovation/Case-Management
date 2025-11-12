@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -11,10 +10,8 @@ using Cps.CaseManagement.Api.Models.Domain;
 using Cps.CaseManagement.Api.TelemetryEvents;
 using Cps.CaseManagement.Api.Tests.Helpers;
 using Cps.CaseManagement.Infrastructure.Telemetry;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
 
