@@ -12,11 +12,12 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
     private readonly ILogger<AuthorizationValidator> _logger = logger;
     private readonly ConfigurationManager<OpenIdConnectConfiguration> _configurationManager = configurationManager;
     private const string ScopeType = @"http://schemas.microsoft.com/identity/claims/scope";
+    private const string RolesType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
     public async Task<ValidateTokenResult> ValidateTokenAsync(string token, string? requiredScopes = null, string? requiredRoles = null)
     {
         if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
-        
+
         try
         {
             var audience = Environment.GetEnvironmentVariable("CallingAppValidAudience");
@@ -45,7 +46,9 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
             var claimsPrincipal = tokenValidator.ValidateToken(tokenString, validationParameters, out _);
 
             var isValid = IsValid(claimsPrincipal, requiredScopes, requiredRoles);
-            var username = claimsPrincipal?.Identity?.Name;
+
+            // For app tokens, use app name or object ID; for user tokens, use preferred_username
+            var username = GetIdentifier(claimsPrincipal);
 
             return new ValidateTokenResult
             {
@@ -90,12 +93,87 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         var requiredScopes = LoadRequiredItems(scopes ?? string.Empty);
         var requiredRoles = LoadRequiredItems(roles ?? string.Empty);
 
+        var isAppToken = IsApplicationToken(claimsPrincipal);
+
+        if (isAppToken)
+        {
+            // For app tokens, validate against app roles only
+            return ValidateAppToken(claimsPrincipal, requiredScopes, requiredRoles);
+        }
+        else
+        {
+            // For delegated tokens, validate against scopes (and optionally user roles)
+            return ValidateDelegatedToken(claimsPrincipal, requiredScopes, requiredRoles);
+        }
+    }
+
+    private static bool IsApplicationToken(ClaimsPrincipal claimsPrincipal)
+    {
+        // App tokens have:
+        // - "roles" claim (instead of "scp")
+        // - "idtyp" claim with value "app" (in v2.0 tokens)
+        // - OR no "scp" claim and has "roles" claim
+
+        var hasIdTypApp = claimsPrincipal.HasClaim("idtyp", "app");
+        var hasRoles = claimsPrincipal.HasClaim(x => x.Type == RolesType);
+        var hasScopes = claimsPrincipal.HasClaim(x => x.Type == ScopeType);
+
+        return hasIdTypApp || (hasRoles && !hasScopes);
+    }
+
+    private static bool ValidateAppToken(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes, List<string> requiredRoles)
+    {
+        // For app tokens, map required scopes to app roles
+        // Convention: scope "user_impersonation" maps to role "API.Access"
+
+        var tokenRoles = claimsPrincipal.FindAll(RolesType)
+            .Select(c => c.Value)
+            .ToList();
+
+        // If specific roles are required, check them
+        if (requiredRoles.Count > 0)
+        {
+            var hasAllRoles = requiredRoles.All(requiredRole =>
+                tokenRoles.Any(tokenRole => string.Equals(requiredRole, tokenRole, StringComparison.OrdinalIgnoreCase)));
+
+            if (!hasAllRoles)
+            {
+                return false;
+            }
+        }
+
+        // Map scopes to roles for compatibility
+        // "user_impersonation" scope requires "API.Access" role
+        if (requiredScopes.Count > 0)
+        {
+            var mappedRoles = MapScopesToRoles(requiredScopes);
+            var hasAllMappedRoles = mappedRoles.All(mappedRole =>
+                tokenRoles.Any(tokenRole => string.Equals(mappedRole, tokenRole, StringComparison.OrdinalIgnoreCase)));
+
+            if (!hasAllMappedRoles)
+            {
+                return false;
+            }
+        }
+
+        // If no specific requirements, just check that token has at least one role
+        if (requiredRoles.Count == 0 && requiredScopes.Count == 0)
+        {
+            return tokenRoles.Count > 0;
+        }
+
+        return true;
+    }
+
+    private static bool ValidateDelegatedToken(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes, List<string> requiredRoles)
+    {
         if (requiredScopes.Count == 0 && requiredRoles.Count == 0)
         {
             return true;
         }
 
         var hasAccessToRoles = requiredRoles.Count == 0 || requiredRoles.All(claimsPrincipal.IsInRole);
+
         var scopeClaim = claimsPrincipal.HasClaim(x => x.Type == ScopeType)
             ? claimsPrincipal.Claims.First(x => x.Type == ScopeType).Value
             : string.Empty;
@@ -104,6 +182,40 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         var hasAccessToScopes = requiredScopes.Count == 0 || requiredScopes.All(x => tokenScopes.Any(y => string.Equals(x, y, StringComparison.OrdinalIgnoreCase)));
 
         return hasAccessToRoles && hasAccessToScopes;
+    }
+
+    private static List<string> MapScopesToRoles(List<string> scopes)
+    {
+        // Map delegated permission scopes to application permission roles
+        var scopeToRoleMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "user_impersonation", "API.Access" }
+        };
+
+        return scopes
+            .Select(scope => scopeToRoleMap.TryGetValue(scope, out var role) ? role : scope)
+            .ToList();
+    }
+
+    private static string? GetIdentifier(ClaimsPrincipal claimsPrincipal)
+    {
+        // For user tokens: use preferred_username
+        var username = claimsPrincipal?.Identity?.Name;
+        if (!string.IsNullOrEmpty(username))
+        {
+            return username;
+        }
+
+        // For app tokens: use app display name or app ID
+        var appDisplayName = claimsPrincipal?.FindFirst("appid")?.Value
+                          ?? claimsPrincipal?.FindFirst("azp")?.Value;
+
+        if (!string.IsNullOrEmpty(appDisplayName))
+        {
+            return $"[APP:{appDisplayName}]";
+        }
+
+        return null;
     }
 
     private static List<string> LoadRequiredItems(string items)
