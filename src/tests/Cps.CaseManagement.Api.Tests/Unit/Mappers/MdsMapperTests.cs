@@ -198,6 +198,7 @@ public class MdsMapperTests
         Assert.Equal(offence.DPPConsent, mapped.DPPConsent);
         Assert.Equal(offence.EffectiveFromDate, mapped.EffectiveFromDate);
         Assert.Equal(offence.EffectiveToDate, mapped.EffectiveToDate);
+        Assert.Equal(offence.ModeOfTrial, mapped.ModeOfTrial);
     }
 
     [Fact]
