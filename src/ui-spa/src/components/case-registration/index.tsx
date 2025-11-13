@@ -35,25 +35,21 @@ const CaseRegistrationPage = () => {
   const navigate = useNavigate();
   const isAreaSensitive = useIsAreaSensitive();
 
-  const {
-    data: areasData,
-    isLoading: isAreaDataLoading,
-    error: areaDataError,
-  } = useQuery({
+  const { data: areasData, error: areaDataError } = useQuery({
     queryKey: ["areas"],
     queryFn: getCaseAreasAndRegisteringUnits,
     retry: false,
+    enabled: !state.apiData.areasAndRegisteringUnits,
   });
 
-  const {
-    data: witnessCareUnitsData,
-    isLoading: isWitnessCareUnitsLoading,
-    error: witnessCareUnitsError,
-  } = useQuery({
-    queryKey: ["witness-care-units"],
-    queryFn: getCaseAreasAndWitnessCareUnits,
-    retry: false,
-  });
+  const { data: witnessCareUnitsData, error: witnessCareUnitsError } = useQuery(
+    {
+      queryKey: ["witness-care-units"],
+      queryFn: getCaseAreasAndWitnessCareUnits,
+      retry: false,
+      enabled: !state.apiData.areasAndWitnessCareUnits,
+    },
+  );
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -154,18 +150,36 @@ const CaseRegistrationPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!isAreaDataLoading && areasData) {
+    if (areasData && !state.apiData.areasAndRegisteringUnits) {
       dispatch({
         type: "SET_AREAS_AND_REGISTERING_UNITS",
         payload: {
           areasAndRegisteringUnits: areasData,
         },
       });
+
+      if (!state.formData.areaOrDivisionText.id && areasData?.homeUnit) {
+        dispatch({
+          type: "SET_FIELD",
+          payload: {
+            field: "areaOrDivisionText",
+            value: {
+              id: areasData.homeUnit.areaId,
+              description: areasData.homeUnit.areaDescription,
+            },
+          },
+        });
+      }
     }
-  }, [areasData, dispatch, isAreaDataLoading]);
+  }, [
+    areasData,
+    dispatch,
+    state.formData.areaOrDivisionText,
+    state.apiData.areasAndRegisteringUnits,
+  ]);
 
   useEffect(() => {
-    if (!isWitnessCareUnitsLoading && witnessCareUnitsData) {
+    if (witnessCareUnitsData && !state.apiData.areasAndWitnessCareUnits) {
       dispatch({
         type: "SET_AREAS_AND_WITNESS_CARE_UNITS",
         payload: {
@@ -173,7 +187,7 @@ const CaseRegistrationPage = () => {
         },
       });
     }
-  }, [witnessCareUnitsData, dispatch, isWitnessCareUnitsLoading]);
+  }, [witnessCareUnitsData, dispatch, state.apiData.areasAndWitnessCareUnits]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
