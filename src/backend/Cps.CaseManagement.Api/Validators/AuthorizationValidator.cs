@@ -147,35 +147,23 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
             }
         }
 
-        // Map scopes to roles for compatibility
-        // "user_impersonation" scope requires "API.Access" role
         if (requiredScopes.Count > 0)
         {
             var mappedRoles = MapScopesToRoles(requiredScopes);
+            var unmappedScopes = requiredScopes
+                .Where((s, i) => string.Equals(mappedRoles[i], s, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-            var unmapped = requiredScopes.Where(s => !string.Equals(
-                MapScopesToRoles(new() { s }).First(), "API.Access", StringComparison.OrdinalIgnoreCase)
-            ).ToList();
+            if (unmappedScopes.Count > 0)
+                _logger.LogWarning("Unmapped scopes for app token: {Scopes}", string.Join(", ", unmappedScopes));
 
-            if (unmapped.Count > 0)
-                _logger.LogWarning("Unmapped scopes for app token: {Scopes}", unmapped);
+            var hasAll = mappedRoles.All(mr =>
+                tokenRoles.Any(tr => string.Equals(mr, tr, StringComparison.OrdinalIgnoreCase)));
 
-            var hasAllMappedRoles = mappedRoles.All(mappedRole =>
-                tokenRoles.Any(tokenRole => string.Equals(mappedRole, tokenRole, StringComparison.OrdinalIgnoreCase)));
-
-            if (!hasAllMappedRoles)
-            {
-                return false;
-            }
+            if (!hasAll) return false;
         }
 
-        // If no specific requirements, just check that token has at least one role
-        if (requiredRoles.Count == 0 && requiredScopes.Count == 0)
-        {
-            return tokenRoles.Count > 0;
-        }
-
-        return true;
+        return requiredRoles.Count == 0 && requiredScopes.Count == 0 ? tokenRoles.Count > 0 : true;
     }
 
     private static bool ValidateDelegatedToken(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes, List<string> requiredRoles)
