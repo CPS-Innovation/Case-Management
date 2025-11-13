@@ -79,6 +79,7 @@ const CaseAssigneePage = () => {
   } = useQuery({
     queryKey: ["case-investigator-titles"],
     queryFn: () => getInvestigatorTitles(),
+    enabled: !state.apiData.caseInvestigatorTitles,
     retry: false,
   });
 

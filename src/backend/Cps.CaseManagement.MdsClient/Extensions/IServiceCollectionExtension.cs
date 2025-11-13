@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Headers;
-using MdsClient = Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Factories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,7 @@ public static class IServiceCollectionExtension
           .AddPolicyHandler(GetRetryPolicy());
         services.AddTransient<IMdsRequestFactory, MdsRequestFactory>();
         services.AddTransient<IMdsArgFactory, MdsArgFactory>();
-        
+
     }
 
     internal static void AddMdsClient(IServiceProvider configuration, HttpClient client)

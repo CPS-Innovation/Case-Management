@@ -16,3 +16,4 @@ export { AutoComplete } from "./AutoComplete";
 export { SummaryList } from "./SummaryList";
 export { Panel } from "./Panel";
 export { Tag } from "./Tag";
+export { DateInput } from "./DateInput";
