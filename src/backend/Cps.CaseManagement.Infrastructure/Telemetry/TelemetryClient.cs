@@ -3,22 +3,16 @@ namespace Cps.CaseManagement.Infrastructure.Telemetry;
 using System;
 using System.Collections.Generic;
 using Microsoft.ApplicationInsights.DataContracts;
-using AppInsights = Microsoft.ApplicationInsights;
 
-public class TelemetryClient : ITelemetryClient
+public class TelemetryClient(IAppInsightsTelemetryClient telemetryClient) : ITelemetryClient
 {
-    protected readonly IAppInsightsTelemetryClient _telemetryClient;
+    protected readonly IAppInsightsTelemetryClient _telemetryClient = telemetryClient;
 
     private const string ExceptionMessageKey = "exceptionMessage";
     private const string ExceptionStackTraceKey = "exceptionStackTrace";
     private const string PageNameKey = "pageName";
     private const string SeverityLevelKey = "severityLevel";
     private const string MessageKey = "message";
-
-    public TelemetryClient(IAppInsightsTelemetryClient telemetryClient)
-    {
-        _telemetryClient = telemetryClient;
-    }
 
     public void TrackEvent(BaseTelemetryEvent telemetryEvent)
     {

@@ -1,4 +1,3 @@
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Abstractions;
@@ -15,7 +14,6 @@ using Cps.CaseManagement.Api.OpenApi;
 using Cps.CaseManagement.Api.Services;
 using Cps.CaseManagement.Api.Validators;
 using Cps.CaseManagement.Infrastructure.Extensions;
-using Cps.CaseManagement.Infrastructure.Telemetry;
 using Cps.CaseManagement.MdsClient.Extensions;
 
 using var loggerFactory = LoggerFactory.Create(configure => configure.AddConsole());

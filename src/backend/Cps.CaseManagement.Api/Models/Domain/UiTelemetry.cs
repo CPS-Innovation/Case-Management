@@ -1,6 +1,5 @@
 namespace Cps.CaseManagement.Api.Models.Domain;
 
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Cps.CaseManagement.Api.Constants;
 

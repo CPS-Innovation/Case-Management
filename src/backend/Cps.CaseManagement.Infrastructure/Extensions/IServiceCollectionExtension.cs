@@ -1,6 +1,5 @@
 using Cps.CaseManagement.Infrastructure.Telemetry;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cps.CaseManagement.Infrastructure.Extensions;
