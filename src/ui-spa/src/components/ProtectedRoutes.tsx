@@ -5,7 +5,8 @@ const ProtectedRoutes = () => {
   const { state } = useContext(CaseRegistrationFormContext);
 
   const isAllowed =
-    state.formData.areaOrDivisionText && state.apiData.areasAndRegisteringUnits;
+    state.formData.suspectDetailsRadio &&
+    state.apiData.areasAndRegisteringUnits;
   return isAllowed ? <Outlet /> : <Navigate to="/case-registration" replace />;
 };
 

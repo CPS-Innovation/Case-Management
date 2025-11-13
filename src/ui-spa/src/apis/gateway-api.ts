@@ -11,6 +11,10 @@ import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors"
 import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
 import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
 import type { CaseRegistration } from "../common/types/requests/CaseRegistration";
+import type { Genders } from "../common/types/responses/Genders";
+import type { Ethnicities } from "../common/types/responses/Ethnicities";
+import type { Religions } from "../common/types/responses/Religions";
+import type { OffenderTypes } from "../common/types/responses/OffenderTypes";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -174,6 +178,66 @@ export const getInvestigatorTitles = async () => {
     throw new ApiError(`getting investigator titles failed`, url, response);
   }
   return (await response.json()) as InvestigatorTitles;
+};
+
+export const getGenders = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/genders`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting genders failed`, url, response);
+  }
+  return (await response.json()) as Genders;
+};
+
+export const getEthnicities = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/ethnicities`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting ethnicities failed`, url, response);
+  }
+  return (await response.json()) as Ethnicities;
+};
+
+export const getReligions = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/religions`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting religions failed`, url, response);
+  }
+  return (await response.json()) as Religions;
+};
+
+export const getOffenderTypes = async () => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/offender-categories`;
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      ...(await buildCommonHeaders()),
+    },
+  });
+  if (!response.ok) {
+    throw new ApiError(`getting offender categories failed`, url, response);
+  }
+  return (await response.json()) as OffenderTypes;
 };
 
 export const submitCaseRegistration = async (data: CaseRegistration) => {

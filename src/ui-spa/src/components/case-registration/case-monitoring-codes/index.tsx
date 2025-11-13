@@ -36,6 +36,7 @@ const CaseMonitoringCodesPage = () => {
   } = useQuery({
     queryKey: ["case-monitoring-codes"],
     queryFn: () => getCaseMonitoringCodes(),
+    enabled: !state.apiData.caseMonitoringCodes,
     retry: false,
   });
 
@@ -138,7 +139,7 @@ const CaseMonitoringCodesPage = () => {
       formData: { caseMonitoringCodesCheckboxes },
     } = state;
 
-    if (!caseMonitoringCodesCheckboxes?.length) {
+    if (!isOptional && !caseMonitoringCodesCheckboxes?.length) {
       errors.caseMonitoringCodesCheckboxes = {
         errorSummaryText: "Please select at least one monitoring code",
         inputErrorText: "Please select an option",

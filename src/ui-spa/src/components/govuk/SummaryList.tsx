@@ -10,6 +10,7 @@ type Props = {
         children: React.ReactNode;
         to?: string;
         visuallyHiddenText?: string;
+        onClick?: () => void;
       }[];
     };
   }[];
