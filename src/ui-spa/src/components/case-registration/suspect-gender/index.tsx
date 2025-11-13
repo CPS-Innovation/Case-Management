@@ -44,8 +44,8 @@ const SuspectGenderPage = () => {
     error: gendersError,
   } = useQuery({
     queryKey: ["genders"],
-    enabled: true,
     queryFn: () => getGenders(),
+    enabled: !state.apiData.suspectGenders,
     retry: false,
   });
 

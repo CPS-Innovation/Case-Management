@@ -34,6 +34,7 @@ const CaseComplexityPage = () => {
   } = useQuery({
     queryKey: ["case-complexities"],
     queryFn: () => getCaseComplexities(),
+    enabled: !state.apiData.caseComplexities,
     retry: false,
   });
 

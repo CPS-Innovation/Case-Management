@@ -359,7 +359,7 @@ const CaseDetailsPage = () => {
         : 0;
       return navigate(`/case-registration/suspect-${suspectIndex}/add-suspect`);
     }
-    return navigate("/case-registration/first-hearing");
+    return navigate("/case-registration/case-complexity");
   };
 
   return (

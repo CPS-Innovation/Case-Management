@@ -44,8 +44,8 @@ const SuspectEthnicityPage = () => {
     error: ethnicityError,
   } = useQuery({
     queryKey: ["ethnicities"],
-    enabled: true,
     queryFn: () => getEthnicities(),
+    enabled: !state.apiData.suspectEthnicities,
     retry: false,
   });
 

@@ -44,8 +44,8 @@ const SuspectOffenderPage = () => {
     error: offenderError,
   } = useQuery({
     queryKey: ["offenders"],
-    enabled: true,
     queryFn: () => getOffenderTypes(),
+    enabled: !state.apiData.suspectOffenderTypes,
     retry: false,
   });
 

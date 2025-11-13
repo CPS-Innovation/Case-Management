@@ -44,8 +44,8 @@ const SuspectReligionPage = () => {
     error: religionsError,
   } = useQuery({
     queryKey: ["religion"],
-    enabled: true,
     queryFn: () => getReligions(),
+    enabled: !state.apiData.suspectReligions,
     retry: false,
   });
 

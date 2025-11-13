@@ -120,6 +120,25 @@ export type CaseRegistrationState = {
   };
 };
 
+export const suspectInitialState: SuspectFormData = {
+  addSuspectRadio: "",
+  suspectFirstNameText: "",
+  suspectLastNameText: "",
+  suspectAdditionalDetailsCheckboxes: [],
+  suspectGenderRadio: { shortCode: "", description: "" },
+  suspectDisabilityRadio: "",
+  suspectReligionRadio: { shortCode: "", description: "" },
+  suspectEthnicityRadio: { shortCode: "", description: "" },
+  suspectAliases: [],
+  suspectSDORadio: "",
+  suspectASNText: "",
+  suspectOffenderTypesRadio: { shortCode: "", display: "" },
+  suspectCompanyNameText: "",
+  suspectDOBDayText: "",
+  suspectDOBMonthText: "",
+  suspectDOBYearText: "",
+};
+
 export const initialState: CaseRegistrationState = {
   formData: {
     operationNameRadio: "",
@@ -290,9 +309,13 @@ export const caseRegistrationReducer = (
       };
     }
     case "SET_SUSPECT_FIELD": {
+      if (action.payload.index > state.formData.suspects.length) {
+        return state;
+      }
       const suspects = [...state.formData.suspects];
+      const existing = suspects[action.payload.index] ?? suspectInitialState;
       suspects[action.payload.index] = {
-        ...suspects[action.payload.index],
+        ...existing,
         [action.payload.field]: action.payload.value,
       };
       return {

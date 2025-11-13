@@ -36,6 +36,7 @@ const CaseMonitoringCodesPage = () => {
   } = useQuery({
     queryKey: ["case-monitoring-codes"],
     queryFn: () => getCaseMonitoringCodes(),
+    enabled: !state.apiData.caseMonitoringCodes,
     retry: false,
   });
 
