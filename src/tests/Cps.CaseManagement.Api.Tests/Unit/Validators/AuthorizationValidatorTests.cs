@@ -111,23 +111,23 @@ public class AuthorizationValidatorTests
     public void IsApplicationToken_ReturnsFalse_WhenHasBothScopesAndRolesWithIdtypApp()
     {
         // POLICY: Even with idtyp=app, if both scopes and roles are present,
-        // this is an edge case, but the current implementation will treat it as app token
-        // because idtyp check comes first
+        // the token is treated as DELEGATED because the "both scopes and roles" check
+        // takes precedence over the idtyp check in the implementation.
 
         // Arrange
         var claims = new List<Claim>
-        {
-            new Claim("idtyp", "app"),
-            new Claim(ScopeType, "user_impersonation"),
-            new Claim(RolesType, "API.Access")
-        };
+    {
+        new Claim("idtyp", "app"),
+        new Claim(ScopeType, "user_impersonation"),
+        new Claim(RolesType, "API.Access")
+    };
         var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims));
 
         // Act
         var result = InvokeIsApplicationToken(claimsPrincipal);
 
-        // Assert - idtyp=app takes precedence
-        Assert.True(result);
+        // Assert - Should be treated as delegated token because both scopes and roles are present
+        Assert.False(result);
     }
 
     [Fact]

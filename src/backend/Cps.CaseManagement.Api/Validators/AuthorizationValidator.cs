@@ -107,20 +107,14 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         }
     }
 
-    private static bool IsApplicationToken(ClaimsPrincipal claimsPrincipal)
+    private static bool IsApplicationToken(ClaimsPrincipal principal)
     {
-        // App tokens have:
-        // - "roles" claim (instead of "scp")
-        // - "idtyp" claim with value "app" (in v2.0 tokens)
-        // - OR no "scp" claim and has "roles" claim
-        //
-        // POLICY: Tokens with BOTH "scp" and "roles" (e.g., on-behalf-of flows)
-        // are treated as DELEGATED tokens. This ensures they are validated against
-        // delegated permission scopes rather than application roles.
+        var hasIdTypApp = principal.HasClaim("idtyp", "app");
+        var hasRoles = principal.HasClaim(c => c.Type == RolesType);
+        var hasScopes = principal.HasClaim(c => c.Type == ScopeType);
 
-        var hasIdTypApp = claimsPrincipal.HasClaim("idtyp", "app");
-        var hasRoles = claimsPrincipal.HasClaim(x => x.Type == RolesType);
-        var hasScopes = claimsPrincipal.HasClaim(x => x.Type == ScopeType);
+        // If both "scp" and "roles" exist, force delegated
+        if (hasScopes && hasRoles) return false;
 
         return hasIdTypApp || (hasRoles && !hasScopes);
     }
