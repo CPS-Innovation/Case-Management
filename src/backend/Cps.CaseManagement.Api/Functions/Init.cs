@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
-using Cps.CaseManagement.Api.Models;
 using Cps.CaseManagement.Api.Models.Response;
 using Cps.CaseManagement.MdsClient.Models;
 using Cps.CaseManagement.Api.Services;

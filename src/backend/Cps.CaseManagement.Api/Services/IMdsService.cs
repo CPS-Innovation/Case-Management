@@ -1,11 +1,8 @@
 
 namespace Cps.CaseManagement.Api.Services;
 
-using Cps.CaseManagement.Api.Models;
 using Cps.CaseManagement.Api.Models.Dto;
-using Cps.CaseManagement.MdsClient.Client;
 using Cps.CaseManagement.MdsClient.Models.Args;
-using Microsoft.Extensions.Logging;
 
 public interface IMdsService
 {
