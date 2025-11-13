@@ -83,7 +83,7 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         }
     }
 
-    private static bool IsValid(ClaimsPrincipal claimsPrincipal, string? scopes = null, string? roles = null)
+    private bool IsValid(ClaimsPrincipal claimsPrincipal, string? scopes = null, string? roles = null)
     {
         if (claimsPrincipal == null)
         {
@@ -113,6 +113,10 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         // - "roles" claim (instead of "scp")
         // - "idtyp" claim with value "app" (in v2.0 tokens)
         // - OR no "scp" claim and has "roles" claim
+        //
+        // POLICY: Tokens with BOTH "scp" and "roles" (e.g., on-behalf-of flows)
+        // are treated as DELEGATED tokens. This ensures they are validated against
+        // delegated permission scopes rather than application roles.
 
         var hasIdTypApp = claimsPrincipal.HasClaim("idtyp", "app");
         var hasRoles = claimsPrincipal.HasClaim(x => x.Type == RolesType);
@@ -121,7 +125,7 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         return hasIdTypApp || (hasRoles && !hasScopes);
     }
 
-    private static bool ValidateAppToken(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes, List<string> requiredRoles)
+    private bool ValidateAppToken(ClaimsPrincipal claimsPrincipal, List<string> requiredScopes, List<string> requiredRoles)
     {
         // For app tokens, map required scopes to app roles
         // Convention: scope "user_impersonation" maps to role "API.Access"
@@ -133,11 +137,18 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         // If specific roles are required, check them
         if (requiredRoles.Count > 0)
         {
-            var hasAllRoles = requiredRoles.All(requiredRole =>
-                tokenRoles.Any(tokenRole => string.Equals(requiredRole, tokenRole, StringComparison.OrdinalIgnoreCase)));
+            var missingRoles = requiredRoles
+                .Where(requiredRole => !tokenRoles.Any(tokenRole =>
+                    string.Equals(requiredRole, tokenRole, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
 
-            if (!hasAllRoles)
+            if (missingRoles.Count > 0)
             {
+                _logger.LogDebug(
+                    "App token missing required roles. Required: [{RequiredRoles}], Present: [{TokenRoles}], Missing: [{MissingRoles}]",
+                    string.Join(", ", requiredRoles),
+                    string.Join(", ", tokenRoles),
+                    string.Join(", ", missingRoles));
                 return false;
             }
         }
@@ -147,6 +158,14 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
         if (requiredScopes.Count > 0)
         {
             var mappedRoles = MapScopesToRoles(requiredScopes);
+
+            var unmapped = requiredScopes.Where(s => !string.Equals(
+                MapScopesToRoles(new() { s }).First(), "API.Access", StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+
+            if (unmapped.Count > 0)
+                _logger.LogWarning("Unmapped scopes for app token: {Scopes}", unmapped);
+
             var hasAllMappedRoles = mappedRoles.All(mappedRole =>
                 tokenRoles.Any(tokenRole => string.Equals(mappedRole, tokenRole, StringComparison.OrdinalIgnoreCase)));
 
@@ -199,20 +218,35 @@ public class AuthorizationValidator(ILogger<AuthorizationValidator> logger, Conf
 
     private static string? GetIdentifier(ClaimsPrincipal claimsPrincipal)
     {
-        // For user tokens: use preferred_username
+        // For user tokens: try multiple claims in order of preference
+        // 1. Identity.Name (if NameClaimType is set correctly)
         var username = claimsPrincipal?.Identity?.Name;
-        if (!string.IsNullOrEmpty(username))
+        if (!string.IsNullOrWhiteSpace(username))
         {
             return username;
         }
 
-        // For app tokens: use app display name or app ID
-        var appDisplayName = claimsPrincipal?.FindFirst("appid")?.Value
-                          ?? claimsPrincipal?.FindFirst("azp")?.Value;
-
-        if (!string.IsNullOrEmpty(appDisplayName))
+        // 2. preferred_username (UPN for AAD users)
+        var upn = claimsPrincipal?.FindFirst("preferred_username")?.Value;
+        if (!string.IsNullOrWhiteSpace(upn))
         {
-            return $"[APP:{appDisplayName}]";
+            return upn;
+        }
+
+        // 3. oid (Object ID - always present for AAD users)
+        var oid = claimsPrincipal?.FindFirst("oid")?.Value;
+        if (!string.IsNullOrWhiteSpace(oid))
+        {
+            return oid;
+        }
+
+        // For app tokens: use app display name or app ID
+        var appId = claimsPrincipal?.FindFirst("appid")?.Value
+                 ?? claimsPrincipal?.FindFirst("azp")?.Value;
+
+        if (!string.IsNullOrWhiteSpace(appId))
+        {
+            return $"[APP:{appId}]";
         }
 
         return null;

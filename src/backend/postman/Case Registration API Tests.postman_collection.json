@@ -477,7 +477,6 @@
 					"",
 					"        col.set('accessToken', accessToken);",
 					"        col.set('accessTokenExpiry', String(now + (expiresIn * 1000)));",
-					"        console.log(accessToken)",
 					"        console.log(`[AAD] ✓ New token obtained (expires in ${expiresIn}s)`);",
 					"      });",
 					"  }",
