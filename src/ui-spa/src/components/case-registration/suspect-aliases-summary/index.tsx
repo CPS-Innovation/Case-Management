@@ -14,7 +14,10 @@ import {
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -41,6 +44,14 @@ const SuspectAliasesSummaryPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-add-aliases",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -154,6 +165,7 @@ const SuspectAliasesSummaryPage = () => {
       "suspect-add-aliases",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
@@ -167,9 +179,7 @@ const SuspectAliasesSummaryPage = () => {
 
   return (
     <div className={pageStyles.caseSuspectAliasesSummaryPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

@@ -357,8 +357,14 @@ const CaseDetailsPage = () => {
       const suspectIndex = state.formData.suspects.length
         ? state.formData.suspects.length - 1
         : 0;
-      return navigate(`/case-registration/suspect-${suspectIndex}/add-suspect`);
+      if (!state.formData.suspects.length) {
+        return navigate(
+          `/case-registration/suspect-${suspectIndex}/add-suspect`,
+        );
+      }
+      return navigate(`/case-registration/suspect-summary`);
     }
+
     return navigate("/case-registration/case-complexity");
   };
 
