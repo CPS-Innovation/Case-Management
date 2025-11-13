@@ -632,6 +632,27 @@ public class AuthorizationValidatorTests
         Assert.Contains("scope3", result);
     }
 
+    [Fact]
+    public async Task ValidateTokenAsync_ReturnsValid_And_Username_FromPreferredUsername()
+    {
+        var config = CreateMockOpenIdConnectConfiguration();
+        _configManager.Configuration = config;
+
+        var creds = new SigningCredentials(config.SigningKeys.OfType<SecurityKey>().First(), SecurityAlgorithms.HmacSha256);
+        var token = new JwtSecurityToken(
+            issuer: _validIssuer,
+            audience: _validAudience,
+            claims: new[] { new Claim("preferred_username", "user@example.com"), new Claim("scp", "user_impersonation") },
+            expires: DateTime.UtcNow.AddMinutes(5),
+            signingCredentials: creds);
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        var result = await _validator.ValidateTokenAsync("Bearer " + jwt);
+
+        Assert.True(result.IsValid);
+        Assert.Equal("user@example.com", result.Username);
+    }
+
     private OpenIdConnectConfiguration CreateMockOpenIdConnectConfiguration()
     {
         var config = new OpenIdConnectConfiguration
