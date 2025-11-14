@@ -1,6 +1,7 @@
 namespace Cps.CaseManagement.Api.Functions;
 
 using System.Net;
+using Cps.CaseManagement.Api.Attributes;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Services;
@@ -23,9 +24,11 @@ public class ListWMSUnits(ILogger<ListWMSUnits> logger,
 
   [Function(nameof(ListWMSUnits))]
   [OpenApiOperation(operationId: nameof(ListWMSUnits), tags: ["MDS"], Description = "Gets the list of WMS units from CMS.")]
+  [FunctionKeyAuth]
+  [CmsAuthValuesAuth]
+  [BearerTokenAuth]
   [OpenApiParameter(name: IsWcuQueryParameter, In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter WMS units by WCU flag. If not provided, returns all WMS units.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-  [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(WMSUnitEntity[]), Description = ApiResponseDescriptions.Success)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.Unauthorized)]

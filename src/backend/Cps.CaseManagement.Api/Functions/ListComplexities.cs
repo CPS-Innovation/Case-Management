@@ -1,6 +1,7 @@
 namespace Cps.CaseManagement.Api.Functions;
 
 using System.Net;
+using Cps.CaseManagement.Api.Attributes;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Services;
@@ -22,8 +23,10 @@ public class ListComplexities(ILogger<ListComplexities> logger,
 
   [Function(nameof(ListComplexities))]
   [OpenApiOperation(operationId: nameof(ListComplexities), tags: ["MDS"], Description = "Gets the list of complexities from CMS.")]
+  [FunctionKeyAuth]
+  [CmsAuthValuesAuth]
+  [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-  [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(ComplexitityEntity[]), Description = ApiResponseDescriptions.Success)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.Unauthorized)]
