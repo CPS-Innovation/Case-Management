@@ -29,7 +29,6 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
         {
             var statusCode = exception switch
             {
-                BadRequestException _ => HttpStatusCode.BadRequest,
                 ArgumentNullException or BadRequestException _ => HttpStatusCode.BadRequest,
                 CmsUnauthorizedException or CpsAuthenticationException _ => HttpStatusCode.Unauthorized,
                 MdsClientException mds => mds.StatusCode,
@@ -49,13 +48,17 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
                 }
                 catch
                 {
+                    _logger.LogTrace("Using fallback CorrelationId: {CorrelationId}", correlationId);
                 }
 
                 _logger.LogMethodError(correlationId, httpRequestData.Url.ToString(), message, exception);
 
-                var newHttpResponse = httpRequestData.CreateResponse(statusCode);
-
-                await newHttpResponse.WriteAsJsonAsync(new { ErrorMessage = exception.ToStringFullResponse(), CorrelationId = correlationId });
+                var response = httpRequestData.CreateResponse(statusCode);
+                await response.WriteAsJsonAsync(new
+                {
+                    ErrorMessage = "An unexpected error occurred. Please contact support with the CorrelationId.",
+                    CorrelationId = correlationId
+                });
 
                 var invocationResult = context.GetInvocationResult();
 
@@ -63,22 +66,20 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
 
                 if (httpOutputBindingFromMultipleOutputBindings is not null)
                 {
-                    httpOutputBindingFromMultipleOutputBindings.Value = newHttpResponse;
+                    httpOutputBindingFromMultipleOutputBindings.Value = response;
                 }
                 else
                 {
-                    invocationResult.Value = newHttpResponse;
+                    invocationResult.Value = response;
                 }
             }
         }
     }
 
-    private static OutputBindingData<HttpResponseData> GetHttpOutputBindingFromMultipleOutputBinding(FunctionContext context)
+    private static OutputBindingData<HttpResponseData>? GetHttpOutputBindingFromMultipleOutputBinding(FunctionContext context)
     {
         // The output binding entry name will be "$return" only when the function return type is HttpResponseData
-        var httpOutputBinding = context.GetOutputBindings<HttpResponseData>()
-        .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
-
-        return httpOutputBinding ?? throw new InvalidOperationException("HttpOutputBinding is null");
+        return context.GetOutputBindings<HttpResponseData>()
+            .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
     }
 }
