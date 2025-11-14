@@ -1,6 +1,7 @@
 namespace Cps.CaseManagement.Api.Functions;
 
 using System.Net;
+using Cps.CaseManagement.Api.Attributes;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Helpers;
@@ -24,8 +25,10 @@ public class RegisterCase(ILogger<RegisterCase> logger, IMdsService mdsService, 
 
     [Function(nameof(RegisterCase))]
     [OpenApiOperation(operationId: nameof(RegisterCase), tags: ["MDS"], Description = "Registers a case in CMS.")]
+    [FunctionKeyAuth]
+    [CmsAuthValuesAuth]
+    [BearerTokenAuth]
     [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-    [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
     [OpenApiRequestBody(ContentType.ApplicationJson, typeof(CaseRegistrationRequest), Description = "Body containing the NetApp connection to create")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(CaseRegistrationResponseDto), Description = ApiResponseDescriptions.Success)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
