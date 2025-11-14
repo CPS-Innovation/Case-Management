@@ -1,28 +1,22 @@
-.caseSuspectSummaryPage {
-  & h1 {
-    margin-bottom: 0;
-  }
-  .inputWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-top: 1rem;
-    :global(.govuk-form-group) {
-      margin-bottom: 1.25rem;
-      width: 100%;
-    }
+.caseSuspectsSummaryPage {
+  max-width: 66%;
 
-    & h2 {
-      font-size: 1.1875rem;
-      margin: 0;
+  .suspectRowWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #b1b4b6;
+    & .suspectName {
+      font-weight: bold;
+      font-size: 1.25rem;
     }
   }
-  .errorSummaryWrapper {
-    margin-top: 1rem;
-    max-width: 30rem;
-    &:focus {
-      outline: 0.2rem solid #ffdd00;
+  .suspectDetailsWrapper {
+    dd {
+      margin-left: 0;
     }
+  }
+  & :global(.govuk-details) {
+    margin-top: 0.5rem;
   }
 }
