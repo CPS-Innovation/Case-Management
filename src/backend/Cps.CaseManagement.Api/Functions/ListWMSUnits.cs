@@ -24,7 +24,6 @@ public class ListWMSUnits(ILogger<ListWMSUnits> logger,
 
   [Function(nameof(ListWMSUnits))]
   [OpenApiOperation(operationId: nameof(ListWMSUnits), tags: ["MDS"], Description = "Gets the list of WMS units from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: IsWcuQueryParameter, In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false, Type = typeof(bool), Description = "Filter WMS units by WCU flag. If not provided, returns all WMS units.")]

@@ -26,7 +26,6 @@ public class ListAvailableOffences(ILogger<ListAvailableOffences> logger,
 
     [Function(nameof(ListAvailableOffences))]
     [OpenApiOperation(operationId: nameof(ListAvailableOffences), tags: ["MDS"], Description = "List all available offences")]
-    [FunctionKeyAuth]
     [CmsAuthValuesAuth]
     [BearerTokenAuth]
     [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

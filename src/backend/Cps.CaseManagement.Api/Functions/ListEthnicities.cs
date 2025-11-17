@@ -23,7 +23,6 @@ public class ListEthnicities(ILogger<ListEthnicities> logger,
 
   [Function(nameof(ListEthnicities))]
   [OpenApiOperation(operationId: nameof(ListEthnicities), tags: ["MDS"], Description = "Gets the list of ethnicities from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

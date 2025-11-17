@@ -23,7 +23,6 @@ public class ListOffenderCategories(ILogger<ListOffenderCategories> logger,
 
   [Function(nameof(ListOffenderCategories))]
   [OpenApiOperation(operationId: nameof(ListOffenderCategories), tags: ["MDS"], Description = "Gets the list of offender categories from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

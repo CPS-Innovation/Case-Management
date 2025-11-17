@@ -23,7 +23,6 @@ public class ListMonitoringCodes(ILogger<ListMonitoringCodes> logger,
 
   [Function(nameof(ListMonitoringCodes))]
   [OpenApiOperation(operationId: nameof(ListMonitoringCodes), tags: ["MDS"], Description = "Gets the list of monitoring codes from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

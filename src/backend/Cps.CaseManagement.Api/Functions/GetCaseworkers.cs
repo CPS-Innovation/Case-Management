@@ -23,7 +23,6 @@ public class GetCaseworkers(ILogger<GetCaseworkers> logger,
 
   [Function(nameof(GetCaseworkers))]
   [OpenApiOperation(operationId: nameof(GetCaseworkers), tags: ["MDS"], Description = "Gets caseworkers by unit Id.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: "unitId", In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true, Type = typeof(long), Description = "The unit Id to get caseworkers for.")]

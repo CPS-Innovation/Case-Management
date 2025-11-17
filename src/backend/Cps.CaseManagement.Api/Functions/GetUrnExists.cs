@@ -22,7 +22,6 @@ public class GetUrnExists(ILogger<GetUrnExists> logger,
 
   [Function(nameof(GetUrnExists))]
   [OpenApiOperation(operationId: nameof(GetUrnExists), tags: ["MDS"], Description = "Check if a URN exists.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: "urn", In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The URN to check for existence.")]

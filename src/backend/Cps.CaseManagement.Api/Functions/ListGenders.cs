@@ -23,7 +23,6 @@ public class ListGenders(ILogger<ListGenders> logger,
 
   [Function(nameof(ListGenders))]
   [OpenApiOperation(operationId: nameof(ListGenders), tags: ["MDS"], Description = "Gets the list of genders from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

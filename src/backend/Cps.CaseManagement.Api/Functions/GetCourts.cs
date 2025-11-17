@@ -23,7 +23,6 @@ public class GetCourts(ILogger<GetCourts> logger,
 
   [Function(nameof(GetCourts))]
   [OpenApiOperation(operationId: nameof(GetCourts), tags: ["MDS"], Description = "Gets courts by unit Id.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: "unitId", In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true, Type = typeof(long), Description = "The unit Id to get courts for.")]

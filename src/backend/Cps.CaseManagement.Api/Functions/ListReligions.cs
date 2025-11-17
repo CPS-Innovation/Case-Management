@@ -23,7 +23,6 @@ public class ListReligions(ILogger<ListReligions> logger,
 
   [Function(nameof(ListReligions))]
   [OpenApiOperation(operationId: nameof(ListReligions), tags: ["MDS"], Description = "Gets the list of religions from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

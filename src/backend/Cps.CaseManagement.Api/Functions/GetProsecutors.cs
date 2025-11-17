@@ -23,7 +23,6 @@ public class GetProsecutors(ILogger<GetProsecutors> logger,
 
   [Function(nameof(GetProsecutors))]
   [OpenApiOperation(operationId: nameof(GetProsecutors), tags: ["MDS"], Description = "Gets prosecutors by unit Id.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]

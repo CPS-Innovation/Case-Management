@@ -24,7 +24,6 @@ public class ListTitles(ILogger<ListTitles> logger,
 
   [Function(nameof(ListTitles))]
   [OpenApiOperation(operationId: nameof(ListTitles), tags: ["MDS"], Description = "Gets the list of titles from CMS.")]
-  [FunctionKeyAuth]
   [CmsAuthValuesAuth]
   [BearerTokenAuth]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
