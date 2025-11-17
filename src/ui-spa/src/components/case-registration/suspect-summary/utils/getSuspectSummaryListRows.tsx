@@ -3,7 +3,7 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
   if (!suspects || suspects.length === 0) {
     return [];
   }
-  const suspectSummaryList = suspects.map((suspect, index) => [
+  const suspectSummaryList = suspects.map((suspect) => [
     {
       key: { children: <span>Date of birth</span> },
       value: {
@@ -17,58 +17,106 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
           </>
         ),
       },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: `/case-registration/suspect-${index}/suspect-dob`,
-            visuallyHiddenText: "Edit Suspect Date of Birth",
-          },
-        ],
+    },
+    {
+      key: { children: <span>Gender</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectGenderRadio.description ? (
+              <p>{suspect.suspectGenderRadio.description}</p>
+            ) : (
+              <p>Unknown</p>
+            )}
+          </>
+        ),
       },
     },
-    //   {
-    //     key: { children: <span>Shoulder number</span> },
-    //     value: {
-    //       children: (
-    //         <p>
-    //           {formData.caseInvestigatorShoulderNumberText
-    //             ? formData.caseInvestigatorShoulderNumberText
-    //             : "Not entered"}
-    //         </p>
-    //       ),
-    //     },
-    //     actions: {
-    //       items: [
-    //         {
-    //           children: <span>Change</span>,
-    //           to: "/case-registration/case-assignee",
-    //           visuallyHiddenText: "Edit Shoulder Number",
-    //         },
-    //       ],
-    //     },
-    //   },
-    //   {
-    //     key: { children: <span>Police Unit</span> },
-    //     value: {
-    //       children: (
-    //         <p>
-    //           {formData.caseInvestigatorPoliceUnitText
-    //             ? formData.caseInvestigatorPoliceUnitText
-    //             : "Not entered"}
-    //         </p>
-    //       ),
-    //     },
-    //     actions: {
-    //       items: [
-    //         {
-    //           children: <span>Change</span>,
-    //           to: "/case-registration/case-assignee",
-    //           visuallyHiddenText: "Edit Police Unit",
-    //         },
-    //       ],
-    //     },
-    //   },
+
+    {
+      key: { children: <span>Disability</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectDisabilityRadio ? (
+              <p>{suspect.suspectDisabilityRadio}</p>
+            ) : (
+              <p>Unknown</p>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Religion</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectReligionRadio.description ? (
+              <p>{suspect.suspectReligionRadio.description}</p>
+            ) : (
+              <p>Not provided</p>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Ethnicity</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectEthnicityRadio.description ? (
+              <p>{suspect.suspectEthnicityRadio.description}</p>
+            ) : (
+              <p>Not provided</p>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Serious dangerous offender (SDO)</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectSDORadio ? (
+              <p>{suspect.suspectSDORadio}</p>
+            ) : (
+              <p>No</p>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Arrest summons</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectASNText ? (
+              <p>{suspect.suspectASNText}</p>
+            ) : (
+              <p>Not provided</p>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Type of offender</span> },
+      value: {
+        children: (
+          <>
+            {suspect.suspectOffenderTypesRadio.display ? (
+              <p>{suspect.suspectOffenderTypesRadio.display}</p>
+            ) : (
+              <p>Unspecified</p>
+            )}
+          </>
+        ),
+      },
+    },
   ]);
   return suspectSummaryList;
 };

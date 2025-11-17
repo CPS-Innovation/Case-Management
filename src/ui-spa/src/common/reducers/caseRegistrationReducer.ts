@@ -212,6 +212,12 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "REMOVE_SUSPECT";
+      payload: {
+        index: number;
+      };
+    }
+  | {
       type: "SET_AREAS_AND_REGISTERING_UNITS";
       payload: {
         areasAndRegisteringUnits: CaseAreasAndRegisteringUnits;
@@ -318,6 +324,18 @@ export const caseRegistrationReducer = (
         ...existing,
         [action.payload.field]: action.payload.value,
       };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+    case "REMOVE_SUSPECT": {
+      const suspects = state.formData.suspects.filter(
+        (_, i) => i !== action.payload.index,
+      );
       return {
         ...state,
         formData: {

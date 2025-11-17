@@ -5,7 +5,7 @@ type Props = {
   rows: {
     key: { children: React.ReactNode };
     value?: { children: React.ReactNode };
-    actions: {
+    actions?: {
       items: {
         children: React.ReactNode;
         to?: string;

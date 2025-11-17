@@ -1,14 +1,13 @@
 .caseSuspectsSummaryPage {
   max-width: 66%;
-
   .suspectRowWrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #b1b4b6;
-    & .suspectName {
-      font-weight: bold;
-      font-size: 1.25rem;
+    & :global(.govuk-summary-list) {
+      margin-bottom: 0;
+    }
+    .suspectName {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
   }
   .suspectDetailsWrapper {

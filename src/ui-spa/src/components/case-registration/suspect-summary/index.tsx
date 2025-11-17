@@ -11,14 +11,13 @@ import {
   Button,
   ErrorSummary,
   BackLink,
-  LinkButton,
   Details,
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { Link, useNavigate } from "react-router-dom";
-import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
+import { useNavigate } from "react-router-dom";
 import PersonIcon from "../../svgs/personIcon.svg?react";
+import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
 import { getSuspectSummaryListRows } from "./utils/getSuspectSummaryListRows";
 import styles from "./index.module.scss";
 
@@ -85,42 +84,44 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const suspectSummaryRows = useMemo(() => {
+  const suspectSummaryRows = (suspect: SuspectFormData, index: number) => {
+    return [
+      {
+        key: {
+          children: (
+            <div className={styles.suspectName}>
+              <PersonIcon />
+              <p>
+                {suspect.suspectLastNameText}, {suspect.suspectFirstNameText}
+              </p>
+            </div>
+          ),
+        },
+        actions: {
+          items: [
+            {
+              children: <span>Remove</span>,
+              to: `/case-registration/suspect-remove-confirmation`,
+              state: {
+                suspectIndex: index,
+                backRoute: `/case-registration/suspect-summary`,
+              },
+              visuallyHiddenText: "Edit Suspect Details",
+            },
+            {
+              children: <span>Change</span>,
+              to: `/case-registration/suspect-${index}/add-suspect`,
+              visuallyHiddenText: "Edit Suspect Details",
+            },
+          ],
+        },
+      },
+    ];
+  };
+
+  const suspectDetailsSummaryRows = useMemo(() => {
     return getSuspectSummaryListRows(state.formData.suspects);
   }, [state.formData.suspects]);
-
-  // const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
-  //   const rows = suspects.map((suspect, index) => ({
-  //     key: {
-  //       children: (
-  //         <div>
-  //           <p>
-  //             {suspect.suspectFirstNameText}, {suspect.suspectLastNameText}
-  //           </p>
-  //         </div>
-  //       ),
-  //     },
-
-  //     actions: {
-  //       items: [
-  //         {
-  //           children: <span>Change</span>,
-  //           to: `/case-registration/suspect-${index}/add-suspect`,
-  //           visuallyHiddenText: "Edit Suspect Details",
-  //         },
-  //         {
-  //           children: <span>Remove</span>,
-  //           to: "#",
-  //           visuallyHiddenText: "remove suspect",
-  //           role: "button",
-  //           onClick: () => handleRemoveSuspect(index),
-  //         },
-  //       ],
-  //     },
-  //   }));
-
-  //   return rows;
-  // };
 
   const renderSummaryList = () => {
     const {
@@ -132,27 +133,12 @@ const SuspectSummaryPage = () => {
         {suspects.map((suspect, index) => (
           <div key={`${index}-${suspect.suspectLastNameText}`}>
             <div className={styles.suspectRowWrapper}>
-              <dt className={styles.suspectName}>
-                <PersonIcon />{" "}
-                {suspect.suspectFirstNameText
-                  ? `${suspect.suspectFirstNameText}, ${suspect.suspectLastNameText}`
-                  : `${suspect.suspectLastNameText}`}
-              </dt>
-              <dd>
-                <div>
-                  <Link to={`/case-registration/suspect-${index}/add-suspect`}>
-                    Change
-                  </Link>
-                  <LinkButton onClick={() => handleRemoveSuspect(index)}>
-                    Remove
-                  </LinkButton>
-                </div>
-              </dd>
+              <SummaryList rows={suspectSummaryRows(suspect, index)} />
             </div>
             <div className={styles.suspectDetailsWrapper}>
               <dd>
                 <Details summaryChildren="Suspect Details">
-                  <SummaryList rows={suspectSummaryRows[index]} />
+                  <SummaryList rows={suspectDetailsSummaryRows[index]} />
                 </Details>
               </dd>
             </div>
@@ -160,19 +146,6 @@ const SuspectSummaryPage = () => {
         ))}
       </dl>
     );
-  };
-
-  const handleRemoveSuspect = (index: number) => {
-    // const {
-    //   formData: { suspects },
-    // } = state;
-    // const newSuspects = suspects.filter((_, i) => i !== index);
-    // dispatch({
-    //   type: "SET_REMOVE_SUSPECT",
-    //   payload: {
-    //     value: newSuspects,
-    //   },
-    // });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
