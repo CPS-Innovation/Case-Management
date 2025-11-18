@@ -61,7 +61,11 @@ export type SuspectFormData = {
   suspectAliases: { firstName: string; lastName: string }[];
   suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
-  suspectOffenderTypesRadio: { shortCode: string; display: string };
+  suspectOffenderTypesRadio: {
+    shortCode: string;
+    display: string;
+    arrestDate: string;
+  };
   suspectCompanyNameText: string;
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
@@ -132,7 +136,7 @@ export const suspectInitialState: SuspectFormData = {
   suspectAliases: [],
   suspectSDORadio: "",
   suspectASNText: "",
-  suspectOffenderTypesRadio: { shortCode: "", display: "" },
+  suspectOffenderTypesRadio: { shortCode: "", display: "", arrestDate: "" },
   suspectCompanyNameText: "",
   suspectDOBDayText: "",
   suspectDOBMonthText: "",
@@ -207,7 +211,7 @@ export type CaseRegistrationActions =
           | SuspectAdditionalDetailValue[]
           | string
           | { shortCode: string; description: string }
-          | { shortCode: string; display: string }
+          | { shortCode: string; display: string; arrestDate: string }
           | { firstName?: string; lastName: string }[];
       };
     }

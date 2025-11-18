@@ -1,4 +1,5 @@
 import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { format } from "date-fns";
 
 const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   if (!aliases || aliases.length === 0) {
@@ -24,6 +25,62 @@ const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
       ),
     },
   }));
+};
+
+const getOffenderTypeList = (suspectOffenderTypesRadio: {
+  shortCode: string;
+  display: string;
+  arrestDate: string;
+}) => {
+  if (suspectOffenderTypesRadio.shortCode === "PPO")
+    return [
+      {
+        key: { children: <span>Type of offender</span> },
+        value: {
+          children: (
+            <>
+              {suspectOffenderTypesRadio.display ? (
+                <span>{suspectOffenderTypesRadio.display}</span>
+              ) : (
+                <span>Unspecified</span>
+              )}
+            </>
+          ),
+        },
+      },
+    ];
+  return [
+    {
+      key: { children: <span>Type of offender</span> },
+      value: {
+        children: (
+          <>
+            {suspectOffenderTypesRadio.display ? (
+              <span>{suspectOffenderTypesRadio.display}</span>
+            ) : (
+              <span>Unspecified</span>
+            )}
+          </>
+        ),
+      },
+    },
+    {
+      key: { children: <span>Arrest Date</span> },
+      value: {
+        children: (
+          <>
+            {suspectOffenderTypesRadio.arrestDate ? (
+              <span>
+                {format(suspectOffenderTypesRadio.arrestDate, "dd/MM/yyyy")}
+              </span>
+            ) : (
+              <span>Not entered</span>
+            )}
+          </>
+        ),
+      },
+    },
+  ];
 };
 
 export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
@@ -132,20 +189,7 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         ),
       },
     },
-    {
-      key: { children: <span>Type of offender</span> },
-      value: {
-        children: (
-          <>
-            {suspect.suspectOffenderTypesRadio.display ? (
-              <span>{suspect.suspectOffenderTypesRadio.display}</span>
-            ) : (
-              <span>Unspecified</span>
-            )}
-          </>
-        ),
-      },
-    },
+    ...getOffenderTypeList(suspect.suspectOffenderTypesRadio),
   ]);
   return suspectSummaryList;
 };
