@@ -322,10 +322,19 @@ export const caseRegistrationReducer = (
       if (action.payload.index > state.formData.suspects.length) {
         return state;
       }
+      const resetValues =
+        action.payload.field === "suspectAdditionalDetailsCheckboxes" ||
+        action.payload.field === "addSuspectRadio"
+          ? getResetSuspectFieldValues(
+              action.payload.field,
+              action.payload.value as string | SuspectAdditionalDetailValue[],
+            )
+          : {};
       const suspects = [...state.formData.suspects];
       const existing = suspects[action.payload.index] ?? suspectInitialState;
       suspects[action.payload.index] = {
         ...existing,
+        ...resetValues,
         [action.payload.field]: action.payload.value,
       };
       return {
@@ -496,4 +505,65 @@ export const getResetFieldValues = (
   }
 
   return {};
+};
+
+export const getResetSuspectFieldValues = (
+  fieldName: "addSuspectRadio" | "suspectAdditionalDetailsCheckboxes",
+  value: string | SuspectAdditionalDetailValue[],
+) => {
+  if (fieldName === "addSuspectRadio" && value === "company") {
+    const {
+      suspectCompanyNameText: _suspectCompanyNameText,
+      addSuspectRadio: _addSuspectRadio,
+      ...rest
+    } = suspectInitialState;
+    return rest;
+  }
+  if (fieldName === "addSuspectRadio" && value === "person") {
+    return { suspectCompanyNameText: "" };
+  }
+
+  if (fieldName === "suspectAdditionalDetailsCheckboxes") {
+    return resetSuspectAdditionalDetails(value as string[]);
+  }
+  return {};
+};
+
+const resetSuspectAdditionalDetails = (value: string[]) => {
+  const resetValues: Partial<SuspectFormData> = {};
+  if (!value.includes("Date of Birth")) {
+    resetValues.suspectDOBDayText = "";
+    resetValues.suspectDOBMonthText = "";
+    resetValues.suspectDOBYearText = "";
+  }
+  if (!value.includes("Gender")) {
+    resetValues.suspectGenderRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Disability")) {
+    resetValues.suspectDisabilityRadio = "";
+  }
+  if (!value.includes("Religion")) {
+    resetValues.suspectReligionRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Ethnicity")) {
+    resetValues.suspectEthnicityRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Alias details")) {
+    resetValues.suspectAliases = [];
+  }
+  if (!value.includes("Serious dangerous offender (SDO)")) {
+    resetValues.suspectSDORadio = "";
+  }
+  if (!value.includes("Arrest summons number (ASN)")) {
+    resetValues.suspectASNText = "";
+  }
+  if (!value.includes("Type of offender")) {
+    resetValues.suspectOffenderTypesRadio = {
+      shortCode: "",
+      display: "",
+      arrestDate: "",
+    };
+  }
+
+  return resetValues;
 };

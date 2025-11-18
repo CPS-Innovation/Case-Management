@@ -184,14 +184,12 @@ const SuspectSummaryPage = () => {
     if (!validateFormData()) return;
 
     if (addMoreSuspectsRadio === "yes") {
-      console.log(
-        "navigate",
-        `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
-      );
       navigate(
         `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
       );
     }
+
+    navigate("/case-registration/case-complexity");
   };
 
   return (
