@@ -17,6 +17,7 @@ import {
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
 import PersonIcon from "../../svgs/personIcon.svg?react";
+import CompanyIcon from "../../svgs/companyIcon.svg?react";
 import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
 import { getSuspectSummaryListRows } from "./utils/getSuspectSummaryListRows";
 import styles from "./index.module.scss";
@@ -90,10 +91,22 @@ const SuspectSummaryPage = () => {
         key: {
           children: (
             <div className={styles.suspectName}>
-              <PersonIcon />
-              <p>
-                {suspect.suspectLastNameText}, {suspect.suspectFirstNameText}
-              </p>
+              {suspect.addSuspectRadio === "person" && (
+                <>
+                  <PersonIcon />
+                  <span>
+                    {suspect.suspectFirstNameText
+                      ? `${suspect.suspectLastNameText}, ${suspect.suspectFirstNameText} `
+                      : suspect.suspectLastNameText}
+                  </span>
+                </>
+              )}
+              {suspect.addSuspectRadio === "company" && (
+                <>
+                  <CompanyIcon />
+                  <span>{suspect.suspectCompanyNameText}</span>
+                </>
+              )}
             </div>
           ),
         },
@@ -130,20 +143,34 @@ const SuspectSummaryPage = () => {
 
     return (
       <dl>
-        {suspects.map((suspect, index) => (
-          <div key={`${index}-${suspect.suspectLastNameText}`}>
-            <div className={styles.suspectRowWrapper}>
-              <SummaryList rows={suspectSummaryRows(suspect, index)} />
-            </div>
-            <div className={styles.suspectDetailsWrapper}>
-              <dd>
-                <Details summaryChildren="Suspect Details">
-                  <SummaryList rows={suspectDetailsSummaryRows[index]} />
-                </Details>
-              </dd>
-            </div>
-          </div>
-        ))}
+        {suspects.map(
+          (suspect, index) =>
+            suspect.addSuspectRadio === "person" && (
+              <div key={`${index}-${suspect.suspectLastNameText}`}>
+                <div className={styles.suspectRowWrapper}>
+                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
+                </div>
+
+                <div className={styles.suspectDetailsWrapper}>
+                  <dd>
+                    <Details summaryChildren="Suspect Details">
+                      <SummaryList rows={suspectDetailsSummaryRows[index]} />
+                    </Details>
+                  </dd>
+                </div>
+              </div>
+            ),
+        )}
+        {suspects.map(
+          (suspect, index) =>
+            suspect.addSuspectRadio === "company" && (
+              <div key={`${index}-${suspect.suspectCompanyNameText}`}>
+                <div className={styles.suspectRowWrapper}>
+                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
+                </div>
+              </div>
+            ),
+        )}
       </dl>
     );
   };
@@ -185,6 +212,7 @@ const SuspectSummaryPage = () => {
         <div>{renderSummaryList()}</div>
         <div className={styles.inputWrapper}>
           <Radios
+            className="govuk-radios--inline"
             fieldset={{
               legend: {
                 children: <h2>Do you need to add another suspect? </h2>,

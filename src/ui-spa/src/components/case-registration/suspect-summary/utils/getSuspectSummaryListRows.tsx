@@ -1,4 +1,31 @@
 import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
+
+const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
+  if (!aliases || aliases.length === 0) {
+    return [
+      {
+        key: { children: <span>Alias</span> },
+        value: {
+          children: <span>Not provided</span>,
+        },
+      },
+    ];
+  }
+
+  return aliases.map((alias) => ({
+    key: { children: <span>Alias</span> },
+    value: {
+      children: (
+        <span>
+          {alias.firstName
+            ? `${alias.lastName}, ${alias.firstName} `
+            : alias.lastName}
+        </span>
+      ),
+    },
+  }));
+};
+
 export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
   if (!suspects || suspects.length === 0) {
     return [];
@@ -10,9 +37,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectDOBDayText ? (
-              <p>{`${suspect.suspectDOBDayText}/${suspect.suspectDOBMonthText}/${suspect.suspectDOBYearText}`}</p>
+              <span>{`${suspect.suspectDOBDayText}/${suspect.suspectDOBMonthText}/${suspect.suspectDOBYearText}`}</span>
             ) : (
-              <p>Not entered</p>
+              <span>Not entered</span>
             )}
           </>
         ),
@@ -24,9 +51,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectGenderRadio.description ? (
-              <p>{suspect.suspectGenderRadio.description}</p>
+              <span>{suspect.suspectGenderRadio.description}</span>
             ) : (
-              <p>Unknown</p>
+              <span>Unknown</span>
             )}
           </>
         ),
@@ -39,9 +66,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectDisabilityRadio ? (
-              <p>{suspect.suspectDisabilityRadio}</p>
+              <span>{suspect.suspectDisabilityRadio}</span>
             ) : (
-              <p>Unknown</p>
+              <span>Unknown</span>
             )}
           </>
         ),
@@ -53,9 +80,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectReligionRadio.description ? (
-              <p>{suspect.suspectReligionRadio.description}</p>
+              <span>{suspect.suspectReligionRadio.description}</span>
             ) : (
-              <p>Not provided</p>
+              <span>Not provided</span>
             )}
           </>
         ),
@@ -67,23 +94,25 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectEthnicityRadio.description ? (
-              <p>{suspect.suspectEthnicityRadio.description}</p>
+              <span>{suspect.suspectEthnicityRadio.description}</span>
             ) : (
-              <p>Not provided</p>
+              <span>Not provided</span>
             )}
           </>
         ),
       },
     },
+    ...getAliasesList(suspect.suspectAliases),
+
     {
       key: { children: <span>Serious dangerous offender (SDO)</span> },
       value: {
         children: (
           <>
             {suspect.suspectSDORadio ? (
-              <p>{suspect.suspectSDORadio}</p>
+              <span>{suspect.suspectSDORadio}</span>
             ) : (
-              <p>No</p>
+              <span>Not provided</span>
             )}
           </>
         ),
@@ -95,9 +124,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectASNText ? (
-              <p>{suspect.suspectASNText}</p>
+              <span>{suspect.suspectASNText}</span>
             ) : (
-              <p>Not provided</p>
+              <span>Not entered</span>
             )}
           </>
         ),
@@ -109,9 +138,9 @@ export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
         children: (
           <>
             {suspect.suspectOffenderTypesRadio.display ? (
-              <p>{suspect.suspectOffenderTypesRadio.display}</p>
+              <span>{suspect.suspectOffenderTypesRadio.display}</span>
             ) : (
-              <p>Unspecified</p>
+              <span>Unspecified</span>
             )}
           </>
         ),
