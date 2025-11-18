@@ -13,6 +13,7 @@ import {
   BackLink,
   Details,
   SummaryList,
+  Tag,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ import PersonIcon from "../../svgs/personIcon.svg?react";
 import CompanyIcon from "../../svgs/companyIcon.svg?react";
 import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
 import { getSuspectSummaryListRows } from "./utils/getSuspectSummaryListRows";
+import { isYouthSuspect } from "./utils/isYouthSuspect";
 import styles from "./index.module.scss";
 
 const SuspectSummaryPage = () => {
@@ -99,6 +101,7 @@ const SuspectSummaryPage = () => {
                       ? `${suspect.suspectLastNameText}, ${suspect.suspectFirstNameText} `
                       : suspect.suspectLastNameText}
                   </span>
+                  {isYouthSuspect(suspect) && <Tag>Youth</Tag>}
                 </>
               )}
               {suspect.addSuspectRadio === "company" && (

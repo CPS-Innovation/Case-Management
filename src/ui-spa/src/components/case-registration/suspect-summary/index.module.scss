@@ -9,6 +9,9 @@
       align-items: center;
       gap: 0.5rem;
     }
+    & :global(.govuk-tag) {
+      text-transform: capitalize;
+    }
   }
   .suspectDetailsWrapper {
     dd {
