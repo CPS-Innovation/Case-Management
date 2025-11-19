@@ -1,4 +1,4 @@
-import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { type SuspectFormData } from "../reducers/caseRegistrationReducer";
 export const isYouthSuspect = (suspect: SuspectFormData): boolean => {
   if (
     suspect.suspectOffenderTypesRadio.shortCode === "PYO" ||

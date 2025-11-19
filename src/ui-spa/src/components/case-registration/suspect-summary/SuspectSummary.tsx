@@ -5,7 +5,7 @@ import PersonIcon from "../../svgs/personIcon.svg?react";
 import CompanyIcon from "../../svgs/companyIcon.svg?react";
 import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
 import { getSuspectDetailsSummaryListRows } from "./utils/getSuspectDetailsSummaryListRows";
-import { isYouthSuspect } from "./utils/isYouthSuspect";
+import { isYouthSuspect } from "../../../common/utils/isYouthSuspect";
 import styles from "./SuspectSummary.module.scss";
 
 type SuspectSummaryProps = {
