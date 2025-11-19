@@ -1,25 +1,3 @@
 .caseSuspectsSummaryPage {
   max-width: 66%;
-  .suspectRowWrapper {
-    & :global(.govuk-summary-list) {
-      margin-bottom: 0;
-    }
-    .suspectName {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    & :global(.govuk-tag) {
-      text-transform: capitalize;
-    }
-  }
-  .suspectDetailsWrapper {
-    dd {
-      margin-left: 0;
-    }
-  }
-  & :global(.govuk-details) {
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-  }
 }

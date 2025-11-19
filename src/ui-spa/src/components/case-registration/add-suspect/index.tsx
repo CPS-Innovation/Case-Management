@@ -207,7 +207,7 @@ const AddSuspectPage = () => {
   } = suspects[suspectIndex] || {};
   return (
     <div className={styles.addSuspectPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+      <BackLink to="/case-registration/case-details">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

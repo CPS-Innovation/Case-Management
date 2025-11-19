@@ -83,7 +83,9 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
   ];
 };
 
-export const getSuspectSummaryListRows = (suspects: SuspectFormData[]) => {
+export const getSuspectDetailsSummaryListRows = (
+  suspects: SuspectFormData[],
+) => {
   if (!suspects || suspects.length === 0) {
     return [];
   }

@@ -6,23 +6,12 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import {
-  Radios,
-  Button,
-  ErrorSummary,
-  BackLink,
-  Details,
-  SummaryList,
-  Tag,
-} from "../../govuk";
+import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
-import PersonIcon from "../../svgs/personIcon.svg?react";
-import CompanyIcon from "../../svgs/companyIcon.svg?react";
-import { type SuspectFormData } from "../../../common/reducers/caseRegistrationReducer";
-import { getSuspectSummaryListRows } from "./utils/getSuspectSummaryListRows";
-import { isYouthSuspect } from "./utils/isYouthSuspect";
-import styles from "./index.module.scss";
+import SuspectSummary from "./SuspectSummary";
+import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const SuspectSummaryPage = () => {
   type ErrorText = {
@@ -87,97 +76,6 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const suspectSummaryRows = (suspect: SuspectFormData, index: number) => {
-    return [
-      {
-        key: {
-          children: (
-            <div className={styles.suspectName}>
-              {suspect.addSuspectRadio === "person" && (
-                <>
-                  <PersonIcon />
-                  <span>
-                    {suspect.suspectFirstNameText
-                      ? `${suspect.suspectLastNameText}, ${suspect.suspectFirstNameText} `
-                      : suspect.suspectLastNameText}
-                  </span>
-                  {isYouthSuspect(suspect) && <Tag>Youth</Tag>}
-                </>
-              )}
-              {suspect.addSuspectRadio === "company" && (
-                <>
-                  <CompanyIcon />
-                  <span>{suspect.suspectCompanyNameText}</span>
-                </>
-              )}
-            </div>
-          ),
-        },
-        actions: {
-          items: [
-            {
-              children: <span>Remove</span>,
-              to: `/case-registration/suspect-remove-confirmation`,
-              state: {
-                suspectIndex: index,
-                backRoute: `/case-registration/suspect-summary`,
-              },
-              visuallyHiddenText: "Edit Suspect Details",
-            },
-            {
-              children: <span>Change</span>,
-              to: `/case-registration/suspect-${index}/add-suspect`,
-              visuallyHiddenText: "Edit Suspect Details",
-            },
-          ],
-        },
-      },
-    ];
-  };
-
-  const suspectDetailsSummaryRows = useMemo(() => {
-    return getSuspectSummaryListRows(state.formData.suspects);
-  }, [state.formData.suspects]);
-
-  const renderSummaryList = () => {
-    const {
-      formData: { suspects },
-    } = state;
-
-    return (
-      <dl>
-        {suspects.map(
-          (suspect, index) =>
-            suspect.addSuspectRadio === "person" && (
-              <div key={`${index}-${suspect.suspectLastNameText}`}>
-                <div className={styles.suspectRowWrapper}>
-                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
-                </div>
-
-                <div className={styles.suspectDetailsWrapper}>
-                  <dd>
-                    <Details summaryChildren="Suspect Details">
-                      <SummaryList rows={suspectDetailsSummaryRows[index]} />
-                    </Details>
-                  </dd>
-                </div>
-              </div>
-            ),
-        )}
-        {suspects.map(
-          (suspect, index) =>
-            suspect.addSuspectRadio === "company" && (
-              <div key={`${index}-${suspect.suspectCompanyNameText}`}>
-                <div className={styles.suspectRowWrapper}>
-                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
-                </div>
-              </div>
-            ),
-        )}
-      </dl>
-    );
-  };
-
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -187,13 +85,14 @@ const SuspectSummaryPage = () => {
       navigate(
         `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
       );
+      return;
     }
 
     navigate("/case-registration/case-complexity");
   };
 
   return (
-    <div className={styles.caseSuspectsSummaryPage}>
+    <div className={pageStyles.caseSuspectsSummaryPage}>
       <BackLink to={`/case-registration/case-details`}>Back</BackLink>
       {!!errorList.length && (
         <div
@@ -210,7 +109,7 @@ const SuspectSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>{`You have added ${state.formData.suspects.length} suspects`}</h1>
-        <div>{renderSummaryList()}</div>
+        <SuspectSummary />
         <div className={styles.inputWrapper}>
           <Radios
             className="govuk-radios--inline"

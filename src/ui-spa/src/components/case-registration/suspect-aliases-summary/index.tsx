@@ -102,7 +102,7 @@ const SuspectAliasesSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const getSuspectSummaryListRows = (
+  const getAliasesSummaryListRows = (
     suspectAliases: { firstName?: string; lastName: string }[],
   ) => {
     const rows = suspectAliases.map((alias, index) => ({
@@ -198,7 +198,7 @@ const SuspectAliasesSummaryPage = () => {
           Aliases for {suspectLastNameText} {suspectFirstNameText}
         </h1>
         <div className={pageStyles.summaryListWrapper}>
-          <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
+          <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
         </div>
         {!suspectAliases.length && <span>There are no aliases</span>}
         <div className={styles.inputWrapper}>
