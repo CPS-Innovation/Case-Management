@@ -110,7 +110,9 @@ const SuspectAliasesSummaryPage = () => {
       value: {
         children: (
           <p>
-            {alias.lastName}, {alias.firstName}
+            {alias.firstName
+              ? `${alias.lastName}, ${alias.firstName}`
+              : alias.lastName}
           </p>
         ),
       },

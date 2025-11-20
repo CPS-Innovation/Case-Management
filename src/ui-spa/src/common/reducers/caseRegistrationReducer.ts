@@ -503,6 +503,11 @@ export const getResetFieldValues = (
       firstHearingDateText: "",
     };
   }
+  if (fieldName === "suspectDetailsRadio" && value === "no") {
+    return {
+      suspects: [],
+    };
+  }
 
   return {};
 };
