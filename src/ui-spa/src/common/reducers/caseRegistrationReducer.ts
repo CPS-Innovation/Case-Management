@@ -529,12 +529,16 @@ export const getResetSuspectFieldValues = (
   }
 
   if (fieldName === "suspectAdditionalDetailsCheckboxes") {
-    return resetSuspectAdditionalDetails(value as string[]);
+    return resetSuspectAdditionalDetails(
+      value as SuspectAdditionalDetailValue[],
+    );
   }
   return {};
 };
 
-const resetSuspectAdditionalDetails = (value: string[]) => {
+const resetSuspectAdditionalDetails = (
+  value: SuspectAdditionalDetailValue[],
+) => {
   const resetValues: Partial<SuspectFormData> = {};
   if (!value.includes("Date of Birth")) {
     resetValues.suspectDOBDayText = "";
