@@ -69,12 +69,17 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
       value: {
         children: (
           <>
-            {suspectOffenderTypesRadio.arrestDate ? (
-              <span>
-                {format(suspectOffenderTypesRadio.arrestDate, "dd/MM/yyyy")}
-              </span>
-            ) : (
+            {Number.isNaN(
+              new Date(suspectOffenderTypesRadio.arrestDate).getTime(),
+            ) ? (
               <span>Not entered</span>
+            ) : (
+              <span>
+                {format(
+                  new Date(suspectOffenderTypesRadio.arrestDate),
+                  "dd/MM/yyyy",
+                )}
+              </span>
             )}
           </>
         ),

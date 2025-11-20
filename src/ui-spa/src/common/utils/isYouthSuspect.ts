@@ -16,6 +16,9 @@ export const isYouthSuspect = (suspect: SuspectFormData): boolean => {
 export const isUnder18 = (dob: string): boolean => {
   const today = new Date();
   const birthDate = new Date(dob);
+  if (Number.isNaN(birthDate.getTime())) {
+    return false;
+  }
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDifference = today.getMonth() - birthDate.getMonth();
   if (
