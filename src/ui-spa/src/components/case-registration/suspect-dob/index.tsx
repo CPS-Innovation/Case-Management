@@ -160,6 +160,7 @@ const SuspectDOBPage = () => {
       "suspect-dob",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
 
     return navigate(nextRoute);

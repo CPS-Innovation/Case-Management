@@ -10,13 +10,14 @@ import { Button, BackLink, SummaryList, ErrorSummary } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import {
   getCaseDetailsSummaryListRows,
-  getSuspectSummaryListRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhosIsWorkingOnTheCaseSummaryListRows,
+  getEmptySuspectSummaryRow,
 } from "./utils/getSummaryListRows";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitCaseRegistration, validateUrn } from "../../../apis/gateway-api";
+import SuspectSummary from "../suspect-summary/SuspectSummary";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -141,11 +142,6 @@ const CaseSummaryPage = () => {
     [state.formData],
   );
 
-  const suspectSummaryListRows = useMemo(
-    () => getSuspectSummaryListRows(state.formData),
-    [state.formData],
-  );
-
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
     () =>
       getCaseComplexityAndMonitoringCodesSummaryListRows(
@@ -158,6 +154,7 @@ const CaseSummaryPage = () => {
     () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData),
     [state.formData],
   );
+
   return (
     <div className={styles.caseSummaryPage}>
       <BackLink
@@ -188,7 +185,12 @@ const CaseSummaryPage = () => {
         <h2>Case Details</h2>
         <SummaryList rows={caseDetailsSummaryListRows} />
         <h2>Suspect</h2>
-        <SummaryList rows={suspectSummaryListRows} />
+        {!state.formData.suspects.length && (
+          <SummaryList rows={getEmptySuspectSummaryRow()} />
+        )}
+        {!!state.formData.suspects.length && (
+          <SuspectSummary isCaseSummaryPage={true} />
+        )}
         <h2>Case complexity and monitoring codes</h2>
         <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
         <h2>Working on the case</h2>

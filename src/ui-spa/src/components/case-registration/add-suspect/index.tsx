@@ -188,6 +188,7 @@ const AddSuspectPage = () => {
       "add-suspect",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
 
     return navigate(nextRoute);
@@ -206,7 +207,7 @@ const AddSuspectPage = () => {
   } = suspects[suspectIndex] || {};
   return (
     <div className={styles.addSuspectPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+      <BackLink to="/case-registration/case-details">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

@@ -14,7 +14,10 @@ import {
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -41,6 +44,14 @@ const SuspectAliasesSummaryPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-add-aliases",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -91,7 +102,7 @@ const SuspectAliasesSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const getSuspectSummaryListRows = (
+  const getAliasesSummaryListRows = (
     suspectAliases: { firstName?: string; lastName: string }[],
   ) => {
     const rows = suspectAliases.map((alias, index) => ({
@@ -99,7 +110,9 @@ const SuspectAliasesSummaryPage = () => {
       value: {
         children: (
           <p>
-            {alias.lastName}, {alias.firstName}
+            {alias.firstName
+              ? `${alias.lastName}, ${alias.firstName}`
+              : alias.lastName}
           </p>
         ),
       },
@@ -154,6 +167,7 @@ const SuspectAliasesSummaryPage = () => {
       "suspect-add-aliases",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
@@ -167,9 +181,7 @@ const SuspectAliasesSummaryPage = () => {
 
   return (
     <div className={pageStyles.caseSuspectAliasesSummaryPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -188,7 +200,7 @@ const SuspectAliasesSummaryPage = () => {
           Aliases for {suspectLastNameText} {suspectFirstNameText}
         </h1>
         <div className={pageStyles.summaryListWrapper}>
-          <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
+          <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
         </div>
         {!suspectAliases.length && <span>There are no aliases</span>}
         <div className={styles.inputWrapper}>

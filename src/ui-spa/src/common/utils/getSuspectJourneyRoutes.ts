@@ -50,6 +50,7 @@ export const getNextSuspectJourneyRoute = (
   currentRoute: string,
   suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[],
   currentSuspectIndex: number,
+  hasAliases: boolean = false,
 ): string => {
   const shouldInclude = (description: SuspectAdditionalDetailValue) => {
     return suspectAdditionalDetailsCheckboxes.includes(description);
@@ -67,6 +68,12 @@ export const getNextSuspectJourneyRoute = (
   );
 
   if (filteredSequence[currentIndex + 1]?.route) {
+    if (
+      filteredSequence[currentIndex + 1].route === "suspect-add-aliases" &&
+      hasAliases
+    ) {
+      return `/case-registration/suspect-${currentSuspectIndex}/suspect-aliases-summary`;
+    }
     return `/case-registration/suspect-${currentSuspectIndex}/${filteredSequence[currentIndex + 1].route}`;
   }
 
@@ -94,6 +101,9 @@ export const getPreviousSuspectJourneyRoute = (
   );
 
   if (filteredSequence[currentIndex - 1]?.route) {
+    if (filteredSequence[currentIndex - 1].route === "suspect-add-aliases") {
+      return `/case-registration/suspect-${currentSuspectIndex}/suspect-aliases-summary`;
+    }
     return `/case-registration/suspect-${currentSuspectIndex}/${filteredSequence[currentIndex - 1].route}`;
   }
 

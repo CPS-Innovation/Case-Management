@@ -61,7 +61,11 @@ export type SuspectFormData = {
   suspectAliases: { firstName: string; lastName: string }[];
   suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
-  suspectOffenderTypesRadio: { shortCode: string; display: string };
+  suspectOffenderTypesRadio: {
+    shortCode: string;
+    display: string;
+    arrestDate: string;
+  };
   suspectCompanyNameText: string;
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
@@ -132,7 +136,7 @@ export const suspectInitialState: SuspectFormData = {
   suspectAliases: [],
   suspectSDORadio: "",
   suspectASNText: "",
-  suspectOffenderTypesRadio: { shortCode: "", display: "" },
+  suspectOffenderTypesRadio: { shortCode: "", display: "", arrestDate: "" },
   suspectCompanyNameText: "",
   suspectDOBDayText: "",
   suspectDOBMonthText: "",
@@ -207,8 +211,14 @@ export type CaseRegistrationActions =
           | SuspectAdditionalDetailValue[]
           | string
           | { shortCode: string; description: string }
-          | { shortCode: string; display: string }
+          | { shortCode: string; display: string; arrestDate: string }
           | { firstName?: string; lastName: string }[];
+      };
+    }
+  | {
+      type: "REMOVE_SUSPECT";
+      payload: {
+        index: number;
       };
     }
   | {
@@ -312,12 +322,33 @@ export const caseRegistrationReducer = (
       if (action.payload.index > state.formData.suspects.length) {
         return state;
       }
+      const resetValues =
+        action.payload.field === "suspectAdditionalDetailsCheckboxes" ||
+        action.payload.field === "addSuspectRadio"
+          ? getResetSuspectFieldValues(
+              action.payload.field,
+              action.payload.value as string | SuspectAdditionalDetailValue[],
+            )
+          : {};
       const suspects = [...state.formData.suspects];
       const existing = suspects[action.payload.index] ?? suspectInitialState;
       suspects[action.payload.index] = {
         ...existing,
+        ...resetValues,
         [action.payload.field]: action.payload.value,
       };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+    case "REMOVE_SUSPECT": {
+      const suspects = state.formData.suspects.filter(
+        (_, i) => i !== action.payload.index,
+      );
       return {
         ...state,
         formData: {
@@ -472,6 +503,76 @@ export const getResetFieldValues = (
       firstHearingDateText: "",
     };
   }
+  if (fieldName === "suspectDetailsRadio" && value === "no") {
+    return {
+      suspects: [],
+    };
+  }
 
   return {};
+};
+
+export const getResetSuspectFieldValues = (
+  fieldName: "addSuspectRadio" | "suspectAdditionalDetailsCheckboxes",
+  value: string | SuspectAdditionalDetailValue[],
+) => {
+  if (fieldName === "addSuspectRadio" && value === "company") {
+    const {
+      suspectCompanyNameText: _suspectCompanyNameText,
+      addSuspectRadio: _addSuspectRadio,
+      ...rest
+    } = suspectInitialState;
+    return rest;
+  }
+  if (fieldName === "addSuspectRadio" && value === "person") {
+    return { suspectCompanyNameText: "" };
+  }
+
+  if (fieldName === "suspectAdditionalDetailsCheckboxes") {
+    return resetSuspectAdditionalDetails(
+      value as SuspectAdditionalDetailValue[],
+    );
+  }
+  return {};
+};
+
+const resetSuspectAdditionalDetails = (
+  value: SuspectAdditionalDetailValue[],
+) => {
+  const resetValues: Partial<SuspectFormData> = {};
+  if (!value.includes("Date of Birth")) {
+    resetValues.suspectDOBDayText = "";
+    resetValues.suspectDOBMonthText = "";
+    resetValues.suspectDOBYearText = "";
+  }
+  if (!value.includes("Gender")) {
+    resetValues.suspectGenderRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Disability")) {
+    resetValues.suspectDisabilityRadio = "";
+  }
+  if (!value.includes("Religion")) {
+    resetValues.suspectReligionRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Ethnicity")) {
+    resetValues.suspectEthnicityRadio = { shortCode: "", description: "" };
+  }
+  if (!value.includes("Alias details")) {
+    resetValues.suspectAliases = [];
+  }
+  if (!value.includes("Serious dangerous offender (SDO)")) {
+    resetValues.suspectSDORadio = "";
+  }
+  if (!value.includes("Arrest summons number (ASN)")) {
+    resetValues.suspectASNText = "";
+  }
+  if (!value.includes("Type of offender")) {
+    resetValues.suspectOffenderTypesRadio = {
+      shortCode: "",
+      display: "",
+      arrestDate: "",
+    };
+  }
+
+  return resetValues;
 };

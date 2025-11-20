@@ -80,6 +80,19 @@ const CaseComplexityPage = () => {
     return [] as { shortCode: number; description: string }[];
   }, [state.apiData.caseComplexities]);
 
+  const backRoute = useMemo(() => {
+    if (
+      state.formData.suspects.length === 0 &&
+      state.formData.suspectDetailsRadio === "yes"
+    ) {
+      return `/case-registration/suspect-0/add-suspect`;
+    }
+    if (state.formData.suspects.length > 0) {
+      return `/case-registration/suspect-summary`;
+    }
+    return "/case-registration/case-details";
+  }, [state.formData.suspects.length, state.formData.suspectDetailsRadio]);
+
   const errorList = useMemo(() => {
     const validErrorKeys = Object.keys(formDataErrors).filter(
       (errorKey) => formDataErrors[errorKey as keyof FormDataErrors],
@@ -139,7 +152,7 @@ const CaseComplexityPage = () => {
 
   return (
     <div className={styles.caseComplexityPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+      <BackLink to={backRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

@@ -152,28 +152,21 @@ export const getCaseDetailsSummaryListRows = (
   return rows;
 };
 
-export const getSuspectSummaryListRows = (
-  formData: CaseRegistrationFormData,
-) => {
-  const rows = [
-    {
-      key: { children: <span>Suspects</span> },
-      value: {
-        children: <p>{formData.suspectDetailsRadio === "no" ? "No" : "Yes"}</p>,
-      },
-      actions: {
-        items: [
-          {
-            children: <span>Change</span>,
-            to: "/case-registration",
-            visuallyHiddenText: "Edit Suspect Details",
-          },
-        ],
-      },
+export const getEmptySuspectSummaryRow = () => [
+  {
+    key: { children: <span>Suspects</span> },
+    value: { children: <p>Not entered</p> },
+    actions: {
+      items: [
+        {
+          children: <span>Add a suspect</span>,
+          to: "/case-registration/suspect-0/add-suspect",
+          visuallyHiddenText: "Add Suspect",
+        },
+      ],
     },
-  ];
-  return rows;
-};
+  },
+];
 
 export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   formData: CaseRegistrationFormData,
