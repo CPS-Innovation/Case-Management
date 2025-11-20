@@ -2,10 +2,11 @@ import {
   caseRegistrationReducer,
   initialState,
   suspectInitialState,
+  getResetSuspectFieldValues,
+  getResetFieldValues,
   type CaseRegistrationActions,
   type CaseRegistrationState,
 } from "./caseRegistrationReducer";
-import { getResetFieldValues } from "./caseRegistrationReducer";
 
 describe("caseRegistrationReducer", () => {
   it("should set formData operationNameRadio using SET_FIELD action", () => {
@@ -191,6 +192,114 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
+  it("should reset the suspect data to initial values if the user updates the additional details checkboxes", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            addSuspectRadio: "person",
+            suspectFirstNameText: "rr",
+            suspectLastNameText: "last",
+            suspectAdditionalDetailsCheckboxes: [
+              "Date of Birth",
+              "Disability",
+              "Religion",
+              "Ethnicity",
+              "Alias details",
+              "Arrest summons number (ASN)",
+              "Serious dangerous offender (SDO)",
+              "Type of offender",
+            ],
+            suspectGenderRadio: { shortCode: "M", description: "male" },
+            suspectDisabilityRadio: "no",
+            suspectReligionRadio: { shortCode: "ch", description: "Christian" },
+            suspectEthnicityRadio: { shortCode: "BR", description: "British" },
+            suspectAliases: [{ firstName: "aa", lastName: "bb" }],
+            suspectSDORadio: "yes",
+            suspectASNText: "abc123",
+            suspectOffenderTypesRadio: {
+              shortCode: "yo",
+              display: "yOUTH OFFENDER (YO)",
+              arrestDate: "12/12/2020",
+            },
+            suspectCompanyNameText: "",
+            suspectDOBDayText: "12",
+            suspectDOBMonthText: "12",
+            suspectDOBYearText: "2000",
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "SET_SUSPECT_FIELD",
+      payload: {
+        index: 0,
+        field: "suspectAdditionalDetailsCheckboxes",
+        value: [],
+      },
+    };
+    const expectedResult = {
+      ...suspectInitialState,
+      addSuspectRadio: "person",
+      suspectFirstNameText: "rr",
+      suspectLastNameText: "last",
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects[0]).toEqual(expectedResult);
+  });
+
+  it("Should remove a suspect at given index using REMOVE_SUSPECT action", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          { ...suspectInitialState },
+          {
+            ...suspectInitialState,
+            addSuspectRadio: "person",
+            suspectLastNameText: "last",
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT",
+      payload: {
+        index: 0,
+      },
+    };
+
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects.length).toEqual(1);
+    expect(state.formData.suspects[0].suspectLastNameText).toEqual("last");
+  });
+
+  it("getResetSuspectFieldValues should reset person suspects values to initial state if the user switches from addSuspectRadio from person to company", () => {
+    const resetValues = getResetSuspectFieldValues(
+      "addSuspectRadio",
+      "company",
+    );
+    const {
+      suspectCompanyNameText: _suspectCompanyNameText,
+      addSuspectRadio: _addSuspectRadio,
+      ...rest
+    } = suspectInitialState;
+    expect(resetValues).toEqual({ ...rest });
+  });
+  it("getResetSuspectFieldValues should reset company suspects values to initial state if the user switches from addSuspectRadio from company to person", () => {
+    const resetValues = getResetSuspectFieldValues("addSuspectRadio", "person");
+
+    expect(resetValues).toEqual({ suspectCompanyNameText: "" });
+  });
+
+  it("getResetSuspectFieldValues should return empty object if none of the fields match", () => {
+    const resetValues = getResetSuspectFieldValues("addSuspectRadio", "");
+
+    expect(resetValues).toEqual({});
+  });
   it("Should set  apisData areasAndRegisteringUnits data using SET_AREAS_AND_REGISTERING_UNITS", () => {
     const action: CaseRegistrationActions = {
       type: "SET_AREAS_AND_REGISTERING_UNITS",
