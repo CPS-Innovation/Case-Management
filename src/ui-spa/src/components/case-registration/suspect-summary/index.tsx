@@ -25,7 +25,7 @@ const SuspectSummaryPage = () => {
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
-  const [addMoreSuspectsRadio, setAddMoreSuspectsRadio] = useState<string>();
+  const [addMoreSuspectsRadio, setAddMoreSuspectsRadio] = useState<string>("");
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -142,7 +142,7 @@ const SuspectSummaryPage = () => {
             ]}
             value={addMoreSuspectsRadio}
             onChange={(value) => {
-              setAddMoreSuspectsRadio(value);
+              if (value) setAddMoreSuspectsRadio(value);
             }}
           ></Radios>
         </div>
