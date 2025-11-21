@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
 import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
+import { type PoliceUnit } from "../../../../common/types/responses/PoliceUnits";
 
 export const getCaseDetailsSummaryListRows = (
   formData: CaseRegistrationFormData,
@@ -227,7 +228,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
 };
 
 const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
-  if (formData.caseInvestigatorTitleSelect) {
+  if (formData.caseInvestigatorTitleSelect.display) {
     return (
       <>
         <Tag gdsTagColour="blue">{`${formData.caseInvestigatorTitleSelect.display}`}</Tag>{" "}
@@ -244,6 +245,7 @@ const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
 
 export const getWhosIsWorkingOnTheCaseSummaryListRows = (
   formData: CaseRegistrationFormData,
+  policeUnit?: PoliceUnit,
 ) => {
   const investigatorDetailsList =
     formData.caseInvestigatorRadio === "yes"
@@ -288,11 +290,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             key: { children: <span>Police Unit</span> },
             value: {
               children: (
-                <p>
-                  {formData.caseInvestigatorPoliceUnitText
-                    ? formData.caseInvestigatorPoliceUnitText
-                    : "Not entered"}
-                </p>
+                <p>{policeUnit ? policeUnit.description : "Not entered"}</p>
               ),
             },
             actions: {

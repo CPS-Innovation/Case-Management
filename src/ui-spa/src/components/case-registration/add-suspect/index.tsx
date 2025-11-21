@@ -250,7 +250,7 @@ const AddSuspectPage = () => {
                       data-testid="suspect-first-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "First name",
+                        children: <b>First name (optional)</b>,
                       }}
                       type="text"
                       value={suspectFirstNameText}
@@ -264,7 +264,7 @@ const AddSuspectPage = () => {
                       data-testid="suspect-last-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Last name",
+                        children: <b>Last name</b>,
                       }}
                       errorMessage={
                         formDataErrors["suspectLastNameText"]
@@ -327,7 +327,7 @@ const AddSuspectPage = () => {
                       data-testid="suspect-company-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Company name",
+                        children: <b>Company name</b>,
                       }}
                       errorMessage={
                         formDataErrors["suspectCompanyNameText"]
