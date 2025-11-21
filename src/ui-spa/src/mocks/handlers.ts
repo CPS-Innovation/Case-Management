@@ -20,6 +20,8 @@ import {
   suspectEthnicitiesPlaywright,
   suspectGenderDev,
   suspectGenderPlaywright,
+  policeUnitsDev,
+  policeUnitsPlaywright,
   suspectReligionDev,
   suspectReligionPlaywright,
   suspectOffenderTypesDev,
@@ -88,6 +90,11 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       const results = isDevMock()
         ? caseInvestigatorTitlesDev
         : caseInvestigatorTitlesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
+    http.get(`${baseUrl}/api/v1/police-units`, async () => {
+      const results = isDevMock() ? policeUnitsDev : policeUnitsPlaywright;
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),

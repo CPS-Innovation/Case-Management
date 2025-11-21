@@ -17,6 +17,7 @@ import {
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitCaseRegistration, validateUrn } from "../../../apis/gateway-api";
+import { getPoliceUnit } from "../../../common/utils/getPoliceUnit";
 import SuspectSummary from "../suspect-summary/SuspectSummary";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -74,6 +75,15 @@ const CaseSummaryPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
 
+  const policeUnit = useMemo(
+    () =>
+      getPoliceUnit(
+        state.formData.urnPoliceUnitText,
+        state.apiData.policeUnits ?? [],
+      ),
+    [state.formData.urnPoliceUnitText, state.apiData.policeUnits],
+  );
+
   const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
@@ -118,6 +128,7 @@ const CaseSummaryPage = () => {
     const requestData = getCaseRegistrationRequestData(
       state.formData,
       state.apiData.caseMonitoringCodes!,
+      policeUnit,
     );
 
     submitCaseRegistrationMutation.mutate(requestData, {
@@ -151,8 +162,8 @@ const CaseSummaryPage = () => {
     [state.formData, state.apiData.caseMonitoringCodes],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
-    () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData),
-    [state.formData],
+    () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData, policeUnit),
+    [state.formData, policeUnit],
   );
 
   return (

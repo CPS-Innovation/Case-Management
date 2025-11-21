@@ -6,6 +6,7 @@ import type { CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes
 import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
 import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
 import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
+import type { PoliceUnits } from "../types/responses/PoliceUnits";
 import type { Genders } from "../types/responses/Genders";
 import type { Ethnicities } from "../types/responses/Ethnicities";
 import type { Religions } from "../types/responses/Religions";
@@ -34,8 +35,7 @@ export type CaseRegistrationField =
   | "caseInvestigatorFirstNameText"
   | "caseInvestigatorLastNameText"
   | "caseInvestigatorShoulderNameText"
-  | "caseInvestigatorShoulderNumberText"
-  | "caseInvestigatorPoliceUnitText";
+  | "caseInvestigatorShoulderNumberText";
 export type SuspectAdditionalDetailValue =
   | "Date of Birth"
   | "Gender"
@@ -102,7 +102,6 @@ export type CaseRegistrationFormData = {
   caseInvestigatorLastNameText: string;
   caseInvestigatorShoulderNameText: string;
   caseInvestigatorShoulderNumberText: string;
-  caseInvestigatorPoliceUnitText: string;
   suspects: SuspectFormData[];
 };
 
@@ -117,6 +116,7 @@ export type CaseRegistrationState = {
     caseProsecutors?: CaseProsecutors | null;
     caseCaseworkers?: CaseCaseworkers | null;
     caseInvestigatorTitles?: InvestigatorTitles | null;
+    policeUnits?: PoliceUnits | null;
     suspectGenders?: Genders | null;
     suspectEthnicities?: Ethnicities | null;
     suspectReligions?: Religions | null;
@@ -169,7 +169,6 @@ export const initialState: CaseRegistrationState = {
     caseInvestigatorLastNameText: "",
     caseInvestigatorShoulderNameText: "",
     caseInvestigatorShoulderNumberText: "",
-    caseInvestigatorPoliceUnitText: "",
     suspects: [],
   },
 
@@ -267,6 +266,12 @@ export type CaseRegistrationActions =
       type: "SET_CASE_INVESTIGATOR_TITLES";
       payload: {
         caseInvestigatorTitles: InvestigatorTitles;
+      };
+    }
+  | {
+      type: "SET_POLICE_UNITS";
+      payload: {
+        policeUnits: PoliceUnits;
       };
     }
   | {
@@ -431,6 +436,16 @@ export const caseRegistrationReducer = (
       };
     }
 
+    case "SET_POLICE_UNITS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          policeUnits: action.payload.policeUnits,
+        },
+      };
+    }
+
     case "RESET_FORM_DATA": {
       return { ...state, formData: initialState.formData };
     }
@@ -494,7 +509,6 @@ export const getResetFieldValues = (
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
       caseInvestigatorShoulderNumberText: "",
-      caseInvestigatorPoliceUnitText: "",
     };
   }
   if (fieldName === "firstHearingRadio" && value === "no") {

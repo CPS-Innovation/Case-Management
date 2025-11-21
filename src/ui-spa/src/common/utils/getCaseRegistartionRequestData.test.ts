@@ -31,7 +31,7 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorLastNameText: "One",
       caseInvestigatorShoulderNameText: "Shoulder Name",
       caseInvestigatorShoulderNumberText: "Shoulder Number",
-      caseInvestigatorPoliceUnitText: "Police Unit",
+
       suspects: [],
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
@@ -73,7 +73,7 @@ describe("getCaseRegistrationRequestData", () => {
       ],
       complexity: "HIGH",
       ociFirstName: "Investigator",
-      ociPoliceUnit: "Police Unit",
+      ociPoliceUnit: "",
       ociRank: "INV001",
       ociShoulderNumber: "Shoulder Number",
       ociSurname: "One",
@@ -119,7 +119,6 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
       caseInvestigatorShoulderNumberText: "",
-      caseInvestigatorPoliceUnitText: "",
       suspects: [],
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
@@ -142,6 +141,12 @@ describe("getCaseRegistrationRequestData", () => {
     const result = getCaseRegistrationRequestData(
       formData,
       monitoringCodesData,
+      {
+        unitId: 2091,
+        unitDescription: "Plymouth Magistrates Court Unit",
+        code: "AC",
+        description: "CJU - Cornwall",
+      },
     );
     expect(result).toEqual({
       allocateWcuId: 0,
@@ -161,7 +166,7 @@ describe("getCaseRegistrationRequestData", () => {
       ],
       complexity: "HIGH",
       ociFirstName: "",
-      ociPoliceUnit: "",
+      ociPoliceUnit: "AC",
       ociRank: "",
       ociShoulderNumber: "",
       ociSurname: "",

@@ -24,4 +24,10 @@
       outline: 0.2rem solid #ffdd00;
     }
   }
+
+  .shoulderNumberLabel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }

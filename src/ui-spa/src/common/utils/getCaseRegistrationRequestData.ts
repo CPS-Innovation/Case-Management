@@ -1,10 +1,12 @@
 import { type CaseRegistrationFormData } from "../reducers/caseRegistrationReducer";
 import { type CaseMonitoringCode } from "../types/responses/CaseMonitoringCodes";
 import { type CaseRegistration } from "../types/requests/CaseRegistration";
+import { type PoliceUnit } from "../types/responses/PoliceUnits";
 
 export const getCaseRegistrationRequestData = (
   formData: CaseRegistrationFormData,
   monitoringCodesData: CaseMonitoringCode[],
+  policeUnit?: PoliceUnit,
 ): CaseRegistration => {
   const monitoringCodes = monitoringCodesData
     .filter((mCode) =>
@@ -16,6 +18,7 @@ export const getCaseRegistrationRequestData = (
         selected: true,
       };
     });
+
   return {
     urn: {
       policeForce: formData.urnPoliceForceText,
@@ -42,6 +45,6 @@ export const getCaseRegistrationRequestData = (
     ociSurname: formData.caseInvestigatorLastNameText,
     ociFirstName: formData.caseInvestigatorFirstNameText,
     ociShoulderNumber: formData.caseInvestigatorShoulderNumberText,
-    ociPoliceUnit: formData.caseInvestigatorPoliceUnitText,
+    ociPoliceUnit: policeUnit ? policeUnit.code : "",
   };
 };

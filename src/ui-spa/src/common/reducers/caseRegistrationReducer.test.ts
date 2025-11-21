@@ -89,7 +89,7 @@ describe("caseRegistrationReducer", () => {
         caseInvestigatorLastNameText: "def",
         caseInvestigatorShoulderNameText: "GHI",
         caseInvestigatorShoulderNumberText: "123",
-        caseInvestigatorPoliceUnitText: "Unit Z",
+
         suspects: [],
       },
       apiData: apiData,
@@ -544,7 +544,6 @@ describe("getResetFieldValues", () => {
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
       caseInvestigatorShoulderNumberText: "",
-      caseInvestigatorPoliceUnitText: "",
     });
   });
   it("should reset first hearing fields when firstHearingRadio is 'no'", () => {
