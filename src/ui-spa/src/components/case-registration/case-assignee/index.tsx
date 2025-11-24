@@ -52,62 +52,42 @@ const CaseAssigneePage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const {
-    data: caseProsecutorsData,
-    isLoading: isCaseProsecutorsLoading,
-    error: caseProsecutorsError,
-  } = useQuery({
-    queryKey: ["case-prosecutors", registeringUnitId],
-    enabled: !!registeringUnitId,
-    queryFn: () => getCaseProsecutors(registeringUnitId!),
-    retry: false,
-  });
+  const { data: caseProsecutorsData, isLoading: isCaseProsecutorsLoading } =
+    useQuery({
+      queryKey: ["case-prosecutors", registeringUnitId],
+      enabled: !!registeringUnitId,
+      queryFn: () => getCaseProsecutors(registeringUnitId!),
+      retry: false,
+      throwOnError: true,
+    });
 
-  const {
-    data: caseCaseworkersData,
-    isLoading: isCaseCaseworkersLoading,
-    error: caseCaseworkersError,
-  } = useQuery({
-    queryKey: ["case-caseworkers", registeringUnitId],
-    enabled: !!registeringUnitId,
-    queryFn: () => getCaseCaseworkers(registeringUnitId!),
-    retry: false,
-  });
+  const { data: caseCaseworkersData, isLoading: isCaseCaseworkersLoading } =
+    useQuery({
+      queryKey: ["case-caseworkers", registeringUnitId],
+      enabled: !!registeringUnitId,
+      queryFn: () => getCaseCaseworkers(registeringUnitId!),
+      retry: false,
+      throwOnError: true,
+    });
 
   const {
     data: caseInvestigatorTitlesData,
     isLoading: isCaseInvestigatorTitlesLoading,
-    error: caseInvestigatorTitlesError,
   } = useQuery({
     queryKey: ["case-investigator-titles"],
     queryFn: () => getInvestigatorTitles(),
     enabled: !state.apiData.caseInvestigatorTitles,
     retry: false,
+    throwOnError: true,
   });
 
-  const {
-    data: policeUnitsData,
-    isLoading: isPoliceUnitsLoading,
-    error: policeUnitsError,
-  } = useQuery({
+  const { data: policeUnitsData, isLoading: isPoliceUnitsLoading } = useQuery({
     queryKey: ["police-units"],
     queryFn: () => getPoliceUnits(),
     enabled: !state.apiData.policeUnits,
     retry: false,
+    throwOnError: true,
   });
-
-  useEffect(() => {
-    if (caseProsecutorsError) throw caseProsecutorsError;
-  }, [caseProsecutorsError]);
-  useEffect(() => {
-    if (caseCaseworkersError) throw caseCaseworkersError;
-  }, [caseCaseworkersError]);
-  useEffect(() => {
-    if (caseInvestigatorTitlesError) throw caseInvestigatorTitlesError;
-  }, [caseInvestigatorTitlesError]);
-  useEffect(() => {
-    if (policeUnitsError) throw policeUnitsError;
-  }, [policeUnitsError]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
