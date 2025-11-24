@@ -88,7 +88,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"urn\": {\n        \"policeForce\": \"45\",\n        \"policeUnit\": \"EL\",\n        \"uniqueRef\": \"{{urnUniqueRef}}\",\n        \"year\": 25\n    },\n    \"registeringAreaId\": 1001,\n    \"registeringUnitId\": 2002,\n    \"allocatedWcuId\": 2012391,\n    \"crest\": \"\",\n    \"operationName\": \"\",\n    \"courtLocationId\": 0,\n    \"courtLocationName\": \"\",\n    \"hearingDate\": null,\n    \"defendants\": [],\n    \"victims\": [],\n    \"complexity\": \"\",\n    \"caseWeight\": \"\",\n    \"monitoringCodes\":[\n        {\n            \"code\": \"ATRY\",\n            \"selected\": true\n        }\n    ],\n    \"prosecutorId\": 0,\n    \"caseWorker\": \"\",\n    \"oicRank\": \"\",\n    \"oicSurname\": \"\",\n    \"oicFirstnames\": \"\",\n    \"oicShoulderNumber\": \"\",\n    \"oicPoliceUnit\": \"\"\n}"
+					"raw": "{\n    \"urn\": {\n        \"policeForce\": \"45\",\n        \"policeUnit\": \"EL\",\n        \"uniqueRef\": \"{{urnUniqueRef}}\",\n        \"year\": 25\n    },\n    \"registeringAreaId\": 1001,\n    \"registeringUnitId\": 2002,\n    \"allocatedWcuId\": 2012391,\n    \"crest\": \"\",\n    \"operationName\": \"\",\n    \"courtLocationId\": 0,\n    \"courtLocationName\": \"\",\n    \"hearingDate\": null,\n    \"defendants\": [],\n    \"victims\": [],\n    \"complexity\": \"\",\n    \"caseWeight\": \"\",\n    \"monitoringCodes\":[\n        {\n            \"code\": \"CSEA\",\n            \"selected\": true\n        }\n    ],\n    \"prosecutorId\": 0,\n    \"caseWorker\": \"\",\n    \"oicRank\": \"\",\n    \"oicSurname\": \"\",\n    \"oicFirstnames\": \"\",\n    \"oicShoulderNumber\": \"\",\n    \"oicPoliceUnit\": \"\"\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/api/v1/cases",
@@ -507,7 +507,7 @@
 					"    console.log(`[CMS] ℹ Skipping (missing: ${missingCmsVars.join(', ')})`);",
 					"  } else {",
 					"    console.log('[CMS] → Authenticating...');",
-					"    const authUrl = `${mdsBaseUrl}/api/authenticate`;",
+					"    const authUrl = `${mdsBaseUrl}/authenticate`;",
 					"",
 					"    pm.sendRequest({",
 					"      url: authUrl,",

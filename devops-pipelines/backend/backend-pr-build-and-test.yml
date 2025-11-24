@@ -16,33 +16,64 @@ variables:
 pool: 'CM PreProd Pool'
 
 stages:
-  - stage: Build_And_Test_Backend
-    displayName: 'Build, Test & Package'
+  - stage: Run_Postman_Tests
+    displayName: 'Dev - Run Postman Tests'
+    # pool: 'CM PreProd Pool'
+    variables:
+    - group: cm-backend-config-dev
+    - group: cm-backend-secrets-dev
     jobs:
-      - job: Build_And_Test_Solution
-        displayName: 'Build & Test Solution'
-        steps:
-          - template: ../templates/dotnet-build-steps.yml
-            parameters:
-              projectPath: 'src/backend/Cps.CaseManagement.sln'
-              projectName: 'Backend Solution'
-              buildConfiguration: '$(buildConfiguration)'
-              dotNetVersion: $(dotNetVersion)
-              publishOutput: false
-              runTests: true
-              testResultsDirectory: $(testResultsDirectory)
+    - job: Run_Postman_Tests_with_Newman
+      steps:
+      - script: |
+          npm install -g newman
+          
+          newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
+            --global-var "baseUrl=fa-cm-api-dev" \
+            --global-var "tenantId=$(TenantId)" \
+            --global-var "clientId=$(CallingAppValidAudience)" \
+            --global-var "clientSecret=$(PostmanClientSecret)" \
+            --global-var "scope=api://$(CallingAppValidAudience)/.default" \
+            --global-var "mdsBaseUrl=$(MdsOptionsBaseUrl)" \
+            --global-var "mdsAccessKey=$(MdsOptionsAccessKey)" \
+            --global-var "cmsUsername=$(CmsUsername)" \
+            --global-var "cmsPassword=$(CmsPassword)" \
+            --reporters cli,junit --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report.xml"
+        displayName: 'Run Postman Collection'
 
-      - job: Build_Main_API
-        displayName: 'Build Main API'
-        dependsOn: Build_And_Test_Solution
-        steps:
-          # Build and publish Main API
-          - template: ../templates/dotnet-build-steps.yml
-            parameters:
-              projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
-              projectName: 'cm-main-api-drop'
-              buildConfiguration: $(buildConfiguration)
-              dotNetVersion: $(dotNetVersion)
-              publishOutput: false
-              runTests: false
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '$(Build.ArtifactStagingDirectory)/newman-report.xml'
+        displayName: 'Publish Newman Report' 
+
+  # - stage: Build_And_Test_Backend
+  #   displayName: 'Build, Test & Package'
+  #   jobs:
+  #     - job: Build_And_Test_Solution
+      #   displayName: 'Build & Test Solution'
+      #   steps:
+      #     - template: ../templates/dotnet-build-steps.yml
+      #       parameters:
+      #         projectPath: 'src/backend/Cps.CaseManagement.sln'
+      #         projectName: 'Backend Solution'
+      #         buildConfiguration: '$(buildConfiguration)'
+      #         dotNetVersion: $(dotNetVersion)
+      #         publishOutput: false
+      #         runTests: true
+      #         testResultsDirectory: $(testResultsDirectory)
+
+      # - job: Build_Main_API
+      #   displayName: 'Build Main API'
+      #   dependsOn: Build_And_Test_Solution
+      #   steps:
+      #     # Build and publish Main API
+      #     - template: ../templates/dotnet-build-steps.yml
+      #       parameters:
+      #         projectPath: 'src/backend/Cps.CaseManagement.Api/Cps.CaseManagement.Api.csproj'
+      #         projectName: 'cm-main-api-drop'
+      #         buildConfiguration: $(buildConfiguration)
+      #         dotNetVersion: $(dotNetVersion)
+      #         publishOutput: false
+      #         runTests: false
 
