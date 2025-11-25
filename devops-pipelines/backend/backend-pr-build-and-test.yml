@@ -36,7 +36,6 @@ stages:
         displayName: 'Clean Install NPM Dependencies'
         inputs:
           command: 'ci'
-          workingDir: '$(workingDir)'
 
       - script: |
             newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
