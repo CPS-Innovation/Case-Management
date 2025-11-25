@@ -19,10 +19,12 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getSelectedInvestigatorTitle } from "../../../common/utils/getSelectedInvestigatorTitle";
+import { getPoliceUnit } from "../../../common/utils/getPoliceUnit";
 import {
   getCaseProsecutors,
   getCaseCaseworkers,
   getInvestigatorTitles,
+  getPoliceUnits,
 } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -50,48 +52,42 @@ const CaseAssigneePage = () => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
 
-  const {
-    data: caseProsecutorsData,
-    isLoading: isCaseProsecutorsLoading,
-    error: caseProsecutorsError,
-  } = useQuery({
-    queryKey: ["case-prosecutors", registeringUnitId],
-    enabled: !!registeringUnitId,
-    queryFn: () => getCaseProsecutors(registeringUnitId!),
-    retry: false,
-  });
+  const { data: caseProsecutorsData, isLoading: isCaseProsecutorsLoading } =
+    useQuery({
+      queryKey: ["case-prosecutors", registeringUnitId],
+      enabled: !!registeringUnitId,
+      queryFn: () => getCaseProsecutors(registeringUnitId!),
+      retry: false,
+      throwOnError: true,
+    });
 
-  const {
-    data: caseCaseworkersData,
-    isLoading: isCaseCaseworkersLoading,
-    error: caseCaseworkersError,
-  } = useQuery({
-    queryKey: ["case-caseworkers", registeringUnitId],
-    enabled: !!registeringUnitId,
-    queryFn: () => getCaseCaseworkers(registeringUnitId!),
-    retry: false,
-  });
+  const { data: caseCaseworkersData, isLoading: isCaseCaseworkersLoading } =
+    useQuery({
+      queryKey: ["case-caseworkers", registeringUnitId],
+      enabled: !!registeringUnitId,
+      queryFn: () => getCaseCaseworkers(registeringUnitId!),
+      retry: false,
+      throwOnError: true,
+    });
 
   const {
     data: caseInvestigatorTitlesData,
     isLoading: isCaseInvestigatorTitlesLoading,
-    error: caseInvestigatorTitlesError,
   } = useQuery({
     queryKey: ["case-investigator-titles"],
     queryFn: () => getInvestigatorTitles(),
     enabled: !state.apiData.caseInvestigatorTitles,
     retry: false,
+    throwOnError: true,
   });
 
-  useEffect(() => {
-    if (caseProsecutorsError) throw caseProsecutorsError;
-  }, [caseProsecutorsError]);
-  useEffect(() => {
-    if (caseCaseworkersError) throw caseCaseworkersError;
-  }, [caseCaseworkersError]);
-  useEffect(() => {
-    if (caseInvestigatorTitlesError) throw caseInvestigatorTitlesError;
-  }, [caseInvestigatorTitlesError]);
+  const { data: policeUnitsData, isLoading: isPoliceUnitsLoading } = useQuery({
+    queryKey: ["police-units"],
+    queryFn: () => getPoliceUnits(),
+    enabled: !state.apiData.policeUnits,
+    retry: false,
+    throwOnError: true,
+  });
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -253,6 +249,15 @@ const CaseAssigneePage = () => {
     return titles;
   }, [state.apiData.caseInvestigatorTitles]);
 
+  const policeUnitLabel = useMemo(() => {
+    if (!state.apiData.policeUnits) return "";
+    const policeUnit = getPoliceUnit(
+      state.formData.urnPoliceUnitText,
+      state.apiData.policeUnits,
+    );
+    return policeUnit ? `Police unit: ${policeUnit.description}` : "";
+  }, [state.formData.urnPoliceUnitText, state.apiData.policeUnits]);
+
   const caseProsecutorSuggest = (
     query: string,
     populateResults: (results: string[]) => void,
@@ -328,20 +333,15 @@ const CaseAssigneePage = () => {
   }, [caseInvestigatorTitlesData, dispatch, isCaseInvestigatorTitlesLoading]);
 
   useEffect(() => {
-    if (
-      !state.formData.caseInvestigatorPoliceUnitText &&
-      state.formData.urnPoliceUnitText
-    ) {
+    if (!isPoliceUnitsLoading && policeUnitsData) {
       dispatch({
-        type: "SET_FIELD",
+        type: "SET_POLICE_UNITS",
         payload: {
-          field: "caseInvestigatorPoliceUnitText",
-          value: state.formData.urnPoliceUnitText,
+          policeUnits: policeUnitsData,
         },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [policeUnitsData, dispatch, isPoliceUnitsLoading]);
 
   const setFormValue = (
     fieldName:
@@ -350,8 +350,7 @@ const CaseAssigneePage = () => {
       | "caseInvestigatorFirstNameText"
       | "caseInvestigatorLastNameText"
       | "caseInvestigatorShoulderNameText"
-      | "caseInvestigatorShoulderNumberText"
-      | "caseInvestigatorPoliceUnitText",
+      | "caseInvestigatorShoulderNumberText",
     value: string,
   ) => {
     let inputValue = value.replaceAll(/[^0-9a-zA-Z]/g, "");
@@ -520,7 +519,7 @@ const CaseAssigneePage = () => {
                           state.formData.caseProsecutorText?.description
                         }
                         label={{
-                          children: <span>Prosecutor name</span>,
+                          children: <b>Prosecutor name</b>,
                         }}
                         errorMessage={
                           formDataErrors["caseProsecutorText"]
@@ -542,7 +541,7 @@ const CaseAssigneePage = () => {
                           state.formData.caseCaseworkerText?.description
                         }
                         label={{
-                          children: <span>Caseworker name</span>,
+                          children: <b>Caseworker name</b>,
                         }}
                         errorMessage={
                           formDataErrors["caseCaseworkerText"]
@@ -595,7 +594,7 @@ const CaseAssigneePage = () => {
                       className="govuk-input--width-20 "
                       label={{
                         htmlFor: "case-investigator-title-select",
-                        children: "Rank (optional)",
+                        children: <b>Rank (optional)</b>,
                         className: styles.investigatorTitleSelectLabel,
                       }}
                       id="case-investigator-title-select"
@@ -620,7 +619,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-firstname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "First name (optional)",
+                        children: <b>First name (optional)</b>,
                       }}
                       type="text"
                       value={state.formData.caseInvestigatorFirstNameText}
@@ -634,7 +633,7 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-lastname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Last name",
+                        children: <b>Last name</b>,
                       }}
                       errorMessage={
                         formDataErrors["caseInvestigatorLastNameText"]
@@ -657,7 +656,12 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-shoulder-number-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Shoulder number (optional)",
+                        children: (
+                          <div className={styles.shoulderNumberLabel}>
+                            {policeUnitLabel && <span>{policeUnitLabel}</span>}
+                            <b>Shoulder number (optional)</b>
+                          </div>
+                        ),
                       }}
                       type="text"
                       value={state.formData.caseInvestigatorShoulderNumberText}
@@ -666,20 +670,6 @@ const CaseAssigneePage = () => {
                           "caseInvestigatorShoulderNumberText",
                           value,
                         );
-                      }}
-                    />,
-                    <Input
-                      key="case-investigator-police-unit-text"
-                      id="case-investigator-police-unit-text"
-                      data-testid="case-investigator-police-unit-text"
-                      className="govuk-input--width-20"
-                      label={{
-                        children: "Police unit (optional)",
-                      }}
-                      type="text"
-                      value={state.formData.caseInvestigatorPoliceUnitText}
-                      onChange={(value: string) => {
-                        setFormValue("caseInvestigatorPoliceUnitText", value);
                       }}
                     />,
                   ],
