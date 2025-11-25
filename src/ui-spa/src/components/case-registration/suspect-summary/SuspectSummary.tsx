@@ -86,22 +86,24 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                   <SummaryList rows={suspectSummaryRows(suspect, index)} />
                 </div>
 
-                <div className={styles.suspectDetailsWrapper}>
-                  <dd>
-                    <Details
-                      summaryChildren={
-                        isCaseSummaryPage
-                          ? "Details and charges"
-                          : "Suspect details"
-                      }
-                    >
-                      {isCaseSummaryPage && <h2> Suspect details</h2>}
-                      <SummaryList
-                        rows={suspectDetailsSummaryListRows[index]}
-                      />
-                    </Details>
-                  </dd>
-                </div>
+                {suspectDetailsSummaryListRows[index].length > 0 && (
+                  <div className={styles.suspectDetailsWrapper}>
+                    <dd>
+                      <Details
+                        summaryChildren={
+                          isCaseSummaryPage
+                            ? "Details and charges"
+                            : "Suspect details"
+                        }
+                      >
+                        {isCaseSummaryPage && <h2> Suspect details</h2>}
+                        <SummaryList
+                          rows={suspectDetailsSummaryListRows[index]}
+                        />
+                      </Details>
+                    </dd>
+                  </div>
+                )}
               </div>
             ),
         )}

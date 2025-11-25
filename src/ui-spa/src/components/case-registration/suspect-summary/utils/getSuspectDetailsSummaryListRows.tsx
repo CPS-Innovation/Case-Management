@@ -3,14 +3,7 @@ import { format } from "date-fns";
 
 const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   if (!aliases || aliases.length === 0) {
-    return [
-      {
-        key: { children: <span>Alias</span> },
-        value: {
-          children: <span>Not provided</span>,
-        },
-      },
-    ];
+    return [];
   }
 
   return aliases.map((alias) => ({
@@ -32,20 +25,14 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
   display: string;
   arrestDate: string;
 }) => {
+  if (!suspectOffenderTypesRadio.shortCode) return [];
+
   if (suspectOffenderTypesRadio.shortCode === "PPO")
     return [
       {
         key: { children: <span>Type of offender</span> },
         value: {
-          children: (
-            <>
-              {suspectOffenderTypesRadio.display ? (
-                <span>{suspectOffenderTypesRadio.display}</span>
-              ) : (
-                <span>Unspecified</span>
-              )}
-            </>
-          ),
+          children: <span>{suspectOffenderTypesRadio.display}</span>,
         },
       },
     ];
@@ -53,35 +40,21 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
     {
       key: { children: <span>Type of offender</span> },
       value: {
-        children: (
-          <>
-            {suspectOffenderTypesRadio.display ? (
-              <span>{suspectOffenderTypesRadio.display}</span>
-            ) : (
-              <span>Unspecified</span>
-            )}
-          </>
-        ),
+        children: <span>{suspectOffenderTypesRadio.display}</span>,
       },
     },
-    {
-      key: { children: <span>Arrest Date</span> },
+    !Number.isNaN(new Date(suspectOffenderTypesRadio.arrestDate).getTime()) && {
+      key: {
+        children: <span>Arrest Date </span>,
+      },
       value: {
         children: (
-          <>
-            {Number.isNaN(
-              new Date(suspectOffenderTypesRadio.arrestDate).getTime(),
-            ) ? (
-              <span>Not entered</span>
-            ) : (
-              <span>
-                {format(
-                  new Date(suspectOffenderTypesRadio.arrestDate),
-                  "dd/MM/yyyy",
-                )}
-              </span>
+          <span>
+            {format(
+              new Date(suspectOffenderTypesRadio.arrestDate),
+              "dd/MM/yyyy",
             )}
-          </>
+          </span>
         ),
       },
     },
@@ -94,109 +67,56 @@ export const getSuspectDetailsSummaryListRows = (
   if (!suspects || suspects.length === 0) {
     return [];
   }
+
   const suspectSummaryList = suspects.map((suspect) => [
-    {
+    suspect.suspectDOBDayText && {
       key: { children: <span>Date of birth</span> },
       value: {
         children: (
-          <>
-            {suspect.suspectDOBDayText ? (
-              <span>{`${suspect.suspectDOBDayText}/${suspect.suspectDOBMonthText}/${suspect.suspectDOBYearText}`}</span>
-            ) : (
-              <span>Not entered</span>
-            )}
-          </>
+          <span>{`${suspect.suspectDOBDayText}/${suspect.suspectDOBMonthText}/${suspect.suspectDOBYearText}`}</span>
         ),
       },
     },
-    {
+    suspect.suspectGenderRadio.description && {
       key: { children: <span>Gender</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectGenderRadio.description ? (
-              <span>{suspect.suspectGenderRadio.description}</span>
-            ) : (
-              <span>Unknown</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectGenderRadio.description}</span>,
       },
     },
 
-    {
+    suspect.suspectDisabilityRadio && {
       key: { children: <span>Disability</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectDisabilityRadio ? (
-              <span>{suspect.suspectDisabilityRadio}</span>
-            ) : (
-              <span>Unknown</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectDisabilityRadio}</span>,
       },
     },
-    {
+    suspect.suspectReligionRadio.description && {
       key: { children: <span>Religion</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectReligionRadio.description ? (
-              <span>{suspect.suspectReligionRadio.description}</span>
-            ) : (
-              <span>Not provided</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectReligionRadio.description}</span>,
       },
     },
-    {
+    suspect.suspectEthnicityRadio.description && {
       key: { children: <span>Ethnicity</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectEthnicityRadio.description ? (
-              <span>{suspect.suspectEthnicityRadio.description}</span>
-            ) : (
-              <span>Not provided</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectEthnicityRadio.description}</span>,
       },
     },
     ...getAliasesList(suspect.suspectAliases),
 
-    {
+    suspect.suspectSDORadio && {
       key: { children: <span>Serious dangerous offender (SDO)</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectSDORadio ? (
-              <span>{suspect.suspectSDORadio}</span>
-            ) : (
-              <span>Not provided</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectSDORadio}</span>,
       },
     },
-    {
+    suspect.suspectASNText && {
       key: { children: <span>Arrest summons</span> },
       value: {
-        children: (
-          <>
-            {suspect.suspectASNText ? (
-              <span>{suspect.suspectASNText}</span>
-            ) : (
-              <span>Not entered</span>
-            )}
-          </>
-        ),
+        children: <span>{suspect.suspectASNText}</span>,
       },
     },
     ...getOffenderTypeList(suspect.suspectOffenderTypesRadio),
   ]);
-  return suspectSummaryList;
+  return suspectSummaryList.map((rows) => rows.filter((row) => !!row));
 };

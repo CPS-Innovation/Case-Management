@@ -527,6 +527,29 @@ describe("caseRegistrationReducer", () => {
       action.payload.suspectOffenderTypes,
     );
   });
+  it("Should set apiData policeUnits data using SET_CASE_POLICE_UNITS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_POLICE_UNITS",
+      payload: {
+        policeUnits: [
+          {
+            unitId: 2213,
+            unitDescription: "Northern CJU (Bristol)",
+            code: "SJ",
+            description: "Avon & Somerset",
+          },
+          {
+            unitId: 2067,
+            unitDescription: "Barrow CJU",
+            code: "NN",
+            description: "British Police",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.policeUnits).toEqual(action.payload.policeUnits);
+  });
 });
 describe("getResetFieldValues", () => {
   it("should reset caseProsecutorText and caseCaseworkerText when caseProsecutorRadio is 'no'", () => {
