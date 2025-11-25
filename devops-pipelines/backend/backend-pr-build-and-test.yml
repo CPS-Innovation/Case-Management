@@ -20,15 +20,26 @@ stages:
     displayName: 'Dev - Run Postman Tests'
     # pool: 'CM PreProd Pool'
     variables:
+    - name: nodeVersion
+      value: '20.x'
     - group: cm-backend-config-dev
     - group: cm-backend-secrets-dev
     jobs:
     - job: Run_Postman_Tests_with_Newman
       steps:
+      - task: UseNode@1
+        displayName: 'Use Node.js'
+        inputs:
+          version: '$(nodeVersion)'
+
+      - task: Npm@1
+        displayName: 'Clean Install NPM Dependencies'
+        inputs:
+          command: 'ci'
+          workingDir: '$(workingDir)'
+
       - script: |
-          npm install -g newman
-          
-          newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
+            newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
             --global-var "baseUrl=fa-cm-api-dev" \
             --global-var "tenantId=$(TenantId)" \
             --global-var "clientId=$(CallingAppValidAudience)" \
