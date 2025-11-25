@@ -39,15 +39,15 @@ stages:
 
       - script: |
             npx --no-install newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
-            --global-var "baseUrl=fa-cm-api-dev" \
-            --global-var "tenantId=$(TenantId)" \
-            --global-var "clientId=$(CallingAppValidAudience)" \
-            --global-var "clientSecret=$(PostmanClientSecret)" \
-            --global-var "scope=api://$(CallingAppValidAudience)/.default" \
-            --global-var "mdsBaseUrl=$(MdsOptionsBaseUrl)" \
-            --global-var "mdsAccessKey=$(MdsOptionsAccessKey)" \
-            --global-var "cmsUsername=$(CmsUsername)" \
-            --global-var "cmsPassword=$(CmsPassword)" \
+            --env-var "baseUrl=https://fa-cm-api-dev.azurewebsites.net" \
+            --env-var "tenantId=$(TenantId)" \
+            --env-var "clientId=$(CallingAppValidAudience)" \
+            --env-var "clientSecret=$(PostmanClientSecret)" \
+            --env-var "scope=api://$(CallingAppValidAudience)/.default" \
+            --env-var "mdsBaseUrl=$(MdsOptionsBaseUrl)" \
+            --env-var "mdsAccessKey=$(MdsOptionsAccessKey)" \
+            --env-var "cmsUsername=$(CmsUsername)" \
+            --env-var "cmsPassword=$(CmsPassword)" \
             --reporters cli,junit --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report.xml"
         displayName: 'Run Postman Collection'
 
