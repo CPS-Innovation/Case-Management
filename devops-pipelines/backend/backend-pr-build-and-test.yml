@@ -38,7 +38,7 @@ stages:
           command: 'ci'
 
       - script: |
-            newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
+            npx --no-install newman run src/backend/postman/CaseRegistrationAPITests.postman_collection.json \
             --global-var "baseUrl=fa-cm-api-dev" \
             --global-var "tenantId=$(TenantId)" \
             --global-var "clientId=$(CallingAppValidAudience)" \
