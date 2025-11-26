@@ -309,7 +309,6 @@ src/ui-spa/playwright/.cache/
 src/ui-spa/playwright/.auth/
 src/ui-spa/integration-test-results.xml
 
-
 # Vite
 ui-spa/.vite/deps/
 
@@ -319,3 +318,6 @@ build-output/
 # coverage-reports
 coverage-reports/
 unit-test-results.xml
+
+# newman
+newman

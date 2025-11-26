@@ -48,7 +48,10 @@ stages:
             --env-var "mdsAccessKey=$(MdsOptionsAccessKey)" \
             --env-var "cmsUsername=$(CmsUsername)" \
             --env-var "cmsPassword=$(CmsPassword)" \
-            --reporters cli,junit --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report.xml"
+            --reporters cli,junit,htmlextra \
+            --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report.xml" \
+            --reporter-htmlextra-export "$(Build.ArtifactStagingDirectory)" \
+            --reporter-htmlextra-skipSensitiveData --reporter-htmlextra-logs
         displayName: 'Run Postman Collection'
 
       - task: PublishTestResults@2
@@ -56,6 +59,9 @@ stages:
           testResultsFormat: 'JUnit'
           testResultsFiles: '$(Build.ArtifactStagingDirectory)/newman-report.xml'
         displayName: 'Publish Newman Report' 
+      
+      - publish: '$(Build.ArtifactStagingDirectory)/*.html'
+        artifact: 'NewmanReportHTML'
 
   # - stage: Build_And_Test_Backend
   #   displayName: 'Build, Test & Package'
