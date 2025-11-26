@@ -52,6 +52,8 @@ stages:
             --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report.xml" \
             --reporter-htmlextra-export "$(Build.ArtifactStagingDirectory)" \
             --reporter-htmlextra-skipSensitiveData --reporter-htmlextra-logs
+
+            ls $(Build.ArtifactStagingDirectory)
         displayName: 'Run Postman Collection'
 
       - task: PublishTestResults@2
@@ -60,7 +62,7 @@ stages:
           testResultsFiles: '$(Build.ArtifactStagingDirectory)/newman-report.xml'
         displayName: 'Publish Newman Report' 
       
-      - publish: '$(Build.ArtifactStagingDirectory)/*.html'
+      - publish: '$(Build.ArtifactStagingDirectory)/**/*.html'
         artifact: 'NewmanReportHTML'
 
   # - stage: Build_And_Test_Backend
