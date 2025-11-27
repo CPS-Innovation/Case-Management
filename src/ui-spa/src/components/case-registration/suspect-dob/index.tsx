@@ -7,6 +7,7 @@ import {
   useMemo,
 } from "react";
 import { Button, ErrorSummary, BackLink, DateInput } from "../../govuk";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { validateDate } from "../../../common/utils/dateValidation";
@@ -208,7 +209,7 @@ const SuspectDOBPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>{`What is  ${suspectLastNameText} ${suspectFirstNameText}'s date of birth?`}</h1>
+                  <h1>{`What is  ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s date of birth?`}</h1>
                 ),
               },
             }}

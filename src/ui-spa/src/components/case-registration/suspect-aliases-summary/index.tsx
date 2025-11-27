@@ -18,6 +18,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -192,7 +193,7 @@ const SuspectAliasesSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>
-          Aliases for {suspectLastNameText} {suspectFirstNameText}
+          {`Aliases for ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}`}
         </h1>
         <div className={pageStyles.summaryListWrapper}>
           <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
@@ -206,13 +207,17 @@ const SuspectAliasesSummaryPage = () => {
                   <>
                     {suspectAliases.length ? (
                       <h2>
-                        Do you need to add another alias for{" "}
-                        {suspectLastNameText} {suspectFirstNameText}?
+                        {`Do you need to add another alias for ${formatNameUtil(
+                          suspectFirstNameText,
+                          suspectLastNameText,
+                        )}?`}
                       </h2>
                     ) : (
                       <h2>
-                        Do you need to add alias for {suspectLastNameText}{" "}
-                        {suspectFirstNameText}?
+                        {`Do you need to add alias for ${formatNameUtil(
+                          suspectFirstNameText,
+                          suspectLastNameText,
+                        )}?`}
                       </h2>
                     )}
                   </>

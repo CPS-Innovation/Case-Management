@@ -117,7 +117,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
     expect(screen.getByTestId(`row-10-value`)).toHaveTextContent("12/02/2020");
   });
 
-  it("omits Arrest Date entry for PPO offender type", () => {
+  it("omits Arrest Date entry for PP offender type", () => {
     const suspect: SuspectFormData = {
       addSuspectRadio: "",
       suspectFirstNameText: "",
@@ -131,7 +131,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectSDORadio: "",
       suspectASNText: "",
       suspectOffenderTypesRadio: {
-        shortCode: "PPO",
+        shortCode: "PP",
         display: "PPO Display",
         arrestDate: "",
       },

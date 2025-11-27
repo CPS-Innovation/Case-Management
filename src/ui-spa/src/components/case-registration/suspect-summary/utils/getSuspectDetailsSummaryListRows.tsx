@@ -27,7 +27,7 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
 }) => {
   if (!suspectOffenderTypesRadio.shortCode) return [];
 
-  if (suspectOffenderTypesRadio.shortCode === "PPO")
+  if (suspectOffenderTypesRadio.shortCode === "PP")
     return [
       {
         key: { children: <span>Type of offender</span> },

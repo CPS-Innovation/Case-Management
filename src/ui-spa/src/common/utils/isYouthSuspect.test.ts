@@ -9,8 +9,8 @@ afterAll(() => {
 });
 
 describe("isYouthSuspect / isUnder18", () => {
-  it("returns true for offender shortCode 'PYO', 'PPO & PYO' and 'YO'", () => {
-    const codes = ["PYO", "PPO & PYO", "YO"];
+  it("returns true for offender shortCode 'PY', 'BP' and 'YO'", () => {
+    const codes = ["PY", "BP", "YO"];
     for (const code of codes) {
       const suspect = {
         suspectOffenderTypesRadio: { shortCode: code },

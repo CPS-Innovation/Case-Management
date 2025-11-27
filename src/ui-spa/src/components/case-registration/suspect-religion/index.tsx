@@ -12,6 +12,7 @@ import { type CaseRegistrationState } from "../../../common/reducers/caseRegistr
 import { getReligions } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
@@ -206,7 +207,7 @@ const SuspectReligionPage = () => {
               legend: {
                 children: (
                   <h1>
-                    {`What is ${suspectLastNameText} ${suspectFirstNameText}'s
+                    {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s
                     religion?`}
                   </h1>
                 ),

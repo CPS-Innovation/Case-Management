@@ -16,6 +16,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import styles from "../index.module.scss";
 
 const SuspectEthnicityPage = () => {
@@ -205,7 +206,7 @@ const SuspectEthnicityPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>{`What is ${suspectLastNameText} ${suspectFirstNameText}'s ethnicity?`}</h1>
+                  <h1>{`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s ethnicity?`}</h1>
                 ),
               },
             }}

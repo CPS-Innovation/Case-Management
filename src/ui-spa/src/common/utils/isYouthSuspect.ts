@@ -1,8 +1,8 @@
 import { type SuspectFormData } from "../reducers/caseRegistrationReducer";
 export const isYouthSuspect = (suspect: SuspectFormData): boolean => {
   if (
-    suspect.suspectOffenderTypesRadio.shortCode === "PYO" ||
-    suspect.suspectOffenderTypesRadio.shortCode === "PPO & PYO" ||
+    suspect.suspectOffenderTypesRadio.shortCode === "PY" ||
+    suspect.suspectOffenderTypesRadio.shortCode === "BP" ||
     suspect.suspectOffenderTypesRadio.shortCode === "YO"
   ) {
     return true;

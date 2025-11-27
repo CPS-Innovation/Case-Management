@@ -11,6 +11,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getGenders } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getNextSuspectJourneyRoute,
@@ -205,7 +206,7 @@ const SuspectGenderPage = () => {
               legend: {
                 children: (
                   <h1>
-                    {`What is ${suspectLastNameText} ${suspectFirstNameText}'s gender?`}
+                    {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s gender?`}
                   </h1>
                 ),
               },

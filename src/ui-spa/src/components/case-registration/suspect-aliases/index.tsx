@@ -9,6 +9,7 @@ import {
 import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -156,7 +157,7 @@ const SuspectAliasesPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>
-          What alias does {suspectFirstNameText} {suspectLastNameText} use?
+          {`What alias does ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} use?`}
         </h1>
         <span className="govuk-hint">
           You can add more aliases on the next page if needed.

@@ -611,12 +611,12 @@ describe("caseRegistrationReducer", () => {
       payload: {
         suspectOffenderTypes: [
           {
-            shortCode: "PPO",
+            shortCode: "PP",
             description: "Prolific priority offender",
             display: "Prolific priority offender (PPO)",
           },
           {
-            shortCode: "PYO",
+            shortCode: "PY",
             description: "Prolific youth offender",
             display: "Prolific youth offender (PYO)",
           },
