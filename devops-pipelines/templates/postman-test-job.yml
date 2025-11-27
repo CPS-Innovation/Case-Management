@@ -4,6 +4,8 @@ parameters:
 - name: projectAcronym
   type: string
   default: cm
+- name: postmanCollectionPath
+  type: string
 - name: appName
   type: string
 - name: nodeVersion
