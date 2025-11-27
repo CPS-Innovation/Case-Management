@@ -119,11 +119,6 @@ const SuspectAliasesSummaryPage = () => {
       actions: {
         items: [
           {
-            children: <span>Change</span>,
-            to: `/case-registration/suspect-${suspectIndex}/suspect-add-aliases?alias=${index}`,
-            visuallyHiddenText: "Edit Suspect Details",
-          },
-          {
             children: <span>Remove</span>,
             to: "#",
             visuallyHiddenText: "remove a suspect alias",
