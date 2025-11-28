@@ -23,11 +23,13 @@ jobs:
       version: ${{parameters.nodeVersion}}
 
   - script: |
-      if ! command -v newman &> /dev/null; then
+      if command -v newman &> /dev/null; then
+        echo "Newman already installed. Skipping installation."
+      else
         echo "Installing newman and html reporter..."
         npm install -g --ignore-scripts newman@6.2.1 newman-reporter-htmlextra@1.23.1
-        newman -v
-        newman-reporter-htmlextra -v
+        echo "newman version: $(newman -v)"
+        echo "newman-reporter-htmlextra version: $(newman-reporter-htmlextra -v)"
       fi
     displayName: 'Install Newman Tools'
 
