@@ -45,4 +45,3 @@ stages:
               dotNetVersion: $(dotNetVersion)
               publishOutput: false
               runTests: false
-
