@@ -22,13 +22,17 @@ jobs:
     inputs:
       version: ${{parameters.nodeVersion}}
 
-  - task: Npm@1
-    displayName: 'Clean Install NPM Dependencies'
-    inputs:
-      command: 'ci'
+  - script: |
+      if ! command -v newman &> /dev/null; then
+        echo "Installing newman and html reporter..."
+        npm install -g --ignore-scripts newman@6.2.1 newman-reporter-htmlextra@1.23.1
+        newman -v
+        newman-reporter-htmlextra -v
+      fi
+    displayName: 'Install Newman Tools'
 
   - script: |
-        npx --no-install newman run ${{parameters.postmanCollectionPath}} \
+        newman run ${{parameters.postmanCollectionPath}} \
         --env-var "baseUrl=https://${{parameters.appName}}.azurewebsites.net" \
         --env-var "tenantId=$(TenantId)" \
         --env-var "clientId=$(CallingAppValidAudience)" \
