@@ -8,6 +8,7 @@ import {
   type CaseRegistrationState,
   type SuspectFormData,
 } from "./caseRegistrationReducer";
+import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
 describe("caseRegistrationReducer", () => {
   const sampleSuspectState: SuspectFormData = {
@@ -611,12 +612,12 @@ describe("caseRegistrationReducer", () => {
       payload: {
         suspectOffenderTypes: [
           {
-            shortCode: "PP",
+            shortCode: offenderTypeShortCodes.PROLIFIC_PRIORITY_OFFENDER,
             description: "Prolific priority offender",
             display: "Prolific priority offender (PPO)",
           },
           {
-            shortCode: "PY",
+            shortCode: offenderTypeShortCodes.YOUTH_OFFENDER,
             description: "Prolific youth offender",
             display: "Prolific youth offender (PYO)",
           },
