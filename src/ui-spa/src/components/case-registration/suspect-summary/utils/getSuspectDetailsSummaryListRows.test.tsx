@@ -47,42 +47,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
-    renderRows(rows);
-    expect(screen.getByTestId(`row-0-key`)).toHaveTextContent(/Date of birth/i);
-    expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(/Not entered/i);
-    expect(screen.getByTestId(`row-1-key`)).toHaveTextContent(/Gender/i);
-    expect(screen.getByTestId(`row-1-value`)).toHaveTextContent(/Unknown/i);
-    expect(screen.getByTestId(`row-2-key`)).toHaveTextContent(/Disability/i);
-    expect(screen.getByTestId(`row-2-value`)).toHaveTextContent(/Unknown/i);
-    expect(screen.getByTestId(`row-3-key`)).toHaveTextContent(/Religion/i);
-    expect(screen.getByTestId(`row-3-value`)).toHaveTextContent(
-      /Not provided/i,
-    );
-    expect(screen.getByTestId(`row-4-key`)).toHaveTextContent(/Ethnicity/i);
-    expect(screen.getByTestId(`row-4-value`)).toHaveTextContent(
-      /Not provided/i,
-    );
-    expect(screen.getByTestId(`row-5-key`)).toHaveTextContent(/Alias/i);
-    expect(screen.getByTestId(`row-5-value`)).toHaveTextContent(
-      /Not provided/i,
-    );
-
-    expect(screen.getByTestId(`row-6-key`)).toHaveTextContent(
-      "Serious dangerous offender (SDO)",
-    );
-    expect(screen.getByTestId(`row-6-value`)).toHaveTextContent(
-      /Not provided/i,
-    );
-    expect(screen.getByTestId(`row-7-key`)).toHaveTextContent(
-      /Arrest summons/i,
-    );
-    expect(screen.getByTestId(`row-7-value`)).toHaveTextContent(/Not entered/i);
-    expect(screen.getByTestId(`row-8-key`)).toHaveTextContent(
-      /Type of offender/i,
-    );
-    expect(screen.getByTestId(`row-8-value`)).toHaveTextContent(/Unspecified/i);
-    expect(screen.getByTestId(`row-9-key`)).toHaveTextContent(/Arrest Date/i);
-    expect(screen.getByTestId(`row-9-value`)).toHaveTextContent(/Not entered/i);
+    expect(rows).toEqual([[]]);
   });
 
   it("shows correct values for all fields", () => {
@@ -152,7 +117,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
     expect(screen.getByTestId(`row-10-value`)).toHaveTextContent("12/02/2020");
   });
 
-  it("omits Arrest Date entry for PPO offender type", () => {
+  it("omits Arrest Date entry for PP offender type", () => {
     const suspect: SuspectFormData = {
       addSuspectRadio: "",
       suspectFirstNameText: "",
@@ -166,7 +131,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectSDORadio: "",
       suspectASNText: "",
       suspectOffenderTypesRadio: {
-        shortCode: "PPO",
+        shortCode: "PP",
         display: "PPO Display",
         arrestDate: "",
       },
@@ -178,12 +143,13 @@ describe("getSuspectDetailsSummaryListRows", () => {
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
     renderRows(rows);
-
-    expect(screen.getByTestId(`row-8-key`)).toHaveTextContent(
+    expect(screen.getByTestId(`row-0-key`)).toHaveTextContent(/Date of birth/i);
+    expect(screen.getByTestId(`row-0-value`)).toHaveTextContent("1/1/2000");
+    expect(screen.getByTestId(`row-1-key`)).toHaveTextContent(
       /Type of offender/i,
     );
-    expect(screen.getByTestId(`row-8-value`)).toHaveTextContent("PPO Display");
-    expect(screen.queryByTestId(`row-9-key`)).not.toBeInTheDocument();
-    expect(screen.queryByTestId(`row-9-value`)).not.toBeInTheDocument();
+    expect(screen.getByTestId(`row-1-value`)).toHaveTextContent("PPO Display");
+    expect(screen.queryByTestId(`row-2-key`)).not.toBeInTheDocument();
+    expect(screen.queryByTestId(`row-2-value`)).not.toBeInTheDocument();
   });
 });

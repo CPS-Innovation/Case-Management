@@ -14,6 +14,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import styles from "../index.module.scss";
 
 const SuspectSDOPage = () => {
@@ -155,8 +156,8 @@ const SuspectSDOPage = () => {
               legend: {
                 children: (
                   <h1>
-                    Is {suspectLastNameText} {suspectFirstNameText} a serious
-                    dangerous offender (SDO)?
+                    {`Is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} a serious
+                    dangerous offender (SDO)?`}
                   </h1>
                 ),
               },

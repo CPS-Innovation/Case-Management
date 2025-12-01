@@ -300,6 +300,12 @@ export type CaseRegistrationActions =
     }
   | {
       type: "RESET_FORM_DATA";
+    }
+  | {
+      type: "RESET_SUSPECT_FIELD";
+      payload: {
+        index: number;
+      };
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -327,19 +333,11 @@ export const caseRegistrationReducer = (
       if (action.payload.index > state.formData.suspects.length) {
         return state;
       }
-      const resetValues =
-        action.payload.field === "suspectAdditionalDetailsCheckboxes" ||
-        action.payload.field === "addSuspectRadio"
-          ? getResetSuspectFieldValues(
-              action.payload.field,
-              action.payload.value as string | SuspectAdditionalDetailValue[],
-            )
-          : {};
+
       const suspects = [...state.formData.suspects];
       const existing = suspects[action.payload.index] ?? suspectInitialState;
       suspects[action.payload.index] = {
         ...existing,
-        ...resetValues,
         [action.payload.field]: action.payload.value,
       };
       return {
@@ -347,6 +345,23 @@ export const caseRegistrationReducer = (
         formData: {
           ...state.formData,
           suspects,
+        },
+      };
+    }
+    case "RESET_SUSPECT_FIELD": {
+      const suspectResetValues = getResetSuspectFieldValues(
+        state,
+        action.payload.index,
+      );
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects: state.formData.suspects.map((suspect, i) =>
+            i === action.payload.index
+              ? { ...suspect, ...suspectResetValues }
+              : suspect,
+          ),
         },
       };
     }
@@ -527,33 +542,37 @@ export const getResetFieldValues = (
 };
 
 export const getResetSuspectFieldValues = (
-  fieldName: "addSuspectRadio" | "suspectAdditionalDetailsCheckboxes",
-  value: string | SuspectAdditionalDetailValue[],
+  state: CaseRegistrationState,
+  index: number,
 ) => {
-  if (fieldName === "addSuspectRadio" && value === "company") {
+  const suspect = state.formData.suspects[index];
+  if (!suspect) return {};
+
+  let resetValues: Partial<SuspectFormData> = {};
+
+  if (suspect.addSuspectRadio === "company") {
     const {
       suspectCompanyNameText: _suspectCompanyNameText,
       addSuspectRadio: _addSuspectRadio,
       ...rest
     } = suspectInitialState;
-    return rest;
+    resetValues = { ...rest };
+    return resetValues;
   }
-  if (fieldName === "addSuspectRadio" && value === "person") {
-    return { suspectCompanyNameText: "" };
+  if (suspect.addSuspectRadio === "person") {
+    resetValues.suspectCompanyNameText = "";
   }
 
-  if (fieldName === "suspectAdditionalDetailsCheckboxes") {
-    return resetSuspectAdditionalDetails(
-      value as SuspectAdditionalDetailValue[],
-    );
-  }
-  return {};
+  return resetSuspectAdditionalDetails(
+    suspect.suspectAdditionalDetailsCheckboxes,
+    resetValues,
+  );
 };
 
 const resetSuspectAdditionalDetails = (
   value: SuspectAdditionalDetailValue[],
+  resetValues: Partial<SuspectFormData>,
 ) => {
-  const resetValues: Partial<SuspectFormData> = {};
   if (!value.includes("Date of Birth")) {
     resetValues.suspectDOBDayText = "";
     resetValues.suspectDOBMonthText = "";

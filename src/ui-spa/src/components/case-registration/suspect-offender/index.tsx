@@ -12,6 +12,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { getOffenderTypes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
@@ -151,7 +152,7 @@ const SuspectOffenderPage = () => {
       .filter((offender) => offender.description != "Unspecified")
       .map((offender, index) => {
         const conditional =
-          offender.shortCode === "PPO"
+          offender.shortCode === "PP"
             ? undefined
             : {
                 children: [
@@ -245,8 +246,7 @@ const SuspectOffenderPage = () => {
               legend: {
                 children: (
                   <h1>
-                    What type of offender is {suspectLastNameText}{" "}
-                    {suspectFirstNameText}?
+                    {`What type of offender is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
                   </h1>
                 ),
               },

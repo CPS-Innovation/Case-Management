@@ -183,6 +183,15 @@ const AddSuspectPage = () => {
     event.preventDefault();
 
     if (!validateFormData(state)) return;
+    dispatch({
+      type: "RESET_SUSPECT_FIELD",
+      payload: { index: suspectIndex },
+    });
+
+    if (state.formData.suspects[suspectIndex].addSuspectRadio === "company") {
+      navigate("/case-registration/suspect-summary");
+      return;
+    }
 
     const nextRoute = getNextSuspectJourneyRoute(
       "add-suspect",

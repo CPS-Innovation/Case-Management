@@ -1,4 +1,5 @@
 import { isYouthSuspect, isUnder18 } from "./isYouthSuspect";
+import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
 beforeAll(() => {
   vi.setSystemTime(new Date("2025-11-19T00:00:00Z"));
@@ -9,8 +10,12 @@ afterAll(() => {
 });
 
 describe("isYouthSuspect / isUnder18", () => {
-  it("returns true for offender shortCode 'PYO', 'PPO & PYO' and 'YO'", () => {
-    const codes = ["PYO", "PPO & PYO", "YO"];
+  it("returns true for offender shortCode which includes youth offender", () => {
+    const codes = [
+      offenderTypeShortCodes.PROLIFIC_YOUTH_OFFENDER,
+      offenderTypeShortCodes.BOTH_OFFENDER_TYPES,
+      offenderTypeShortCodes.YOUTH_OFFENDER,
+    ];
     for (const code of codes) {
       const suspect = {
         suspectOffenderTypesRadio: { shortCode: code },

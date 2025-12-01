@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Button, BackLink } from "../../govuk";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import pageStyles from "./index.module.scss";
 
 const SuspectRemoveConfirmationPage = () => {
@@ -36,8 +37,7 @@ const SuspectRemoveConfirmationPage = () => {
 
       <form onSubmit={handleSubmit}>
         <h1>
-          Are you sure you want to remove {suspectLastNameText}{" "}
-          {suspectFirstNameText}?
+          {`Are you sure you want to remove ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
         </h1>
         <div className={pageStyles.summaryListWrapper}>
           <div>

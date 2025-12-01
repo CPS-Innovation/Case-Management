@@ -6,9 +6,37 @@ import {
   getResetFieldValues,
   type CaseRegistrationActions,
   type CaseRegistrationState,
+  type SuspectFormData,
 } from "./caseRegistrationReducer";
+import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
 describe("caseRegistrationReducer", () => {
+  const sampleSuspectState: SuspectFormData = {
+    addSuspectRadio: "company",
+    suspectFirstNameText: "aa",
+    suspectLastNameText: "bb",
+    suspectAdditionalDetailsCheckboxes: [
+      "Date of Birth",
+      "Disability",
+      "Religion",
+    ],
+    suspectGenderRadio: { shortCode: "M", description: "male" },
+    suspectDisabilityRadio: "no",
+    suspectReligionRadio: { shortCode: "ch", description: "Christian" },
+    suspectEthnicityRadio: { shortCode: "BR", description: "British" },
+    suspectAliases: [{ firstName: "cc", lastName: "dd" }],
+    suspectSDORadio: "yes",
+    suspectASNText: "122wws",
+    suspectOffenderTypesRadio: {
+      shortCode: "yo",
+      display: "youth offender",
+      arrestDate: "15/12/2024",
+    },
+    suspectCompanyNameText: "company1",
+    suspectDOBDayText: "5",
+    suspectDOBMonthText: "12",
+    suspectDOBYearText: "2000",
+  };
   it("should set formData operationNameRadio using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
       type: "SET_FIELD",
@@ -192,64 +220,6 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
-  it("should reset the suspect data to initial values if the user updates the additional details checkboxes", () => {
-    const modifiedState: CaseRegistrationState = {
-      ...initialState,
-      formData: {
-        ...initialState.formData,
-        suspects: [
-          {
-            addSuspectRadio: "person",
-            suspectFirstNameText: "rr",
-            suspectLastNameText: "last",
-            suspectAdditionalDetailsCheckboxes: [
-              "Date of Birth",
-              "Disability",
-              "Religion",
-              "Ethnicity",
-              "Alias details",
-              "Arrest summons number (ASN)",
-              "Serious dangerous offender (SDO)",
-              "Type of offender",
-            ],
-            suspectGenderRadio: { shortCode: "M", description: "male" },
-            suspectDisabilityRadio: "no",
-            suspectReligionRadio: { shortCode: "ch", description: "Christian" },
-            suspectEthnicityRadio: { shortCode: "BR", description: "British" },
-            suspectAliases: [{ firstName: "aa", lastName: "bb" }],
-            suspectSDORadio: "yes",
-            suspectASNText: "abc123",
-            suspectOffenderTypesRadio: {
-              shortCode: "yo",
-              display: "yOUTH OFFENDER (YO)",
-              arrestDate: "12/12/2020",
-            },
-            suspectCompanyNameText: "",
-            suspectDOBDayText: "12",
-            suspectDOBMonthText: "12",
-            suspectDOBYearText: "2000",
-          },
-        ],
-      },
-    };
-    const action: CaseRegistrationActions = {
-      type: "SET_SUSPECT_FIELD",
-      payload: {
-        index: 0,
-        field: "suspectAdditionalDetailsCheckboxes",
-        value: [],
-      },
-    };
-    const expectedResult = {
-      ...suspectInitialState,
-      addSuspectRadio: "person",
-      suspectFirstNameText: "rr",
-      suspectLastNameText: "last",
-    };
-    const state = caseRegistrationReducer(modifiedState, action);
-    expect(state.formData.suspects[0]).toEqual(expectedResult);
-  });
-
   it("Should remove a suspect at given index using REMOVE_SUSPECT action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
@@ -278,10 +248,15 @@ describe("caseRegistrationReducer", () => {
   });
 
   it("getResetSuspectFieldValues should reset person suspects values to initial state if the user switches from addSuspectRadio from person to company", () => {
-    const resetValues = getResetSuspectFieldValues(
-      "addSuspectRadio",
-      "company",
-    );
+    const state = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [sampleSuspectState, sampleSuspectState],
+      },
+    };
+
+    const resetValues = getResetSuspectFieldValues(state, 1);
     const {
       suspectCompanyNameText: _suspectCompanyNameText,
       addSuspectRadio: _addSuspectRadio,
@@ -289,18 +264,145 @@ describe("caseRegistrationReducer", () => {
     } = suspectInitialState;
     expect(resetValues).toEqual({ ...rest });
   });
-  it("getResetSuspectFieldValues should reset company suspects values to initial state if the user switches from addSuspectRadio from company to person", () => {
-    const resetValues = getResetSuspectFieldValues("addSuspectRadio", "person");
+  it("getResetSuspectFieldValues should reset company suspects values and any other unselected additional fields  to initial state if the user switches from addSuspectRadio from company to person", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const state = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [suspectState, suspectState],
+      },
+    };
+    const resetValues = getResetSuspectFieldValues(state, 0);
 
-    expect(resetValues).toEqual({ suspectCompanyNameText: "" });
+    expect(resetValues).toEqual({
+      suspectCompanyNameText: "",
+      suspectGenderRadio: { shortCode: "", description: "" },
+      suspectEthnicityRadio: { shortCode: "", description: "" },
+      suspectAliases: [],
+      suspectSDORadio: "",
+      suspectASNText: "",
+      suspectOffenderTypesRadio: {
+        shortCode: "",
+        display: "",
+        arrestDate: "",
+      },
+    });
+  });
+  it("getResetSuspectFieldValues should return empty object if there are no suspect for the given index", () => {
+    const state = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [],
+      },
+    };
+
+    expect(getResetSuspectFieldValues(state, 0)).toEqual({});
+    expect(getResetSuspectFieldValues(state, 1)).toEqual({});
   });
 
-  it("getResetSuspectFieldValues should return empty object if none of the fields match", () => {
-    const resetValues = getResetSuspectFieldValues("addSuspectRadio", "");
-
-    expect(resetValues).toEqual({});
+  it("RESET_SUSPECT_FIELD should reset any unselected suspect additional data to initial values if the user updates the additional details checkboxes", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          suspectState,
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_SUSPECT_FIELD",
+      payload: {
+        index: 1,
+      },
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...modifiedState.formData.suspects[0],
+          },
+          {
+            ...suspectInitialState,
+            addSuspectRadio: "person",
+            suspectFirstNameText: "aa",
+            suspectLastNameText: "bb",
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectGenderRadio: { shortCode: "M", description: "male" },
+            suspectDisabilityRadio: "no",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(expectedResult);
   });
-  it("Should set  apisData areasAndRegisteringUnits data using SET_AREAS_AND_REGISTERING_UNITS", () => {
+  it("RESET_SUSPECT_FIELD should reset all the  additional details data to initial values if the user has selected no additional details", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: [],
+          },
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: [],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_SUSPECT_FIELD",
+      payload: {
+        index: 0,
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            addSuspectRadio: "person",
+            suspectFirstNameText: "aa",
+            suspectLastNameText: "bb",
+            suspectAdditionalDetailsCheckboxes: [],
+          },
+          {
+            ...modifiedState.formData.suspects[0],
+          },
+        ],
+      },
+    };
+
+    expect(state).toEqual(expectedResult);
+  });
+
+  it("Should set apisData areasAndRegisteringUnits data using SET_AREAS_AND_REGISTERING_UNITS", () => {
     const action: CaseRegistrationActions = {
       type: "SET_AREAS_AND_REGISTERING_UNITS",
       payload: {
@@ -510,12 +612,12 @@ describe("caseRegistrationReducer", () => {
       payload: {
         suspectOffenderTypes: [
           {
-            shortCode: "PPO",
+            shortCode: offenderTypeShortCodes.PROLIFIC_PRIORITY_OFFENDER,
             description: "Prolific priority offender",
             display: "Prolific priority offender (PPO)",
           },
           {
-            shortCode: "PYO",
+            shortCode: offenderTypeShortCodes.YOUTH_OFFENDER,
             description: "Prolific youth offender",
             display: "Prolific youth offender (PYO)",
           },
@@ -526,6 +628,29 @@ describe("caseRegistrationReducer", () => {
     expect(state.apiData.suspectOffenderTypes).toEqual(
       action.payload.suspectOffenderTypes,
     );
+  });
+  it("Should set apiData policeUnits data using SET_CASE_POLICE_UNITS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_POLICE_UNITS",
+      payload: {
+        policeUnits: [
+          {
+            unitId: 2213,
+            unitDescription: "Northern CJU (Bristol)",
+            code: "SJ",
+            description: "Avon & Somerset",
+          },
+          {
+            unitId: 2067,
+            unitDescription: "Barrow CJU",
+            code: "NN",
+            description: "British Police",
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.policeUnits).toEqual(action.payload.policeUnits);
   });
 });
 describe("getResetFieldValues", () => {

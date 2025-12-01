@@ -9,6 +9,7 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getNextSuspectJourneyRoute,
@@ -156,8 +157,10 @@ const SuspectDisabilityPage = () => {
               legend: {
                 children: (
                   <h1>
-                    Does {suspectLastNameText} {suspectFirstNameText} have a
-                    disability?
+                    {` Does ${formatNameUtil(
+                      suspectFirstNameText,
+                      suspectLastNameText,
+                    )} have a disability?`}
                   </h1>
                 ),
               },
