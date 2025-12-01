@@ -15,6 +15,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { dobValidationConstants } from "../../../common/constants/dobValidationConstants";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -71,7 +72,6 @@ const SuspectDOBPage = () => {
   }, [formDataErrors]);
 
   const validateFormData = (state: CaseRegistrationState) => {
-    const errors: FormDataErrors = {};
     const {
       formData: { suspects },
     } = state;
@@ -85,27 +85,38 @@ const SuspectDOBPage = () => {
       +suspectDOBMonthText,
       +suspectDOBYearText,
     );
-    const inputErrorFields = [];
-    if (result.errors.includes("invalid day")) {
+
+    if (!result.errors.length) {
+      return true;
+    }
+
+    let inputErrorFields = [];
+    let errorSummaryText = "Date of birth must be a valid date";
+
+    if (result.errors.includes(dobValidationConstants.INVALID_AGE)) {
+      errorSummaryText = "Invalid age, should be between 10 and 120";
+    }
+
+    if (result.errors.includes(dobValidationConstants.INVALID_DAY)) {
       inputErrorFields.push("day");
     }
-    if (result.errors.includes("invalid month")) {
+    if (result.errors.includes(dobValidationConstants.INVALID_MONTH)) {
       inputErrorFields.push("month");
     }
-    if (result.errors.includes("invalid year")) {
+    if (result.errors.includes(dobValidationConstants.INVALID_YEAR)) {
       inputErrorFields.push("year");
     }
-    if (result.errors.length) {
-      errors.suspectDOBDateError = {
-        errorSummaryText: "Date of birth must be a valid date",
-        inputErrorFields,
-      };
+    if (
+      result.errors.includes(dobValidationConstants.INVALID_AGE) ||
+      result.errors.includes(dobValidationConstants.INVALID_DATE)
+    ) {
+      inputErrorFields = ["day", "month", "year"];
     }
 
-    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
-
-    setFormDataErrors(errors);
-    return isValid;
+    setFormDataErrors({
+      suspectDOBDateError: { inputErrorFields, errorSummaryText },
+    });
+    return false;
   };
 
   const errorList = useMemo(() => {
