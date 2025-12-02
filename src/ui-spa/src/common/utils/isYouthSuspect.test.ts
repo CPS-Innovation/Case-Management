@@ -2,7 +2,8 @@ import { isYouthSuspect, isUnder18 } from "./isYouthSuspect";
 import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
 beforeAll(() => {
-  vi.setSystemTime(new Date("2025-11-19T00:00:00Z"));
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2020-01-01T00:00:00Z"));
 });
 
 afterAll(() => {
@@ -32,10 +33,10 @@ describe("isYouthSuspect / isUnder18", () => {
   });
 
   it("isUnder18 returns false for exactly 18th birthday", () => {
-    expect(isUnder18("2007-11-19")).toBe(false);
+    expect(isUnder18("2002-01-01")).toBe(false);
   });
   it("isUnder18 returns true for exactly one day before 18th birthday", () => {
-    expect(isUnder18("2007-11-20")).toBe(true);
+    expect(isUnder18("2002-01-02")).toBe(true);
   });
 
   it("isUnder18 returns false for a clearly over-18 ISO DOB", () => {

@@ -1,3 +1,5 @@
+import { getCurrentAge } from "./getCurrentAge";
+import { dobValidationConstants } from "../constants/dobValidationConstants";
 export interface ValidationResult {
   isValid: boolean;
   errors: string[];
@@ -15,11 +17,11 @@ export const validateDate = (
   const errors = [];
 
   if (year < 1000 || year > 9999) {
-    errors.push("invalid year");
+    errors.push(dobValidationConstants.INVALID_YEAR);
   }
 
   if (month < 1 || month > 12) {
-    errors.push("invalid month");
+    errors.push(dobValidationConstants.INVALID_MONTH);
   }
   const daysInMonth: number[] = [
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
@@ -29,7 +31,17 @@ export const validateDate = (
   }
 
   if (day < 1 || day > daysInMonth[month - 1] || day > 31) {
-    errors.push("invalid day");
+    errors.push(dobValidationConstants.INVALID_DAY);
+  }
+
+  if (!errors.length) {
+    const age = getCurrentAge(`${year}-${month}-${day}`);
+
+    if (!age && age !== 0) {
+      errors.push(dobValidationConstants.INVALID_DATE);
+    } else if (age < 10 || age > 120) {
+      errors.push(dobValidationConstants.INVALID_AGE);
+    }
   }
 
   return { isValid: !errors.length, errors: errors };
