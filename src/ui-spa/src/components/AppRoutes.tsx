@@ -21,6 +21,9 @@ import SuspectAliasesPage from "./case-registration/suspect-aliases";
 import SuspectAliasesSummaryPage from "./case-registration/suspect-aliases-summary";
 import SuspectSummaryPage from "./case-registration/suspect-summary";
 import SuspectRemoveConfirmationPage from "./case-registration/suspect-remove-confirmation";
+import WantToAddCharges from "./case-registration/want-to-add-charges";
+import AddChargeSuspectPage from "./case-registration/add-charge-suspect";
+import OffenceSearchPage from "./case-registration/charges-offence-search";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -108,6 +111,22 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/suspect-remove-confirmation"
           element={<SuspectRemoveConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/want-to-add-charges"
+          element={<WantToAddCharges />}
+        />
+        <Route
+          path="/case-registration/add-charge-suspect"
+          element={<AddChargeSuspectPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/:chargeId/charges-offence-search"
+          element={<OffenceSearchPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/:chargeId/offence/:offenceCode/add-charge-details"
+          element={<div>Add Charge Details Page</div>}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

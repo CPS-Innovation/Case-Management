@@ -33,6 +33,8 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorShoulderNumberText: "Shoulder Number",
 
       suspects: [],
+      victimList: [],
+      wantToAddChargesRadio: "",
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {
@@ -120,6 +122,8 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorShoulderNameText: "",
       caseInvestigatorShoulderNumberText: "",
       suspects: [],
+      victimList: [],
+      wantToAddChargesRadio: "",
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {

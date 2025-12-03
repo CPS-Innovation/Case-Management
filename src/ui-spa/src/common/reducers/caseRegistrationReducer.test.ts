@@ -36,6 +36,7 @@ describe("caseRegistrationReducer", () => {
     suspectDOBDayText: "5",
     suspectDOBMonthText: "12",
     suspectDOBYearText: "2000",
+    charges: [],
   };
   it("should set formData operationNameRadio using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
@@ -119,6 +120,8 @@ describe("caseRegistrationReducer", () => {
         caseInvestigatorShoulderNumberText: "123",
 
         suspects: [],
+        victimList: [],
+        wantToAddChargesRadio: "",
       },
       apiData: apiData,
     };

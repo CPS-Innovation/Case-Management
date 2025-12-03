@@ -11,6 +11,7 @@ import type { Genders } from "../types/responses/Genders";
 import type { Ethnicities } from "../types/responses/Ethnicities";
 import type { Religions } from "../types/responses/Religions";
 import type { OffenderTypes } from "../types/responses/OffenderTypes";
+import type { Offences, Offence } from "../types/responses/Offences";
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
@@ -35,7 +36,8 @@ export type CaseRegistrationField =
   | "caseInvestigatorFirstNameText"
   | "caseInvestigatorLastNameText"
   | "caseInvestigatorShoulderNameText"
-  | "caseInvestigatorShoulderNumberText";
+  | "caseInvestigatorShoulderNumberText"
+  | "wantToAddChargesRadio";
 export type SuspectAdditionalDetailValue =
   | "Date of Birth"
   | "Gender"
@@ -70,9 +72,33 @@ export type SuspectFormData = {
   suspectDOBDayText: string;
   suspectDOBMonthText: string;
   suspectDOBYearText: string;
+  charges: ChargesFormData[];
 };
 
+export type VictimDetailsValue = "Vulnerable" | "Intimidated" | "Witness";
+export type Victim = {
+  victimFistNameText: string;
+  victimLastNameText: string;
+  victimDetailsCheckboxes: VictimDetailsValue[];
+};
+
+export type ChargesFormData = {
+  // addChargeSuspectRadio: {
+  //   suspectIndex: number;
+  //   firstName: string;
+  //   lastName: string;
+  //   companyName: string;
+  // };
+  offenceSearchText: string;
+  selectedOffence: Offence;
+  offenceDate: string;
+  offenceDateFrom: string;
+  offenceDateTo: string;
+  addVictimRadio: GeneralRadioValue;
+  victims: Victim[];
+};
 export type SuspectFieldNames = keyof SuspectFormData;
+export type ChargeFieldNames = keyof ChargesFormData;
 
 export type CaseRegistrationFormData = {
   operationNameRadio: string;
@@ -103,6 +129,8 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNameText: string;
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
+  wantToAddChargesRadio: GeneralRadioValue;
+  victimList: Victim[];
 };
 
 export type CaseRegistrationState = {
@@ -121,6 +149,7 @@ export type CaseRegistrationState = {
     suspectEthnicities?: Ethnicities | null;
     suspectReligions?: Religions | null;
     suspectOffenderTypes?: OffenderTypes | null;
+    offencesSearchResults?: Offences | null;
   };
 };
 
@@ -141,6 +170,23 @@ export const suspectInitialState: SuspectFormData = {
   suspectDOBDayText: "",
   suspectDOBMonthText: "",
   suspectDOBYearText: "",
+  charges: [],
+};
+
+const chargeInitialState: ChargesFormData = {
+  offenceSearchText: "",
+  selectedOffence: {
+    code: "",
+    description: "",
+    legislation: "",
+    effectiveFromDate: "",
+    effectiveToDate: "",
+  },
+  offenceDate: "",
+  offenceDateFrom: "",
+  offenceDateTo: "",
+  addVictimRadio: "",
+  victims: [],
 };
 
 export const initialState: CaseRegistrationState = {
@@ -170,6 +216,8 @@ export const initialState: CaseRegistrationState = {
     caseInvestigatorShoulderNameText: "",
     caseInvestigatorShoulderNumberText: "",
     suspects: [],
+    wantToAddChargesRadio: "",
+    victimList: [],
   },
 
   apiData: {
@@ -212,6 +260,21 @@ export type CaseRegistrationActions =
           | { shortCode: string; description: string }
           | { shortCode: string; display: string; arrestDate: string }
           | { firstName?: string; lastName: string }[];
+      };
+    }
+  | {
+      type: "SET_CHARGE_FIELD";
+      payload: {
+        suspectIndex: number;
+        chargeIndex: number;
+        field: ChargeFieldNames;
+        value:
+          | string
+          | {
+              code: string;
+              description: string;
+            }
+          | Victim;
       };
     }
   | {
@@ -299,6 +362,12 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "SET_OFFENCES_SEARCH_RESULTS";
+      payload: {
+        offencesSearchResults: Offences;
+      };
+    }
+  | {
       type: "RESET_FORM_DATA";
     }
   | {
@@ -339,6 +408,32 @@ export const caseRegistrationReducer = (
       suspects[action.payload.index] = {
         ...existing,
         [action.payload.field]: action.payload.value,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+
+    case "SET_CHARGE_FIELD": {
+      const { suspectIndex, chargeIndex, field, value } = action.payload;
+      if (suspectIndex > state.formData.suspects.length) {
+        return state;
+      }
+
+      const suspect = state.formData.suspects[suspectIndex];
+      const existingCharges =
+        suspect.charges[chargeIndex] ?? chargeInitialState;
+      suspect.charges[chargeIndex] = {
+        ...existingCharges,
+        [field]: value,
+      };
+      const suspects = [...state.formData.suspects];
+      suspects[suspectIndex] = {
+        ...suspect,
       };
       return {
         ...state,
@@ -498,6 +593,16 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           suspectOffenderTypes: action.payload.suspectOffenderTypes,
+        },
+      };
+    }
+
+    case "SET_OFFENCES_SEARCH_RESULTS": {
+      return {
+        ...state,
+        apiData: {
+          ...state.apiData,
+          offencesSearchResults: action.payload.offencesSearchResults,
         },
       };
     }

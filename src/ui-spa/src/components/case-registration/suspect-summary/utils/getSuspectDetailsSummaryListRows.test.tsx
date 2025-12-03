@@ -44,6 +44,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "",
       suspectDOBMonthText: "",
       suspectDOBYearText: "",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
@@ -81,6 +82,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "12",
       suspectDOBMonthText: "12",
       suspectDOBYearText: "2000",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
@@ -139,6 +141,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "1",
       suspectDOBMonthText: "1",
       suspectDOBYearText: "2000",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
