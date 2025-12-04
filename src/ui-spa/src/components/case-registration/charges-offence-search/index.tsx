@@ -86,7 +86,7 @@ const ChargesOffenceSearch = () => {
       formData: { suspects },
     } = state;
     const charges = suspects[suspectIndex].charges || {};
-    const offenceSearchText = charges[chargeIndex];
+    const { offenceSearchText } = charges[chargeIndex];
     let isValid = true;
 
     if (!offenceSearchText) {

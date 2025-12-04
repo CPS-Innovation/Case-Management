@@ -75,27 +75,23 @@ export type SuspectFormData = {
   charges: ChargesFormData[];
 };
 
-export type VictimDetailsValue = "Vulnerable" | "Intimidated" | "Witness";
+export type VictimAdditionalDetailsValue =
+  | "Vulnerable"
+  | "Intimidated"
+  | "Witness";
 export type Victim = {
-  victimFistNameText: string;
+  victimFirstNameText: string;
   victimLastNameText: string;
-  victimDetailsCheckboxes: VictimDetailsValue[];
+  victimAdditionalDetailsCheckboxes: VictimAdditionalDetailsValue[];
 };
 
 export type ChargesFormData = {
-  // addChargeSuspectRadio: {
-  //   suspectIndex: number;
-  //   firstName: string;
-  //   lastName: string;
-  //   companyName: string;
-  // };
   offenceSearchText: string;
   selectedOffence: Offence;
-  offenceDate: string;
-  offenceDateFrom: string;
-  offenceDateTo: string;
+  offenceFromDate: string;
+  offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
-  victims: Victim[];
+  victims: Victim | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
@@ -130,7 +126,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimList: Victim[];
+  victimsList: Victim[];
 };
 
 export type CaseRegistrationState = {
@@ -182,11 +178,11 @@ const chargeInitialState: ChargesFormData = {
     effectiveFromDate: "",
     effectiveToDate: "",
   },
-  offenceDate: "",
-  offenceDateFrom: "",
-  offenceDateTo: "",
+
+  offenceFromDate: "",
+  offenceToDate: "",
   addVictimRadio: "",
-  victims: [],
+  victims: null,
 };
 
 export const initialState: CaseRegistrationState = {
@@ -217,7 +213,7 @@ export const initialState: CaseRegistrationState = {
     caseInvestigatorShoulderNumberText: "",
     suspects: [],
     wantToAddChargesRadio: "",
-    victimList: [],
+    victimsList: [],
   },
 
   apiData: {
@@ -274,7 +270,8 @@ export type CaseRegistrationActions =
               code: string;
               description: string;
             }
-          | Victim;
+          | Victim
+          | Offence;
       };
     }
   | {
