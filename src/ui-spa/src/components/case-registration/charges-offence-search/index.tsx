@@ -8,7 +8,6 @@ import {
 } from "react";
 import { Input, Button, ErrorSummary, BackLink, Table } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { type Offence } from "../../../common/types/responses/Offences";
 import { getOffences } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
@@ -18,10 +17,9 @@ import styles from "../index.module.scss";
 
 const ChargesOffenceSearch = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
-  const [offencesSearchResult, setOffencesSearchResult] = useState<Offence[]>(
-    [],
-  );
+
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
+
   const { suspectId, chargeId } = useParams<{
     suspectId: string;
     chargeId: string;
@@ -39,6 +37,17 @@ const ChargesOffenceSearch = () => {
     const index = chargeId.replace("charge-", "");
     return Number.parseInt(index, 10);
   }, [chargeId]);
+
+  const currentCharge = useMemo(() => {
+    const { suspects } = state.formData;
+    const charges = suspects[suspectIndex].charges || [];
+    return charges[chargeIndex]?.offenceSearchText || "";
+  }, [state.formData, suspectIndex, chargeIndex]);
+  const [searchText, setSearchText] = useState<string>(currentCharge);
+
+  const offencesSearchResult: Offence[] = useMemo(() => {
+    return state.apiData.offencesSearchResults || [];
+  }, [state.apiData.offencesSearchResults]);
 
   const { refetch: refetchSearchOffences } = useQuery({
     queryKey: ["search-offences"],
@@ -80,16 +89,12 @@ const ChargesOffenceSearch = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
-    const charges = suspects[suspectIndex].charges || {};
-    const { offenceSearchText } = charges[chargeIndex];
+
     let isValid = true;
 
-    if (!offenceSearchText) {
+    if (!searchText) {
       errors.offenceSearchText = {
         errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
@@ -129,15 +134,7 @@ const ChargesOffenceSearch = () => {
   }, [errorList]);
 
   const handleFormChange = (value: string) => {
-    dispatch({
-      type: "SET_CHARGE_FIELD",
-      payload: {
-        suspectIndex: suspectIndex,
-        chargeIndex: chargeIndex,
-        field: "offenceSearchText",
-        value: value,
-      },
-    });
+    setSearchText(value);
   };
 
   const getTableRowData = () => {
@@ -163,7 +160,7 @@ const ChargesOffenceSearch = () => {
           {
             children: (
               <Link
-                to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/offence/${data.code}/add-charge-details`}
+                to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/offence-${data.code}/add-charge-details`}
               >
                 Add
               </Link>
@@ -176,12 +173,26 @@ const ChargesOffenceSearch = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const { data } = await refetchSearchOffences();
-    if (data) setOffencesSearchResult(data);
-    if (!validateFormData(state)) return;
+    if (data) {
+      dispatch({
+        type: "SET_CHARGE_FIELD",
+        payload: {
+          suspectIndex: suspectIndex,
+          chargeIndex: chargeIndex,
+          field: "offenceSearchText",
+          value: searchText,
+        },
+      });
+      dispatch({
+        type: "SET_OFFENCES_SEARCH_RESULTS",
+        payload: {
+          offencesSearchResults: data,
+        },
+      });
+    }
+    if (!validateFormData()) return;
   };
 
-  const { suspects } = state.formData;
-  const charges = suspects[suspectIndex].charges || [];
   return (
     <div>
       <BackLink to={previousRoute}>Back</BackLink>
@@ -228,7 +239,7 @@ const ChargesOffenceSearch = () => {
                 : undefined
             }
             type="text"
-            value={charges[chargeIndex].offenceSearchText || ""}
+            value={searchText}
             onChange={(value: string) => {
               handleFormChange(value);
             }}
@@ -238,31 +249,33 @@ const ChargesOffenceSearch = () => {
             <Button type="submit">Search</Button>
           </div>
 
-          <div>
-            <Table
-              caption="offence search results"
-              captionClassName="govuk-visually-hidden"
-              head={[
-                {
-                  children: "CJS code",
-                },
-                {
-                  children: "Description",
-                },
+          {offencesSearchResult.length > 0 && (
+            <div>
+              <Table
+                caption="offence search results"
+                captionClassName="govuk-visually-hidden"
+                head={[
+                  {
+                    children: "CJS code",
+                  },
+                  {
+                    children: "Description",
+                  },
 
-                {
-                  children: "Statute name and section",
-                },
-                {
-                  children: "Effective dates",
-                },
-                {
-                  children: "Actions",
-                },
-              ]}
-              rows={getTableRowData()}
-            />
-          </div>
+                  {
+                    children: "Statute name and section",
+                  },
+                  {
+                    children: "Effective dates",
+                  },
+                  {
+                    children: "Actions",
+                  },
+                ]}
+                rows={getTableRowData()}
+              />
+            </div>
+          )}
         </div>
       </form>
     </div>

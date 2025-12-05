@@ -88,7 +88,9 @@ const SuspectSummaryPage = () => {
       return;
     }
 
-    navigate("/case-registration/case-complexity");
+    //if there are charges go to charges summary page
+    navigate("/case-registration/want-to-add-charges");
+    // navigate("/case-registration/case-complexity");
   };
 
   return (

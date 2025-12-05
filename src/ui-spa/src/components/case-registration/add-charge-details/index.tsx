@@ -5,23 +5,13 @@ import {
   useContext,
   useCallback,
   useMemo,
-  use,
 } from "react";
-import {
-  AutoComplete,
-  Radios,
-  Button,
-  ErrorSummary,
-  BackLink,
-} from "../../govuk";
+import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
-import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
-import { getCourtsByUnitId } from "../../../apis/gateway-api";
-import { useQuery } from "@tanstack/react-query";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const AddChargeDetailsPage = () => {
   type ErrorText = {
@@ -58,8 +48,8 @@ const AddChargeDetailsPage = () => {
   }, [chargeId]);
 
   const selectedOffenceCode = useMemo(() => {
-    const index = offenceCode.replace("offence-", "");
-    return Number.parseInt(index, 10);
+    const code = offenceCode.replace("offence-", "");
+    return code;
   }, [offenceCode]);
 
   const suspectCharge = useMemo(() => {
@@ -69,6 +59,20 @@ const AddChargeDetailsPage = () => {
     const charges = suspects[suspectIndex].charges || {};
     return charges[chargeIndex];
   }, [state, suspectIndex, chargeIndex]);
+
+  const suspectName = useMemo(() => {
+    const {
+      formData: { suspects },
+    } = state;
+    const {
+      suspectFirstNameText,
+      suspectLastNameText,
+      suspectCompanyNameText,
+    } = suspects[suspectIndex];
+    return suspectCompanyNameText
+      ? suspectCompanyNameText
+      : formatNameUtil(suspectFirstNameText, suspectLastNameText);
+  }, [state, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -145,6 +149,11 @@ const AddChargeDetailsPage = () => {
     return isValid;
   };
   const selectedOffence = useMemo(() => {
+    console.log(
+      "state.apiData.offencesSearchResults",
+      state.apiData.offencesSearchResults,
+    );
+    console.log("selectedOffenceCode", selectedOffenceCode);
     if (!state.apiData.offencesSearchResults) return;
     return state.apiData.offencesSearchResults.find(
       (offence) => offence.code === selectedOffenceCode.toString(),
@@ -169,7 +178,12 @@ const AddChargeDetailsPage = () => {
   }, [errorList]);
 
   useEffect(() => {
-    if (!suspectCharge.selectedOffence && selectedOffence) {
+    console.log("suspectCharge.selectedOffence", suspectCharge.selectedOffence);
+    console.log("selectedOffence", selectedOffence);
+    if (
+      selectedOffence &&
+      suspectCharge.selectedOffence.code !== selectedOffence?.code
+    ) {
       dispatch({
         type: "SET_CHARGE_FIELD",
         payload: {
@@ -247,10 +261,15 @@ const AddChargeDetailsPage = () => {
 
       <h1 className="govuk-heading-xl govuk-!-margin-bottom-0">Add charges</h1>
       <div>
-        <b>
-          {suspectCharge.selectedOffence?.code} -{" "}
-          {suspectCharge.selectedOffence?.description}
-        </b>
+        <div>
+          <b>{suspectName}</b>
+        </div>
+        <div>
+          <b>
+            {suspectCharge.selectedOffence?.code} -{" "}
+            {suspectCharge.selectedOffence?.description}
+          </b>
+        </div>
       </div>
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>

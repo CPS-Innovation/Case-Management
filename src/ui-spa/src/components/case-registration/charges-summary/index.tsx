@@ -10,7 +10,6 @@ import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 // import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
 import styles from "../index.module.scss";
-import pageStyles from "./index.module.scss";
 
 const SuspectSummaryPage = () => {
   type ErrorText = {
@@ -89,7 +88,7 @@ const SuspectSummaryPage = () => {
   };
 
   return (
-    <div className={pageStyles.caseSuspectsSummaryPage}>
+    <div>
       <BackLink to={`/case-registration/want-to-add-charges`}>Back</BackLink>
       {!!errorList.length && (
         <div
