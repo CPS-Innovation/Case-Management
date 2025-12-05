@@ -18,7 +18,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { type VictimAdditionalDetailsValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const AddChargeVictimPage = () => {
   type ErrorText = {
@@ -110,7 +110,7 @@ const AddChargeVictimPage = () => {
     const { selectedVictimRadio, victimFirstNameText, victimLastNameText } =
       victimDetails;
     const victimsList = state.formData.victimsList || [];
-    if (!selectedVictimRadio) {
+    if (victimsList.length > 0 && !selectedVictimRadio) {
       errors.selectedVictimRadio = {
         errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
@@ -371,7 +371,7 @@ const AddChargeVictimPage = () => {
           )}
 
           <>
-            {state.formData.victimsList.length === 0 && renderNewVictimFields}
+            {state.formData.victimsList.length === 0 && renderNewVictimFields()}
           </>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
