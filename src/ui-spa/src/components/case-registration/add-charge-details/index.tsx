@@ -12,6 +12,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const AddChargeDetailsPage = () => {
   type ErrorText = {
@@ -27,14 +28,12 @@ const AddChargeDetailsPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { suspectId, chargeId, offenceCode } = useParams<{
+  const { suspectId, chargeId } = useParams<{
     suspectId: string;
     chargeId: string;
-    offenceCode: string;
   }>() as {
     suspectId: string;
     chargeId: string;
-    offenceCode: string;
   };
 
   const suspectIndex = useMemo(() => {
@@ -46,11 +45,6 @@ const AddChargeDetailsPage = () => {
     const index = chargeId.replace("charge-", "");
     return Number.parseInt(index, 10);
   }, [chargeId]);
-
-  const selectedOffenceCode = useMemo(() => {
-    const code = offenceCode.replace("offence-", "");
-    return code;
-  }, [offenceCode]);
 
   const suspectCharge = useMemo(() => {
     const {
@@ -148,17 +142,6 @@ const AddChargeDetailsPage = () => {
     setFormDataErrors(errors);
     return isValid;
   };
-  const selectedOffence = useMemo(() => {
-    console.log(
-      "state.apiData.offencesSearchResults",
-      state.apiData.offencesSearchResults,
-    );
-    console.log("selectedOffenceCode", selectedOffenceCode);
-    if (!state.apiData.offencesSearchResults) return;
-    return state.apiData.offencesSearchResults.find(
-      (offence) => offence.code === selectedOffenceCode.toString(),
-    );
-  }, [state.apiData.offencesSearchResults, selectedOffenceCode]);
 
   const errorList = useMemo(() => {
     const validErrorKeys = Object.keys(formDataErrors).filter(
@@ -176,31 +159,6 @@ const AddChargeDetailsPage = () => {
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
-
-  useEffect(() => {
-    console.log("suspectCharge.selectedOffence", suspectCharge.selectedOffence);
-    console.log("selectedOffence", selectedOffence);
-    if (
-      selectedOffence &&
-      suspectCharge.selectedOffence.code !== selectedOffence?.code
-    ) {
-      dispatch({
-        type: "SET_CHARGE_FIELD",
-        payload: {
-          suspectIndex: suspectIndex,
-          chargeIndex: chargeIndex,
-          field: "selectedOffence",
-          value: selectedOffence,
-        },
-      });
-    }
-  }, [
-    dispatch,
-    suspectCharge.selectedOffence,
-    selectedOffence,
-    suspectIndex,
-    chargeIndex,
-  ]);
 
   const setFormValue = (
     fieldName: "addVictimRadio" | "offenceFromDate" | "offenceToDate",
@@ -259,9 +217,9 @@ const AddChargeDetailsPage = () => {
         </div>
       )}
 
-      <h1 className="govuk-heading-xl govuk-!-margin-bottom-0">Add charges</h1>
+      <h1>Add charges</h1>
       <div>
-        <div>
+        <div className={pageStyles.suspectName}>
           <b>{suspectName}</b>
         </div>
         <div>
@@ -271,12 +229,13 @@ const AddChargeDetailsPage = () => {
           </b>
         </div>
       </div>
+      <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
           <DateInputNative
             key="offence-from-date-text"
             id="offence-from-date-text"
-            label={<h2>Date</h2>}
+            label={<h2>When was the offence?</h2>}
             value={suspectCharge.offenceFromDate}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleDateChange("offenceFromDate", e.target.value)
@@ -305,7 +264,7 @@ const AddChargeDetailsPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Is there a victim?</h1>,
+                children: <h2>Is there a victim?</h2>,
               },
             }}
             errorMessage={

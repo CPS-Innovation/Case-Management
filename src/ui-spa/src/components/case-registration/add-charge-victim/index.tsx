@@ -19,6 +19,7 @@ import { type VictimAdditionalDetailsValue } from "../../../common/reducers/case
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const AddChargeVictimPage = () => {
   type ErrorText = {
@@ -71,6 +72,19 @@ const AddChargeVictimPage = () => {
     const charges = suspects[suspectIndex].charges || {};
     return charges[chargeIndex];
   }, [state, suspectIndex, chargeIndex]);
+  const suspectName = useMemo(() => {
+    const {
+      formData: { suspects },
+    } = state;
+    const {
+      suspectFirstNameText,
+      suspectLastNameText,
+      suspectCompanyNameText,
+    } = suspects[suspectIndex];
+    return suspectCompanyNameText
+      ? suspectCompanyNameText
+      : formatNameUtil(suspectFirstNameText, suspectLastNameText);
+  }, [state, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -184,7 +198,7 @@ const AddChargeVictimPage = () => {
       "Witness",
     ] as VictimAdditionalDetailsValue[];
     return (
-      <div>
+      <>
         <Input
           key="victim-firstname-text"
           id="victim-firstname-text"
@@ -225,7 +239,7 @@ const AddChargeVictimPage = () => {
         <Checkboxes
           fieldset={{
             legend: {
-              children: <h1>Victim type (optional)</h1>,
+              children: <h2>Victim type (optional)</h2>,
             },
           }}
           items={victimType.map((victimType, index) => ({
@@ -246,7 +260,7 @@ const AddChargeVictimPage = () => {
               );
           }}
         />
-      </div>
+      </>
     );
   }, [victimDetails, formDataErrors, setAdditionalDetailsCheckboxes]);
 
@@ -336,15 +350,19 @@ const AddChargeVictimPage = () => {
         </div>
       )}
 
-      <h1 className="govuk-heading-xl govuk-!-margin-bottom-0">
-        Add a victim to this charge
-      </h1>
+      <h1>Add a victim to this charge</h1>
       <div>
-        <b>
-          {suspectCharge.selectedOffence?.code} -{" "}
-          {suspectCharge.selectedOffence?.description}
-        </b>
+        <div className={pageStyles.suspectName}>
+          <b>{suspectName}</b>
+        </div>
+        <div>
+          <b>
+            {suspectCharge.selectedOffence?.code} -{" "}
+            {suspectCharge.selectedOffence?.description}
+          </b>
+        </div>
       </div>
+      <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
           {state.formData.victimsList.length !== 0 && (

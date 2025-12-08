@@ -7,7 +7,7 @@ const AccessErrorPage: React.FC = () => {
     <Layout>
       <div className="govuk-width-container">
         <div className={styles.contentWrapper}>
-          <h1 className="govuk-heading-xl">Access Error</h1>
+          <h1>Access Error</h1>
           <p>
             You cannot access this page. You are not a member of this group.
           </p>

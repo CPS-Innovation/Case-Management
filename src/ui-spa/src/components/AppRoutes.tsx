@@ -128,7 +128,7 @@ const AppRoutes = () => {
           element={<OffenceSearchPage />}
         />
         <Route
-          path="/case-registration/:suspectId/:chargeId/:offenceCode/add-charge-details"
+          path="/case-registration/:suspectId/:chargeId/add-charge-details"
           element={<AddChargeDetailsPage />}
         />
         <Route
