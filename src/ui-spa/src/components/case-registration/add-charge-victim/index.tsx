@@ -270,16 +270,17 @@ const AddChargeVictimPage = () => {
     if (!validateFormData()) return;
 
     dispatch({
-      type: "SET_CHARGE_FIELD",
+      type: "SET_CHARGE_FIELDS",
       payload: {
         suspectIndex: suspectIndex,
         chargeIndex: chargeIndex,
-        field: "victims",
-        value: {
-          victimFirstNameText: victimDetails.victimFirstNameText,
-          victimLastNameText: victimDetails.victimLastNameText,
-          victimAdditionalDetailsCheckboxes:
-            victimDetails.victimAdditionalDetailsCheckboxes,
+        data: {
+          victims: {
+            victimFirstNameText: victimDetails.victimFirstNameText,
+            victimLastNameText: victimDetails.victimLastNameText,
+            victimAdditionalDetailsCheckboxes:
+              victimDetails.victimAdditionalDetailsCheckboxes,
+          },
         },
       },
     });

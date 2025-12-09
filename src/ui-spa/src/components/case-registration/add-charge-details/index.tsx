@@ -9,6 +9,7 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
@@ -53,6 +54,20 @@ const AddChargeDetailsPage = () => {
     const charges = suspects[suspectIndex].charges || {};
     return charges[chargeIndex];
   }, [state, suspectIndex, chargeIndex]);
+
+  const [formData, setFormData] = useState<{
+    offenceFromDate: string;
+    offenceToDate: string;
+    addVictimRadio: GeneralRadioValue;
+  }>({
+    offenceFromDate: suspectCharge?.offenceFromDate || "",
+    offenceToDate: suspectCharge?.offenceToDate || "",
+    addVictimRadio: suspectCharge?.addVictimRadio || "",
+  });
+
+  const [showDateRange, setShowDateRange] = useState(
+    suspectCharge?.offenceToDate ? true : false,
+  );
 
   const suspectName = useMemo(() => {
     const {
@@ -103,7 +118,7 @@ const AddChargeDetailsPage = () => {
 
   const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const { addVictimRadio, offenceFromDate, offenceToDate } = suspectCharge;
+    const { addVictimRadio, offenceFromDate, offenceToDate } = formData;
 
     if (!addVictimRadio) {
       errors.addVictimRadio = {
@@ -115,16 +130,16 @@ const AddChargeDetailsPage = () => {
 
     if (!offenceFromDate) {
       errors.offenceFromDate = {
-        errorSummaryText: "Please select an offence from date",
-        inputErrorText: "Please select a date",
+        errorSummaryText: "Select an offence from date",
+        inputErrorText: "Select a date",
         hasLink: true,
       };
     }
 
-    if (!offenceToDate) {
+    if (showDateRange && !offenceToDate) {
       errors.offenceToDate = {
-        errorSummaryText: "Please select an offence to date",
-        inputErrorText: "Please select a date",
+        errorSummaryText: "Select an offence to date",
+        inputErrorText: "Select a date",
         hasLink: true,
       };
     }
@@ -164,15 +179,20 @@ const AddChargeDetailsPage = () => {
     fieldName: "addVictimRadio" | "offenceFromDate" | "offenceToDate",
     value: string,
   ) => {
-    dispatch({
-      type: "SET_CHARGE_FIELD",
-      payload: {
-        suspectIndex: suspectIndex,
-        chargeIndex: chargeIndex,
-        field: fieldName,
-        value: value,
-      },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      [fieldName]: value,
+    }));
+  };
+
+  const handleDateRangeButtonClick = () => {
+    setShowDateRange(!showDateRange);
+    if (showDateRange) {
+      setFormData((prevState) => ({
+        ...prevState,
+        offenceToDate: "",
+      }));
+    }
   };
 
   const handleDateChange = (
@@ -187,7 +207,16 @@ const AddChargeDetailsPage = () => {
 
     if (!validateFormData()) return;
 
-    const { addVictimRadio } = suspectCharge;
+    dispatch({
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: suspectIndex,
+        chargeIndex: chargeIndex,
+        data: formData,
+      },
+    });
+
+    const { addVictimRadio } = formData;
     if (addVictimRadio === "yes")
       return navigate(
         `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-victim`,
@@ -232,35 +261,47 @@ const AddChargeDetailsPage = () => {
       <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
-          <DateInputNative
-            key="offence-from-date-text"
-            id="offence-from-date-text"
-            label={<h2>When was the offence?</h2>}
-            value={suspectCharge.offenceFromDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleDateChange("offenceFromDate", e.target.value)
-            }
-            errorMessage={
-              formDataErrors["offenceFromDate"]
-                ? formDataErrors["offenceFromDate"].errorSummaryText
-                : undefined
-            }
-          />
-          <DateInputNative
-            key="offence-to-date-text"
-            id="offence-to-date-text"
-            label={<h2>Date</h2>}
-            value={suspectCharge.offenceToDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleDateChange("offenceToDate", e.target.value)
-            }
-            errorMessage={
-              formDataErrors["offenceToDate"]
-                ? formDataErrors["offenceToDate"].errorSummaryText
-                : undefined
-            }
-          />
-
+          <h2>When was the offence?</h2>
+          <div className={pageStyles.dateInputsWrapper}>
+            <DateInputNative
+              key="offence-from-date-text"
+              id="offence-from-date-text"
+              className={pageStyles.dateInput}
+              value={formData.offenceFromDate}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                handleDateChange("offenceFromDate", e.target.value)
+              }
+              errorMessage={
+                formDataErrors["offenceFromDate"]
+                  ? formDataErrors["offenceFromDate"].errorSummaryText
+                  : undefined
+              }
+            />
+            {showDateRange && (
+              <DateInputNative
+                key="offence-to-date-text"
+                id="offence-to-date-text"
+                className={pageStyles.dateInput}
+                value={formData.offenceToDate}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleDateChange("offenceToDate", e.target.value)
+                }
+                errorMessage={
+                  formDataErrors["offenceToDate"]
+                    ? formDataErrors["offenceToDate"].errorSummaryText
+                    : undefined
+                }
+              />
+            )}
+            <Button
+              className="govuk-button--secondary"
+              name="secondary"
+              type="button"
+              onClick={() => handleDateRangeButtonClick()}
+            >
+              {showDateRange ? "Single date" : "Date range"}
+            </Button>
+          </div>
           <Radios
             fieldset={{
               legend: {
@@ -288,7 +329,7 @@ const AddChargeDetailsPage = () => {
                 "data-testid": "add-victim-radio-no",
               },
             ]}
-            value={suspectCharge.addVictimRadio || ""}
+            value={formData.addVictimRadio || ""}
             onChange={(value) => {
               if (value) setFormValue("addVictimRadio", value);
             }}

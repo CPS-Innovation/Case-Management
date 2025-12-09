@@ -50,7 +50,7 @@ export type SuspectAdditionalDetailValue =
   | "Type of offender";
 
 type SuspectTypeValue = "person" | "company" | "";
-type GeneralRadioValue = "yes" | "no" | "";
+export type GeneralRadioValue = "yes" | "no" | "";
 export type SuspectFormData = {
   addSuspectRadio: SuspectTypeValue;
   suspectFirstNameText: string;
@@ -259,19 +259,18 @@ export type CaseRegistrationActions =
       };
     }
   | {
-      type: "SET_CHARGE_FIELD";
+      type: "SET_CHARGE_FIELDS";
       payload: {
         suspectIndex: number;
         chargeIndex: number;
-        field: ChargeFieldNames;
-        value:
-          | string
-          | {
-              code: string;
-              description: string;
-            }
-          | Victim
-          | Offence;
+        data: {
+          offenceSearchText?: string;
+          selectedOffence?: Offence;
+          offenceFromDate?: string;
+          offenceToDate?: string;
+          addVictimRadio?: GeneralRadioValue;
+          victims?: Victim | null;
+        };
       };
     }
   | {
@@ -415,8 +414,8 @@ export const caseRegistrationReducer = (
       };
     }
 
-    case "SET_CHARGE_FIELD": {
-      const { suspectIndex, chargeIndex, field, value } = action.payload;
+    case "SET_CHARGE_FIELDS": {
+      const { suspectIndex, chargeIndex, data } = action.payload;
       if (suspectIndex > state.formData.suspects.length) {
         return state;
       }
@@ -426,7 +425,7 @@ export const caseRegistrationReducer = (
         suspect.charges[chargeIndex] ?? chargeInitialState;
       suspect.charges[chargeIndex] = {
         ...existingCharges,
-        [field]: value,
+        ...data,
       };
       const suspects = [...state.formData.suspects];
       suspects[suspectIndex] = {
@@ -440,6 +439,7 @@ export const caseRegistrationReducer = (
         },
       };
     }
+
     case "RESET_SUSPECT_FIELD": {
       const suspectResetValues = getResetSuspectFieldValues(
         state,

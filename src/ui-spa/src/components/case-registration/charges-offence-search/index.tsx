@@ -49,16 +49,16 @@ const ChargesOffenceSearch = () => {
   );
 
   const {
-    data: offencesSearchResult = [],
+    data: offencesSearchResult,
     refetch: refetchSearchOffences,
     isFetching,
   } = useQuery({
     queryKey: ["search-offences"],
     queryFn: () => getOffences(),
     enabled: !currentOffenceSearchText ? false : true,
-
     retry: false,
     throwOnError: true,
+    gcTime: 0,
   });
   type ErrorText = {
     errorSummaryText: string;
@@ -141,23 +141,30 @@ const ChargesOffenceSearch = () => {
     setSearchText(value);
   };
 
+  const searchResults = useMemo(() => {
+    if (isFetching || !offencesSearchResult) return [];
+
+    return offencesSearchResult;
+  }, [offencesSearchResult, isFetching]);
+
   const handleClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
     value: string,
   ) => {
     event.preventDefault();
-    if (!offencesSearchResult) return;
-    const selectedOffence = offencesSearchResult.find(
+    if (!searchResults.length) return;
+    const selectedOffence = searchResults.find(
       (offence) => offence.code === value.toString(),
     );
     if (selectedOffence) {
       dispatch({
-        type: "SET_CHARGE_FIELD",
+        type: "SET_CHARGE_FIELDS",
         payload: {
           suspectIndex: suspectIndex,
           chargeIndex: chargeIndex,
-          field: "selectedOffence",
-          value: selectedOffence,
+          data: {
+            selectedOffence: selectedOffence,
+          },
         },
       });
       navigate(
@@ -168,7 +175,7 @@ const ChargesOffenceSearch = () => {
 
   const getTableRowData = () => {
     if (isFetching) return [];
-    return offencesSearchResult.map((data) => {
+    return searchResults.map((data) => {
       return {
         cells: [
           {
@@ -203,19 +210,18 @@ const ChargesOffenceSearch = () => {
   };
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await refetchSearchOffences();
-    if (offencesSearchResult) {
-      dispatch({
-        type: "SET_CHARGE_FIELD",
-        payload: {
-          suspectIndex: suspectIndex,
-          chargeIndex: chargeIndex,
-          field: "offenceSearchText",
-          value: searchText,
-        },
-      });
-    }
     if (!validateFormData()) return;
+    await refetchSearchOffences();
+    dispatch({
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: suspectIndex,
+        chargeIndex: chargeIndex,
+        data: {
+          offenceSearchText: searchText,
+        },
+      },
+    });
   };
 
   return (
@@ -247,6 +253,7 @@ const ChargesOffenceSearch = () => {
               id="offence-search-text"
               data-testid="offence-search-text"
               className="govuk-input--width-30"
+              disabled={isFetching}
               label={{
                 children: <b>Search for Offence</b>,
               }}
@@ -267,22 +274,26 @@ const ChargesOffenceSearch = () => {
               onChange={(value: string) => {
                 handleFormChange(value);
               }}
-              disabled={false}
             />
             <div className={styles.btnWrapper}>
-              <Button type="submit" className={pageStyles.btnSearch}>
+              <Button
+                type="submit"
+                className={pageStyles.btnSearch}
+                disabled={isFetching}
+              >
                 Search
               </Button>
             </div>
           </div>
-
-          {!isFetching && (
-            <div>
+          <div>
+            {!isFetching && offencesSearchResult && (
               <span className={pageStyles.resultsCount}>
-                {offencesSearchResult.length} results for{" "}
-                <strong>{searchText}</strong>
+                {searchResults.length} results for{" "}
+                <strong>{currentOffenceSearchText}</strong>
               </span>
-              <hr className={pageStyles.resultsDivider} />
+            )}
+            <hr className={pageStyles.resultsDivider} />
+            {searchResults.length > 0 && (
               <Table
                 caption="offence search results"
                 captionClassName="govuk-visually-hidden"
@@ -306,8 +317,8 @@ const ChargesOffenceSearch = () => {
                 ]}
                 rows={getTableRowData()}
               />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </form>
     </div>
