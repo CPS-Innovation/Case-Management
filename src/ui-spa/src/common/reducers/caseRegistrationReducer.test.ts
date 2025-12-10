@@ -120,7 +120,7 @@ describe("caseRegistrationReducer", () => {
         caseInvestigatorShoulderNumberText: "123",
 
         suspects: [],
-        victimList: [],
+        victimsList: [],
         wantToAddChargesRadio: "",
       },
       apiData: apiData,

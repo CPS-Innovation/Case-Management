@@ -37,7 +37,8 @@ export type CaseRegistrationField =
   | "caseInvestigatorLastNameText"
   | "caseInvestigatorShoulderNameText"
   | "caseInvestigatorShoulderNumberText"
-  | "wantToAddChargesRadio";
+  | "wantToAddChargesRadio"
+  | "victimsList";
 export type SuspectAdditionalDetailValue =
   | "Date of Birth"
   | "Gender"
@@ -91,7 +92,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
-  victims: Victim | null;
+  victim: Victim | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
@@ -126,7 +127,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimsList: Victim[];
+  victimsList: { firstName: string; lastName: string }[];
 };
 
 export type CaseRegistrationState = {
@@ -182,7 +183,7 @@ const chargeInitialState: ChargesFormData = {
   offenceFromDate: "",
   offenceToDate: "",
   addVictimRadio: "",
-  victims: null,
+  victim: null,
 };
 
 export const initialState: CaseRegistrationState = {
@@ -242,7 +243,8 @@ export type CaseRegistrationActions =
           | { shortCode: string | null; description: string }
           | { shortCode: string | null; display: string }
           | string
-          | string[];
+          | string[]
+          | { firstName?: string; lastName: string }[];
       };
     }
   | {
@@ -269,7 +271,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
-          victims?: Victim | null;
+          victim?: Victim | null;
         };
       };
     }
