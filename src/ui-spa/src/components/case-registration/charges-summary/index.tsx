@@ -2,13 +2,15 @@ import {
   useRef,
   useEffect,
   useState,
-  // useContext,
+  useContext,
   useCallback,
   useMemo,
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
-// import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
+import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import ChargesSummary from "./ChargesSummary";
 import styles from "../index.module.scss";
 
 const SuspectSummaryPage = () => {
@@ -20,7 +22,7 @@ const SuspectSummaryPage = () => {
     addMoreChargesRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
-  // const { state } = useContext(CaseRegistrationFormContext);
+  const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
   const [addMoreChargesRadio, setAddMoreChargesRadio] = useState<string>("");
@@ -70,6 +72,15 @@ const SuspectSummaryPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
 
+  const { chargesCount } = useMemo(() => {
+    const chargeList = getChargesSummaryList(state.formData.suspects);
+    const chargesCount = chargeList.reduce(
+      (acc, item) => acc + item.charges.length,
+      0,
+    );
+    return { chargesCount };
+  }, [state.formData.suspects]);
+
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
@@ -104,7 +115,8 @@ const SuspectSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added  charges`}</h1>
+        <h1>{`You have added ${chargesCount} charges`}</h1>
+        <ChargesSummary />
 
         <div className={styles.inputWrapper}>
           <Radios
