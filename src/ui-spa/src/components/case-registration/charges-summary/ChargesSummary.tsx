@@ -15,7 +15,11 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
 }) => {
   const { state } = useContext(CaseRegistrationFormContext);
 
-  const chargesSummaryRow = (charge: ChargesFormData, index: number) => {
+  const chargesSummaryRow = (
+    charge: ChargesFormData,
+    chargeIndex: number,
+    suspectIndex: number,
+  ) => {
     return [
       {
         key: {
@@ -40,7 +44,8 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
               children: <span>Remove</span>,
               to: `/case-registration/charge-remove-confirmation`,
               state: {
-                suspectIndex: index,
+                suspectIndex,
+                chargeIndex,
                 backRoute: isCaseSummaryPage
                   ? `/case-registration/case-summary`
                   : `/case-registration/charges-summary`,
@@ -58,12 +63,12 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
     console.log("suspectChargesList", suspectChargesList);
     return (
       <div>
-        {suspectChargesList.map((suspectCharge, index) => (
+        {suspectChargesList.map((suspectCharge, suspectIndex) => (
           <div
             key={
               suspectCharge.suspectLastNameText
-                ? `${index}-${suspectCharge.suspectLastNameText}`
-                : `${index}-${suspectCharge.suspectCompanyNameText}`
+                ? `${suspectIndex}-${suspectCharge.suspectLastNameText}`
+                : `${suspectIndex}-${suspectCharge.suspectCompanyNameText}`
             }
           >
             {suspectCharge.suspectLastNameText ? (
@@ -77,9 +82,11 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
             ) : (
               <h2>{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
             )}
-            {suspectCharge.charges.map((charge, index) => (
-              <div key={`${charge.selectedOffence.code}-${index}`}>
-                <SummaryList rows={chargesSummaryRow(charge, index)} />
+            {suspectCharge.charges.map((charge, chargeIndex) => (
+              <div key={`${charge.selectedOffence.code}-${chargeIndex}`}>
+                <SummaryList
+                  rows={chargesSummaryRow(charge, chargeIndex, suspectIndex)}
+                />
                 <div>
                   <Details summaryChildren={"View charge details"}>
                     <SummaryList rows={getChargesSummaryListRows(charge)} />

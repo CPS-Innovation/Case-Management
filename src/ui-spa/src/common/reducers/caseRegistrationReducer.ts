@@ -282,6 +282,13 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "REMOVE_SUSPECT_CHARGE";
+      payload: {
+        suspectIndex: number;
+        chargeIndex: number;
+      };
+    }
+  | {
       type: "SET_AREAS_AND_REGISTERING_UNITS";
       payload: {
         areasAndRegisteringUnits: CaseAreasAndRegisteringUnits;
@@ -471,6 +478,24 @@ export const caseRegistrationReducer = (
         },
       };
     }
+
+    case "REMOVE_SUSPECT_CHARGE": {
+      const { suspectIndex, chargeIndex } = action.payload;
+      const suspects = [...state.formData.suspects];
+      const suspect = suspects[suspectIndex];
+      suspect.charges = suspect.charges.filter((_, i) => i !== chargeIndex);
+      suspects[suspectIndex] = {
+        ...suspect,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+
     case "SET_AREAS_AND_REGISTERING_UNITS": {
       return {
         ...state,
