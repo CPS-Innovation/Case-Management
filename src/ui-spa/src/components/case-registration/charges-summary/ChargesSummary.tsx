@@ -100,11 +100,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
     );
   };
 
-  return (
-    <div>
-      <div>{renderSummaryList()}</div>
-    </div>
-  );
+  return <div>{renderSummaryList()}</div>;
 };
 
 export default ChargesSummary;

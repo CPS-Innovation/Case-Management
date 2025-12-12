@@ -482,11 +482,13 @@ export const caseRegistrationReducer = (
 
     case "REMOVE_SUSPECT_CHARGE": {
       const { suspectIndex, chargeIndex } = action.payload;
-      const suspects = [...state.formData.suspects];
+      const suspects = state.formData.suspects;
       const suspect = suspects[suspectIndex];
-      suspect.charges = suspect.charges.filter((_, i) => i !== chargeIndex);
+      const existingCharges = [...suspect.charges];
+      const newCharges = existingCharges.filter((_, i) => i !== chargeIndex);
       suspects[suspectIndex] = {
         ...suspect,
+        charges: newCharges,
       };
       return {
         ...state,

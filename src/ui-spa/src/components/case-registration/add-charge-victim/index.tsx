@@ -290,19 +290,29 @@ const AddChargeVictimPage = () => {
       !state.formData.victimsList.length ||
       victimDetails.selectedVictimRadio === "new-victim"
     ) {
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "victimsList",
-          value: [
-            ...state.formData.victimsList,
-            {
-              firstName: victimDetails.victimFirstNameText,
-              lastName: victimDetails.victimLastNameText,
-            },
-          ],
-        },
+      const isVictimNameExists = state.formData.victimsList.some((victim) => {
+        return (
+          victim.firstName.toLowerCase() ===
+            victimDetails.victimFirstNameText.toLowerCase() &&
+          victim.lastName.toLowerCase() ===
+            victimDetails.victimLastNameText.toLowerCase()
+        );
       });
+      if (!isVictimNameExists) {
+        dispatch({
+          type: "SET_FIELD",
+          payload: {
+            field: "victimsList",
+            value: [
+              ...state.formData.victimsList,
+              {
+                firstName: victimDetails.victimFirstNameText,
+                lastName: victimDetails.victimLastNameText,
+              },
+            ],
+          },
+        });
+      }
     }
 
     return navigate("/case-registration/charges-summary");

@@ -11,7 +11,7 @@ describe("formatDate", () => {
   });
 
   it("Should format the date correctly to `ddmmyyyy` format", () => {
-    expect(formatDate("2004-03-28T01:46:10.865517Z")).toEqual("28/04/2004");
+    expect(formatDate("2004-03-28T01:46:10.865517Z")).toEqual("28/03/2004");
     expect(formatDate("2004-10-02T13:46:10.865517Z")).toEqual("02/10/2004");
   });
 

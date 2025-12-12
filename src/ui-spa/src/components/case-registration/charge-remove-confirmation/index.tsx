@@ -15,7 +15,6 @@ const ChargeRemoveConfirmationPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
     dispatch({
       type: "REMOVE_SUSPECT_CHARGE",
       payload: {

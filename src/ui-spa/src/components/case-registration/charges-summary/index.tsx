@@ -117,7 +117,9 @@ const SuspectSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>{`You have added ${chargesCount} charges`}</h1>
-        <ChargesSummary />
+        <div className={pageStyles.chargesSummaryWrapper}>
+          <ChargesSummary />
+        </div>
 
         <div className={styles.inputWrapper}>
           <Radios
