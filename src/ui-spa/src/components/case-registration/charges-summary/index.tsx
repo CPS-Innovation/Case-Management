@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
 import ChargesSummary from "./ChargesSummary";
 import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const SuspectSummaryPage = () => {
   type ErrorText = {
@@ -99,7 +100,7 @@ const SuspectSummaryPage = () => {
   };
 
   return (
-    <div>
+    <div className={pageStyles.chargesSummaryPage}>
       <BackLink to={`/case-registration/suspect-summary`}>Back</BackLink>
       {!!errorList.length && (
         <div
