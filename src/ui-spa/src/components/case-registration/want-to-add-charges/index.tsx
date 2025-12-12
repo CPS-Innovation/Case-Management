@@ -96,7 +96,7 @@ const WantToAddCharges = () => {
       return navigate("/case-registration/case-complexity");
     }
     if (wantToAddChargesRadio === "yes" && state.formData.suspects.length > 1) {
-      return navigate("/case-registration/select-suspect-for-charges");
+      return navigate("/case-registration/add-charge-suspect");
     }
     return navigate(
       `/case-registration/suspect-0/charge-0/charges-offence-search`,

@@ -170,6 +170,18 @@ describe("caseRegistrationReducer", () => {
   });
 
   it("should set suspect data suspectAliases data along with other fields initial value using SET_SUSPECT_FIELD action", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          { ...suspectInitialState },
+          {
+            ...suspectInitialState,
+          },
+        ],
+      },
+    };
     const action: CaseRegistrationActions = {
       type: "SET_SUSPECT_FIELD",
       payload: {
@@ -178,7 +190,7 @@ describe("caseRegistrationReducer", () => {
         value: [{ firstName: "John", lastName: "Doe" }],
       },
     };
-    const state = caseRegistrationReducer(initialState, action);
+    const state = caseRegistrationReducer(modifiedState, action);
     const expectedResult = {
       ...suspectInitialState,
       suspectAliases: [
@@ -189,6 +201,7 @@ describe("caseRegistrationReducer", () => {
       ],
     };
     expect(state.formData.suspects[0]).toEqual(expectedResult);
+    expect(state.formData.suspects[1]).toEqual(suspectInitialState);
   });
 
   it("should just set suspect data suspectFirstNameText  using SET_SUSPECT_FIELD action, when suspect details are already available", () => {
@@ -685,5 +698,58 @@ describe("getResetFieldValues", () => {
   it("should return an empty object for other fields", () => {
     const result = getResetFieldValues("operationNameRadio", "yes");
     expect(result).toEqual({});
+  });
+
+  it("Should SET_CHARGE_FIELDS action update the the charge fields for the given suspect and charge index", () => {
+    const initialStateWithSuspectAndCharge: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+          },
+          {
+            ...suspectInitialState,
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 0,
+        chargeIndex: 0,
+        data: {
+          offenceSearchText: "New Offence",
+          selectedOffence: {
+            code: "ABC",
+            description: "sample description",
+            legislation: "sample legislation",
+            effectiveFromDate: "2024-01-01",
+            effectiveToDate: "2024-12-31",
+          },
+        },
+      },
+    };
+    const state = caseRegistrationReducer(
+      initialStateWithSuspectAndCharge,
+      action,
+    );
+    expect(state.formData.suspects[0].charges[0]).toEqual({
+      offenceSearchText: "New Offence",
+      selectedOffence: {
+        code: "ABC",
+        description: "sample description",
+        legislation: "sample legislation",
+        effectiveFromDate: "2024-01-01",
+        effectiveToDate: "2024-12-31",
+      },
+      offenceFromDate: "",
+      offenceToDate: "",
+      addVictimRadio: "",
+      victim: null,
+    });
+    expect(state.formData.suspects[1].charges).toEqual([]);
   });
 });

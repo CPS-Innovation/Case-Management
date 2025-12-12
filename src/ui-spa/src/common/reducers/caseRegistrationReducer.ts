@@ -429,16 +429,17 @@ export const caseRegistrationReducer = (
         return state;
       }
 
-      const suspect = state.formData.suspects[suspectIndex];
-      const existingCharges =
-        suspect.charges[chargeIndex] ?? chargeInitialState;
-      suspect.charges[chargeIndex] = {
-        ...existingCharges,
+      const suspects = state.formData.suspects;
+      const suspect = suspects[suspectIndex];
+      const existingCharges = [...suspect.charges];
+      const existingCharge = existingCharges[chargeIndex] ?? chargeInitialState;
+      existingCharges[chargeIndex] = {
+        ...existingCharge,
         ...data,
       };
-      const suspects = [...state.formData.suspects];
       suspects[suspectIndex] = {
         ...suspect,
+        charges: existingCharges,
       };
       return {
         ...state,
