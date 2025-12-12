@@ -10,6 +10,7 @@ import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
 import SuspectSummary from "./SuspectSummary";
+import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
 
@@ -24,6 +25,14 @@ const SuspectSummaryPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useMemo(() => {
+    const chargeList = getChargesSummaryList(state.formData.suspects);
+    const chargesCount = chargeList.reduce(
+      (acc, item) => acc + item.charges.length,
+      0,
+    );
+    return { chargesCount };
+  }, [state.formData.suspects]);
 
   const [addMoreSuspectsRadio, setAddMoreSuspectsRadio] = useState<string>("");
 
@@ -85,6 +94,10 @@ const SuspectSummaryPage = () => {
       navigate(
         `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
       );
+      return;
+    }
+    if (chargesCount > 0) {
+      navigate("/case-registration/charges-summary");
       return;
     }
 

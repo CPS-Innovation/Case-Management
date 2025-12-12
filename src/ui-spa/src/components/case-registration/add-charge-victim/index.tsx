@@ -250,6 +250,26 @@ const AddChargeVictimPage = () => {
 
     if (!validateFormData()) return;
 
+    let selectedVictimDetails = {
+      firstName: victimDetails.victimFirstNameText,
+      lastName: victimDetails.victimLastNameText,
+    };
+
+    if (victimDetails.selectedVictimRadio !== "new-victim") {
+      const selectedVictim = state.formData.victimsList.find((victim) => {
+        return (
+          `${victim.lastName}-${victim.firstName}` ===
+          victimDetails.selectedVictimRadio
+        );
+      });
+      if (selectedVictim) {
+        selectedVictimDetails = {
+          firstName: selectedVictim.firstName,
+          lastName: selectedVictim.lastName,
+        };
+      }
+    }
+
     dispatch({
       type: "SET_CHARGE_FIELDS",
       payload: {
@@ -257,8 +277,8 @@ const AddChargeVictimPage = () => {
         chargeIndex: chargeIndex,
         data: {
           victim: {
-            victimFirstNameText: victimDetails.victimFirstNameText,
-            victimLastNameText: victimDetails.victimLastNameText,
+            victimFirstNameText: selectedVictimDetails.firstName,
+            victimLastNameText: selectedVictimDetails.lastName,
             victimAdditionalDetailsCheckboxes:
               victimDetails.victimAdditionalDetailsCheckboxes,
           },
@@ -327,7 +347,7 @@ const AddChargeVictimPage = () => {
   return (
     <div className={styles.caseDetailsPage}>
       <BackLink
-        to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`}
+        to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`}
       >
         Back
       </BackLink>

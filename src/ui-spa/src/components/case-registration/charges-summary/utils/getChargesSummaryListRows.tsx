@@ -1,10 +1,15 @@
 import type { ChargesFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { Tag } from "../../../../components/govuk";
 import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
+import { formatDate } from "../../../../common/utils/formatDate";
+import styles from "./index.module.scss";
+
 export const getChargesSummaryListRows = (
   charge: ChargesFormData,
   addChargeRow: boolean = false,
 ) => {
   if (!charge) return [];
+
   const rows = [
     addChargeRow && {
       key: { children: <b>{charge.selectedOffence.code}</b> },
@@ -16,8 +21,8 @@ export const getChargesSummaryListRows = (
         children: (
           <span>
             {charge.offenceToDate
-              ? `${charge.offenceFromDate}-${charge.offenceToDate}`
-              : charge.offenceFromDate}
+              ? `${formatDate(charge.offenceFromDate)} to ${formatDate(charge.offenceToDate)}`
+              : formatDate(charge.offenceFromDate)}
           </span>
         ),
       },
@@ -26,12 +31,23 @@ export const getChargesSummaryListRows = (
       key: { children: <b>Victim</b> },
       value: {
         children: (
-          <span>
-            {formatNameUtil(
-              charge.victim?.victimFirstNameText,
-              charge.victim?.victimLastNameText,
-            )}
-          </span>
+          <div>
+            <span>
+              {formatNameUtil(
+                charge.victim?.victimFirstNameText,
+                charge.victim?.victimLastNameText,
+              )}
+            </span>
+            <div className={styles.tagsContainer}>
+              {charge.victim.victimAdditionalDetailsCheckboxes.map(
+                (detail, index) => (
+                  <Tag key={index} gdsTagColour="blue">
+                    {detail}
+                  </Tag>
+                ),
+              )}
+            </div>
+          </div>
         ),
       },
     },

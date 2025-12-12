@@ -100,7 +100,7 @@ const SuspectSummaryPage = () => {
 
   return (
     <div>
-      <BackLink to={`/case-registration/want-to-add-charges`}>Back</BackLink>
+      <BackLink to={`/case-registration/suspect-summary`}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
