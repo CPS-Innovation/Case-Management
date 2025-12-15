@@ -7,9 +7,9 @@ import pageStyles from "./index.module.scss";
 const ChargeRemoveConfirmationPage = () => {
   const navigate = useNavigate();
   const {
-    state: { suspectIndex, chargeIndex, backRoute },
+    state: { suspectIndex, chargeId, backRoute },
   }: {
-    state: { suspectIndex: number; chargeIndex: number; backRoute: string };
+    state: { suspectIndex: number; chargeId: string; backRoute: string };
   } = useLocation();
   const { dispatch } = useContext(CaseRegistrationFormContext);
 
@@ -19,7 +19,7 @@ const ChargeRemoveConfirmationPage = () => {
       type: "REMOVE_SUSPECT_CHARGE",
       payload: {
         suspectIndex: suspectIndex,
-        chargeIndex: chargeIndex,
+        chargeId: chargeId,
       },
     });
 

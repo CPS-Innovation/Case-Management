@@ -17,7 +17,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
 
   const chargesSummaryRow = (
     charge: ChargesFormData,
-    chargeIndex: number,
+    chargeId: string,
     suspectIndex: number,
   ) => {
     return [
@@ -45,7 +45,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
               to: `/case-registration/charge-remove-confirmation`,
               state: {
                 suspectIndex,
-                chargeIndex,
+                chargeId: chargeId,
                 backRoute: isCaseSummaryPage
                   ? `/case-registration/case-summary`
                   : `/case-registration/charges-summary`,
@@ -82,10 +82,14 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
             ) : (
               <h2>{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
             )}
-            {suspectCharge.charges.map((charge, chargeIndex) => (
-              <div key={`${charge.selectedOffence.code}-${chargeIndex}`}>
+            {suspectCharge.charges.map((charge) => (
+              <div key={`${charge.selectedOffence.code}-${charge.chargeId}`}>
                 <SummaryList
-                  rows={chargesSummaryRow(charge, chargeIndex, suspectIndex)}
+                  rows={chargesSummaryRow(
+                    charge,
+                    charge.chargeId,
+                    suspectIndex,
+                  )}
                 />
                 <div>
                   <Details summaryChildren={"View charge details"}>

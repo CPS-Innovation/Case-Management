@@ -12,6 +12,7 @@ import type { Ethnicities } from "../types/responses/Ethnicities";
 import type { Religions } from "../types/responses/Religions";
 import type { OffenderTypes } from "../types/responses/OffenderTypes";
 import type { Offences, Offence } from "../types/responses/Offences";
+import { v4 as uuidv4 } from "uuid";
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
@@ -53,6 +54,7 @@ export type SuspectAdditionalDetailValue =
 type SuspectTypeValue = "person" | "company" | "";
 export type GeneralRadioValue = "yes" | "no" | "";
 export type SuspectFormData = {
+  suspectId: string;
   addSuspectRadio: SuspectTypeValue;
   suspectFirstNameText: string;
   suspectLastNameText: string;
@@ -87,6 +89,7 @@ export type Victim = {
 };
 
 export type ChargesFormData = {
+  chargeId: string;
   offenceSearchText: string;
   selectedOffence: Offence;
   offenceFromDate: string;
@@ -151,6 +154,7 @@ export type CaseRegistrationState = {
 };
 
 export const suspectInitialState: SuspectFormData = {
+  suspectId: "",
   addSuspectRadio: "",
   suspectFirstNameText: "",
   suspectLastNameText: "",
@@ -171,6 +175,7 @@ export const suspectInitialState: SuspectFormData = {
 };
 
 const chargeInitialState: ChargesFormData = {
+  chargeId: "",
   offenceSearchText: "",
   selectedOffence: {
     code: "",
@@ -285,7 +290,7 @@ export type CaseRegistrationActions =
       type: "REMOVE_SUSPECT_CHARGE";
       payload: {
         suspectIndex: number;
-        chargeIndex: number;
+        chargeId: string;
       };
     }
   | {
@@ -409,7 +414,10 @@ export const caseRegistrationReducer = (
       }
 
       const suspects = [...state.formData.suspects];
-      const existing = suspects[action.payload.index] ?? suspectInitialState;
+      const existing = suspects[action.payload.index] ?? {
+        ...suspectInitialState,
+        suspectId: uuidv4(),
+      };
       suspects[action.payload.index] = {
         ...existing,
         [action.payload.field]: action.payload.value,
@@ -432,7 +440,10 @@ export const caseRegistrationReducer = (
       const suspects = state.formData.suspects;
       const suspect = suspects[suspectIndex];
       const existingCharges = [...suspect.charges];
-      const existingCharge = existingCharges[chargeIndex] ?? chargeInitialState;
+      const existingCharge = existingCharges[chargeIndex] ?? {
+        ...chargeInitialState,
+        chargeId: uuidv4(),
+      };
       existingCharges[chargeIndex] = {
         ...existingCharge,
         ...data,
@@ -481,11 +492,13 @@ export const caseRegistrationReducer = (
     }
 
     case "REMOVE_SUSPECT_CHARGE": {
-      const { suspectIndex, chargeIndex } = action.payload;
+      const { suspectIndex, chargeId } = action.payload;
       const suspects = state.formData.suspects;
       const suspect = suspects[suspectIndex];
       const existingCharges = [...suspect.charges];
-      const newCharges = existingCharges.filter((_, i) => i !== chargeIndex);
+      const newCharges = existingCharges.filter(
+        (charge) => charge.chargeId !== chargeId,
+      );
       suspects[suspectIndex] = {
         ...suspect,
         charges: newCharges,
