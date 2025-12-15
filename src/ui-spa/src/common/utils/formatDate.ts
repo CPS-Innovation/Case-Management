@@ -4,6 +4,7 @@ import { formatInTimeZone } from "date-fns-tz";
 export const formatDate = (
   dateString: string | null | undefined,
   withTime: boolean = false,
+  format: "dd/MM/yyyy" | "dd MMM yyyy" = "dd/MM/yyyy",
 ) => {
   if (!dateString) {
     return "--";
@@ -13,7 +14,7 @@ export const formatDate = (
   if (!isValid(date)) {
     return "--";
   }
-  const formattedTime = formatInTimeZone(date, "Europe/London", "dd/MM/yyyy");
+  const formattedTime = formatInTimeZone(date, "Europe/London", format);
   if (!withTime) {
     return isToday(date) ? "Today" : formattedTime;
   }

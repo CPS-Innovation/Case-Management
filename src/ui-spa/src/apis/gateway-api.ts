@@ -257,8 +257,11 @@ export const getPoliceUnits = async () => {
   return (await response.json()) as PoliceUnits;
 };
 
-export const getOffences = async () => {
-  const url = `${GATEWAY_BASE_URL}/api/v1/offences`;
+export const getOffences = async (
+  searchText: string,
+  resultsPerPage: number,
+) => {
+  const url = `${GATEWAY_BASE_URL}/api/v1/offences?legislation-partial=true&description-partial=true&items-per-page=${resultsPerPage}&multisearch-partial=true&multisearch=${searchText}`;
   const response = await fetch(url, {
     method: "GET",
     credentials: "include",

@@ -14,3 +14,11 @@
   margin-bottom: 16px;
   background-color: #b1b4b6;
 }
+
+.resultsPerPageSelectWrapper {
+  & :global(.govuk-form-group) {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}

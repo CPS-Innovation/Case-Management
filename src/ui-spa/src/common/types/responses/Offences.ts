@@ -6,4 +6,4 @@ export type Offence = {
   effectiveToDate: string | null;
 };
 
-export type Offences = Offence[];
+export type Offences = { offences: Offence[]; total: number };
