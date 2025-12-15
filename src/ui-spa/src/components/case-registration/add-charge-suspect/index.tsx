@@ -81,7 +81,7 @@ const AddChargeSuspectPage = () => {
 
   const suspectItems = useMemo(() => {
     if (!state.formData.suspects) return [];
-    return state.formData.suspects.map((suspect, index) => ({
+    const existingSuspects = state.formData.suspects.map((suspect, index) => ({
       id: `suspect-radio-${index}`,
       children: suspect.suspectCompanyNameText
         ? suspect.suspectCompanyNameText
@@ -92,6 +92,19 @@ const AddChargeSuspectPage = () => {
       value: `${index}`,
       "data-testid": `suspect-radio-${index}`,
     }));
+    return [
+      ...existingSuspects,
+      { divider: "or", value: "or" },
+      {
+        id: "suspect-radio-new",
+        children: "Suspect not listed",
+        hint: {
+          children: "Select this option to add their details on the next page.",
+        },
+        value: "add-new-suspect",
+        "data-testid": "suspect-radio-new",
+      },
+    ];
   }, [state.formData.suspects]);
 
   const setFormValue = (value: string) => {
@@ -105,6 +118,11 @@ const AddChargeSuspectPage = () => {
 
     if (!validateFormData()) return;
     const { suspects } = state.formData;
+    const suspectId = !suspects.length ? 0 : suspects.length;
+
+    if (addChargeSuspectRadio.suspectId === "add-new-suspect") {
+      return navigate(`/case-registration/suspect-${suspectId}/add-suspect`);
+    }
 
     const charges =
       suspects[parseInt(addChargeSuspectRadio.suspectId)].charges || [];
