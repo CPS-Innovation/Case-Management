@@ -16,6 +16,7 @@ jobs:
   variables:
   - group: ${{parameters.projectAcronym}}-backend-config-${{parameters.environment}}
   - group: ${{parameters.projectAcronym}}-backend-secrets-${{parameters.environment}}
+  - group: ${{parameters.projectAcronym}}-automated-testing
   steps:
   - task: UseNode@1
     displayName: 'Use Node.js'
@@ -42,8 +43,8 @@ jobs:
         --env-var "scope=api://$(CallingAppValidAudience)/.default" \
         --env-var "mdsBaseUrl=$(MdsOptionsBaseUrl)" \
         --env-var "mdsAccessKey=$(MdsOptionsAccessKey)" \
-        --env-var "cmsUsername=$(CmsUsername)" \
-        --env-var "cmsPassword=$(CmsPassword)" \
+        --env-var "cmsUsername=$(CmsUserName)" \
+        --env-var "cmsPassword=$(CmsUserPassword)" \
         --reporters cli,junit,htmlextra \
         --reporter-junit-export "$(Build.ArtifactStagingDirectory)/newman-report-${{parameters.environment}}.xml" \
         --reporter-htmlextra-export "$(Build.ArtifactStagingDirectory)/newman-report-${{parameters.environment}}.html" \
