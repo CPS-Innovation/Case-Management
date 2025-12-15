@@ -8,24 +8,25 @@ import pageStyles from "./index.module.scss";
 const SuspectRemoveConfirmationPage = () => {
   const navigate = useNavigate();
   const {
-    state: { suspectIndex, backRoute },
-  }: { state: { suspectIndex: number; backRoute: string } } = useLocation();
+    state: { suspectId, backRoute },
+  }: { state: { suspectId: string; backRoute: string } } = useLocation();
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const {
     formData: { suspects },
   } = state;
+  const selectedSuspect = suspects.find(
+    (suspect) => suspect.suspectId === suspectId,
+  );
 
   const { suspectFirstNameText = "", suspectLastNameText = "" } =
-    suspects[suspectIndex] || {};
+    selectedSuspect ?? {};
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     dispatch({
       type: "REMOVE_SUSPECT",
-      payload: {
-        index: suspectIndex,
-      },
+      payload: { suspectId },
     });
 
     return navigate(backRoute);

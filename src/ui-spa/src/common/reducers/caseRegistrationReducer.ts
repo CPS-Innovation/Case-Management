@@ -283,7 +283,7 @@ export type CaseRegistrationActions =
   | {
       type: "REMOVE_SUSPECT";
       payload: {
-        index: number;
+        suspectId: string;
       };
     }
   | {
@@ -479,8 +479,12 @@ export const caseRegistrationReducer = (
       };
     }
     case "REMOVE_SUSPECT": {
+      const { suspectId } = action.payload;
+
+      console.log("Removing suspect with ID:", suspectId);
+      console.log("state.formData.suspects:", state.formData.suspects);
       const suspects = state.formData.suspects.filter(
-        (_, i) => i !== action.payload.index,
+        (suspect) => suspect.suspectId !== suspectId,
       );
       return {
         ...state,
@@ -697,6 +701,7 @@ export const getResetSuspectFieldValues = (
 
   if (suspect.addSuspectRadio === "company") {
     const {
+      suspectId: _suspectId,
       suspectCompanyNameText: _suspectCompanyNameText,
       addSuspectRadio: _addSuspectRadio,
       ...rest
