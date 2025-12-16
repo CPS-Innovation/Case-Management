@@ -131,11 +131,6 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       return HttpResponse.json({ caseId: 12345 });
       // return new HttpResponse(null, { status: 500 });
     }),
-    http.post(`${baseUrl}/api/v1/offences`, async () => {
-      await delay(RESPONSE_DELAY);
-      return HttpResponse.json({ caseId: 12345 });
-      // return new HttpResponse(null, { status: 500 });
-    }),
     http.get(`${baseUrl}/api/v1/offences`, async () => {
       const results = isDevMock() ? offencesDev : offencesPlaywright;
       await delay(RESPONSE_DELAY);

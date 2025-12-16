@@ -174,7 +174,7 @@ export const suspectInitialState: SuspectFormData = {
   charges: [],
 };
 
-const chargeInitialState: ChargesFormData = {
+export const chargeInitialState: ChargesFormData = {
   chargeId: "",
   offenceSearchText: "",
   selectedOffence: {

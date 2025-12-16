@@ -2,6 +2,7 @@ import {
   caseRegistrationReducer,
   initialState,
   suspectInitialState,
+  chargeInitialState,
   getResetSuspectFieldValues,
   getResetFieldValues,
   type CaseRegistrationActions,
@@ -244,7 +245,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
-  it("Should remove a suspect at given suspectId using REMOVE_SUSPECT action", () => {
+  it("Should remove a suspect with a given suspectId using REMOVE_SUSPECT action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
       formData: {
@@ -270,6 +271,74 @@ describe("caseRegistrationReducer", () => {
     const state = caseRegistrationReducer(modifiedState, action);
     expect(state.formData.suspects.length).toEqual(1);
     expect(state.formData.suspects[0].suspectLastNameText).toEqual("last");
+  });
+
+  it("Should remove a suspect charge with given chargeId using REMOVE_SUSPECT_CHARGE action", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-1" },
+              { ...chargeInitialState, chargeId: "charge-2" },
+            ],
+          },
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            addSuspectRadio: "person",
+            suspectLastNameText: "last",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-3" },
+              { ...chargeInitialState, chargeId: "charge-4" },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 0,
+        chargeId: "charge-1",
+      },
+    };
+
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects[0].charges.length).toEqual(1);
+    expect(state.formData.suspects[0].charges[0]).toEqual({
+      ...chargeInitialState,
+      chargeId: "charge-2",
+    });
+    const newAction: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 1,
+        chargeId: "charge-3",
+      },
+    };
+
+    const newState = caseRegistrationReducer(modifiedState, newAction);
+    expect(newState.formData.suspects[0].charges.length).toEqual(1);
+    expect(newState.formData.suspects[1].charges.length).toEqual(1);
+    expect(state.formData.suspects[1].charges[0]).toEqual({
+      ...chargeInitialState,
+      chargeId: "charge-4",
+    });
+    const newAction1: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 1,
+        chargeId: "charge-4",
+      },
+    };
+    const newState1 = caseRegistrationReducer(modifiedState, newAction1);
+    expect(newState1.formData.suspects[0].charges.length).toEqual(1);
+    expect(newState1.formData.suspects[1].charges.length).toEqual(0);
   });
 
   it("getResetSuspectFieldValues should reset person suspects values to initial state if the user switches from addSuspectRadio from person to company", () => {
@@ -683,6 +752,40 @@ describe("caseRegistrationReducer", () => {
     };
     const state = caseRegistrationReducer(initialState, action);
     expect(state.apiData.policeUnits).toEqual(action.payload.policeUnits);
+  });
+
+  it("Should set apiData offencesSearchResults data using SET_OFFENCES_SEARCH_RESULTS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_OFFENCES_SEARCH_RESULTS",
+      payload: {
+        offencesSearchResults: {
+          offences: [
+            {
+              code: "WC81229",
+              description:
+                "Permit to be set trap etc - cause injury to wild bird",
+              legislation:
+                "Contrary to sections 5(1)(f) and 21(1) of the Wildlife and Countryside Act 1981.",
+              effectiveFromDate: "1998-03-17T00:00:00",
+              effectiveToDate: "1998-04-17T00:00:00",
+            },
+            {
+              code: "PB92005",
+              description: "Attempt to injure a badger",
+              legislation:
+                "Contrary to sections 1(1) and 12 of the Protection of Badgers Act 1992.",
+              effectiveFromDate: "1998-03-17T00:00:00",
+              effectiveToDate: null,
+            },
+          ],
+          total: 2,
+        },
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.offencesSearchResults).toEqual(
+      action.payload.offencesSearchResults,
+    );
   });
 });
 describe("getResetFieldValues", () => {
