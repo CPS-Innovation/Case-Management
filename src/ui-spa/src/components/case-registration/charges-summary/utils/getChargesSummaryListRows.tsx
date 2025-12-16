@@ -1,5 +1,5 @@
 import type { ChargesFormData } from "../../../../common/reducers/caseRegistrationReducer";
-import { Tag } from "../../../../components/govuk";
+import { Tag } from "../../../govuk";
 import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
 import { formatDate } from "../../../../common/utils/formatDate";
 import styles from "./index.module.scss";
@@ -8,8 +8,6 @@ export const getChargesSummaryListRows = (
   charge: ChargesFormData,
   addChargeRow: boolean = false,
 ) => {
-  if (!charge) return [];
-
   const rows = [
     addChargeRow && {
       key: { children: <b>{charge.selectedOffence.code}</b> },
@@ -21,8 +19,8 @@ export const getChargesSummaryListRows = (
         children: (
           <span>
             {charge.offenceToDate
-              ? `${formatDate(charge.offenceFromDate)} to ${formatDate(charge.offenceToDate)}`
-              : formatDate(charge.offenceFromDate)}
+              ? `${formatDate(charge.offenceFromDate, false, "dd MMM yyyy")} to ${formatDate(charge.offenceToDate, false, "dd MMM yyyy")}`
+              : formatDate(charge.offenceFromDate, false, "dd MMM yyyy")}
           </span>
         ),
       },
