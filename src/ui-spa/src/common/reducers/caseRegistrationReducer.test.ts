@@ -10,8 +10,14 @@ import {
 } from "./caseRegistrationReducer";
 import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
+vi.mock("uuid", () => ({
+  v4: vi.fn(() => "test-uuid"),
+}));
+import { v4 as uuidv4 } from "uuid";
+
 describe("caseRegistrationReducer", () => {
   const sampleSuspectState: SuspectFormData = {
+    suspectId: "suspect-1",
     addSuspectRadio: "company",
     suspectFirstNameText: "aa",
     suspectLastNameText: "bb",
@@ -165,7 +171,9 @@ describe("caseRegistrationReducer", () => {
     const expectedResult = {
       ...suspectInitialState,
       suspectFirstNameText: "John",
+      suspectId: "test-uuid",
     };
+    expect(uuidv4).toHaveBeenCalledTimes(1);
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
@@ -236,15 +244,16 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
-  it("Should remove a suspect at given index using REMOVE_SUSPECT action", () => {
+  it("Should remove a suspect at given suspectId using REMOVE_SUSPECT action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
       formData: {
         ...initialState.formData,
         suspects: [
-          { ...suspectInitialState },
+          { ...suspectInitialState, suspectId: "suspect-1" },
           {
             ...suspectInitialState,
+            suspectId: "suspect-2",
             addSuspectRadio: "person",
             suspectLastNameText: "last",
           },
@@ -254,7 +263,7 @@ describe("caseRegistrationReducer", () => {
     const action: CaseRegistrationActions = {
       type: "REMOVE_SUSPECT",
       payload: {
-        index: 0,
+        suspectId: "suspect-1",
       },
     };
 
@@ -276,6 +285,7 @@ describe("caseRegistrationReducer", () => {
     const {
       suspectCompanyNameText: _suspectCompanyNameText,
       addSuspectRadio: _addSuspectRadio,
+      suspectId: _suspectId,
       ...rest
     } = suspectInitialState;
     expect(resetValues).toEqual({ ...rest });
@@ -335,6 +345,7 @@ describe("caseRegistrationReducer", () => {
           {
             ...suspectState,
             suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectId: "suspect-2",
           },
         ],
       },
@@ -352,6 +363,7 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...modifiedState.formData.suspects[0],
+            suspectId: "suspect-1",
           },
           {
             ...suspectInitialState,
@@ -361,6 +373,7 @@ describe("caseRegistrationReducer", () => {
             suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
             suspectGenderRadio: { shortCode: "M", description: "male" },
             suspectDisabilityRadio: "no",
+            suspectId: "suspect-2",
           },
         ],
       },
@@ -380,10 +393,12 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...suspectState,
+            suspectId: "suspect-1",
             suspectAdditionalDetailsCheckboxes: [],
           },
           {
             ...suspectState,
+            suspectId: "suspect-2",
             suspectAdditionalDetailsCheckboxes: [],
           },
         ],
@@ -403,13 +418,14 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...suspectInitialState,
+            suspectId: "suspect-1",
             addSuspectRadio: "person",
             suspectFirstNameText: "aa",
             suspectLastNameText: "bb",
             suspectAdditionalDetailsCheckboxes: [],
           },
           {
-            ...modifiedState.formData.suspects[0],
+            ...modifiedState.formData.suspects[1],
           },
         ],
       },
@@ -737,6 +753,7 @@ describe("getResetFieldValues", () => {
       action,
     );
     expect(state.formData.suspects[0].charges[0]).toEqual({
+      chargeId: "test-uuid",
       offenceSearchText: "New Offence",
       selectedOffence: {
         code: "ABC",
