@@ -18,6 +18,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { type VictimAdditionalDetailsValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
 
@@ -250,6 +251,32 @@ const AddChargeVictimPage = () => {
 
     if (!validateFormData()) return;
 
+    const isVictimNameExists = state.formData.victimsList.some((victim) => {
+      return (
+        victim.firstName.toLowerCase() ===
+          victimDetails.victimFirstNameText.toLowerCase() &&
+        victim.lastName.toLowerCase() ===
+          victimDetails.victimLastNameText.toLowerCase()
+      );
+    });
+    if (
+      isVictimNameExists &&
+      victimDetails.selectedVictimRadio === "new-victim"
+    ) {
+      navigate("/case-registration/charges-victim-duplicate-confirmation", {
+        state: {
+          suspectIndex: suspectIndex,
+          chargeIndex: chargeIndex,
+          victimFirstName: victimDetails.victimFirstNameText,
+          victimLastName: victimDetails.victimLastNameText,
+          victimAdditionalDetailsCheckboxes:
+            victimDetails.victimAdditionalDetailsCheckboxes,
+          backRoute: location.pathname,
+        },
+      });
+      return;
+    }
+
     let selectedVictimDetails = {
       firstName: victimDetails.victimFirstNameText,
       lastName: victimDetails.victimLastNameText,
@@ -257,10 +284,7 @@ const AddChargeVictimPage = () => {
 
     if (victimDetails.selectedVictimRadio !== "new-victim") {
       const selectedVictim = state.formData.victimsList.find((victim) => {
-        return (
-          `${victim.lastName}-${victim.firstName}` ===
-          victimDetails.selectedVictimRadio
-        );
+        return victim.id === victimDetails.selectedVictimRadio;
       });
       if (selectedVictim) {
         selectedVictimDetails = {
@@ -290,29 +314,20 @@ const AddChargeVictimPage = () => {
       !state.formData.victimsList.length ||
       victimDetails.selectedVictimRadio === "new-victim"
     ) {
-      const isVictimNameExists = state.formData.victimsList.some((victim) => {
-        return (
-          victim.firstName.toLowerCase() ===
-            victimDetails.victimFirstNameText.toLowerCase() &&
-          victim.lastName.toLowerCase() ===
-            victimDetails.victimLastNameText.toLowerCase()
-        );
+      dispatch({
+        type: "SET_FIELD",
+        payload: {
+          field: "victimsList",
+          value: [
+            ...state.formData.victimsList,
+            {
+              id: uuidv4(),
+              firstName: victimDetails.victimFirstNameText,
+              lastName: victimDetails.victimLastNameText,
+            },
+          ],
+        },
       });
-      if (!isVictimNameExists) {
-        dispatch({
-          type: "SET_FIELD",
-          payload: {
-            field: "victimsList",
-            value: [
-              ...state.formData.victimsList,
-              {
-                firstName: victimDetails.victimFirstNameText,
-                lastName: victimDetails.victimLastNameText,
-              },
-            ],
-          },
-        });
-      }
     }
 
     return navigate("/case-registration/charges-summary");
@@ -323,7 +338,7 @@ const AddChargeVictimPage = () => {
       return {
         id: `add-victim-radio-${index}`,
         children: formatNameUtil(victim.firstName, victim.lastName),
-        value: `${victim.lastName}-${victim.firstName}`,
+        value: victim.id,
         "data-testid": `add-victim-radio-${index}`,
       };
     });

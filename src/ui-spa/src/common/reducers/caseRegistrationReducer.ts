@@ -130,7 +130,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimsList: { firstName: string; lastName: string }[];
+  victimsList: { id: string; firstName: string; lastName: string }[];
 };
 
 export type CaseRegistrationState = {

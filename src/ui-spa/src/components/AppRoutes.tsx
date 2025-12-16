@@ -28,6 +28,7 @@ import AddChargeDetailsPage from "./case-registration/add-charge-details";
 import ChargesSummaryPage from "./case-registration/charges-summary";
 import AddChargeVictimPage from "./case-registration/add-charge-victim";
 import ChargeRemoveConfirmationPage from "./case-registration/charge-remove-confirmation";
+import ChargesVictimDuplicateConfirmationPage from "./case-registration/charges-victim-duplicate-confirmation";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -143,6 +144,10 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/charge-remove-confirmation"
           element={<ChargeRemoveConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/charges-victim-duplicate-confirmation"
+          element={<ChargesVictimDuplicateConfirmationPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />
