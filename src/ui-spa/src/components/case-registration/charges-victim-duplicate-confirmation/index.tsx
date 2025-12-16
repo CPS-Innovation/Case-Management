@@ -72,20 +72,17 @@ const ChargesVictimDuplicateConfirmationPage = () => {
       <BackLink to={backRoute}>Back</BackLink>
 
       <form onSubmit={handleSubmit}>
-        <h1>
-          Victim {formatNameUtil(victimFirstName, victimLastName)} already
-          exists
-        </h1>
+        <h1>Check the victim name</h1>
 
         <div>
           <p>
-            The new victim or witness you have entered appears to duplicate the
-            following existing victim:
+            This victim <b>{formatNameUtil(victimFirstName, victimLastName)}</b>{" "}
+            has already been added.
           </p>
-          <p>{formatNameUtil(victimFirstName, victimLastName)}</p>
+
           <p>
-            Click save and continue to save the new victim anyway or cancel to
-            go back.
+            Save and continue if this is a different person, or cancel to go
+            back and check the details.
           </p>
         </div>
         <div className={pageStyles.buttonWrapper}>

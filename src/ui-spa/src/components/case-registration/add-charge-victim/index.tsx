@@ -178,26 +178,25 @@ const AddChargeVictimPage = () => {
 
   const renderVictimAdditionalDetails = useCallback(() => {
     const victimType = [
-      "Vulnerable",
-      "Intimidated",
-      "Witness",
-    ] as VictimAdditionalDetailsValue[];
+      { name: "The victim is vulnerable", value: "Vulnerable" },
+      { name: "The victim has been intimidated", value: "Intimidated" },
+      { name: "The victim is also a witness", value: "Witness" },
+    ] as { name: string; value: VictimAdditionalDetailsValue }[];
     return (
       <Checkboxes
         fieldset={{
           legend: {
-            children: <h2>Victim type (optional)</h2>,
+            children: <h2>Victim details (optional)</h2>,
           },
         }}
         items={victimType.map((victimType, index) => ({
           id: `case-victim-type-${index}`,
-          children: victimType,
-          value: victimType,
+          children: victimType.name,
+          value: victimType.value,
           "data-testid": `case-victim-type-${index}`,
-          checked:
-            victimDetails.victimAdditionalDetailsCheckboxes?.includes(
-              victimType,
-            ),
+          checked: victimDetails.victimAdditionalDetailsCheckboxes?.includes(
+            victimType.value,
+          ),
         }))}
         onChange={(event) => {
           const { value } = event.target;
