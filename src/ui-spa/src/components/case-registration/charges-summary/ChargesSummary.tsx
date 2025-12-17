@@ -60,7 +60,6 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
 
   const renderSummaryList = () => {
     const suspectChargesList = getChargesSummaryList(state.formData.suspects);
-    console.log("suspectChargesList", suspectChargesList);
     return (
       <div>
         {suspectChargesList.map((suspectCharge, suspectIndex) => (

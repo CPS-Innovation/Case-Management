@@ -83,7 +83,7 @@ describe("getChargesSummaryListRows", () => {
     };
 
     const rows = getChargesSummaryListRows(charge, true);
-    console.log(JSON.stringify(rows));
+
     renderRows(rows);
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent("offence-code-1");
     expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(
