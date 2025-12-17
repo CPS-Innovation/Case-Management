@@ -433,7 +433,10 @@ export const caseRegistrationReducer = (
 
     case "SET_CHARGE_FIELDS": {
       const { suspectIndex, chargeIndex, data } = action.payload;
-      if (suspectIndex > state.formData.suspects.length) {
+      if (suspectIndex >= state.formData.suspects.length) {
+        return state;
+      }
+      if (chargeIndex > state.formData.suspects[suspectIndex].charges.length) {
         return state;
       }
 
