@@ -369,7 +369,7 @@ const AddChargeVictimPage = () => {
   };
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div>
       <BackLink
         to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`}
       >

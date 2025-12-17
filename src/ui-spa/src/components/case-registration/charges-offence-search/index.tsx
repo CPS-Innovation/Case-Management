@@ -109,8 +109,8 @@ const ChargesOffenceSearch = () => {
 
     if (!searchText) {
       errors.offenceSearchText = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Please add a search key",
+        inputErrorText: "Please add a search key",
       };
       isValid = false;
     }
@@ -347,6 +347,10 @@ const ChargesOffenceSearch = () => {
                       {
                         value: 100,
                         children: "100 results per page",
+                      },
+                      {
+                        value: 1000,
+                        children: "1000 results per page",
                       },
                     ]}
                     formGroup={{

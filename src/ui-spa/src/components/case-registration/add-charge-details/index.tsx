@@ -91,8 +91,8 @@ const AddChargeDetailsPage = () => {
         case "addVictimRadio":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            href: "#first-hearing-radio-yes",
-            "data-testid": "first-hearing-radio-link",
+            href: "#add-victim-radio-yes",
+            "data-testid": "add-victim-radio-link",
           };
 
         case "offenceFromDate":
@@ -122,7 +122,7 @@ const AddChargeDetailsPage = () => {
 
     if (!addVictimRadio) {
       errors.addVictimRadio = {
-        errorSummaryText: "Please select an option for first hearing",
+        errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
         hasLink: true,
       };
@@ -140,14 +140,6 @@ const AddChargeDetailsPage = () => {
       errors.offenceToDate = {
         errorSummaryText: "Select an offence to date",
         inputErrorText: "Select a date",
-        hasLink: true,
-      };
-    }
-
-    if (addVictimRadio == "yes" && !offenceFromDate) {
-      errors.offenceFromDate = {
-        errorSummaryText: "Please select a date for first hearing",
-        inputErrorText: "Please select a date",
         hasLink: true,
       };
     }
@@ -226,7 +218,7 @@ const AddChargeDetailsPage = () => {
   };
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div>
       <BackLink
         to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`}
       >
