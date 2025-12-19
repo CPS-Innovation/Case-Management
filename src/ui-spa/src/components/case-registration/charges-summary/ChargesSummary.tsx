@@ -71,7 +71,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
             }
           >
             {suspectCharge.suspectLastNameText ? (
-              <h2>
+              <h2 className="govuk-!-margin-top-8">
                 {`Charges for ${formatNameUtil(
                   suspectCharge.suspectFirstNameText,
                   suspectCharge.suspectLastNameText,
@@ -79,7 +79,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                 `}
               </h2>
             ) : (
-              <h2>{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
+              <h2 className="govuk-!-margin-top-8">{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
             )}
             {suspectCharge.charges.map((charge) => (
               <div key={`${charge.selectedOffence.code}-${charge.chargeId}`}>
@@ -92,7 +92,14 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                 />
                 <div>
                   <Details summaryChildren={"View charge details"}>
-                    <SummaryList rows={getChargesSummaryListRows(charge)} />
+                    <SummaryList
+                      rows={getChargesSummaryListRows(
+                        charge,
+                        isCaseSummaryPage,
+                        suspectIndex,
+                        charge.chargeId,
+                      )}
+                    />
                   </Details>
                 </div>
               </div>
