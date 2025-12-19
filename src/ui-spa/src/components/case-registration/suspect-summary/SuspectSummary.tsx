@@ -19,7 +19,34 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
 }) => {
   const { state } = useContext(CaseRegistrationFormContext);
 
-  const suspectSummaryRows = (suspect: SuspectFormData, index: number) => {
+  const addNewChargeRow = (suspectIndex: number, chargeIndex: number) => {
+    return [
+      {
+        key: {
+          children:
+            chargeIndex === 0 ? (
+              <span>charges</span>
+            ) : (
+              <span>Add another charge</span>
+            ),
+        },
+        value: {
+          children: chargeIndex === 0 ? <span>No charges added</span> : <></>,
+        },
+        actions: {
+          items: [
+            {
+              children: <span> Add Charge</span>,
+              to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
+              visuallyHiddenText: "Add new charge",
+            },
+          ],
+        },
+      },
+    ];
+  };
+
+  const suspectSummaryRow = (suspect: SuspectFormData, index: number) => {
     return [
       {
         key: {
@@ -110,7 +137,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             suspect.addSuspectRadio === "person" && (
               <div key={`${index}-${suspect.suspectLastNameText}`}>
                 <div className={styles.suspectRowWrapper}>
-                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
+                  <SummaryList rows={suspectSummaryRow(suspect, index)} />
                 </div>
 
                 {getDetailsTitle(
@@ -141,7 +168,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                             />
                           </>
                         )}
-                        {isCaseSummaryPage && suspect.charges.length > 0 && (
+                        {isCaseSummaryPage && (
                           <>
                             <h3>Charges</h3>
                             {suspect.charges.map((charge) => (
@@ -158,6 +185,14 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                 />
                               </div>
                             ))}
+                            <div>
+                              <SummaryList
+                                rows={addNewChargeRow(
+                                  index,
+                                  suspect.charges.length,
+                                )}
+                              />
+                            </div>
                           </>
                         )}
                       </Details>
@@ -172,7 +207,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             suspect.addSuspectRadio === "company" && (
               <div key={`${index}-${suspect.suspectCompanyNameText}`}>
                 <div className={styles.suspectRowWrapper}>
-                  <SummaryList rows={suspectSummaryRows(suspect, index)} />
+                  <SummaryList rows={suspectSummaryRow(suspect, index)} />
                   {isCaseSummaryPage && suspect.charges.length > 0 && (
                     <>
                       <Details summaryChildren={"Charges"}>
@@ -189,6 +224,14 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                             />
                           </div>
                         ))}
+                        <div>
+                          <SummaryList
+                            rows={addNewChargeRow(
+                              index,
+                              suspect.charges.length,
+                            )}
+                          />
+                        </div>
                       </Details>
                     </>
                   )}
