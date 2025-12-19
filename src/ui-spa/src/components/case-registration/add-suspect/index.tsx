@@ -215,7 +215,7 @@ const AddSuspectPage = () => {
     suspectAdditionalDetailsCheckboxes = [],
   } = suspects[suspectIndex] || {};
   return (
-    <div className={styles.addSuspectPage}>
+    <div>
       <BackLink to="/case-registration/case-details">Back</BackLink>
       {!!errorList.length && (
         <div

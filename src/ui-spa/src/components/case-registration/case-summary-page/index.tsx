@@ -175,9 +175,7 @@ const CaseSummaryPage = () => {
         Back
       </BackLink>
 
-      <h1 className="govuk-heading-xl">
-        Check your answers before creating the case
-      </h1>
+      <h1>Check your answers before creating the case</h1>
 
       {!!errorList.length && (
         <div

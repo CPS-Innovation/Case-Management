@@ -51,7 +51,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               children: <span>Remove</span>,
               to: `/case-registration/suspect-remove-confirmation`,
               state: {
-                suspectIndex: index,
+                suspectId: suspect.suspectId,
                 backRoute: isCaseSummaryPage
                   ? `/case-registration/case-summary`
                   : `/case-registration/suspect-summary`,

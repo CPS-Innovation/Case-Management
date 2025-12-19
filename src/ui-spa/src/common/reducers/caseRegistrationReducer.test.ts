@@ -2,6 +2,7 @@ import {
   caseRegistrationReducer,
   initialState,
   suspectInitialState,
+  chargeInitialState,
   getResetSuspectFieldValues,
   getResetFieldValues,
   type CaseRegistrationActions,
@@ -10,8 +11,17 @@ import {
 } from "./caseRegistrationReducer";
 import { offenderTypeShortCodes } from "../constants/offenderTypeShortCodes";
 
+vi.mock("uuid", () => ({
+  v4: vi.fn(() => "test-uuid"),
+}));
+import { v4 as uuidv4 } from "uuid";
+
 describe("caseRegistrationReducer", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
   const sampleSuspectState: SuspectFormData = {
+    suspectId: "suspect-1",
     addSuspectRadio: "company",
     suspectFirstNameText: "aa",
     suspectLastNameText: "bb",
@@ -36,6 +46,7 @@ describe("caseRegistrationReducer", () => {
     suspectDOBDayText: "5",
     suspectDOBMonthText: "12",
     suspectDOBYearText: "2000",
+    charges: [],
   };
   it("should set formData operationNameRadio using SET_FIELD action", () => {
     const action: CaseRegistrationActions = {
@@ -119,6 +130,8 @@ describe("caseRegistrationReducer", () => {
         caseInvestigatorShoulderNumberText: "123",
 
         suspects: [],
+        victimsList: [],
+        wantToAddChargesRadio: "",
       },
       apiData: apiData,
     };
@@ -162,11 +175,25 @@ describe("caseRegistrationReducer", () => {
     const expectedResult = {
       ...suspectInitialState,
       suspectFirstNameText: "John",
+      suspectId: "test-uuid",
     };
+    expect(uuidv4).toHaveBeenCalledTimes(1);
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
   it("should set suspect data suspectAliases data along with other fields initial value using SET_SUSPECT_FIELD action", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          { ...suspectInitialState },
+          {
+            ...suspectInitialState,
+          },
+        ],
+      },
+    };
     const action: CaseRegistrationActions = {
       type: "SET_SUSPECT_FIELD",
       payload: {
@@ -175,7 +202,7 @@ describe("caseRegistrationReducer", () => {
         value: [{ firstName: "John", lastName: "Doe" }],
       },
     };
-    const state = caseRegistrationReducer(initialState, action);
+    const state = caseRegistrationReducer(modifiedState, action);
     const expectedResult = {
       ...suspectInitialState,
       suspectAliases: [
@@ -186,6 +213,7 @@ describe("caseRegistrationReducer", () => {
       ],
     };
     expect(state.formData.suspects[0]).toEqual(expectedResult);
+    expect(state.formData.suspects[1]).toEqual(suspectInitialState);
   });
 
   it("should just set suspect data suspectFirstNameText  using SET_SUSPECT_FIELD action, when suspect details are already available", () => {
@@ -220,15 +248,16 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
-  it("Should remove a suspect at given index using REMOVE_SUSPECT action", () => {
+  it("Should remove a suspect with a given suspectId using REMOVE_SUSPECT action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
       formData: {
         ...initialState.formData,
         suspects: [
-          { ...suspectInitialState },
+          { ...suspectInitialState, suspectId: "suspect-1" },
           {
             ...suspectInitialState,
+            suspectId: "suspect-2",
             addSuspectRadio: "person",
             suspectLastNameText: "last",
           },
@@ -238,13 +267,286 @@ describe("caseRegistrationReducer", () => {
     const action: CaseRegistrationActions = {
       type: "REMOVE_SUSPECT",
       payload: {
-        index: 0,
+        suspectId: "suspect-1",
       },
     };
 
     const state = caseRegistrationReducer(modifiedState, action);
     expect(state.formData.suspects.length).toEqual(1);
     expect(state.formData.suspects[0].suspectLastNameText).toEqual("last");
+  });
+
+  it("should not allow to set charge data for the suspect that does not exist using SET_CHARGE_FIELDS action ", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 1,
+        chargeIndex: 0,
+        data: { offenceSearchText: "theft" },
+      },
+    };
+
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [{ ...suspectInitialState, suspectId: "suspect-1" }],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+
+    expect(state.formData.suspects[0]).toEqual(
+      modifiedState.formData.suspects[0],
+    );
+
+    expect(state.formData.suspects[0].charges.length).toEqual(0);
+  });
+  it("should not allow to set charge data ,with chargeIndex greater than existing charges length using SET_CHARGE_FIELDS action ", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 0,
+        chargeIndex: 1,
+        data: { offenceSearchText: "theft" },
+      },
+    };
+
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [{ ...suspectInitialState, suspectId: "suspect-1" }],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+
+    expect(state.formData.suspects[0]).toEqual(
+      modifiedState.formData.suspects[0],
+    );
+
+    expect(state.formData.suspects[0].charges.length).toEqual(0);
+  });
+
+  it("should set new charge data for a given suspect data along with other fields initial value using SET_CHARGE_FIELDS action", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 0,
+        chargeIndex: 0,
+        data: { offenceSearchText: "theft", offenceFromDate: "2023-01-01" },
+      },
+    };
+
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [{ ...suspectInitialState, suspectId: "suspect-1" }],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    const expectedResult = {
+      ...suspectInitialState,
+      suspectId: "suspect-1",
+      charges: [
+        {
+          ...chargeInitialState,
+          offenceSearchText: "theft",
+          offenceFromDate: "2023-01-01",
+          chargeId: "test-uuid",
+        },
+      ],
+    };
+    expect(uuidv4).toHaveBeenCalledTimes(1);
+    expect(state.formData.suspects[0]).toEqual(expectedResult);
+  });
+
+  it("should be able to modify charge data for a given suspect data along with other values using SET_CHARGE_FIELDS action", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 1,
+        chargeIndex: 1,
+        data: { offenceSearchText: "robbery", offenceFromDate: "2023-02-02" },
+      },
+    };
+
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-1" },
+              { ...chargeInitialState, chargeId: "charge-2" },
+            ],
+          },
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-3" },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-4",
+                offenceSearchText: "theft",
+                offenceFromDate: "2024-02-02",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    const expectedResult = {
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...modifiedState.formData.suspects[0],
+          },
+          {
+            ...modifiedState.formData.suspects[1],
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-3" },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-4",
+                offenceSearchText: "robbery",
+                offenceFromDate: "2023-02-02",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    expect(uuidv4).toHaveBeenCalledTimes(0);
+    expect(state.formData).toEqual(expectedResult.formData);
+  });
+
+  it("Should SET_CHARGE_FIELDS action update the the charge fields for the given suspect and charge index", () => {
+    const initialStateWithSuspectAndCharge: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+          },
+          {
+            ...suspectInitialState,
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "SET_CHARGE_FIELDS",
+      payload: {
+        suspectIndex: 0,
+        chargeIndex: 0,
+        data: {
+          offenceSearchText: "New Offence",
+          selectedOffence: {
+            code: "ABC",
+            description: "sample description",
+            legislation: "sample legislation",
+            effectiveFromDate: "2024-01-01",
+            effectiveToDate: "2024-12-31",
+          },
+        },
+      },
+    };
+    const state = caseRegistrationReducer(
+      initialStateWithSuspectAndCharge,
+      action,
+    );
+    expect(state.formData.suspects[0].charges[0]).toEqual({
+      chargeId: "test-uuid",
+      offenceSearchText: "New Offence",
+      selectedOffence: {
+        code: "ABC",
+        description: "sample description",
+        legislation: "sample legislation",
+        effectiveFromDate: "2024-01-01",
+        effectiveToDate: "2024-12-31",
+      },
+      offenceFromDate: "",
+      offenceToDate: "",
+      addVictimRadio: "",
+      victim: null,
+    });
+    expect(state.formData.suspects[1].charges).toEqual([]);
+  });
+
+  it("Should remove a suspect charge with given chargeId using REMOVE_SUSPECT_CHARGE action", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-1" },
+              { ...chargeInitialState, chargeId: "charge-2" },
+            ],
+          },
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            addSuspectRadio: "person",
+            suspectLastNameText: "last",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-3" },
+              { ...chargeInitialState, chargeId: "charge-4" },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 0,
+        chargeId: "charge-1",
+      },
+    };
+
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects[0].charges.length).toEqual(1);
+    expect(state.formData.suspects[0].charges[0]).toEqual({
+      ...chargeInitialState,
+      chargeId: "charge-2",
+    });
+    const newAction: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 1,
+        chargeId: "charge-3",
+      },
+    };
+
+    const newState = caseRegistrationReducer(modifiedState, newAction);
+    expect(newState.formData.suspects[0].charges.length).toEqual(1);
+    expect(newState.formData.suspects[1].charges.length).toEqual(1);
+    expect(state.formData.suspects[1].charges[0]).toEqual({
+      ...chargeInitialState,
+      chargeId: "charge-4",
+    });
+    const newAction1: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectIndex: 1,
+        chargeId: "charge-4",
+      },
+    };
+    const newState1 = caseRegistrationReducer(modifiedState, newAction1);
+    expect(newState1.formData.suspects[0].charges.length).toEqual(1);
+    expect(newState1.formData.suspects[1].charges.length).toEqual(0);
   });
 
   it("getResetSuspectFieldValues should reset person suspects values to initial state if the user switches from addSuspectRadio from person to company", () => {
@@ -260,6 +562,7 @@ describe("caseRegistrationReducer", () => {
     const {
       suspectCompanyNameText: _suspectCompanyNameText,
       addSuspectRadio: _addSuspectRadio,
+      suspectId: _suspectId,
       ...rest
     } = suspectInitialState;
     expect(resetValues).toEqual({ ...rest });
@@ -319,6 +622,7 @@ describe("caseRegistrationReducer", () => {
           {
             ...suspectState,
             suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectId: "suspect-2",
           },
         ],
       },
@@ -336,6 +640,7 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...modifiedState.formData.suspects[0],
+            suspectId: "suspect-1",
           },
           {
             ...suspectInitialState,
@@ -345,6 +650,7 @@ describe("caseRegistrationReducer", () => {
             suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
             suspectGenderRadio: { shortCode: "M", description: "male" },
             suspectDisabilityRadio: "no",
+            suspectId: "suspect-2",
           },
         ],
       },
@@ -364,10 +670,12 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...suspectState,
+            suspectId: "suspect-1",
             suspectAdditionalDetailsCheckboxes: [],
           },
           {
             ...suspectState,
+            suspectId: "suspect-2",
             suspectAdditionalDetailsCheckboxes: [],
           },
         ],
@@ -387,13 +695,14 @@ describe("caseRegistrationReducer", () => {
         suspects: [
           {
             ...suspectInitialState,
+            suspectId: "suspect-1",
             addSuspectRadio: "person",
             suspectFirstNameText: "aa",
             suspectLastNameText: "bb",
             suspectAdditionalDetailsCheckboxes: [],
           },
           {
-            ...modifiedState.formData.suspects[0],
+            ...modifiedState.formData.suspects[1],
           },
         ],
       },
@@ -651,6 +960,40 @@ describe("caseRegistrationReducer", () => {
     };
     const state = caseRegistrationReducer(initialState, action);
     expect(state.apiData.policeUnits).toEqual(action.payload.policeUnits);
+  });
+
+  it("Should set apiData offencesSearchResults data using SET_OFFENCES_SEARCH_RESULTS", () => {
+    const action: CaseRegistrationActions = {
+      type: "SET_OFFENCES_SEARCH_RESULTS",
+      payload: {
+        offencesSearchResults: {
+          offences: [
+            {
+              code: "WC81229",
+              description:
+                "Permit to be set trap etc - cause injury to wild bird",
+              legislation:
+                "Contrary to sections 5(1)(f) and 21(1) of the Wildlife and Countryside Act 1981.",
+              effectiveFromDate: "1998-03-17T00:00:00",
+              effectiveToDate: "1998-04-17T00:00:00",
+            },
+            {
+              code: "PB92005",
+              description: "Attempt to injure a badger",
+              legislation:
+                "Contrary to sections 1(1) and 12 of the Protection of Badgers Act 1992.",
+              effectiveFromDate: "1998-03-17T00:00:00",
+              effectiveToDate: null,
+            },
+          ],
+          total: 2,
+        },
+      },
+    };
+    const state = caseRegistrationReducer(initialState, action);
+    expect(state.apiData.offencesSearchResults).toEqual(
+      action.payload.offencesSearchResults,
+    );
   });
 });
 describe("getResetFieldValues", () => {

@@ -1,0 +1,10 @@
+.tagsContainer {
+  display: flex;
+  gap: 0.5rem;
+  & :global(.govuk-tag) {
+    text-transform: inherit;
+    letter-spacing: 0;
+    font-weight: normal;
+    color: #000000;
+  }
+}

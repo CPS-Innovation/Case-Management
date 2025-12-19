@@ -9,44 +9,38 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
-import SuspectSummary from "./SuspectSummary";
-import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import styles from "../index.module.scss";
-import pageStyles from "./index.module.scss";
 
-const SuspectSummaryPage = () => {
+const AddChargeSuspectPage = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
   };
   type FormDataErrors = {
-    addMoreSuspectsRadio?: ErrorText;
+    addChargeSuspectRadio?: ErrorText;
   };
+
+  const [addChargeSuspectRadio, setAddChargeSuspectRadio] = useState<{
+    suspectId: string;
+  }>({ suspectId: "" });
+
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { chargesCount } = useMemo(() => {
-    const chargeList = getChargesSummaryList(state.formData.suspects);
-    const chargesCount = chargeList.reduce(
-      (acc, item) => acc + item.charges.length,
-      0,
-    );
-    return { chargesCount };
-  }, [state.formData.suspects]);
-
-  const [addMoreSuspectsRadio, setAddMoreSuspectsRadio] = useState<string>("");
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
-      if (errorKey === "addMoreSuspectsRadio") {
+      if (errorKey === "addChargeSuspectRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#add-more-suspects-radio-yes",
-          "data-testid": "add-more-suspects-radio-yes",
+          href: "#suspect-religion-radio-0",
+          "data-testid": "suspect-religion-radio-link",
         };
       }
+
       return null;
     },
     [formDataErrors],
@@ -54,15 +48,15 @@ const SuspectSummaryPage = () => {
 
   const validateFormData = () => {
     const errors: FormDataErrors = {};
+    let isValid = true;
 
-    if (!addMoreSuspectsRadio) {
-      errors.addMoreSuspectsRadio = {
+    if (!addChargeSuspectRadio.suspectId) {
+      errors.addChargeSuspectRadio = {
         errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
       };
+      isValid = false;
     }
-
-    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
 
     setFormDataErrors(errors);
     return isValid;
@@ -85,30 +79,63 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const suspectItems = useMemo(() => {
+    if (!state.formData.suspects) return [];
+    const existingSuspects = state.formData.suspects.map((suspect, index) => ({
+      id: `suspect-radio-${index}`,
+      children: suspect.suspectCompanyNameText
+        ? suspect.suspectCompanyNameText
+        : formatNameUtil(
+            suspect.suspectFirstNameText,
+            suspect.suspectLastNameText,
+          ),
+      value: `${index}`,
+      "data-testid": `suspect-radio-${index}`,
+    }));
+    return [
+      ...existingSuspects,
+      { divider: "or", value: "or" },
+      {
+        id: "suspect-radio-new",
+        children: "Suspect not listed",
+        hint: {
+          children: "Select this option to add their details on the next page.",
+        },
+        value: "add-new-suspect",
+        "data-testid": "suspect-radio-new",
+      },
+    ];
+  }, [state.formData.suspects]);
+
+  const setFormValue = (value: string) => {
+    setAddChargeSuspectRadio({
+      suspectId: value,
+    });
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateFormData()) return;
+    const { suspects } = state.formData;
+    const suspectId = !suspects.length ? 0 : suspects.length;
 
-    if (addMoreSuspectsRadio === "yes") {
-      navigate(
-        `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
-      );
-      return;
-    }
-    if (chargesCount > 0) {
-      navigate("/case-registration/charges-summary");
-      return;
+    if (addChargeSuspectRadio.suspectId === "add-new-suspect") {
+      return navigate(`/case-registration/suspect-${suspectId}/add-suspect`);
     }
 
-    //if there are charges go to charges summary page
-    navigate("/case-registration/want-to-add-charges");
-    // navigate("/case-registration/case-complexity");
+    const charges =
+      suspects[parseInt(addChargeSuspectRadio.suspectId)].charges || [];
+    const chargeId =
+      charges.length > 0 ? `charge-${charges.length}` : "charge-0";
+
+    const nextRoute = `/case-registration/suspect-${addChargeSuspectRadio.suspectId}/${chargeId}/charges-offence-search`;
+    return navigate(nextRoute);
   };
 
   return (
-    <div className={pageStyles.caseSuspectsSummaryPage}>
-      <BackLink to={`/case-registration/case-details`}>Back</BackLink>
+    <div>
+      <BackLink to={"/case-registration/want-to-add-charges"}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -116,48 +143,34 @@ const SuspectSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"add-charge-suspect-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added ${state.formData.suspects.length} suspects`}</h1>
-        <SuspectSummary />
         <div className={styles.inputWrapper}>
           <Radios
-            className="govuk-radios--inline"
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another suspect? </h2>,
+                children: (
+                  <h1>Which suspect to do you want to add charges for?</h1>
+                ),
               },
             }}
             errorMessage={
-              formDataErrors["addMoreSuspectsRadio"]
+              formDataErrors["addChargeSuspectRadio"]
                 ? {
                     children:
-                      formDataErrors["addMoreSuspectsRadio"].errorSummaryText,
+                      formDataErrors["addChargeSuspectRadio"].inputErrorText,
                   }
                 : undefined
             }
-            items={[
-              {
-                id: `suspect-add-more-suspects-radio-yes`,
-                children: "Yes",
-                value: "yes",
-                "data-testid": `suspect-add-more-suspects-radio-yes`,
-              },
-              {
-                id: `suspect-add-more-suspects-radio-no`,
-                children: "No",
-                value: "no",
-                "data-testid": `suspect-add-more-suspects-radio-no`,
-              },
-            ]}
-            value={addMoreSuspectsRadio}
+            items={suspectItems}
+            value={addChargeSuspectRadio.suspectId || ""}
             onChange={(value) => {
-              if (value) setAddMoreSuspectsRadio(value);
+              if (value) setFormValue(value);
             }}
           ></Radios>
         </div>
@@ -169,4 +182,4 @@ const SuspectSummaryPage = () => {
   );
 };
 
-export default SuspectSummaryPage;
+export default AddChargeSuspectPage;

@@ -1,0 +1,24 @@
+.searchWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  & .btnSearch {
+    margin-bottom: 21px;
+  }
+}
+.resultsDivider {
+  border: none;
+  height: 1px;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 16px;
+  background-color: #b1b4b6;
+}
+
+.resultsPerPageSelectWrapper {
+  & :global(.govuk-form-group) {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+}

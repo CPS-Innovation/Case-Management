@@ -5,7 +5,13 @@ import DateInputNative from "./DateInputNative";
 
 describe("DateInputNative", () => {
   it("renders label and input and associates them via id", () => {
-    render(<DateInputNative id="dob" label="Date of birth" />);
+    render(
+      <DateInputNative
+        id="dob"
+        label="Date of birth"
+        hint="For example, 17/5/2024"
+      />,
+    );
     const input = screen.getByLabelText("Date of birth");
     expect(input).toBeInTheDocument();
     expect(input.id).toBe("dob");

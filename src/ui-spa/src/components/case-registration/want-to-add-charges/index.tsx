@@ -8,61 +8,53 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate } from "react-router-dom";
-import SuspectSummary from "./SuspectSummary";
-import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
 import styles from "../index.module.scss";
-import pageStyles from "./index.module.scss";
 
-const SuspectSummaryPage = () => {
+const WantToAddCharges = () => {
   type ErrorText = {
     errorSummaryText: string;
     inputErrorText?: string;
   };
   type FormDataErrors = {
-    addMoreSuspectsRadio?: ErrorText;
+    wantToAddChargesRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
-  const { state } = useContext(CaseRegistrationFormContext);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { chargesCount } = useMemo(() => {
-    const chargeList = getChargesSummaryList(state.formData.suspects);
-    const chargesCount = chargeList.reduce(
-      (acc, item) => acc + item.charges.length,
-      0,
-    );
-    return { chargesCount };
-  }, [state.formData.suspects]);
-
-  const [addMoreSuspectsRadio, setAddMoreSuspectsRadio] = useState<string>("");
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
-      if (errorKey === "addMoreSuspectsRadio") {
+      if (errorKey === "wantToAddChargesRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#add-more-suspects-radio-yes",
-          "data-testid": "add-more-suspects-radio-yes",
+          href: "#add-radio-yes",
+          "data-testid": "add-charges-radio-link",
         };
       }
+
       return null;
     },
     [formDataErrors],
   );
 
-  const validateFormData = () => {
+  const validateFormData = (state: CaseRegistrationState) => {
+    let isValid = true;
     const errors: FormDataErrors = {};
+    const {
+      formData: { wantToAddChargesRadio },
+    } = state;
 
-    if (!addMoreSuspectsRadio) {
-      errors.addMoreSuspectsRadio = {
-        errorSummaryText: "Please select an option",
+    if (!wantToAddChargesRadio) {
+      errors.wantToAddChargesRadio = {
+        errorSummaryText: "Please select an option ",
         inputErrorText: "Please select an option",
       };
+      isValid = false;
     }
-
-    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
 
     setFormDataErrors(errors);
     return isValid;
@@ -85,30 +77,39 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const setFormValue = (value: string) => {
+    dispatch({
+      type: "SET_FIELD",
+      payload: {
+        field: "wantToAddChargesRadio",
+        value: value,
+      },
+    });
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData()) return;
-
-    if (addMoreSuspectsRadio === "yes") {
-      navigate(
-        `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
-      );
-      return;
+    if (!validateFormData(state)) return;
+    const { wantToAddChargesRadio } = state.formData;
+    if (wantToAddChargesRadio === "no") {
+      return navigate("/case-registration/case-complexity");
     }
-    if (chargesCount > 0) {
-      navigate("/case-registration/charges-summary");
-      return;
+    if (wantToAddChargesRadio === "yes" && state.formData.suspects.length > 1) {
+      return navigate("/case-registration/add-charge-suspect");
     }
-
-    //if there are charges go to charges summary page
-    navigate("/case-registration/want-to-add-charges");
-    // navigate("/case-registration/case-complexity");
+    return navigate(
+      `/case-registration/suspect-0/charge-0/charges-offence-search`,
+    );
   };
 
+  const {
+    formData: { suspects, wantToAddChargesRadio },
+  } = state;
+
   return (
-    <div className={pageStyles.caseSuspectsSummaryPage}>
-      <BackLink to={`/case-registration/case-details`}>Back</BackLink>
+    <div>
+      <BackLink to={"/case-registration/suspect-summary"}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -116,48 +117,51 @@ const SuspectSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"case-registration-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added ${state.formData.suspects.length} suspects`}</h1>
-        <SuspectSummary />
         <div className={styles.inputWrapper}>
           <Radios
-            className="govuk-radios--inline"
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another suspect? </h2>,
+                children: (
+                  <h1>
+                    {suspects.length > 1
+                      ? `Do you want to add charges for any of the suspects?`
+                      : `Do you want to add charges for the suspect?`}
+                  </h1>
+                ),
               },
             }}
             errorMessage={
-              formDataErrors["addMoreSuspectsRadio"]
+              formDataErrors["wantToAddChargesRadio"]
                 ? {
                     children:
-                      formDataErrors["addMoreSuspectsRadio"].errorSummaryText,
+                      formDataErrors["wantToAddChargesRadio"].inputErrorText,
                   }
                 : undefined
             }
             items={[
               {
-                id: `suspect-add-more-suspects-radio-yes`,
+                id: `want-to-add-charges-radio-yes`,
                 children: "Yes",
                 value: "yes",
-                "data-testid": `suspect-add-more-suspects-radio-yes`,
+                "data-testid": `want-to-add-charges-radio-yes`,
               },
               {
-                id: `suspect-add-more-suspects-radio-no`,
+                id: `want-to-add-charges-radio-no`,
                 children: "No",
                 value: "no",
-                "data-testid": `suspect-add-more-suspects-radio-no`,
+                "data-testid": `want-to-add-charges-radio-no`,
               },
             ]}
-            value={addMoreSuspectsRadio}
+            value={wantToAddChargesRadio}
             onChange={(value) => {
-              if (value) setAddMoreSuspectsRadio(value);
+              if (value) setFormValue(value);
             }}
           ></Radios>
         </div>
@@ -169,4 +173,4 @@ const SuspectSummaryPage = () => {
   );
 };
 
-export default SuspectSummaryPage;
+export default WantToAddCharges;

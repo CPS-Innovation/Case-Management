@@ -22,8 +22,9 @@ describe("getSuspectDetailsSummaryListRows", () => {
     expect(rows).toEqual([]);
   });
 
-  it("shows default values for missing fields", () => {
+  it("shows no default values for missing fields", () => {
     const suspect: SuspectFormData = {
+      suspectId: "suspect-1",
       addSuspectRadio: "",
       suspectFirstNameText: "",
       suspectLastNameText: "",
@@ -44,6 +45,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "",
       suspectDOBMonthText: "",
       suspectDOBYearText: "",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
@@ -52,6 +54,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
 
   it("shows correct values for all fields", () => {
     const suspect: SuspectFormData = {
+      suspectId: "suspect-1",
       addSuspectRadio: "person",
       suspectFirstNameText: "John",
       suspectLastNameText: "Doe",
@@ -81,6 +84,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "12",
       suspectDOBMonthText: "12",
       suspectDOBYearText: "2000",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
@@ -119,6 +123,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
 
   it("omits Arrest Date entry for PP offender type", () => {
     const suspect: SuspectFormData = {
+      suspectId: "suspect-1",
       addSuspectRadio: "",
       suspectFirstNameText: "",
       suspectLastNameText: "",
@@ -139,6 +144,7 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectDOBDayText: "1",
       suspectDOBMonthText: "1",
       suspectDOBYearText: "2000",
+      charges: [],
     };
 
     const rows = getSuspectDetailsSummaryListRows([suspect]);
