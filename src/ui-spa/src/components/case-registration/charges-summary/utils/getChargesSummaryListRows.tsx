@@ -6,12 +6,30 @@ import styles from "./index.module.scss";
 
 export const getChargesSummaryListRows = (
   charge: ChargesFormData,
-  addChargeRow: boolean = false,
+  isCaseSummaryPage: boolean = false,
+  suspectIndex?: number,
+  chargeId?: string,
 ) => {
   const rows = [
-    addChargeRow && {
+    isCaseSummaryPage && {
       key: { children: <b>{charge.selectedOffence.code}</b> },
       value: { children: <span>{charge.selectedOffence.description}</span> },
+      actions: {
+        items: [
+          {
+            children: <span>Remove</span>,
+            to: `/case-registration/charge-remove-confirmation`,
+            state: {
+              suspectIndex,
+              chargeId: chargeId,
+              backRoute: isCaseSummaryPage
+                ? `/case-registration/case-summary`
+                : `/case-registration/charges-summary`,
+            },
+            visuallyHiddenText: "Remove Charge",
+          },
+        ],
+      },
     },
     {
       key: { children: <b>Date of Offence</b> },
