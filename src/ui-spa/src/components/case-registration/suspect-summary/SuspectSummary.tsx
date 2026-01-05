@@ -25,7 +25,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
         key: {
           children:
             chargeIndex === 0 ? (
-              <span>charges</span>
+              <span>Charges</span>
             ) : (
               <span>Add another charge</span>
             ),
@@ -61,6 +61,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                       suspect.suspectLastNameText,
                     )}`}
                   </span>
+
                   {isYouthSuspect(suspect) && <Tag>Youth</Tag>}
                 </>
               )}
@@ -73,6 +74,18 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             </div>
           ),
         },
+        value: {
+          children: (
+            <>
+              {suspect.charges.length ? (
+                <Tag className="govuk-tag--orange">Charges added</Tag>
+              ) : (
+                <Tag className="govuk-tag--grey">Pre-charge</Tag>
+              )}
+            </>
+          ),
+        },
+
         actions: {
           items: [
             {
@@ -102,25 +115,14 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
   }, [state.formData.suspects]);
 
   const getDetailsTitle = (
-    suspect: SuspectFormData,
     isCaseSummaryPage: boolean,
     suspectDetailsSummaryListRowsLength: number,
   ) => {
     if (suspectDetailsSummaryListRowsLength > 0 && !isCaseSummaryPage) {
       return "Suspect details";
     }
-    if (
-      isCaseSummaryPage &&
-      suspectDetailsSummaryListRowsLength > 0 &&
-      suspect.charges.length > 0
-    ) {
+    if (isCaseSummaryPage) {
       return "Details and charges";
-    }
-    if (isCaseSummaryPage && suspect.charges.length > 0) {
-      return "Charges";
-    }
-    if (isCaseSummaryPage && suspectDetailsSummaryListRowsLength > 0) {
-      return "Suspect details";
     }
     return "";
   };
@@ -141,7 +143,6 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                 </div>
 
                 {getDetailsTitle(
-                  suspect,
                   isCaseSummaryPage,
                   suspectDetailsSummaryListRows[index].length,
                 ) && (
@@ -149,7 +150,6 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                     <dd>
                       <Details
                         summaryChildren={getDetailsTitle(
-                          suspect,
                           isCaseSummaryPage,
                           suspectDetailsSummaryListRows[index].length,
                         )}
@@ -179,7 +179,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                   rows={getChargesSummaryListRows(
                                     charge,
                                     isCaseSummaryPage,
-                                    index,
+                                    suspect.suspectId,
                                     charge.chargeId,
                                   )}
                                 />

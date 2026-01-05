@@ -511,7 +511,7 @@ describe("caseRegistrationReducer", () => {
     const action: CaseRegistrationActions = {
       type: "REMOVE_SUSPECT_CHARGE",
       payload: {
-        suspectIndex: 0,
+        suspectId: "suspect-1",
         chargeId: "charge-1",
       },
     };
@@ -525,7 +525,7 @@ describe("caseRegistrationReducer", () => {
     const newAction: CaseRegistrationActions = {
       type: "REMOVE_SUSPECT_CHARGE",
       payload: {
-        suspectIndex: 1,
+        suspectId: "suspect-2",
         chargeId: "charge-3",
       },
     };
@@ -540,7 +540,7 @@ describe("caseRegistrationReducer", () => {
     const newAction1: CaseRegistrationActions = {
       type: "REMOVE_SUSPECT_CHARGE",
       payload: {
-        suspectIndex: 1,
+        suspectId: "suspect-2",
         chargeId: "charge-4",
       },
     };

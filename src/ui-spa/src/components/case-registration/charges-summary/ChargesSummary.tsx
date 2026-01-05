@@ -18,7 +18,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
   const chargesSummaryRow = (
     charge: ChargesFormData,
     chargeId: string,
-    suspectIndex: number,
+    suspectId: string,
   ) => {
     return [
       {
@@ -44,8 +44,8 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
               children: <span>Remove</span>,
               to: `/case-registration/charge-remove-confirmation`,
               state: {
-                suspectIndex,
-                chargeId: chargeId,
+                suspectId,
+                chargeId,
                 backRoute: isCaseSummaryPage
                   ? `/case-registration/case-summary`
                   : `/case-registration/charges-summary`,
@@ -62,12 +62,12 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
     const suspectChargesList = getChargesSummaryList(state.formData.suspects);
     return (
       <div>
-        {suspectChargesList.map((suspectCharge, suspectIndex) => (
+        {suspectChargesList.map((suspectCharge) => (
           <div
             key={
               suspectCharge.suspectLastNameText
-                ? `${suspectIndex}-${suspectCharge.suspectLastNameText}`
-                : `${suspectIndex}-${suspectCharge.suspectCompanyNameText}`
+                ? `${suspectCharge.suspectId}-${suspectCharge.suspectLastNameText}`
+                : `${suspectCharge.suspectId}-${suspectCharge.suspectCompanyNameText}`
             }
           >
             {suspectCharge.suspectLastNameText ? (
@@ -87,7 +87,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                   rows={chargesSummaryRow(
                     charge,
                     charge.chargeId,
-                    suspectIndex,
+                    suspectCharge.suspectId,
                   )}
                 />
                 <div>
@@ -96,7 +96,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                       rows={getChargesSummaryListRows(
                         charge,
                         isCaseSummaryPage,
-                        suspectIndex,
+                        suspectCharge.suspectId,
                         charge.chargeId,
                       )}
                     />

@@ -7,7 +7,7 @@ import styles from "./index.module.scss";
 export const getChargesSummaryListRows = (
   charge: ChargesFormData,
   isCaseSummaryPage: boolean = false,
-  suspectIndex?: number,
+  suspectId?: string,
   chargeId?: string,
 ) => {
   const rows = [
@@ -20,8 +20,8 @@ export const getChargesSummaryListRows = (
             children: <span>Remove</span>,
             to: `/case-registration/charge-remove-confirmation`,
             state: {
-              suspectIndex,
-              chargeId: chargeId,
+              suspectId,
+              chargeId,
               backRoute: isCaseSummaryPage
                 ? `/case-registration/case-summary`
                 : `/case-registration/charges-summary`,
