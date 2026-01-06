@@ -9,7 +9,7 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
-import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import ChargesSummary from "./ChargesSummary";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -25,6 +25,7 @@ const SuspectSummaryPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const [addMoreChargesRadio, setAddMoreChargesRadio] = useState<string>("");
 
@@ -73,15 +74,6 @@ const SuspectSummaryPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
 
-  const { chargesCount } = useMemo(() => {
-    const chargeList = getChargesSummaryList(state.formData.suspects);
-    const chargesCount = chargeList.reduce(
-      (acc, item) => acc + item.charges.length,
-      0,
-    );
-    return { chargesCount };
-  }, [state.formData.suspects]);
-
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
@@ -95,7 +87,10 @@ const SuspectSummaryPage = () => {
       navigate(`/case-registration/add-charge-suspect`);
       return;
     }
-
+    if (chargesCount) {
+      navigate("/case-registration/first-hearing");
+      return;
+    }
     navigate("/case-registration/case-complexity");
   };
 

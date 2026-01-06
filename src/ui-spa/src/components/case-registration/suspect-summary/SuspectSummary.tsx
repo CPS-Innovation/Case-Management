@@ -86,7 +86,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                 </>
               ),
             }
-          : {},
+          : undefined,
 
         actions: {
           items: [

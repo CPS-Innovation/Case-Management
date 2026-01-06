@@ -240,7 +240,7 @@ const FirstHearingPage = () => {
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to="/case-registration/case-details">Back</BackLink>
+      <BackLink to="/case-registration/charges-summary">Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
