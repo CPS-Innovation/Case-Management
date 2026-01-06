@@ -19,6 +19,7 @@ import { getOffences } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { formatDate } from "../../../common/utils/formatDate";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -28,6 +29,7 @@ const ChargesOffenceSearch = () => {
 
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const [resultsPerPage, setResultsPerPage] = useState<number>(20);
   const { suspectId, chargeId } = useParams<{
@@ -78,12 +80,12 @@ const ChargesOffenceSearch = () => {
   };
 
   const previousRoute = useMemo(() => {
-    if (state.formData.suspects.length > 1) {
-      return "/case-registration/add-charge-suspect";
+    if (state.formData.suspects.length === 1 && !chargesCount) {
+      return "/case-registration/want-to-add-charges";
     }
 
-    return "/case-registration/want-to-add-charges";
-  }, [state.formData.suspects]);
+    return "/case-registration/add-charge-suspect";
+  }, [state.formData.suspects, chargesCount]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
