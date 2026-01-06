@@ -74,17 +74,19 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             </div>
           ),
         },
-        value: {
-          children: (
-            <>
-              {suspect.charges.length ? (
-                <Tag className="govuk-tag--orange">Charges added</Tag>
-              ) : (
-                <Tag className="govuk-tag--grey">Pre-charge</Tag>
-              )}
-            </>
-          ),
-        },
+        value: isCaseSummaryPage
+          ? {
+              children: (
+                <>
+                  {suspect.charges.length ? (
+                    <Tag className="govuk-tag--orange">Charges added</Tag>
+                  ) : (
+                    <Tag className="govuk-tag--grey">Pre-charge</Tag>
+                  )}
+                </>
+              ),
+            }
+          : {},
 
         actions: {
           items: [

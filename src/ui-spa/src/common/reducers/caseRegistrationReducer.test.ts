@@ -481,7 +481,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[1].charges).toEqual([]);
   });
 
-  it("Should remove a suspect charge with given chargeId using REMOVE_SUSPECT_CHARGE action", () => {
+  it("Should remove a suspect charge with given suspectId and chargeId using REMOVE_SUSPECT_CHARGE action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
       formData: {
@@ -547,6 +547,56 @@ describe("caseRegistrationReducer", () => {
     const newState1 = caseRegistrationReducer(modifiedState, newAction1);
     expect(newState1.formData.suspects[0].charges.length).toEqual(1);
     expect(newState1.formData.suspects[1].charges.length).toEqual(0);
+  });
+
+  it("Should return the state unchanged for REMOVE_SUSPECT_CHARGE action, if a suspectId and chargeId do not match", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-1" },
+              { ...chargeInitialState, chargeId: "charge-2" },
+            ],
+          },
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            addSuspectRadio: "person",
+            suspectLastNameText: "last",
+            charges: [
+              { ...chargeInitialState, chargeId: "charge-3" },
+              { ...chargeInitialState, chargeId: "charge-4" },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectId: "suspect-3",
+        chargeId: "charge-1",
+      },
+    };
+
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects).toEqual(modifiedState.formData.suspects);
+
+    const action1: CaseRegistrationActions = {
+      type: "REMOVE_SUSPECT_CHARGE",
+      payload: {
+        suspectId: "suspect-1",
+        chargeId: "charge-5",
+      },
+    };
+
+    const state1 = caseRegistrationReducer(modifiedState, action1);
+    expect(state1.formData.suspects).toEqual(modifiedState.formData.suspects);
   });
 
   it("getResetSuspectFieldValues should reset person suspects values to initial state if the user switches from addSuspectRadio from person to company", () => {
