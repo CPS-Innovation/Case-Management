@@ -23,7 +23,7 @@ const SuspectSummaryPage = () => {
     addMoreChargesRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
-  const { state } = useContext(CaseRegistrationFormContext);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
   const { chargesCount } = useChargesCount(state.formData.suspects);
 
@@ -73,6 +73,19 @@ const SuspectSummaryPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+  const previousRoute = useMemo(() => {
+    if (
+      state.formData.navigation.fromCaseSummaryPage &&
+      !state.formData.navigation.fromChargeSummaryPage
+    ) {
+      return "/case-registration/case-summary";
+    }
+
+    return "/case-registration/suspect-summary";
+  }, [
+    state.formData.navigation.fromCaseSummaryPage,
+    state.formData.navigation.fromChargeSummaryPage,
+  ]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -84,7 +97,21 @@ const SuspectSummaryPage = () => {
     if (!validateFormData()) return;
 
     if (addMoreChargesRadio === "yes") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromChargeSummaryPage: true },
+      });
       navigate(`/case-registration/add-charge-suspect`);
+      return;
+    }
+    if (state.formData.navigation.fromChargeSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromChargeSummaryPage: false },
+      });
+    }
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      navigate("/case-registration/case-summary");
       return;
     }
     if (chargesCount) {
@@ -94,9 +121,25 @@ const SuspectSummaryPage = () => {
     navigate("/case-registration/case-complexity");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false, fromChargeSummaryPage: false },
+      });
+      navigate(previousRoute);
+      return;
+    }
+
+    navigate(previousRoute);
+  };
+
   return (
     <div className={pageStyles.chargesSummaryPage}>
-      <BackLink to={`/case-registration/suspect-summary`}>Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

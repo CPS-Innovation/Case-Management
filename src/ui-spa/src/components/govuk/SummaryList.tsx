@@ -10,7 +10,7 @@ type Props = {
         children: React.ReactNode;
         to?: string;
         visuallyHiddenText?: string;
-        onClick?: () => void;
+        onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
       }[];
     };
   }[];

@@ -132,6 +132,10 @@ describe("caseRegistrationReducer", () => {
         suspects: [],
         victimsList: [],
         wantToAddChargesRadio: "",
+        navigation: {
+          fromCaseSummaryPage: false,
+          fromChargeSummaryPage: false,
+        },
       },
       apiData: apiData,
     };

@@ -131,6 +131,10 @@ export type CaseRegistrationFormData = {
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
   victimsList: { id: string; firstName: string; lastName: string }[];
+  navigation: {
+    fromCaseSummaryPage: boolean;
+    fromChargeSummaryPage: boolean;
+  };
 };
 
 export type CaseRegistrationState = {
@@ -220,6 +224,10 @@ export const initialState: CaseRegistrationState = {
     suspects: [],
     wantToAddChargesRadio: "",
     victimsList: [],
+    navigation: {
+      fromCaseSummaryPage: false,
+      fromChargeSummaryPage: false,
+    },
   },
 
   apiData: {
@@ -291,6 +299,12 @@ export type CaseRegistrationActions =
       payload: {
         suspectId: string;
         chargeId: string;
+      };
+    }
+  | {
+      type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES";
+      payload: {
+        suspectId: string;
       };
     }
   | {
@@ -384,6 +398,13 @@ export type CaseRegistrationActions =
       type: "RESET_SUSPECT_FIELD";
       payload: {
         index: number;
+      };
+    }
+  | {
+      type: "SET_NAVIGATION_DATA";
+      payload: {
+        fromCaseSummaryPage?: boolean;
+        fromChargeSummaryPage?: boolean;
       };
     };
 
@@ -510,6 +531,39 @@ export const caseRegistrationReducer = (
       suspects[suspectIndex] = {
         ...suspect,
         charges: newCharges,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+
+    case "REMOVE_INCOMPLETE_SUSPECT_CHARGES": {
+      const { suspectId } = action.payload;
+      const suspects = state.formData.suspects;
+      const suspect = suspects.find(
+        (suspect) => suspect.suspectId === suspectId,
+      );
+      const suspectIndex = suspects.findIndex((s) => s.suspectId === suspectId);
+
+      if (!suspect) {
+        return state;
+      }
+      const filteredCharges = suspect?.charges.filter((charge) => {
+        if (!charge.offenceFromDate) {
+          return false;
+        }
+        if (charge.addVictimRadio === "yes" && !charge.victim) {
+          return false;
+        }
+        return true;
+      });
+      suspects[suspectIndex] = {
+        ...suspect,
+        charges: filteredCharges,
       };
       return {
         ...state,
@@ -651,6 +705,18 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           offencesSearchResults: action.payload.offencesSearchResults,
+        },
+      };
+    }
+    case "SET_NAVIGATION_DATA": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          navigation: {
+            ...state.formData.navigation,
+            ...action.payload,
+          },
         },
       };
     }

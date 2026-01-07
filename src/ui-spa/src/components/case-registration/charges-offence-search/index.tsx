@@ -80,12 +80,23 @@ const ChargesOffenceSearch = () => {
   };
 
   const previousRoute = useMemo(() => {
+    if (
+      state.formData.navigation.fromCaseSummaryPage &&
+      !state.formData.navigation.fromChargeSummaryPage
+    ) {
+      return "/case-registration/case-summary";
+    }
     if (state.formData.suspects.length === 1 && !chargesCount) {
       return "/case-registration/want-to-add-charges";
     }
 
     return "/case-registration/add-charge-suspect";
-  }, [state.formData.suspects, chargesCount]);
+  }, [
+    state.formData.suspects,
+    state.formData.navigation.fromCaseSummaryPage,
+    state.formData.navigation.fromChargeSummaryPage,
+    chargesCount,
+  ]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -256,9 +267,30 @@ const ChargesOffenceSearch = () => {
     });
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    console.log("navigating to:", previousRoute);
+    const { suspectId } = state.formData.suspects[suspectIndex];
+    dispatch({
+      type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES",
+      payload: {
+        suspectId,
+      },
+    });
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false, fromChargeSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   return (
     <div>
-      <BackLink to={previousRoute}>Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
 
       <div>
         {!!errorList.length && (

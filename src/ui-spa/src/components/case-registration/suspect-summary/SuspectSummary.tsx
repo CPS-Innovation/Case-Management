@@ -8,6 +8,7 @@ import { getSuspectDetailsSummaryListRows } from "./utils/getSuspectDetailsSumma
 import { getChargesSummaryListRows } from "../charges-summary/utils/getChargesSummaryListRows";
 import { isYouthSuspect } from "../../../common/utils/isYouthSuspect";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { useNavigate } from "react-router-dom";
 import styles from "./SuspectSummary.module.scss";
 
 type SuspectSummaryProps = {
@@ -17,7 +18,21 @@ type SuspectSummaryProps = {
 const SuspectSummary: React.FC<SuspectSummaryProps> = ({
   isCaseSummaryPage = false,
 }) => {
-  const { state } = useContext(CaseRegistrationFormContext);
+  const navigate = useNavigate();
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
+
+  const handleAddChargeClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate(url);
+    console.log("Add Charge clicked", url);
+  };
 
   const addNewChargeRow = (suspectIndex: number, chargeIndex: number) => {
     return [
@@ -39,6 +54,11 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               children: <span> Add Charge</span>,
               to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
               visuallyHiddenText: "Add new charge",
+              onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                handleAddChargeClick(
+                  event,
+                  `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
+                ),
             },
           ],
         },
