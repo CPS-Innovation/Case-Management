@@ -105,18 +105,21 @@ describe("getChargesSummaryList", () => {
     const result = getChargesSummaryList(suspects);
     expect(result).toEqual([
       {
+        suspectId: "suspect-1",
         suspectFirstNameText: "steve",
         suspectLastNameText: "smith",
         suspectCompanyNameText: "",
         charges: [sampleCHarge],
       },
       {
+        suspectId: "suspect-1",
         suspectFirstNameText: "steve1",
         suspectLastNameText: "smith1",
         suspectCompanyNameText: "",
         charges: [sampleCHarge],
       },
       {
+        suspectId: "suspect-1",
         suspectFirstNameText: "",
         suspectLastNameText: "",
         suspectCompanyNameText: "abc",

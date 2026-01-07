@@ -10,6 +10,7 @@ import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getCaseComplexities } from "../../../apis/gateway-api";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -26,6 +27,7 @@ const CaseComplexityPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const {
     data: caseComplexitiesData,
@@ -81,17 +83,14 @@ const CaseComplexityPage = () => {
   }, [state.apiData.caseComplexities]);
 
   const backRoute = useMemo(() => {
-    if (
-      state.formData.suspects.length === 0 &&
-      state.formData.suspectDetailsRadio === "yes"
-    ) {
-      return `/case-registration/suspect-0/add-suspect`;
+    if (chargesCount) {
+      return "/case-registration/first-hearing";
     }
     if (state.formData.suspects.length > 0) {
-      return `/case-registration/suspect-summary`;
+      return "/case-registration/want-to-add-charges";
     }
     return "/case-registration/case-details";
-  }, [state.formData.suspects.length, state.formData.suspectDetailsRadio]);
+  }, [chargesCount, state.formData.suspects.length]);
 
   const errorList = useMemo(() => {
     const validErrorKeys = Object.keys(formDataErrors).filter(

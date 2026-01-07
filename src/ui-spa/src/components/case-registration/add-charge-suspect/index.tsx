@@ -9,6 +9,7 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { useNavigate } from "react-router-dom";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import styles from "../index.module.scss";
 
@@ -28,6 +29,15 @@ const AddChargeSuspectPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
+
+  const previousRoute = useMemo(() => {
+    if (chargesCount) {
+      return "/case-registration/charges-summary";
+    }
+
+    return "/case-registration/want-to-add-charges";
+  }, [chargesCount]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -135,7 +145,7 @@ const AddChargeSuspectPage = () => {
 
   return (
     <div>
-      <BackLink to={"/case-registration/want-to-add-charges"}>Back</BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

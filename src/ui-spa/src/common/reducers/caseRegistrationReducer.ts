@@ -289,7 +289,7 @@ export type CaseRegistrationActions =
   | {
       type: "REMOVE_SUSPECT_CHARGE";
       payload: {
-        suspectIndex: number;
+        suspectId: string;
         chargeId: string;
       };
     }
@@ -496,9 +496,13 @@ export const caseRegistrationReducer = (
     }
 
     case "REMOVE_SUSPECT_CHARGE": {
-      const { suspectIndex, chargeId } = action.payload;
+      const { suspectId, chargeId } = action.payload;
       const suspects = state.formData.suspects;
-      const suspect = suspects[suspectIndex];
+      const suspect = suspects.find((s) => s.suspectId === suspectId);
+      const suspectIndex = suspects.findIndex((s) => s.suspectId === suspectId);
+      if (!suspect) {
+        return state;
+      }
       const existingCharges = [...suspect.charges];
       const newCharges = existingCharges.filter(
         (charge) => charge.chargeId !== chargeId,
