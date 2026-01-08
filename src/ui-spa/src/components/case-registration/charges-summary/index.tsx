@@ -74,18 +74,12 @@ const SuspectSummaryPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
   const previousRoute = useMemo(() => {
-    if (
-      state.formData.navigation.fromCaseSummaryPage &&
-      !state.formData.navigation.fromChargeSummaryPage
-    ) {
+    if (state.formData.navigation.fromCaseSummaryPage) {
       return "/case-registration/case-summary";
     }
 
     return "/case-registration/suspect-summary";
-  }, [
-    state.formData.navigation.fromCaseSummaryPage,
-    state.formData.navigation.fromChargeSummaryPage,
-  ]);
+  }, [state.formData.navigation.fromCaseSummaryPage]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -128,8 +122,6 @@ const SuspectSummaryPage = () => {
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false, fromChargeSummaryPage: false },
       });
-      navigate(previousRoute);
-      return;
     }
 
     navigate(previousRoute);

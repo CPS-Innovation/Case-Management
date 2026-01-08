@@ -23,7 +23,7 @@ const SuspectSummaryPage = () => {
     addMoreSuspectsRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
-  const { state } = useContext(CaseRegistrationFormContext);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
   const { chargesCount } = useChargesCount(state.formData.suspects);
 
@@ -78,16 +78,33 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      return "/case-registration/case-summary";
+    }
+    return "/case-registration/case-details";
+  }, [state.formData.navigation.fromCaseSummaryPage]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateFormData()) return;
 
     if (addMoreSuspectsRadio === "yes") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromSuspectSummaryPage: true },
+      });
       navigate(
         `/case-registration/suspect-${state.formData.suspects.length}/add-suspect`,
       );
       return;
+    }
+    if (state.formData.navigation.fromSuspectSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromSuspectSummaryPage: false },
+      });
     }
     if (chargesCount > 0) {
       navigate("/case-registration/charges-summary");
@@ -96,10 +113,23 @@ const SuspectSummaryPage = () => {
 
     navigate("/case-registration/want-to-add-charges");
   };
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false, fromSuspectSummaryPage: false },
+      });
+    }
+
+    navigate(previousRoute);
+  };
 
   return (
     <div className={pageStyles.caseSuspectsSummaryPage}>
-      <BackLink to={`/case-registration/case-details`}>Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

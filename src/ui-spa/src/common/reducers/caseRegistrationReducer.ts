@@ -134,6 +134,7 @@ export type CaseRegistrationFormData = {
   navigation: {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
+    fromSuspectSummaryPage: boolean;
   };
 };
 
@@ -227,6 +228,7 @@ export const initialState: CaseRegistrationState = {
     navigation: {
       fromCaseSummaryPage: false,
       fromChargeSummaryPage: false,
+      fromSuspectSummaryPage: false,
     },
   },
 
@@ -405,6 +407,7 @@ export type CaseRegistrationActions =
       payload: {
         fromCaseSummaryPage?: boolean;
         fromChargeSummaryPage?: boolean;
+        fromSuspectSummaryPage?: boolean;
       };
     };
 

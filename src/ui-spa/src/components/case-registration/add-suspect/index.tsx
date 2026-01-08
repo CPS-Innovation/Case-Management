@@ -148,6 +148,23 @@ const AddSuspectPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const previousRoute = useMemo(() => {
+    if (
+      state.formData.navigation.fromCaseSummaryPage &&
+      !state.formData.navigation.fromSuspectSummaryPage
+    ) {
+      return "/case-registration/case-summary";
+    }
+    if (state.formData.navigation.fromSuspectSummaryPage) {
+      return "/case-registration/suspect-summary";
+    }
+
+    return "/case-registration/case-details";
+  }, [
+    state.formData.navigation.fromCaseSummaryPage,
+    state.formData.navigation.fromSuspectSummaryPage,
+  ]);
+
   const setFormValue = (
     fieldName:
       | "addSuspectRadio"
@@ -203,6 +220,18 @@ const AddSuspectPage = () => {
     return navigate(nextRoute);
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    console.log("navigating to:", previousRoute);
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false, fromSuspectSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   const {
     formData: { suspects },
   } = state;
@@ -216,7 +245,9 @@ const AddSuspectPage = () => {
   } = suspects[suspectIndex] || {};
   return (
     <div>
-      <BackLink to="/case-registration/case-details">Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

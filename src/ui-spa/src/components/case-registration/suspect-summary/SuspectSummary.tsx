@@ -67,6 +67,25 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
   };
 
   const suspectSummaryRow = (suspect: SuspectFormData, index: number) => {
+    const handleSuspectChangeClick = (
+      event: React.MouseEvent<HTMLAnchorElement>,
+      url: string,
+    ) => {
+      event.preventDefault();
+      if (isCaseSummaryPage) {
+        dispatch({
+          type: "SET_NAVIGATION_DATA",
+          payload: { fromCaseSummaryPage: true },
+        });
+      } else {
+        dispatch({
+          type: "SET_NAVIGATION_DATA",
+          payload: { fromSuspectSummaryPage: true },
+        });
+      }
+
+      navigate(url);
+    };
     return [
       {
         key: {
@@ -125,6 +144,11 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               children: <span>Change</span>,
               to: `/case-registration/suspect-${index}/add-suspect`,
               visuallyHiddenText: "Edit Suspect Details",
+              onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                handleSuspectChangeClick(
+                  event,
+                  `/case-registration/suspect-${index}/add-suspect`,
+                ),
             },
           ],
         },
