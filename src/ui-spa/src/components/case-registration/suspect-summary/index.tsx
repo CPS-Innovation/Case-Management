@@ -100,12 +100,15 @@ const SuspectSummaryPage = () => {
       );
       return;
     }
-    if (state.formData.navigation.fromSuspectSummaryPage) {
+    if (state.formData.navigation.fromCaseSummaryPage) {
       dispatch({
         type: "SET_NAVIGATION_DATA",
-        payload: { fromSuspectSummaryPage: false },
+        payload: { fromSuspectSummaryPage: false, fromCaseSummaryPage: false },
       });
+      navigate("/case-registration/case-summary");
+      return;
     }
+
     if (chargesCount > 0) {
       navigate("/case-registration/charges-summary");
       return;

@@ -119,11 +119,12 @@ const SuspectAliasesPage = () => {
     if (!validateFormData()) return;
     const newAliases = [...suspectAliases, alias];
     dispatch({
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: suspectIndex,
-        field: "suspectAliases",
-        value: newAliases,
+        data: {
+          suspectAliases: newAliases,
+        },
       },
     });
 

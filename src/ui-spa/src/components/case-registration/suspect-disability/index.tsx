@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -37,6 +37,13 @@ const SuspectDisabilityPage = () => {
     return Number.parseInt(index, 10);
   }, [suspectId]);
 
+  const [formData, setFormData] = useState<{
+    suspectDisabilityRadio?: GeneralRadioValue;
+  }>({
+    suspectDisabilityRadio:
+      state.formData.suspects[suspectIndex].suspectDisabilityRadio || "",
+  });
+
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(
       "suspect-disability",
@@ -62,12 +69,9 @@ const SuspectDisabilityPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
-    const { suspectDisabilityRadio = "" } = suspects[suspectIndex] || {};
+    const { suspectDisabilityRadio = "" } = formData;
 
     if (!suspectDisabilityRadio) {
       errors.suspectDisabilityRadio = {
@@ -100,20 +104,23 @@ const SuspectDisabilityPage = () => {
   }, [errorList]);
 
   const setFormValue = (value: string) => {
-    dispatch({
-      type: "SET_SUSPECT_FIELD",
-      payload: {
-        index: suspectIndex,
-        field: "suspectDisabilityRadio",
-        value: value,
-      },
+    setFormData({
+      ...formData,
+      suspectDisabilityRadio: value as GeneralRadioValue,
     });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-disability",
@@ -128,11 +135,8 @@ const SuspectDisabilityPage = () => {
     formData: { suspects },
   } = state;
 
-  const {
-    suspectDisabilityRadio = "",
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -187,7 +191,7 @@ const SuspectDisabilityPage = () => {
                 "data-testid": `suspect-disability-radio-no`,
               },
             ]}
-            value={suspectDisabilityRadio}
+            value={formData.suspectDisabilityRadio}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

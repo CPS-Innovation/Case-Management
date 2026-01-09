@@ -38,6 +38,7 @@ describe("getCaseRegistrationRequestData", () => {
       navigation: {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
@@ -131,6 +132,7 @@ describe("getCaseRegistrationRequestData", () => {
       navigation: {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [

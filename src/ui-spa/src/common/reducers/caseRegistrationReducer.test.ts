@@ -135,6 +135,7 @@ describe("caseRegistrationReducer", () => {
         navigation: {
           fromCaseSummaryPage: false,
           fromChargeSummaryPage: false,
+          fromSuspectSummaryPage: false,
         },
       },
       apiData: apiData,
@@ -150,13 +151,14 @@ describe("caseRegistrationReducer", () => {
     expect(state).toBe(initialState);
   });
 
-  it("should not allow to  set suspect data suspectFirstNameText data using SET_SUSPECT_FIELD action if the payload index is greater than current suspect length", () => {
+  it("should not allow to  set suspect data suspectFirstNameText data using SET_SUSPECT_FIELDS action if the payload index is greater than current suspect length", () => {
     const action: CaseRegistrationActions = {
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: 1,
-        field: "suspectFirstNameText",
-        value: "John",
+        data: {
+          suspectFirstNameText: "John",
+        },
       },
     };
     const state = caseRegistrationReducer(initialState, action);
@@ -166,13 +168,14 @@ describe("caseRegistrationReducer", () => {
     );
   });
 
-  it("should set suspect data suspectFirstNameText data along with other fields initial value using SET_SUSPECT_FIELD action", () => {
+  it("should set suspect data suspectFirstNameText data along with other fields initial value using SET_SUSPECT_FIELDS action", () => {
     const action: CaseRegistrationActions = {
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: 0,
-        field: "suspectFirstNameText",
-        value: "John",
+        data: {
+          suspectFirstNameText: "John",
+        },
       },
     };
     const state = caseRegistrationReducer(initialState, action);
@@ -185,7 +188,7 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[0]).toEqual(expectedResult);
   });
 
-  it("should set suspect data suspectAliases data along with other fields initial value using SET_SUSPECT_FIELD action", () => {
+  it("should set suspect data suspectAliases data along with other fields initial value using SET_SUSPECT_FIELDS action", () => {
     const modifiedState: CaseRegistrationState = {
       ...initialState,
       formData: {
@@ -199,11 +202,12 @@ describe("caseRegistrationReducer", () => {
       },
     };
     const action: CaseRegistrationActions = {
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: 0,
-        field: "suspectAliases",
-        value: [{ firstName: "John", lastName: "Doe" }],
+        data: {
+          suspectAliases: [{ firstName: "John", lastName: "Doe" }],
+        },
       },
     };
     const state = caseRegistrationReducer(modifiedState, action);
@@ -220,13 +224,14 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.suspects[1]).toEqual(suspectInitialState);
   });
 
-  it("should just set suspect data suspectFirstNameText  using SET_SUSPECT_FIELD action, when suspect details are already available", () => {
+  it("should just set suspect data suspectFirstNameText  using SET_SUSPECT_FIELDS action, when suspect details are already available", () => {
     const action: CaseRegistrationActions = {
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: 0,
-        field: "suspectFirstNameText",
-        value: "Jacob",
+        data: {
+          suspectFirstNameText: "Jacob",
+        },
       },
     };
 

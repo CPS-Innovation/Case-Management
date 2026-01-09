@@ -51,7 +51,7 @@ export type SuspectAdditionalDetailValue =
   | "Arrest summons number (ASN)"
   | "Type of offender";
 
-type SuspectTypeValue = "person" | "company" | "";
+export type SuspectTypeValue = "person" | "company" | "";
 export type GeneralRadioValue = "yes" | "no" | "";
 export type SuspectFormData = {
   suspectId: string;
@@ -263,16 +263,31 @@ export type CaseRegistrationActions =
       };
     }
   | {
-      type: "SET_SUSPECT_FIELD";
+      type: "SET_SUSPECT_FIELDS";
       payload: {
         index: number;
-        field: SuspectFieldNames;
-        value:
-          | SuspectAdditionalDetailValue[]
-          | string
-          | { shortCode: string; description: string }
-          | { shortCode: string; display: string; arrestDate: string }
-          | { firstName?: string; lastName: string }[];
+        data: {
+          addSuspectRadio?: SuspectTypeValue;
+          suspectFirstNameText?: string;
+          suspectLastNameText?: string;
+          suspectAdditionalDetailsCheckboxes?: SuspectAdditionalDetailValue[];
+          suspectGenderRadio?: { shortCode: string; description: string };
+          suspectDisabilityRadio?: GeneralRadioValue;
+          suspectReligionRadio?: { shortCode: string; description: string };
+          suspectEthnicityRadio?: { shortCode: string; description: string };
+          suspectAliases?: { firstName: string; lastName: string }[];
+          suspectSDORadio?: GeneralRadioValue;
+          suspectASNText?: string;
+          suspectOffenderTypesRadio?: {
+            shortCode: string;
+            display: string;
+            arrestDate: string;
+          };
+          suspectCompanyNameText?: string;
+          suspectDOBDayText?: string;
+          suspectDOBMonthText?: string;
+          suspectDOBYearText?: string;
+        };
       };
     }
   | {
@@ -432,19 +447,20 @@ export const caseRegistrationReducer = (
         },
       };
     }
-    case "SET_SUSPECT_FIELD": {
+    case "SET_SUSPECT_FIELDS": {
+      const { index, data } = action.payload;
       if (action.payload.index > state.formData.suspects.length) {
         return state;
       }
 
       const suspects = [...state.formData.suspects];
-      const existing = suspects[action.payload.index] ?? {
+      const existing = suspects[index] ?? {
         ...suspectInitialState,
         suspectId: uuidv4(),
       };
-      suspects[action.payload.index] = {
+      suspects[index] = {
         ...existing,
-        [action.payload.field]: action.payload.value,
+        ...data,
       };
       return {
         ...state,
