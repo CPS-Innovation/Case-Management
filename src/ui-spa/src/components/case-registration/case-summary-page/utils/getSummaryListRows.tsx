@@ -1,6 +1,8 @@
 import { format } from "date-fns";
 import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
+import { type NavigateFunction } from "react-router-dom";
+import { type CaseRegistrationActions } from "../../../../common/reducers/caseRegistrationReducer";
 import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
 import { type PoliceUnit } from "../../../../common/types/responses/PoliceUnits";
 
@@ -153,21 +155,35 @@ export const getCaseDetailsSummaryListRows = (
   return rows;
 };
 
-export const getEmptySuspectSummaryRow = () => [
-  {
-    key: { children: <span>Suspects</span> },
-    value: { children: <p>Not entered</p> },
-    actions: {
-      items: [
-        {
-          children: <span>Add a suspect</span>,
-          to: "/case-registration/suspect-0/add-suspect",
-          visuallyHiddenText: "Add Suspect",
-        },
-      ],
+export const getEmptySuspectSummaryRow = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
+) => {
+  const handleAddChargeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate("/case-registration/suspect-summary");
+  };
+  return [
+    {
+      key: { children: <span>Suspects</span> },
+      value: { children: <p>Not entered</p> },
+      actions: {
+        items: [
+          {
+            children: <span>Add a suspect</span>,
+            to: "/case-registration/suspect-0/add-suspect",
+            visuallyHiddenText: "Add Suspect",
+            onClick: handleAddChargeClick,
+          },
+        ],
+      },
     },
-  },
-];
+  ];
+};
 
 export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
   formData: CaseRegistrationFormData,

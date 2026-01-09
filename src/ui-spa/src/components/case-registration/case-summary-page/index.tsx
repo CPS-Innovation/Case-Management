@@ -33,7 +33,7 @@ const CaseSummaryPage = () => {
     urnErrorText?: ErrorText;
     genericError?: ErrorText;
   };
-  const { state } = useContext(CaseRegistrationFormContext);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
   const submitCaseRegistrationMutation = useMutation({
@@ -195,7 +195,7 @@ const CaseSummaryPage = () => {
         <SummaryList rows={caseDetailsSummaryListRows} />
         <h2>Suspect</h2>
         {!state.formData.suspects.length && (
-          <SummaryList rows={getEmptySuspectSummaryRow()} />
+          <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
         )}
         {!!state.formData.suspects.length && (
           <SuspectSummary isCaseSummaryPage={true} />

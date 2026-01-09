@@ -113,8 +113,11 @@ const SuspectSummaryPage = () => {
       navigate("/case-registration/charges-summary");
       return;
     }
-
-    navigate("/case-registration/want-to-add-charges");
+    if (state.formData.suspects.length > 0) {
+      navigate("/case-registration/want-to-add-charges");
+      return;
+    }
+    navigate("/case-registration/case-complexity");
   };
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
