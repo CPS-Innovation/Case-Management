@@ -260,7 +260,6 @@ const AddSuspectPage = () => {
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    console.log("navigating to:", previousRoute);
     if (previousRoute === "/case-registration/case-summary") {
       dispatch({
         type: "SET_NAVIGATION_DATA",

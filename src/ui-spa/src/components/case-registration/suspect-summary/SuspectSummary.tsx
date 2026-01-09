@@ -31,7 +31,6 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
       payload: { fromCaseSummaryPage: true },
     });
     navigate(url);
-    console.log("Add Charge clicked", url);
   };
 
   const addNewChargeRow = (suspectIndex: number, chargeIndex: number) => {

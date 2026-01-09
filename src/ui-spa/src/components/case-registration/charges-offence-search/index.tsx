@@ -269,7 +269,6 @@ const ChargesOffenceSearch = () => {
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    console.log("navigating to:", previousRoute);
     const { suspectId } = state.formData.suspects[suspectIndex];
     dispatch({
       type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES",

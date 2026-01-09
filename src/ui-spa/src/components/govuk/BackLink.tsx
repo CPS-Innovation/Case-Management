@@ -10,7 +10,7 @@ export type BackLinkProps = {
   replace?: boolean;
   children: ReactNode;
   disabled?: boolean;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 export const BackLink: React.FC<BackLinkProps> = (props) => {
