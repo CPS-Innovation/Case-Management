@@ -15,7 +15,6 @@ import {
 } from "../../govuk";
 import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getCourtsByUnitId } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
@@ -37,9 +36,31 @@ const FirstHearingPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      return "/case-registration/case-summary";
+    }
+
+    return "/case-registration/charges-summary";
+  }, [state.formData.navigation.fromCaseSummaryPage]);
+
   const registeringUnitId = useMemo(() => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
+
+  const [formData, setFormData] = useState<{
+    firstHearingRadio: string;
+    firstHearingCourtLocationText: { id: number | null; description: string };
+    firstHearingDateText: string;
+  }>({
+    firstHearingRadio: state.formData.firstHearingRadio || "",
+    firstHearingCourtLocationText: state.formData
+      .firstHearingCourtLocationText || {
+      id: null,
+      description: "",
+    },
+    firstHearingDateText: state.formData.firstHearingDateText || "",
+  });
 
   const {
     data: courtLocationsData,
@@ -88,14 +109,11 @@ const FirstHearingPage = () => {
   );
 
   const validateFormData = (
-    state: CaseRegistrationState,
     courtLocations: { id: number; description: string }[],
     inputCourtLocationValue: string,
   ) => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { firstHearingRadio, firstHearingDateText },
-    } = state;
+    const { firstHearingRadio, firstHearingDateText } = formData;
 
     if (!firstHearingRadio) {
       errors.firstHearingRadio = {
@@ -188,10 +206,7 @@ const FirstHearingPage = () => {
     fieldName: "firstHearingRadio" | "firstHearingDateText",
     value: string,
   ) => {
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: fieldName, value: value },
-    });
+    setFormData((prev) => ({ ...prev, [fieldName]: value }));
   };
 
   const handleDateChange = (value: string) => {
@@ -200,13 +215,10 @@ const FirstHearingPage = () => {
 
   const handleCourtLocationConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(courtLocations, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "firstHearingCourtLocationText",
-        value: { id, description },
-      },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      firstHearingCourtLocationText: { id, description },
+    }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -217,30 +229,57 @@ const FirstHearingPage = () => {
     const inputCourtLocationValue = input?.value ?? "";
     if (
       inputCourtLocationValue !==
-      state.formData.firstHearingCourtLocationText?.description
+      formData.firstHearingCourtLocationText?.description
     ) {
       const { id, description } = getSelectedUnit(
         courtLocations,
         inputCourtLocationValue,
       );
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "firstHearingCourtLocationText",
-          value: { id, description },
-        },
-      });
+
+      setFormData((prev) => ({
+        ...prev,
+        firstHearingCourtLocationText: { id, description },
+      }));
     }
 
-    if (!validateFormData(state, courtLocations, inputCourtLocationValue))
+    if (!validateFormData(courtLocations, inputCourtLocationValue)) return;
+
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formData,
+        },
+      },
+    });
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+      navigate("/case-registration/case-summary");
       return;
+    }
 
     return navigate("/case-registration/case-complexity");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to="/case-registration/charges-summary">Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -278,7 +317,7 @@ const FirstHearingPage = () => {
                 "data-testid": "first-hearing-radio-yes",
                 conditional: {
                   children: [
-                    state.formData.firstHearingRadio === "yes" && (
+                    formData.firstHearingRadio === "yes" && (
                       <AutoComplete
                         key="first-hearing-court-location-text"
                         id="first-hearing-court-location-text"
@@ -287,8 +326,7 @@ const FirstHearingPage = () => {
                         confirmOnBlur={false}
                         onConfirm={handleCourtLocationConfirm}
                         defaultValue={
-                          state.formData.firstHearingCourtLocationText
-                            ?.description
+                          formData.firstHearingCourtLocationText?.description
                         }
                         label={{
                           children: (
@@ -307,7 +345,7 @@ const FirstHearingPage = () => {
                       key="first-hearing-date-text"
                       id="first-hearing-date-text"
                       label={<h2>Date</h2>}
-                      value={state.formData.firstHearingDateText}
+                      value={formData.firstHearingDateText}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleDateChange(e.target.value)
                       }
@@ -327,7 +365,7 @@ const FirstHearingPage = () => {
                 "data-testid": "radio-operation-name-no",
               },
             ]}
-            value={state.formData.firstHearingRadio}
+            value={formData.firstHearingRadio}
             onChange={(value) => {
               if (value) setFormValue("firstHearingRadio", value);
             }}

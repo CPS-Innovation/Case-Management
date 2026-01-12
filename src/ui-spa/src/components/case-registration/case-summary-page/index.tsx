@@ -149,21 +149,29 @@ const CaseSummaryPage = () => {
   };
 
   const caseDetailsSummaryListRows = useMemo(
-    () => getCaseDetailsSummaryListRows(state.formData),
-    [state.formData],
+    () => getCaseDetailsSummaryListRows(dispatch, navigate, state.formData),
+    [dispatch, navigate, state.formData],
   );
 
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
     () =>
       getCaseComplexityAndMonitoringCodesSummaryListRows(
+        dispatch,
+        navigate,
         state.formData,
         state.apiData.caseMonitoringCodes!,
       ),
-    [state.formData, state.apiData.caseMonitoringCodes],
+    [dispatch, navigate, state.formData, state.apiData.caseMonitoringCodes],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
-    () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData, policeUnit),
-    [state.formData, policeUnit],
+    () =>
+      getWhosIsWorkingOnTheCaseSummaryListRows(
+        dispatch,
+        navigate,
+        state.formData,
+        policeUnit,
+      ),
+    [dispatch, navigate, state.formData, policeUnit],
   );
 
   return (

@@ -263,6 +263,44 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "SET_FIELDS";
+      payload: {
+        data: {
+          operationNameRadio?: string;
+          suspectDetailsRadio?: string;
+          operationNameText?: string;
+          areaOrDivisionText?: { id: number | null; description: string };
+          urnPoliceForceText?: string;
+          urnPoliceUnitText?: string;
+          urnUniqueReferenceText?: string;
+          urnYearReferenceText?: string;
+          registeringUnitText?: { id: number | null; description: string };
+          witnessCareUnitText?: { id: number | null; description: string };
+          firstHearingRadio?: string;
+          firstHearingCourtLocationText?: {
+            id: number | null;
+            description: string;
+          };
+          firstHearingDateText?: string;
+          caseComplexityRadio?: { shortCode: string; description: string };
+          caseMonitoringCodesCheckboxes?: string[];
+          caseProsecutorRadio?: string;
+          caseInvestigatorRadio?: string;
+          caseProsecutorText?: { id: number | null; description: string };
+          caseCaseworkerText?: { id: number | null; description: string };
+          caseInvestigatorTitleSelect?: {
+            shortCode: string | null;
+            display: string;
+          };
+          caseInvestigatorFirstNameText?: string;
+          caseInvestigatorLastNameText?: string;
+          caseInvestigatorShoulderNameText?: string;
+          caseInvestigatorShoulderNumberText?: string;
+          wantToAddChargesRadio?: GeneralRadioValue;
+        };
+      };
+    }
+  | {
       type: "SET_SUSPECT_FIELDS";
       payload: {
         index: number;
@@ -444,6 +482,16 @@ export const caseRegistrationReducer = (
           ...state.formData,
           ...resetValues,
           [action.payload.field]: action.payload.value,
+        },
+      };
+    }
+
+    case "SET_FIELDS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          ...action.payload.data,
         },
       };
     }
