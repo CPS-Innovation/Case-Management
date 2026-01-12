@@ -9,7 +9,6 @@ import {
 import { Button, ErrorSummary, BackLink, DateInput } from "../../govuk";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { validateDate } from "../../../common/utils/dateValidation";
 import {
   getNextSuspectJourneyRoute,
@@ -38,6 +37,19 @@ const SuspectDOBPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const [formData, setFormData] = useState<{
+    suspectDOBDayText: string;
+    suspectDOBMonthText: string;
+    suspectDOBYearText: string;
+  }>({
+    suspectDOBDayText:
+      state.formData.suspects[suspectIndex].suspectDOBDayText || "",
+    suspectDOBMonthText:
+      state.formData.suspects[suspectIndex].suspectDOBMonthText || "",
+    suspectDOBYearText:
+      state.formData.suspects[suspectIndex].suspectDOBYearText || "",
+  });
 
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(
@@ -71,15 +83,12 @@ const SuspectDOBPage = () => {
     }
   }, [formDataErrors]);
 
-  const validateFormData = (state: CaseRegistrationState) => {
-    const {
-      formData: { suspects },
-    } = state;
+  const validateFormData = () => {
     const {
       suspectDOBDayText = "",
       suspectDOBMonthText = "",
       suspectDOBYearText = "",
-    } = suspects[suspectIndex] || {};
+    } = formData;
     const result = validateDate(
       +suspectDOBDayText,
       +suspectDOBMonthText,
@@ -154,20 +163,24 @@ const SuspectDOBPage = () => {
 
     const newValue = value.replaceAll(/\D/g, "");
 
-    dispatch({
-      type: "SET_SUSPECT_FIELD",
-      payload: {
-        index: suspectIndex,
-        field: field,
-        value: newValue,
-      },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: newValue,
+    }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-dob",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
@@ -182,13 +195,8 @@ const SuspectDOBPage = () => {
     formData: { suspects },
   } = state;
 
-  const {
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-    suspectDOBDayText = "",
-    suspectDOBMonthText = "",
-    suspectDOBYearText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -239,7 +247,7 @@ const SuspectDOBPage = () => {
                     : ""
                 }`,
                 name: "day",
-                value: suspectDOBDayText,
+                value: formData.suspectDOBDayText,
                 maxLength: 2,
               },
               {
@@ -252,7 +260,7 @@ const SuspectDOBPage = () => {
                     : ""
                 }`,
                 name: "month",
-                value: suspectDOBMonthText,
+                value: formData.suspectDOBMonthText,
                 maxLength: 2,
               },
               {
@@ -265,7 +273,7 @@ const SuspectDOBPage = () => {
                     : ""
                 }`,
                 name: "year",
-                value: suspectDOBYearText,
+                value: formData.suspectDOBYearText,
                 maxLength: 4,
               },
             ]}

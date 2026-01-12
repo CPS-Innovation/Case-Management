@@ -35,6 +35,11 @@ describe("getCaseRegistrationRequestData", () => {
       suspects: [],
       victimsList: [],
       wantToAddChargesRadio: "",
+      navigation: {
+        fromCaseSummaryPage: false,
+        fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
+      },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {
@@ -124,6 +129,11 @@ describe("getCaseRegistrationRequestData", () => {
       suspects: [],
       victimsList: [],
       wantToAddChargesRadio: "",
+      navigation: {
+        fromCaseSummaryPage: false,
+        fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
+      },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {

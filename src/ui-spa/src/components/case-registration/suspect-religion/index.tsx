@@ -8,7 +8,6 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getReligions } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,6 +37,16 @@ const SuspectReligionPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const [formData, setFormData] = useState<{
+    suspectReligionRadio: { shortCode: string; description: string };
+  }>({
+    suspectReligionRadio: state.formData.suspects[suspectIndex]
+      .suspectReligionRadio || {
+      shortCode: "",
+      description: "",
+    },
+  });
 
   const {
     data: religionsData,
@@ -79,13 +88,11 @@ const SuspectReligionPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
+
     const { suspectReligionRadio = { shortCode: null, description: "" } } =
-      suspects[suspectIndex] || {};
+      formData;
 
     if (!suspectReligionRadio.shortCode) {
       errors.suspectReligionRadio = {
@@ -149,13 +156,9 @@ const SuspectReligionPage = () => {
       (religion) => religion.shortCode === value,
     );
     if (selectedReligion) {
-      dispatch({
-        type: "SET_SUSPECT_FIELD",
-        payload: {
-          index: suspectIndex,
-          field: "suspectReligionRadio",
-          value: selectedReligion,
-        },
+      setFormData({
+        ...formData,
+        suspectReligionRadio: selectedReligion,
       });
     }
   };
@@ -163,7 +166,14 @@ const SuspectReligionPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-religion",
@@ -178,11 +188,8 @@ const SuspectReligionPage = () => {
     formData: { suspects },
   } = state;
 
-  const {
-    suspectReligionRadio = { shortCode: null, description: "" },
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -222,7 +229,7 @@ const SuspectReligionPage = () => {
                 : undefined
             }
             items={religionItems}
-            value={suspectReligionRadio.shortCode || ""}
+            value={formData.suspectReligionRadio.shortCode || ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

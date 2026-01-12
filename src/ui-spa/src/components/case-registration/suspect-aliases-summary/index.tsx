@@ -139,11 +139,12 @@ const SuspectAliasesSummaryPage = () => {
     const suspectAliases = suspects[suspectIndex]?.suspectAliases || [];
     const newAliases = suspectAliases.filter((_, i) => i !== index);
     dispatch({
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: suspectIndex,
-        field: "suspectAliases",
-        value: newAliases,
+        data: {
+          suspectAliases: newAliases,
+        },
       },
     });
   };

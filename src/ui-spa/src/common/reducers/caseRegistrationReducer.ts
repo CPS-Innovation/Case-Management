@@ -51,7 +51,7 @@ export type SuspectAdditionalDetailValue =
   | "Arrest summons number (ASN)"
   | "Type of offender";
 
-type SuspectTypeValue = "person" | "company" | "";
+export type SuspectTypeValue = "person" | "company" | "";
 export type GeneralRadioValue = "yes" | "no" | "";
 export type SuspectFormData = {
   suspectId: string;
@@ -131,6 +131,11 @@ export type CaseRegistrationFormData = {
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
   victimsList: { id: string; firstName: string; lastName: string }[];
+  navigation: {
+    fromCaseSummaryPage: boolean;
+    fromChargeSummaryPage: boolean;
+    fromSuspectSummaryPage: boolean;
+  };
 };
 
 export type CaseRegistrationState = {
@@ -220,6 +225,11 @@ export const initialState: CaseRegistrationState = {
     suspects: [],
     wantToAddChargesRadio: "",
     victimsList: [],
+    navigation: {
+      fromCaseSummaryPage: false,
+      fromChargeSummaryPage: false,
+      fromSuspectSummaryPage: false,
+    },
   },
 
   apiData: {
@@ -253,16 +263,31 @@ export type CaseRegistrationActions =
       };
     }
   | {
-      type: "SET_SUSPECT_FIELD";
+      type: "SET_SUSPECT_FIELDS";
       payload: {
         index: number;
-        field: SuspectFieldNames;
-        value:
-          | SuspectAdditionalDetailValue[]
-          | string
-          | { shortCode: string; description: string }
-          | { shortCode: string; display: string; arrestDate: string }
-          | { firstName?: string; lastName: string }[];
+        data: {
+          addSuspectRadio?: SuspectTypeValue;
+          suspectFirstNameText?: string;
+          suspectLastNameText?: string;
+          suspectAdditionalDetailsCheckboxes?: SuspectAdditionalDetailValue[];
+          suspectGenderRadio?: { shortCode: string; description: string };
+          suspectDisabilityRadio?: GeneralRadioValue;
+          suspectReligionRadio?: { shortCode: string; description: string };
+          suspectEthnicityRadio?: { shortCode: string; description: string };
+          suspectAliases?: { firstName: string; lastName: string }[];
+          suspectSDORadio?: GeneralRadioValue;
+          suspectASNText?: string;
+          suspectOffenderTypesRadio?: {
+            shortCode: string;
+            display: string;
+            arrestDate: string;
+          };
+          suspectCompanyNameText?: string;
+          suspectDOBDayText?: string;
+          suspectDOBMonthText?: string;
+          suspectDOBYearText?: string;
+        };
       };
     }
   | {
@@ -291,6 +316,12 @@ export type CaseRegistrationActions =
       payload: {
         suspectId: string;
         chargeId: string;
+      };
+    }
+  | {
+      type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES";
+      payload: {
+        suspectId: string;
       };
     }
   | {
@@ -385,6 +416,14 @@ export type CaseRegistrationActions =
       payload: {
         index: number;
       };
+    }
+  | {
+      type: "SET_NAVIGATION_DATA";
+      payload: {
+        fromCaseSummaryPage?: boolean;
+        fromChargeSummaryPage?: boolean;
+        fromSuspectSummaryPage?: boolean;
+      };
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -408,19 +447,20 @@ export const caseRegistrationReducer = (
         },
       };
     }
-    case "SET_SUSPECT_FIELD": {
+    case "SET_SUSPECT_FIELDS": {
+      const { index, data } = action.payload;
       if (action.payload.index > state.formData.suspects.length) {
         return state;
       }
 
       const suspects = [...state.formData.suspects];
-      const existing = suspects[action.payload.index] ?? {
+      const existing = suspects[index] ?? {
         ...suspectInitialState,
         suspectId: uuidv4(),
       };
-      suspects[action.payload.index] = {
+      suspects[index] = {
         ...existing,
-        [action.payload.field]: action.payload.value,
+        ...data,
       };
       return {
         ...state,
@@ -510,6 +550,39 @@ export const caseRegistrationReducer = (
       suspects[suspectIndex] = {
         ...suspect,
         charges: newCharges,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+
+    case "REMOVE_INCOMPLETE_SUSPECT_CHARGES": {
+      const { suspectId } = action.payload;
+      const suspects = state.formData.suspects;
+      const suspect = suspects.find(
+        (suspect) => suspect.suspectId === suspectId,
+      );
+      const suspectIndex = suspects.findIndex((s) => s.suspectId === suspectId);
+
+      if (!suspect) {
+        return state;
+      }
+      const filteredCharges = suspect?.charges.filter((charge) => {
+        if (!charge.offenceFromDate) {
+          return false;
+        }
+        if (charge.addVictimRadio === "yes" && !charge.victim) {
+          return false;
+        }
+        return true;
+      });
+      suspects[suspectIndex] = {
+        ...suspect,
+        charges: filteredCharges,
       };
       return {
         ...state,
@@ -651,6 +724,18 @@ export const caseRegistrationReducer = (
         apiData: {
           ...state.apiData,
           offencesSearchResults: action.payload.offencesSearchResults,
+        },
+      };
+    }
+    case "SET_NAVIGATION_DATA": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          navigation: {
+            ...state.formData.navigation,
+            ...action.payload,
+          },
         },
       };
     }

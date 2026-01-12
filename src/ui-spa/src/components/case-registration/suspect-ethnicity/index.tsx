@@ -8,7 +8,6 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getEthnicities } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -38,6 +37,16 @@ const SuspectEthnicityPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const [formData, setFormData] = useState<{
+    suspectEthnicityRadio: { shortCode: string; description: string };
+  }>({
+    suspectEthnicityRadio: state.formData.suspects[suspectIndex]
+      .suspectEthnicityRadio || {
+      shortCode: "",
+      description: "",
+    },
+  });
 
   const {
     data: ethnicityData,
@@ -79,13 +88,10 @@ const SuspectEthnicityPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
     const { suspectEthnicityRadio = { shortCode: null, description: "" } } =
-      suspects[suspectIndex] || {};
+      formData;
 
     if (!suspectEthnicityRadio.shortCode) {
       errors.suspectEthnicityRadio = {
@@ -149,13 +155,9 @@ const SuspectEthnicityPage = () => {
       (ethnicity) => ethnicity.shortCode === value,
     );
     if (selectedEthnicity) {
-      dispatch({
-        type: "SET_SUSPECT_FIELD",
-        payload: {
-          index: suspectIndex,
-          field: "suspectEthnicityRadio",
-          value: selectedEthnicity,
-        },
+      setFormData({
+        ...formData,
+        suspectEthnicityRadio: selectedEthnicity,
       });
     }
   };
@@ -163,7 +165,15 @@ const SuspectEthnicityPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-ethnicity",
@@ -178,11 +188,8 @@ const SuspectEthnicityPage = () => {
     formData: { suspects },
   } = state;
 
-  const {
-    suspectEthnicityRadio = { shortCode: null, description: "" },
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -219,7 +226,7 @@ const SuspectEthnicityPage = () => {
                 : undefined
             }
             items={ethnicityItems}
-            value={suspectEthnicityRadio.shortCode || ""}
+            value={formData.suspectEthnicityRadio.shortCode || ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}
