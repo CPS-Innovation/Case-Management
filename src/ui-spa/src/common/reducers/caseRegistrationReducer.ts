@@ -297,6 +297,7 @@ export type CaseRegistrationActions =
           caseInvestigatorShoulderNameText?: string;
           caseInvestigatorShoulderNumberText?: string;
           wantToAddChargesRadio?: GeneralRadioValue;
+          victimsList: { id: string; firstName: string; lastName: string }[];
         };
       };
     }

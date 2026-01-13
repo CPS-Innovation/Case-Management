@@ -50,17 +50,18 @@ const ChargesVictimDuplicateConfirmationPage = () => {
     });
 
     dispatch({
-      type: "SET_FIELD",
+      type: "SET_FIELDS",
       payload: {
-        field: "victimsList",
-        value: [
-          ...state.formData.victimsList,
-          {
-            id: uuidv4(),
-            firstName: victimFirstName,
-            lastName: victimLastName,
-          },
-        ],
+        data: {
+          victimsList: [
+            ...state.formData.victimsList,
+            {
+              id: uuidv4(),
+              firstName: victimFirstName,
+              lastName: victimLastName,
+            },
+          ],
+        },
       },
     });
 

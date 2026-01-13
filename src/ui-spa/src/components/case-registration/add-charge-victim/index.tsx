@@ -314,17 +314,18 @@ const AddChargeVictimPage = () => {
       victimDetails.selectedVictimRadio === "new-victim"
     ) {
       dispatch({
-        type: "SET_FIELD",
+        type: "SET_FIELDS",
         payload: {
-          field: "victimsList",
-          value: [
-            ...state.formData.victimsList,
-            {
-              id: uuidv4(),
-              firstName: victimDetails.victimFirstNameText,
-              lastName: victimDetails.victimLastNameText,
-            },
-          ],
+          data: {
+            victimsList: [
+              ...state.formData.victimsList,
+              {
+                id: uuidv4(),
+                firstName: victimDetails.victimFirstNameText,
+                lastName: victimDetails.victimLastNameText,
+              },
+            ],
+          },
         },
       });
     }
