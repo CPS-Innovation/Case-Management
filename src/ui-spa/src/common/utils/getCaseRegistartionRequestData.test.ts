@@ -39,6 +39,8 @@ describe("getCaseRegistrationRequestData", () => {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
         fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
@@ -133,6 +135,8 @@ describe("getCaseRegistrationRequestData", () => {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
         fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [

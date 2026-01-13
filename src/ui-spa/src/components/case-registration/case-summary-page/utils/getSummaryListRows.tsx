@@ -1,8 +1,10 @@
 import { format } from "date-fns";
-import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import {
+  type CaseRegistrationFormData,
+  type CaseRegistrationActions,
+} from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
 import { type NavigateFunction } from "react-router-dom";
-import { type CaseRegistrationActions } from "../../../../common/reducers/caseRegistrationReducer";
 import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
 import { type PoliceUnit } from "../../../../common/types/responses/PoliceUnits";
 
@@ -16,9 +18,15 @@ export const getCaseDetailsSummaryListRows = (
     url: string,
   ) => {
     event.preventDefault();
+
+    const payload =
+      url === "/case-registration/areas"
+        ? { changeCaseArea: true }
+        : { changeCaseDetails: true };
+
     dispatch({
       type: "SET_NAVIGATION_DATA",
-      payload: { fromCaseSummaryPage: true },
+      payload,
     });
     navigate(url);
   };
@@ -106,6 +114,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/areas",
             visuallyHiddenText: "Edit Case Area",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(event, "/case-registration/areas"),
           },
         ],
       },
@@ -123,6 +133,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -138,6 +150,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Registering Unit",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -153,6 +167,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Witness Care Unit",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(event, "/case-registration/case-details"),
           },
         ],
       },

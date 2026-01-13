@@ -26,7 +26,24 @@ const CaseAreasPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState<{
+    areaOrDivisionText: { id: number | null; description: string };
+  }>({
+    areaOrDivisionText: state.formData.areaOrDivisionText || {
+      id: null,
+      description: "",
+    },
+  });
+
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
+
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.changeCaseArea) {
+      return "/case-registration/case-summary";
+    }
+
+    return "/case-registration";
+  }, [state.formData.navigation.changeCaseArea]);
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
@@ -110,13 +127,7 @@ const CaseAreasPage = () => {
 
   const handleAreaConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(areas, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "areaOrDivisionText",
-        value: { id, description },
-      },
-    });
+    setFormData({ areaOrDivisionText: { id, description } });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -125,23 +136,53 @@ const CaseAreasPage = () => {
       "area-or-division-text",
     ) as HTMLInputElement | null;
     const inputValue = input?.value ?? "";
-    if (inputValue !== state.formData.areaOrDivisionText.description) {
+    let formValue = formData;
+    if (inputValue !== formData.areaOrDivisionText.description) {
       const { id, description } = getSelectedUnit(areas, inputValue);
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "areaOrDivisionText",
-          value: { id, description },
-        },
-      });
+      setFormData({ areaOrDivisionText: { id, description } });
+      formValue = { areaOrDivisionText: { id, description } };
     }
 
     if (!validateFormData(areas, inputValue)) return;
+
+    if (
+      state.formData.navigation.changeCaseArea &&
+      state.formData.areaOrDivisionText.id !== formValue.areaOrDivisionText?.id
+    ) {
+      navigate("/case-registration/change-area-confirmation", {
+        state: {
+          areaOrDivisionText: formValue.areaOrDivisionText,
+        },
+      });
+      return;
+    }
+
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formValue,
+        },
+      },
+    });
     return navigate("/case-registration/case-details");
+  };
+
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseArea: false },
+      });
+    }
+    navigate(previousRoute);
   };
   return (
     <div className={styles.caseAreasPage}>
-      <BackLink to={"/case-registration"}>Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       <h1>What is the division or area?</h1>
       {!!errorList.length && (
         <div
@@ -163,7 +204,7 @@ const CaseAreasPage = () => {
           source={areaSuggests}
           confirmOnBlur={false}
           onConfirm={handleAreaConfirm}
-          defaultValue={state.formData.areaOrDivisionText.description}
+          defaultValue={formData.areaOrDivisionText.description}
           errorMessage={
             formDataErrors["areaOrDivisionText"]
               ? formDataErrors["areaOrDivisionText"].errorSummaryText

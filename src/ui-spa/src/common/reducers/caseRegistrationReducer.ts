@@ -135,6 +135,8 @@ export type CaseRegistrationFormData = {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
     fromSuspectSummaryPage: boolean;
+    changeCaseArea: boolean;
+    changeCaseDetails: boolean;
   };
 };
 
@@ -229,6 +231,8 @@ export const initialState: CaseRegistrationState = {
       fromCaseSummaryPage: false,
       fromChargeSummaryPage: false,
       fromSuspectSummaryPage: false,
+      changeCaseArea: false,
+      changeCaseDetails: false,
     },
   },
 
@@ -297,7 +301,7 @@ export type CaseRegistrationActions =
           caseInvestigatorShoulderNameText?: string;
           caseInvestigatorShoulderNumberText?: string;
           wantToAddChargesRadio?: GeneralRadioValue;
-          victimsList: { id: string; firstName: string; lastName: string }[];
+          victimsList?: { id: string; firstName: string; lastName: string }[];
         };
       };
     }
@@ -462,6 +466,8 @@ export type CaseRegistrationActions =
         fromCaseSummaryPage?: boolean;
         fromChargeSummaryPage?: boolean;
         fromSuspectSummaryPage?: boolean;
+        changeCaseArea?: boolean;
+        changeCaseDetails?: boolean;
       };
     };
 
