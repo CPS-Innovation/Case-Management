@@ -469,6 +469,12 @@ export type CaseRegistrationActions =
         changeCaseArea?: boolean;
         changeCaseDetails?: boolean;
       };
+    }
+  | {
+      type: "RESET_AREA_DEPENDENT_FIELDS";
+    }
+  | {
+      type: "RESET_RU_DEPENDENT_FIELDS";
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -791,6 +797,33 @@ export const caseRegistrationReducer = (
             ...state.formData.navigation,
             ...action.payload,
           },
+        },
+      };
+    }
+    case "RESET_AREA_DEPENDENT_FIELDS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          registeringUnitText: { id: null, description: "" },
+          witnessCareUnitText: { id: null, description: "" },
+          firstHearingDateText: "",
+          firstHearingCourtLocationText: { id: null, description: "" },
+          caseProsecutorText: { id: null, description: "" },
+          caseCaseworkerText: { id: null, description: "" },
+        },
+      };
+    }
+
+    case "RESET_RU_DEPENDENT_FIELDS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          firstHearingDateText: "",
+          firstHearingCourtLocationText: { id: null, description: "" },
+          caseProsecutorText: { id: null, description: "" },
+          caseCaseworkerText: { id: null, description: "" },
         },
       };
     }

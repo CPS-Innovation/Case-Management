@@ -13,7 +13,7 @@ export const getCaseDetailsSummaryListRows = (
   navigate: NavigateFunction,
   formData: CaseRegistrationFormData,
 ) => {
-  const handleAddChargeClick = (
+  const handleAddChangeClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
     url: string,
   ) => {
@@ -49,7 +49,7 @@ export const getCaseDetailsSummaryListRows = (
                   to: "/case-registration/first-hearing",
                   visuallyHiddenText: "Edit First Hearing Court Location",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/first-hearing",
                     ),
@@ -71,7 +71,7 @@ export const getCaseDetailsSummaryListRows = (
                   to: "/case-registration/first-hearing",
                   visuallyHiddenText: "Edit First Hearing Date",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/first-hearing",
                     ),
@@ -93,7 +93,7 @@ export const getCaseDetailsSummaryListRows = (
                   to: "/case-registration/first-hearing",
                   visuallyHiddenText: "Edit First Hearing Date",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/first-hearing",
                     ),
@@ -115,7 +115,7 @@ export const getCaseDetailsSummaryListRows = (
             to: "/case-registration/areas",
             visuallyHiddenText: "Edit Case Area",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/areas"),
+              handleAddChangeClick(event, "/case-registration/areas"),
           },
         ],
       },
@@ -134,7 +134,7 @@ export const getCaseDetailsSummaryListRows = (
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/case-details"),
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -151,7 +151,7 @@ export const getCaseDetailsSummaryListRows = (
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Registering Unit",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/case-details"),
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -168,7 +168,7 @@ export const getCaseDetailsSummaryListRows = (
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Witness Care Unit",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/case-details"),
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -203,7 +203,7 @@ export const getEmptySuspectSummaryRow = (
   dispatch: React.Dispatch<CaseRegistrationActions>,
   navigate: NavigateFunction,
 ) => {
-  const handleAddChargeClick = (
+  const handleAddSuspectClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
     url: string,
   ) => {
@@ -225,7 +225,7 @@ export const getEmptySuspectSummaryRow = (
             to: "/case-registration/suspect-0/add-suspect",
             visuallyHiddenText: "Add Suspect",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(
+              handleAddSuspectClick(
                 event,
                 "/case-registration/suspect-0/add-suspect",
               ),
@@ -336,7 +336,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
   formData: CaseRegistrationFormData,
   policeUnit?: PoliceUnit,
 ) => {
-  const handleAddChargeClick = (
+  const handleAddChangeClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
     url: string,
   ) => {
@@ -362,7 +362,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police officer or investigator",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/case-assignee",
                     ),
@@ -388,7 +388,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Shoulder Number",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/case-assignee",
                     ),
@@ -410,7 +410,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police Unit",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/case-assignee",
                     ),
@@ -432,7 +432,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police officer or investigator",
                   onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChargeClick(
+                    handleAddChangeClick(
                       event,
                       "/case-registration/case-assignee",
                     ),
@@ -461,7 +461,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Prosecutor",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/case-assignee"),
+              handleAddChangeClick(event, "/case-registration/case-assignee"),
           },
         ],
       },
@@ -484,7 +484,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Caseworker",
             onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-              handleAddChargeClick(event, "/case-registration/case-assignee"),
+              handleAddChangeClick(event, "/case-registration/case-assignee"),
           },
         ],
       },

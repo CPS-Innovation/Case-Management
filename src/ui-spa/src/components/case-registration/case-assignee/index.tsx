@@ -488,13 +488,21 @@ const CaseAssigneePage = () => {
       },
     });
 
+    if (
+      state.formData.navigation.changeCaseArea ||
+      state.formData.navigation.changeCaseDetails
+    ) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseArea: false, changeCaseDetails: false },
+      });
+    }
+
     if (state.formData.navigation.fromCaseSummaryPage) {
       dispatch({
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
       });
-      navigate("/case-registration/case-summary");
-      return;
     }
 
     return navigate("/case-registration/case-summary");
@@ -513,9 +521,12 @@ const CaseAssigneePage = () => {
 
   return (
     <div className={styles.caseAssigneePage}>
-      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
-        Back
-      </BackLink>
+      {!state.formData.navigation.changeCaseArea &&
+        !state.formData.navigation.changeCaseDetails && (
+          <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+            Back
+          </BackLink>
+        )}
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}

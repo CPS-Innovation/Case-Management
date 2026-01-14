@@ -24,6 +24,9 @@ const ChangeRegisteringUnitConfirmationPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    dispatch({
+      type: "RESET_RU_DEPENDENT_FIELDS",
+    });
 
     dispatch({
       type: "SET_FIELDS",
@@ -42,7 +45,9 @@ const ChangeRegisteringUnitConfirmationPage = () => {
   };
 
   return (
-    <div className={pageStyles.changeRegisteringUnitConfirmationPage}>
+    <div
+      className={`${pageStyles.changeRegisteringUnitConfirmationPage} govuk-grid-column-two-thirds`}
+    >
       <BackLink to={"/case-registration/case-areas"}>Back</BackLink>
 
       <form onSubmit={handleSubmit}>

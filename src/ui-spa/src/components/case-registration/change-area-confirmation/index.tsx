@@ -22,6 +22,10 @@ const ChangeAreaConfirmationPage = () => {
     event.preventDefault();
 
     dispatch({
+      type: "RESET_AREA_DEPENDENT_FIELDS",
+    });
+
+    dispatch({
       type: "SET_FIELDS",
       payload: {
         data: {
@@ -34,8 +38,10 @@ const ChangeAreaConfirmationPage = () => {
   };
 
   return (
-    <div className={pageStyles.changeAreaConfirmationPage}>
-      <BackLink to={"/case-registration/case-areas"}>Back</BackLink>
+    <div
+      className={`${pageStyles.changeAreaConfirmationPage} govuk-grid-column-two-thirds`}
+    >
+      <BackLink to={"/case-registration/areas"}>Back</BackLink>
 
       <form onSubmit={handleSubmit}>
         <h1>Changing the area means you must update other case details</h1>
@@ -62,7 +68,7 @@ const ChangeAreaConfirmationPage = () => {
             Continue and change the area
           </Button>
 
-          <Link to={"/case-registration/case-areas"}>Cancel</Link>
+          <Link to={"/case-registration/areas"}>Cancel</Link>
         </div>
       </form>
     </div>

@@ -64,6 +64,15 @@ const CaseDetailsPage = () => {
   });
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.changeCaseDetails) {
+      return "/case-registration/case-summary";
+    }
+    if (isAreaSensitive) return "/case-registration";
+
+    return "/case-registration/areas";
+  }, [state.formData.navigation.changeCaseDetails, isAreaSensitive]);
+
   const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
@@ -354,6 +363,15 @@ const CaseDetailsPage = () => {
       return;
     }
 
+    if (
+      state.formData.registeringUnitText.id !==
+      formValue.registeringUnitText?.id
+    ) {
+      dispatch({
+        type: "RESET_RU_DEPENDENT_FIELDS",
+      });
+    }
+
     dispatch({
       type: "SET_FIELDS",
       payload: {
@@ -362,9 +380,18 @@ const CaseDetailsPage = () => {
         },
       },
     });
+
+    if (state.formData.navigation.changeCaseDetails) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseDetails: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
     if (state.formData.navigation.changeCaseArea) {
       if (state.formData.firstHearingRadio) {
-        navigate("/case-registration/first-hearing-details");
+        navigate("/case-registration/first-hearing");
         return;
       }
       navigate("/case-registration/case-assignee");
@@ -386,13 +413,24 @@ const CaseDetailsPage = () => {
     return navigate("/case-registration/case-complexity");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseDetails: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink
-        to={`${isAreaSensitive ? "/case-registration" : "/case-registration/areas"}`}
-      >
-        Back
-      </BackLink>
+      {!state.formData.navigation.changeCaseArea && (
+        <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+          Back
+        </BackLink>
+      )}
       <h1>Case Details</h1>
       {!!errorList.length && (
         <div

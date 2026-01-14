@@ -157,6 +157,23 @@ const CaseAreasPage = () => {
       return;
     }
 
+    if (state.formData.navigation.changeCaseArea) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseArea: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
+
+    if (
+      state.formData.areaOrDivisionText.id !== formValue.areaOrDivisionText?.id
+    ) {
+      dispatch({
+        type: "RESET_AREA_DEPENDENT_FIELDS",
+      });
+    }
+
     dispatch({
       type: "SET_FIELDS",
       payload: {

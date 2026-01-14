@@ -252,6 +252,14 @@ const FirstHearingPage = () => {
         },
       },
     });
+
+    if (
+      state.formData.navigation.changeCaseArea ||
+      state.formData.navigation.changeCaseDetails
+    ) {
+      navigate("/case-registration/case-assignee");
+      return;
+    }
     if (state.formData.navigation.fromCaseSummaryPage) {
       dispatch({
         type: "SET_NAVIGATION_DATA",
@@ -277,9 +285,12 @@ const FirstHearingPage = () => {
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
-        Back
-      </BackLink>
+      {!state.formData.navigation.changeCaseArea &&
+        !state.formData.navigation.changeCaseDetails && (
+          <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+            Back
+          </BackLink>
+        )}
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
