@@ -32,76 +32,6 @@ export const getCaseDetailsSummaryListRows = (
   };
   const urn = `${formData.urnPoliceForceText}${formData.urnPoliceUnitText}${formData.urnUniqueReferenceText}/${formData.urnYearReferenceText}`;
 
-  const firstHearingSummary =
-    formData.firstHearingRadio === "yes"
-      ? [
-          {
-            key: { children: <span>First Hearing Court Location</span> },
-            value: {
-              children: (
-                <p>{formData.firstHearingCourtLocationText.description}</p>
-              ),
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Court Location",
-                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChangeClick(
-                      event,
-                      "/case-registration/first-hearing",
-                    ),
-                },
-              ],
-            },
-          },
-          {
-            key: { children: <span>First Hearing Date</span> },
-            value: {
-              children: (
-                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
-              ),
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Date",
-                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChangeClick(
-                      event,
-                      "/case-registration/first-hearing",
-                    ),
-                },
-              ],
-            },
-          },
-        ]
-      : [
-          {
-            key: { children: <span>First Hearing details</span> },
-            value: {
-              children: <p>Not entered</p>,
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Date",
-                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                    handleAddChangeClick(
-                      event,
-                      "/case-registration/first-hearing",
-                    ),
-                },
-              ],
-            },
-          },
-        ];
   const rows = [
     {
       key: { children: <span>Area</span> },
@@ -194,8 +124,86 @@ export const getCaseDetailsSummaryListRows = (
         ],
       },
     },
-    ...firstHearingSummary,
   ];
+  return rows;
+};
+
+export const getFirstHearingSummaryRows = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
+  formData: CaseRegistrationFormData,
+) => {
+  const handleAddChangeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate("/case-registration/first-hearing");
+  };
+
+  const rows =
+    formData.firstHearingRadio === "yes"
+      ? [
+          {
+            key: { children: <span>First Hearing Court Location</span> },
+            value: {
+              children: (
+                <p>{formData.firstHearingCourtLocationText.description}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Court Location",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+          {
+            key: { children: <span>First Hearing Date</span> },
+            value: {
+              children: (
+                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+        ]
+      : [
+          {
+            key: { children: <span>First Hearing details</span> },
+            value: {
+              children: <p>Not entered</p>,
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+        ];
   return rows;
 };
 

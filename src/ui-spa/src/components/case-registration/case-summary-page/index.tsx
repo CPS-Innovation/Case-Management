@@ -10,10 +10,12 @@ import { Button, BackLink, SummaryList, ErrorSummary } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import {
   getCaseDetailsSummaryListRows,
+  getFirstHearingSummaryRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhosIsWorkingOnTheCaseSummaryListRows,
   getEmptySuspectSummaryRow,
 } from "./utils/getSummaryListRows";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitCaseRegistration, validateUrn } from "../../../apis/gateway-api";
@@ -35,6 +37,7 @@ const CaseSummaryPage = () => {
   };
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const submitCaseRegistrationMutation = useMutation({
     mutationFn: submitCaseRegistration,
@@ -153,6 +156,11 @@ const CaseSummaryPage = () => {
     [dispatch, navigate, state.formData],
   );
 
+  const caseFirstHearingSummaryListRows = useMemo(
+    () => getFirstHearingSummaryRows(dispatch, navigate, state.formData),
+    [dispatch, navigate, state.formData],
+  );
+
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
     () =>
       getCaseComplexityAndMonitoringCodesSummaryListRows(
@@ -207,6 +215,12 @@ const CaseSummaryPage = () => {
         )}
         {!!state.formData.suspects.length && (
           <SuspectSummary isCaseSummaryPage={true} />
+        )}
+        {!!chargesCount && (
+          <>
+            <h2>First hearing Details</h2>
+            <SummaryList rows={caseFirstHearingSummaryListRows} />
+          </>
         )}
         <h2>Case complexity and monitoring codes</h2>
         <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />

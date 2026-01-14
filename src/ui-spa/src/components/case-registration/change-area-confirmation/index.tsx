@@ -50,9 +50,9 @@ const ChangeAreaConfirmationPage = () => {
           <p>
             If you change the area, you will need to review and update other
             case details. This is because some information is linked to the
-            area. You will need to check and update:
+            area.
           </p>
-
+          <p> You will need to check and update:</p>
           <ul>
             <li>the registering unit</li>
             {state.formData.firstHearingRadio && <li>first hearing details</li>}

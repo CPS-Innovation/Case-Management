@@ -37,7 +37,7 @@ const ChangeRegisteringUnitConfirmationPage = () => {
       },
     });
     if (state.formData.firstHearingRadio) {
-      navigate("/case-registration/first-hearing-details");
+      navigate("/case-registration/first-hearing");
       return;
     }
 
@@ -59,9 +59,9 @@ const ChangeRegisteringUnitConfirmationPage = () => {
           <p>
             If you change the registering unit, you will need to review and
             update other case details. This is because some information is
-            linked to the registering unit. You will need to check and update:
+            linked to the registering unit.
           </p>
-
+          <p> You will need to check and update:</p>
           <ul>
             {state.formData.firstHearingRadio && <li>first hearing details</li>}
             <li>who is working on the case</li>
