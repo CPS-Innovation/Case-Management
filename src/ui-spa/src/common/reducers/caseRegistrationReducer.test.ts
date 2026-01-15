@@ -1294,14 +1294,14 @@ describe("caseRegistrationReducer", () => {
 });
 describe("getResetFieldValues", () => {
   it("should reset caseProsecutorText and caseCaseworkerText when caseProsecutorRadio is 'no'", () => {
-    const result = getResetFieldValues("caseProsecutorRadio", "no");
+    const result = getResetFieldValues({ caseProsecutorRadio: "no" });
     expect(result).toEqual({
       caseProsecutorText: { id: null, description: "" },
       caseCaseworkerText: { id: null, description: "" },
     });
   });
   it("should reset caseInvestigator fields when caseInvestigatorRadio is 'no'", () => {
-    const result = getResetFieldValues("caseInvestigatorRadio", "no");
+    const result = getResetFieldValues({ caseInvestigatorRadio: "no" });
     expect(result).toEqual({
       caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
@@ -1311,7 +1311,7 @@ describe("getResetFieldValues", () => {
     });
   });
   it("should reset first hearing fields when firstHearingRadio is 'no'", () => {
-    const result = getResetFieldValues("firstHearingRadio", "no");
+    const result = getResetFieldValues({ firstHearingRadio: "no" });
     expect(result).toEqual({
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
@@ -1319,7 +1319,23 @@ describe("getResetFieldValues", () => {
   });
 
   it("should return an empty object for other fields", () => {
-    const result = getResetFieldValues("operationNameRadio", "yes");
+    const result = getResetFieldValues({ operationNameRadio: "yes" });
     expect(result).toEqual({});
+  });
+
+  it("should reset more than one fields if the relevant radio is 'no'", () => {
+    const result = getResetFieldValues({
+      caseInvestigatorRadio: "no",
+      caseProsecutorRadio: "no",
+    });
+    expect(result).toEqual({
+      caseProsecutorText: { id: null, description: "" },
+      caseCaseworkerText: { id: null, description: "" },
+      caseInvestigatorTitleSelect: { shortCode: null, display: "" },
+      caseInvestigatorFirstNameText: "",
+      caseInvestigatorLastNameText: "",
+      caseInvestigatorShoulderNameText: "",
+      caseInvestigatorShoulderNumberText: "",
+    });
   });
 });

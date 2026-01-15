@@ -13,6 +13,7 @@ import type { Religions } from "../types/responses/Religions";
 import type { OffenderTypes } from "../types/responses/OffenderTypes";
 import type { Offences, Offence } from "../types/responses/Offences";
 import { v4 as uuidv4 } from "uuid";
+
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
@@ -472,11 +473,13 @@ export const caseRegistrationReducer = (
 ): CaseRegistrationState => {
   switch (action.type) {
     case "SET_FIELDS": {
+      const resetValues = getResetFieldValues(action.payload.data);
       return {
         ...state,
         formData: {
           ...state.formData,
           ...action.payload.data,
+          ...resetValues,
         },
       };
     }
@@ -806,17 +809,19 @@ export const caseRegistrationReducer = (
 };
 
 export const getResetFieldValues = (
-  fieldName: CaseRegistrationField,
-  value: string,
+  data: Partial<CaseRegistrationFormData>,
 ) => {
-  if (fieldName === "caseProsecutorRadio" && value === "no") {
-    return {
+  let resetValues: Partial<CaseRegistrationFormData> = {};
+  if (data.caseProsecutorRadio === "no") {
+    resetValues = {
+      ...resetValues,
       caseProsecutorText: { id: null, description: "" },
       caseCaseworkerText: { id: null, description: "" },
     };
   }
-  if (fieldName === "caseInvestigatorRadio" && value === "no") {
-    return {
+  if (data.caseInvestigatorRadio === "no") {
+    resetValues = {
+      ...resetValues,
       caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
       caseInvestigatorLastNameText: "",
@@ -824,19 +829,21 @@ export const getResetFieldValues = (
       caseInvestigatorShoulderNumberText: "",
     };
   }
-  if (fieldName === "firstHearingRadio" && value === "no") {
-    return {
+  if (data.firstHearingRadio === "no") {
+    resetValues = {
+      ...resetValues,
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
     };
   }
-  if (fieldName === "suspectDetailsRadio" && value === "no") {
-    return {
+  if (data.suspectDetailsRadio === "no") {
+    resetValues = {
+      ...resetValues,
       suspects: [],
     };
   }
 
-  return {};
+  return resetValues;
 };
 
 export const getResetSuspectFieldValues = (
