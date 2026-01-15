@@ -48,8 +48,12 @@ describe("CaseRegistrationProvider", () => {
           <button
             onClick={() =>
               dispatch({
-                type: "SET_FIELD",
-                payload: { field: "operationNameRadio", value: "yes" },
+                type: "SET_FIELDS",
+                payload: {
+                  data: {
+                    operationNameRadio: "yes",
+                  },
+                },
               })
             }
           >

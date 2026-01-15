@@ -16,6 +16,7 @@ import {
   Input,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getSelectedInvestigatorTitle } from "../../../common/utils/getSelectedInvestigatorTitle";
 import { getPoliceUnit } from "../../../common/utils/getPoliceUnit";
@@ -47,8 +48,8 @@ const CaseAssigneePage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<{
-    caseProsecutorRadio: string;
-    caseInvestigatorRadio: string;
+    caseProsecutorRadio: GeneralRadioValue;
+    caseInvestigatorRadio: GeneralRadioValue;
     caseProsecutorText: { id: number | null; description: string };
     caseCaseworkerText: { id: number | null; description: string };
     caseInvestigatorTitleSelect: {

@@ -48,7 +48,7 @@ const ChangeRegisteringUnitConfirmationPage = () => {
     <div
       className={`${pageStyles.changeRegisteringUnitConfirmationPage} govuk-grid-column-two-thirds`}
     >
-      <BackLink to={"/case-registration/case-areas"}>Back</BackLink>
+      <BackLink to={"/case-registration/case-details"}>Back</BackLink>
 
       <form onSubmit={handleSubmit}>
         <h1>
@@ -76,7 +76,7 @@ const ChangeRegisteringUnitConfirmationPage = () => {
             Continue and change the registering unit
           </Button>
 
-          <Link to={"/case-registration/case-areas"}>Cancel</Link>
+          <Link to={"/case-registration/case-details"}>Cancel</Link>
         </div>
       </form>
     </div>

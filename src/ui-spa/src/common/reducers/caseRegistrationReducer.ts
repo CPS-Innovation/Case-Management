@@ -101,8 +101,8 @@ export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
 
 export type CaseRegistrationFormData = {
-  operationNameRadio: string;
-  suspectDetailsRadio: string;
+  operationNameRadio: GeneralRadioValue;
+  suspectDetailsRadio: GeneralRadioValue;
   operationNameText: string;
   areaOrDivisionText: { id: number | null; description: string };
   urnPoliceForceText: string;
@@ -116,8 +116,8 @@ export type CaseRegistrationFormData = {
   firstHearingDateText: string;
   caseComplexityRadio: { shortCode: string; description: string };
   caseMonitoringCodesCheckboxes: string[];
-  caseProsecutorRadio: string;
-  caseInvestigatorRadio: string;
+  caseProsecutorRadio: GeneralRadioValue;
+  caseInvestigatorRadio: GeneralRadioValue;
   caseProsecutorText: { id: number | null; description: string };
   caseCaseworkerText: { id: number | null; description: string };
   caseInvestigatorTitleSelect: {
@@ -254,24 +254,11 @@ export const initialState: CaseRegistrationState = {
 
 export type CaseRegistrationActions =
   | {
-      type: "SET_FIELD";
-      payload: {
-        field: CaseRegistrationField;
-        value:
-          | { id: number | null; description: string }
-          | { shortCode: string | null; description: string }
-          | { shortCode: string | null; display: string }
-          | string
-          | string[]
-          | { firstName?: string; lastName: string }[];
-      };
-    }
-  | {
       type: "SET_FIELDS";
       payload: {
         data: {
-          operationNameRadio?: string;
-          suspectDetailsRadio?: string;
+          operationNameRadio?: GeneralRadioValue;
+          suspectDetailsRadio?: GeneralRadioValue;
           operationNameText?: string;
           areaOrDivisionText?: { id: number | null; description: string };
           urnPoliceForceText?: string;
@@ -288,8 +275,8 @@ export type CaseRegistrationActions =
           firstHearingDateText?: string;
           caseComplexityRadio?: { shortCode: string; description: string };
           caseMonitoringCodesCheckboxes?: string[];
-          caseProsecutorRadio?: string;
-          caseInvestigatorRadio?: string;
+          caseProsecutorRadio?: GeneralRadioValue;
+          caseInvestigatorRadio?: GeneralRadioValue;
           caseProsecutorText?: { id: number | null; description: string };
           caseCaseworkerText?: { id: number | null; description: string };
           caseInvestigatorTitleSelect?: {
@@ -484,21 +471,6 @@ export const caseRegistrationReducer = (
   action: CaseRegistrationActions,
 ): CaseRegistrationState => {
   switch (action.type) {
-    case "SET_FIELD": {
-      const resetValues = getResetFieldValues(
-        action.payload.field,
-        action.payload.value as string,
-      );
-      return {
-        ...state,
-        formData: {
-          ...state.formData,
-          ...resetValues,
-          [action.payload.field]: action.payload.value,
-        },
-      };
-    }
-
     case "SET_FIELDS": {
       return {
         ...state,

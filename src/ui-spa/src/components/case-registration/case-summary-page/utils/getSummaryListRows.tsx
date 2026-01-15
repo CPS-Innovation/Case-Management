@@ -19,10 +19,14 @@ export const getCaseDetailsSummaryListRows = (
   ) => {
     event.preventDefault();
 
-    const payload =
-      url === "/case-registration/areas"
-        ? { changeCaseArea: true }
-        : { changeCaseDetails: true };
+    const payload: {
+      changeCaseArea?: boolean;
+      changeCaseDetails?: boolean;
+      fromCaseSummaryPage?: boolean;
+    } = {};
+    if (url === "/case-registration/areas") payload.changeCaseArea = true;
+    else if (url === "/case-registration") payload.fromCaseSummaryPage = true;
+    else payload.changeCaseDetails = true;
 
     dispatch({
       type: "SET_NAVIGATION_DATA",
@@ -120,6 +124,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration",
             visuallyHiddenText: "Edit Operation Name",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration"),
           },
         ],
       },
