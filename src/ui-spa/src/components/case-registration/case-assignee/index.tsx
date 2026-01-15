@@ -16,7 +16,7 @@ import {
   Input,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getSelectedInvestigatorTitle } from "../../../common/utils/getSelectedInvestigatorTitle";
 import { getPoliceUnit } from "../../../common/utils/getPoliceUnit";
@@ -47,10 +47,55 @@ const CaseAssigneePage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<{
+    caseProsecutorRadio: GeneralRadioValue;
+    caseInvestigatorRadio: GeneralRadioValue;
+    caseProsecutorText: { id: number | null; description: string };
+    caseCaseworkerText: { id: number | null; description: string };
+    caseInvestigatorTitleSelect: {
+      shortCode: string | null;
+      display: string;
+    };
+    caseInvestigatorFirstNameText: string;
+    caseInvestigatorLastNameText: string;
+    caseInvestigatorShoulderNameText: string;
+    caseInvestigatorShoulderNumberText: string;
+  }>({
+    caseProsecutorRadio: state.formData.caseProsecutorRadio || "",
+    caseInvestigatorRadio: state.formData.caseInvestigatorRadio || "",
+    caseProsecutorText: state.formData.caseProsecutorText || {
+      id: null,
+      description: "",
+    },
+    caseCaseworkerText: state.formData.caseCaseworkerText || {
+      id: null,
+      description: "",
+    },
+    caseInvestigatorTitleSelect: state.formData.caseInvestigatorTitleSelect || {
+      shortCode: null,
+      display: "",
+    },
+    caseInvestigatorFirstNameText:
+      state.formData.caseInvestigatorFirstNameText || "",
+    caseInvestigatorLastNameText:
+      state.formData.caseInvestigatorLastNameText || "",
+    caseInvestigatorShoulderNameText:
+      state.formData.caseInvestigatorShoulderNameText || "",
+    caseInvestigatorShoulderNumberText:
+      state.formData.caseInvestigatorShoulderNumberText || "",
+  });
 
   const registeringUnitId = useMemo(() => {
     return state.formData.registeringUnitText?.id;
   }, [state.formData.registeringUnitText]);
+
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      return "/case-registration/case-summary";
+    }
+
+    return "/case-registration/case-monitoring-codes";
+  }, [state.formData.navigation.fromCaseSummaryPage]);
 
   const { data: caseProsecutorsData, isLoading: isCaseProsecutorsLoading } =
     useQuery({
@@ -140,19 +185,16 @@ const CaseAssigneePage = () => {
   );
 
   const validateFormData = (
-    state: CaseRegistrationState,
     prosecutors: { id: number; description: string }[],
     inputProsecutorValue: string,
     inputCaseworkerValue: string,
   ) => {
     const errors: FormDataErrors = {};
     const {
-      formData: {
-        caseProsecutorRadio,
-        caseInvestigatorRadio,
-        caseInvestigatorLastNameText,
-      },
-    } = state;
+      caseProsecutorRadio,
+      caseInvestigatorRadio,
+      caseInvestigatorLastNameText,
+    } = formData;
 
     if (!caseProsecutorRadio) {
       errors.caseProsecutorRadio = {
@@ -360,33 +402,26 @@ const CaseAssigneePage = () => {
     ) {
       inputValue = inputValue.replaceAll(/\d/g, "");
     }
-
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: fieldName, value: inputValue },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      [fieldName]: inputValue,
+    }));
   };
 
   const handleCaseProsecutorConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(prosecutors, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "caseProsecutorText",
-        value: { id, description },
-      },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      caseProsecutorText: { id, description },
+    }));
   };
 
   const handleCaseCaseworkerConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(caseworkers, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "caseCaseworkerText",
-        value: { id, description },
-      },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      caseCaseworkerText: { id, description },
+    }));
   };
 
   const handleCaseInvestigatorTitleConfirm = (
@@ -397,17 +432,15 @@ const CaseAssigneePage = () => {
       event.target.value,
     );
 
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "caseInvestigatorTitleSelect",
-        value: { shortCode, display },
-      },
-    });
+    setFormData((prevState) => ({
+      ...prevState,
+      caseInvestigatorTitleSelect: { shortCode, display },
+    }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    let formValue = formData;
     const prosecutorInput = document.getElementById(
       "case-prosecutor-text",
     ) as HTMLInputElement | null;
@@ -420,13 +453,10 @@ const CaseAssigneePage = () => {
         prosecutors,
         inputProsecutorValue,
       );
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "caseCaseworkerText",
-          value: { id, description },
-        },
-      });
+      formValue = {
+        ...formValue,
+        caseProsecutorText: { id, description },
+      };
     }
 
     const caseworkerInput = document.getElementById(
@@ -442,31 +472,63 @@ const CaseAssigneePage = () => {
         caseworkers,
         inputCaseworkerValue,
       );
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "caseCaseworkerText",
-          value: { id, description },
-        },
-      });
+      formValue = {
+        ...formValue,
+        caseCaseworkerText: { id, description },
+      };
     }
 
     if (
-      !validateFormData(
-        state,
-        prosecutors,
-        inputProsecutorValue,
-        inputCaseworkerValue,
-      )
+      !validateFormData(prosecutors, inputProsecutorValue, inputCaseworkerValue)
     )
       return;
+
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: { ...formValue },
+      },
+    });
+
+    if (
+      state.formData.navigation.changeCaseArea ||
+      state.formData.navigation.changeCaseDetails
+    ) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseArea: false, changeCaseDetails: false },
+      });
+    }
+
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
 
     return navigate("/case-registration/case-summary");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   return (
     <div className={styles.caseAssigneePage}>
-      <BackLink to="/case-registration/case-monitoring-codes">Back</BackLink>
+      {!state.formData.navigation.changeCaseArea &&
+        !state.formData.navigation.changeCaseDetails && (
+          <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+            Back
+          </BackLink>
+        )}
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -507,7 +569,7 @@ const CaseAssigneePage = () => {
                 "data-testid": "case-prosecutor-radio-yes",
                 conditional: {
                   children: [
-                    state.formData.caseProsecutorRadio === "yes" && (
+                    formData.caseProsecutorRadio === "yes" && (
                       <AutoComplete
                         key="case-prosecutor-text"
                         id="case-prosecutor-text"
@@ -515,9 +577,7 @@ const CaseAssigneePage = () => {
                         source={caseProsecutorSuggest}
                         confirmOnBlur={false}
                         onConfirm={handleCaseProsecutorConfirm}
-                        defaultValue={
-                          state.formData.caseProsecutorText?.description
-                        }
+                        defaultValue={formData.caseProsecutorText?.description}
                         label={{
                           children: <b>Prosecutor name</b>,
                         }}
@@ -529,7 +589,7 @@ const CaseAssigneePage = () => {
                         }
                       />
                     ),
-                    state.formData.caseProsecutorRadio === "yes" && (
+                    formData.caseProsecutorRadio === "yes" && (
                       <AutoComplete
                         key="case-caseworker-text"
                         id="case-caseworker-text"
@@ -537,9 +597,7 @@ const CaseAssigneePage = () => {
                         source={caseCaseworkerSuggest}
                         confirmOnBlur={false}
                         onConfirm={handleCaseCaseworkerConfirm}
-                        defaultValue={
-                          state.formData.caseCaseworkerText?.description
-                        }
+                        defaultValue={formData.caseCaseworkerText?.description}
                         label={{
                           children: <b>Caseworker name</b>,
                         }}
@@ -560,7 +618,7 @@ const CaseAssigneePage = () => {
                 "data-testid": "case-prosecutor-radio-no",
               },
             ]}
-            value={state.formData.caseProsecutorRadio}
+            value={formData.caseProsecutorRadio}
             onChange={(value) => {
               if (value) setFormValue("caseProsecutorRadio", value);
             }}
@@ -609,8 +667,7 @@ const CaseAssigneePage = () => {
                       }}
                       onChange={handleCaseInvestigatorTitleConfirm}
                       value={
-                        state.formData.caseInvestigatorTitleSelect.shortCode ??
-                        ""
+                        formData.caseInvestigatorTitleSelect.shortCode ?? ""
                       }
                     />,
                     <Input
@@ -622,7 +679,7 @@ const CaseAssigneePage = () => {
                         children: <b>First name (optional)</b>,
                       }}
                       type="text"
-                      value={state.formData.caseInvestigatorFirstNameText}
+                      value={formData.caseInvestigatorFirstNameText}
                       onChange={(value: string) => {
                         setFormValue("caseInvestigatorFirstNameText", value);
                       }}
@@ -645,7 +702,7 @@ const CaseAssigneePage = () => {
                           : undefined
                       }
                       type="text"
-                      value={state.formData.caseInvestigatorLastNameText}
+                      value={formData.caseInvestigatorLastNameText}
                       onChange={(value: string) => {
                         setFormValue("caseInvestigatorLastNameText", value);
                       }}
@@ -664,7 +721,7 @@ const CaseAssigneePage = () => {
                         ),
                       }}
                       type="text"
-                      value={state.formData.caseInvestigatorShoulderNumberText}
+                      value={formData.caseInvestigatorShoulderNumberText}
                       onChange={(value: string) => {
                         setFormValue(
                           "caseInvestigatorShoulderNumberText",
@@ -681,7 +738,7 @@ const CaseAssigneePage = () => {
                 "data-testid": "case-investigator-radio-no",
               },
             ]}
-            value={state.formData.caseInvestigatorRadio}
+            value={formData.caseInvestigatorRadio}
             onChange={(value) => {
               if (value) setFormValue("caseInvestigatorRadio", value);
             }}

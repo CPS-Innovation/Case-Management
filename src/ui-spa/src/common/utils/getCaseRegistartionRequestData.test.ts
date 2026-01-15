@@ -39,6 +39,8 @@ describe("getCaseRegistrationRequestData", () => {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
         fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
@@ -99,8 +101,8 @@ describe("getCaseRegistrationRequestData", () => {
 
   it("Should return the correct default values if some of the values are not present", () => {
     const formData: CaseRegistrationFormData = {
-      operationNameRadio: "operationName",
-      suspectDetailsRadio: "suspectDetails",
+      operationNameRadio: "yes",
+      suspectDetailsRadio: "yes",
       operationNameText: "Operation Name",
       areaOrDivisionText: { id: 1, description: "Area 1" },
       urnPoliceForceText: "PF001",
@@ -133,6 +135,8 @@ describe("getCaseRegistrationRequestData", () => {
         fromCaseSummaryPage: false,
         fromChargeSummaryPage: false,
         fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
       },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [

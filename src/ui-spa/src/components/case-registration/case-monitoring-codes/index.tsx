@@ -8,7 +8,6 @@ import {
 } from "react";
 import { Checkboxes, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getCaseMonitoringCodes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +27,13 @@ const CaseMonitoringCodesPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<{
+    caseMonitoringCodesCheckboxes: string[];
+  }>({
+    caseMonitoringCodesCheckboxes:
+      state.formData.caseMonitoringCodesCheckboxes || [],
+  });
 
   const {
     data: caseMonitoringCodesData,
@@ -83,6 +89,14 @@ const CaseMonitoringCodesPage = () => {
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
 
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      return "/case-registration/case-summary";
+    }
+
+    return "/case-registration/case-complexity";
+  }, [state.formData.navigation.fromCaseSummaryPage]);
+
   useEffect(() => {
     if (caseMonitoringCodesError) throw caseMonitoringCodesError;
   }, [caseMonitoringCodesError]);
@@ -104,40 +118,33 @@ const CaseMonitoringCodesPage = () => {
 
   useEffect(() => {
     if (!isOptional && !state.formData.caseMonitoringCodesCheckboxes?.length) {
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "caseMonitoringCodesCheckboxes",
-          value: [PRE_CHARGE_DECISION_CODE],
-        },
+      setFormData({
+        caseMonitoringCodesCheckboxes: [
+          ...formData.caseMonitoringCodesCheckboxes,
+          PRE_CHARGE_DECISION_CODE,
+        ],
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setFormValue = (
-    fieldName: "caseMonitoringCodesCheckboxes",
-    value: string,
-  ) => {
-    const currentValues = state.formData.caseMonitoringCodesCheckboxes ?? [];
+  const setFormValue = (value: string) => {
+    const currentValues = formData.caseMonitoringCodesCheckboxes ?? [];
     let newValues: string[] = [];
     if (currentValues.includes(value)) {
       newValues = currentValues.filter((item) => item !== value);
     } else {
       newValues = [...currentValues, value];
     }
-
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: fieldName, value: newValues },
+    setFormData({
+      caseMonitoringCodesCheckboxes: newValues,
     });
   };
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { caseMonitoringCodesCheckboxes },
-    } = state;
+
+    const { caseMonitoringCodesCheckboxes } = formData;
 
     if (!isOptional && !caseMonitoringCodesCheckboxes?.length) {
       errors.caseMonitoringCodesCheckboxes = {
@@ -156,14 +163,39 @@ const CaseMonitoringCodesPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_FIELDS",
+      payload: { data: { ...formData } },
+    });
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
 
     return navigate("/case-registration/case-assignee");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
+
   return (
     <div className={styles.caseMonitoringCodesPage}>
-      <BackLink to="/case-registration/case-complexity">Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -207,14 +239,14 @@ const CaseMonitoringCodesPage = () => {
               children: monitoringCodes.display,
               value: monitoringCodes.code.toString(),
               "data-testid": `case-monitoring-codes-${index}`,
-              checked: state.formData.caseMonitoringCodesCheckboxes?.includes(
+              checked: formData.caseMonitoringCodesCheckboxes?.includes(
                 monitoringCodes.code.toString(),
               ),
               disabled: !isOptional && monitoringCodes.code === "CSEA",
             }))}
             onChange={(event) => {
               const { value } = event.target;
-              if (value) setFormValue("caseMonitoringCodesCheckboxes", value);
+              if (value) setFormValue(value);
             }}
           />
         </div>

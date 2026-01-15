@@ -48,10 +48,10 @@ describe("caseRegistrationReducer", () => {
     suspectDOBYearText: "2000",
     charges: [],
   };
-  it("should set formData operationNameRadio using SET_FIELD action", () => {
+  it("should set single formData using SET_FIELDS action", () => {
     const action: CaseRegistrationActions = {
-      type: "SET_FIELD",
-      payload: { field: "operationNameRadio", value: "yes" },
+      type: "SET_FIELDS",
+      payload: { data: { operationNameRadio: "yes" } },
     };
     const state = caseRegistrationReducer(initialState, action);
     expect(state.formData.operationNameRadio).toBe("yes");
@@ -59,21 +59,20 @@ describe("caseRegistrationReducer", () => {
     expect(state.formData.operationNameText).toBe("");
   });
 
-  it("should set formData suspectDetailsRadio data using SET_FIELD action", () => {
+  it("should set multiple formData fields using SET_FIELDS action", () => {
     const action: CaseRegistrationActions = {
-      type: "SET_FIELD",
-      payload: { field: "suspectDetailsRadio", value: "Area 51" },
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          suspectDetailsRadio: "yes",
+          operationNameRadio: "yes",
+          operationNameText: "Operation Thunder",
+        },
+      },
     };
     const state = caseRegistrationReducer(initialState, action);
-    expect(state.formData.suspectDetailsRadio).toBe("Area 51");
-  });
-
-  it("should set formData operationNameText data using SET_FIELD action", () => {
-    const action: CaseRegistrationActions = {
-      type: "SET_FIELD",
-      payload: { field: "operationNameText", value: "Operation Thunder" },
-    };
-    const state = caseRegistrationReducer(initialState, action);
+    expect(state.formData.suspectDetailsRadio).toBe("yes");
+    expect(state.formData.operationNameRadio).toBe("yes");
     expect(state.formData.operationNameText).toBe("Operation Thunder");
   });
 
@@ -102,7 +101,7 @@ describe("caseRegistrationReducer", () => {
     const modifiedState: CaseRegistrationState = {
       formData: {
         operationNameRadio: "yes",
-        suspectDetailsRadio: "Area 51",
+        suspectDetailsRadio: "yes",
         operationNameText: "Operation Thunder",
         areaOrDivisionText: { id: 1, description: "Division A" },
         urnPoliceForceText: "Force X",
@@ -136,6 +135,8 @@ describe("caseRegistrationReducer", () => {
           fromCaseSummaryPage: false,
           fromChargeSummaryPage: false,
           fromSuspectSummaryPage: false,
+          changeCaseArea: false,
+          changeCaseDetails: false,
         },
       },
       apiData: apiData,
@@ -1054,17 +1055,253 @@ describe("caseRegistrationReducer", () => {
       action.payload.offencesSearchResults,
     );
   });
+
+  it("SET_NAVIGATION_DATA should update navigation data and preserve existing ones", () => {
+    const startState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        navigation: {
+          ...initialState.formData.navigation,
+          fromChargeSummaryPage: true,
+        },
+      },
+    };
+
+    const action = {
+      type: "SET_NAVIGATION_DATA" as const,
+      payload: { changeCaseArea: true, fromSuspectSummaryPage: true },
+    };
+
+    const next = caseRegistrationReducer(startState, action);
+
+    expect(next.formData.navigation.changeCaseArea).toBe(true);
+    expect(next.formData.navigation.fromSuspectSummaryPage).toBe(true);
+    expect(next.formData.navigation.fromChargeSummaryPage).toBe(true);
+    expect(next.apiData).toEqual(startState.apiData);
+  });
+
+  it("RESET_AREA_DEPENDENT_FIELDS should reset the depended fields", () => {
+    const startState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        registeringUnitText: { id: 1, description: "abc" },
+        witnessCareUnitText: { id: 2, description: "def" },
+        firstHearingDateText: "12/10/1999",
+        firstHearingCourtLocationText: { id: 3, description: "ghi" },
+        caseProsecutorText: { id: 4, description: "ddd" },
+        caseCaseworkerText: { id: 5, description: "jkl" },
+      },
+    };
+
+    const action = {
+      type: "RESET_AREA_DEPENDENT_FIELDS" as const,
+    };
+
+    const next = caseRegistrationReducer(startState, action);
+
+    expect(next.formData.registeringUnitText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.witnessCareUnitText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.firstHearingDateText).toBe("");
+    expect(next.formData.firstHearingCourtLocationText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.caseProsecutorText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.caseCaseworkerText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.apiData).toEqual(startState.apiData);
+  });
+
+  it("RESET_RU_DEPENDENT_FIELDS should reset the depended fields", () => {
+    const startState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        registeringUnitText: { id: 1, description: "abc" },
+        witnessCareUnitText: { id: 2, description: "def" },
+        firstHearingDateText: "12/10/1999",
+        firstHearingCourtLocationText: { id: 3, description: "ghi" },
+        caseProsecutorText: { id: 4, description: "ddd" },
+        caseCaseworkerText: { id: 5, description: "jkl" },
+      },
+    };
+
+    const action = {
+      type: "RESET_RU_DEPENDENT_FIELDS" as const,
+    };
+
+    const next = caseRegistrationReducer(startState, action);
+
+    expect(next.formData.registeringUnitText).toEqual({
+      id: 1,
+      description: "abc",
+    });
+    expect(next.formData.witnessCareUnitText).toEqual({
+      id: 2,
+      description: "def",
+    });
+    expect(next.formData.firstHearingDateText).toBe("");
+    expect(next.formData.firstHearingCourtLocationText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.caseProsecutorText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.formData.caseCaseworkerText).toEqual({
+      id: null,
+      description: "",
+    });
+    expect(next.apiData).toEqual(startState.apiData);
+  });
+
+  it("REMOVE_INCOMPLETE_SUSPECT_CHARGES should remove incomplete charges for the given suspect", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                offenceFromDate: "12/12/1999",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "12/12/1999",
+                addVictimRadio: "yes",
+                victim: null,
+              },
+            ],
+          },
+
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "",
+              },
+              { ...chargeInitialState, chargeId: "charge-2" },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-3",
+                addVictimRadio: "yes",
+                victim: null,
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES",
+      payload: {
+        suspectId: "suspect-1",
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state.formData.suspects[0].charges.length).toEqual(1);
+    expect(state.formData.suspects[1].charges.length).toEqual(3);
+  });
+
+  it("REMOVE_INCOMPLETE_SUSPECT_CHARGES should return the state if suspectId is not found", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                offenceFromDate: "12/12/1999",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "12/12/1999",
+                addVictimRadio: "yes",
+                victim: null,
+              },
+            ],
+          },
+
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-2",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                offenceFromDate: "",
+              },
+              { ...chargeInitialState, chargeId: "charge-2" },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-3",
+                addVictimRadio: "yes",
+                victim: null,
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_INCOMPLETE_SUSPECT_CHARGES",
+      payload: {
+        suspectId: "suspect-3",
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(modifiedState);
+  });
 });
 describe("getResetFieldValues", () => {
   it("should reset caseProsecutorText and caseCaseworkerText when caseProsecutorRadio is 'no'", () => {
-    const result = getResetFieldValues("caseProsecutorRadio", "no");
+    const result = getResetFieldValues({ caseProsecutorRadio: "no" });
     expect(result).toEqual({
       caseProsecutorText: { id: null, description: "" },
       caseCaseworkerText: { id: null, description: "" },
     });
   });
   it("should reset caseInvestigator fields when caseInvestigatorRadio is 'no'", () => {
-    const result = getResetFieldValues("caseInvestigatorRadio", "no");
+    const result = getResetFieldValues({ caseInvestigatorRadio: "no" });
     expect(result).toEqual({
       caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
@@ -1074,7 +1311,7 @@ describe("getResetFieldValues", () => {
     });
   });
   it("should reset first hearing fields when firstHearingRadio is 'no'", () => {
-    const result = getResetFieldValues("firstHearingRadio", "no");
+    const result = getResetFieldValues({ firstHearingRadio: "no" });
     expect(result).toEqual({
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
@@ -1082,7 +1319,23 @@ describe("getResetFieldValues", () => {
   });
 
   it("should return an empty object for other fields", () => {
-    const result = getResetFieldValues("operationNameRadio", "yes");
+    const result = getResetFieldValues({ operationNameRadio: "yes" });
     expect(result).toEqual({});
+  });
+
+  it("should reset more than one fields if the relevant radio is 'no'", () => {
+    const result = getResetFieldValues({
+      caseInvestigatorRadio: "no",
+      caseProsecutorRadio: "no",
+    });
+    expect(result).toEqual({
+      caseProsecutorText: { id: null, description: "" },
+      caseCaseworkerText: { id: null, description: "" },
+      caseInvestigatorTitleSelect: { shortCode: null, display: "" },
+      caseInvestigatorFirstNameText: "",
+      caseInvestigatorLastNameText: "",
+      caseInvestigatorShoulderNameText: "",
+      caseInvestigatorShoulderNumberText: "",
+    });
   });
 });

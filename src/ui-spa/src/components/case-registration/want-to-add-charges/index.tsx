@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -23,6 +23,11 @@ const WantToAddCharges = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState<{
+    wantToAddChargesRadio: GeneralRadioValue;
+  }>({
+    wantToAddChargesRadio: state.formData.wantToAddChargesRadio || "",
+  });
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -41,12 +46,10 @@ const WantToAddCharges = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     let isValid = true;
     const errors: FormDataErrors = {};
-    const {
-      formData: { wantToAddChargesRadio },
-    } = state;
+    const { wantToAddChargesRadio } = formData;
 
     if (!wantToAddChargesRadio) {
       errors.wantToAddChargesRadio = {
@@ -78,20 +81,24 @@ const WantToAddCharges = () => {
   }, [errorList]);
 
   const setFormValue = (value: string) => {
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "wantToAddChargesRadio",
-        value: value,
-      },
+    setFormData({
+      wantToAddChargesRadio: value as GeneralRadioValue,
     });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
-    const { wantToAddChargesRadio } = state.formData;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formData,
+        },
+      },
+    });
+    const { wantToAddChargesRadio } = formData;
     if (wantToAddChargesRadio === "no") {
       return navigate("/case-registration/case-complexity");
     }
@@ -104,7 +111,7 @@ const WantToAddCharges = () => {
   };
 
   const {
-    formData: { suspects, wantToAddChargesRadio },
+    formData: { suspects },
   } = state;
 
   return (
@@ -159,7 +166,7 @@ const WantToAddCharges = () => {
                 "data-testid": `want-to-add-charges-radio-no`,
               },
             ]}
-            value={wantToAddChargesRadio}
+            value={formData.wantToAddChargesRadio}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

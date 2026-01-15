@@ -13,6 +13,7 @@ import type { Religions } from "../types/responses/Religions";
 import type { OffenderTypes } from "../types/responses/OffenderTypes";
 import type { Offences, Offence } from "../types/responses/Offences";
 import { v4 as uuidv4 } from "uuid";
+
 export type CaseRegistrationField =
   | "operationNameRadio"
   | "suspectDetailsRadio"
@@ -101,8 +102,8 @@ export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
 
 export type CaseRegistrationFormData = {
-  operationNameRadio: string;
-  suspectDetailsRadio: string;
+  operationNameRadio: GeneralRadioValue;
+  suspectDetailsRadio: GeneralRadioValue;
   operationNameText: string;
   areaOrDivisionText: { id: number | null; description: string };
   urnPoliceForceText: string;
@@ -116,8 +117,8 @@ export type CaseRegistrationFormData = {
   firstHearingDateText: string;
   caseComplexityRadio: { shortCode: string; description: string };
   caseMonitoringCodesCheckboxes: string[];
-  caseProsecutorRadio: string;
-  caseInvestigatorRadio: string;
+  caseProsecutorRadio: GeneralRadioValue;
+  caseInvestigatorRadio: GeneralRadioValue;
   caseProsecutorText: { id: number | null; description: string };
   caseCaseworkerText: { id: number | null; description: string };
   caseInvestigatorTitleSelect: {
@@ -135,6 +136,8 @@ export type CaseRegistrationFormData = {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
     fromSuspectSummaryPage: boolean;
+    changeCaseArea: boolean;
+    changeCaseDetails: boolean;
   };
 };
 
@@ -229,6 +232,8 @@ export const initialState: CaseRegistrationState = {
       fromCaseSummaryPage: false,
       fromChargeSummaryPage: false,
       fromSuspectSummaryPage: false,
+      changeCaseArea: false,
+      changeCaseDetails: false,
     },
   },
 
@@ -250,16 +255,42 @@ export const initialState: CaseRegistrationState = {
 
 export type CaseRegistrationActions =
   | {
-      type: "SET_FIELD";
+      type: "SET_FIELDS";
       payload: {
-        field: CaseRegistrationField;
-        value:
-          | { id: number | null; description: string }
-          | { shortCode: string | null; description: string }
-          | { shortCode: string | null; display: string }
-          | string
-          | string[]
-          | { firstName?: string; lastName: string }[];
+        data: {
+          operationNameRadio?: GeneralRadioValue;
+          suspectDetailsRadio?: GeneralRadioValue;
+          operationNameText?: string;
+          areaOrDivisionText?: { id: number | null; description: string };
+          urnPoliceForceText?: string;
+          urnPoliceUnitText?: string;
+          urnUniqueReferenceText?: string;
+          urnYearReferenceText?: string;
+          registeringUnitText?: { id: number | null; description: string };
+          witnessCareUnitText?: { id: number | null; description: string };
+          firstHearingRadio?: string;
+          firstHearingCourtLocationText?: {
+            id: number | null;
+            description: string;
+          };
+          firstHearingDateText?: string;
+          caseComplexityRadio?: { shortCode: string; description: string };
+          caseMonitoringCodesCheckboxes?: string[];
+          caseProsecutorRadio?: GeneralRadioValue;
+          caseInvestigatorRadio?: GeneralRadioValue;
+          caseProsecutorText?: { id: number | null; description: string };
+          caseCaseworkerText?: { id: number | null; description: string };
+          caseInvestigatorTitleSelect?: {
+            shortCode: string | null;
+            display: string;
+          };
+          caseInvestigatorFirstNameText?: string;
+          caseInvestigatorLastNameText?: string;
+          caseInvestigatorShoulderNameText?: string;
+          caseInvestigatorShoulderNumberText?: string;
+          wantToAddChargesRadio?: GeneralRadioValue;
+          victimsList?: { id: string; firstName: string; lastName: string }[];
+        };
       };
     }
   | {
@@ -423,7 +454,15 @@ export type CaseRegistrationActions =
         fromCaseSummaryPage?: boolean;
         fromChargeSummaryPage?: boolean;
         fromSuspectSummaryPage?: boolean;
+        changeCaseArea?: boolean;
+        changeCaseDetails?: boolean;
       };
+    }
+  | {
+      type: "RESET_AREA_DEPENDENT_FIELDS";
+    }
+  | {
+      type: "RESET_RU_DEPENDENT_FIELDS";
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -433,17 +472,14 @@ export const caseRegistrationReducer = (
   action: CaseRegistrationActions,
 ): CaseRegistrationState => {
   switch (action.type) {
-    case "SET_FIELD": {
-      const resetValues = getResetFieldValues(
-        action.payload.field,
-        action.payload.value as string,
-      );
+    case "SET_FIELDS": {
+      const resetValues = getResetFieldValues(action.payload.data);
       return {
         ...state,
         formData: {
           ...state.formData,
+          ...action.payload.data,
           ...resetValues,
-          [action.payload.field]: action.payload.value,
         },
       };
     }
@@ -739,6 +775,33 @@ export const caseRegistrationReducer = (
         },
       };
     }
+    case "RESET_AREA_DEPENDENT_FIELDS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          registeringUnitText: { id: null, description: "" },
+          witnessCareUnitText: { id: null, description: "" },
+          firstHearingDateText: "",
+          firstHearingCourtLocationText: { id: null, description: "" },
+          caseProsecutorText: { id: null, description: "" },
+          caseCaseworkerText: { id: null, description: "" },
+        },
+      };
+    }
+
+    case "RESET_RU_DEPENDENT_FIELDS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          firstHearingDateText: "",
+          firstHearingCourtLocationText: { id: null, description: "" },
+          caseProsecutorText: { id: null, description: "" },
+          caseCaseworkerText: { id: null, description: "" },
+        },
+      };
+    }
 
     default:
       return state;
@@ -746,17 +809,19 @@ export const caseRegistrationReducer = (
 };
 
 export const getResetFieldValues = (
-  fieldName: CaseRegistrationField,
-  value: string,
+  data: Partial<CaseRegistrationFormData>,
 ) => {
-  if (fieldName === "caseProsecutorRadio" && value === "no") {
-    return {
+  let resetValues: Partial<CaseRegistrationFormData> = {};
+  if (data.caseProsecutorRadio === "no") {
+    resetValues = {
+      ...resetValues,
       caseProsecutorText: { id: null, description: "" },
       caseCaseworkerText: { id: null, description: "" },
     };
   }
-  if (fieldName === "caseInvestigatorRadio" && value === "no") {
-    return {
+  if (data.caseInvestigatorRadio === "no") {
+    resetValues = {
+      ...resetValues,
       caseInvestigatorTitleSelect: { shortCode: null, display: "" },
       caseInvestigatorFirstNameText: "",
       caseInvestigatorLastNameText: "",
@@ -764,19 +829,21 @@ export const getResetFieldValues = (
       caseInvestigatorShoulderNumberText: "",
     };
   }
-  if (fieldName === "firstHearingRadio" && value === "no") {
-    return {
+  if (data.firstHearingRadio === "no") {
+    resetValues = {
+      ...resetValues,
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
     };
   }
-  if (fieldName === "suspectDetailsRadio" && value === "no") {
-    return {
+  if (data.suspectDetailsRadio === "no") {
+    resetValues = {
+      ...resetValues,
       suspects: [],
     };
   }
 
-  return {};
+  return resetValues;
 };
 
 export const getResetSuspectFieldValues = (

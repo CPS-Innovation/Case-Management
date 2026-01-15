@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Input, Radios, Button, ErrorSummary } from "../govuk";
 import { CaseRegistrationFormContext } from "../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../common/reducers/caseRegistrationReducer";
+import { type GeneralRadioValue } from "../../common/reducers/caseRegistrationReducer";
 import {
   getCaseAreasAndRegisteringUnits,
   getCaseAreasAndWitnessCareUnits,
@@ -34,6 +34,16 @@ const CaseRegistrationPage = () => {
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
   const isAreaSensitive = useIsAreaSensitive();
+
+  const [formData, setFormData] = useState<{
+    operationNameRadio: GeneralRadioValue;
+    suspectDetailsRadio: GeneralRadioValue;
+    operationNameText: string;
+  }>({
+    operationNameRadio: state.formData.operationNameRadio || "",
+    suspectDetailsRadio: state.formData.suspectDetailsRadio || "",
+    operationNameText: state.formData.operationNameText || "",
+  });
 
   const { data: areasData, error: areaDataError } = useQuery({
     queryKey: ["areas"],
@@ -85,11 +95,10 @@ const CaseRegistrationPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { operationNameRadio, suspectDetailsRadio, operationNameText },
-    } = state;
+    const { operationNameRadio, suspectDetailsRadio, operationNameText } =
+      formData;
     if (!operationNameRadio) {
       errors.operationNameRadio = {
         errorSummaryText: "Please select an option for operation name",
@@ -119,7 +128,6 @@ const CaseRegistrationPage = () => {
     }
 
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
-
     setFormDataErrors(errors);
     return isValid;
   };
@@ -160,12 +168,13 @@ const CaseRegistrationPage = () => {
 
       if (!state.formData.areaOrDivisionText.id && areasData?.homeUnit) {
         dispatch({
-          type: "SET_FIELD",
+          type: "SET_FIELDS",
           payload: {
-            field: "areaOrDivisionText",
-            value: {
-              id: areasData.homeUnit.areaId,
-              description: areasData.homeUnit.areaDescription,
+            data: {
+              areaOrDivisionText: {
+                id: areasData.homeUnit.areaId,
+                description: areasData.homeUnit.areaDescription,
+              },
             },
           },
         });
@@ -192,9 +201,29 @@ const CaseRegistrationPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
-    if (!isAreaSensitive) return navigate("/case-registration/areas");
-    return navigate("/case-registration/case-details");
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formData,
+        },
+      },
+    });
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
+    if (!isAreaSensitive) {
+      navigate("/case-registration/areas");
+      return;
+    }
+    navigate("/case-registration/case-details");
+    return;
   };
 
   const setFormValue = (
@@ -204,10 +233,17 @@ const CaseRegistrationPage = () => {
       | "operationNameText",
     value: string,
   ) => {
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field: fieldName, value: value },
-    });
+    const newValue = {
+      [fieldName]: value,
+    };
+
+    if (fieldName === "operationNameRadio" && value === "no") {
+      newValue["operationNameText"] = "";
+    }
+    setFormData((prevState) => ({
+      ...prevState,
+      ...newValue,
+    }));
   };
 
   return (
@@ -268,7 +304,7 @@ const CaseRegistrationPage = () => {
                         children: "Operation name",
                       }}
                       type="text"
-                      value={state.formData.operationNameText}
+                      value={formData.operationNameText}
                       onChange={(value: string) => {
                         setFormValue("operationNameText", value);
                       }}
@@ -282,7 +318,7 @@ const CaseRegistrationPage = () => {
                 "data-testid": "radio-operation-name-no",
               },
             ]}
-            value={state.formData.operationNameRadio}
+            value={formData.operationNameRadio}
             onChange={(value) => {
               if (value) setFormValue("operationNameRadio", value);
             }}
@@ -314,7 +350,7 @@ const CaseRegistrationPage = () => {
                 "data-testid": "suspect-details-radio-no",
               },
             ]}
-            value={state.formData.suspectDetailsRadio}
+            value={formData.suspectDetailsRadio}
             onChange={(value) => {
               if (value) setFormValue("suspectDetailsRadio", value);
             }}
