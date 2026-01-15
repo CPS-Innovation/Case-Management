@@ -440,6 +440,7 @@ const CaseAssigneePage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    let formValue = formData;
     const prosecutorInput = document.getElementById(
       "case-prosecutor-text",
     ) as HTMLInputElement | null;
@@ -452,10 +453,10 @@ const CaseAssigneePage = () => {
         prosecutors,
         inputProsecutorValue,
       );
-      setFormData((prevState) => ({
-        ...prevState,
-        caseCaseworkerText: { id, description },
-      }));
+      formValue = {
+        ...formValue,
+        caseProsecutorText: { id, description },
+      };
     }
 
     const caseworkerInput = document.getElementById(
@@ -471,10 +472,10 @@ const CaseAssigneePage = () => {
         caseworkers,
         inputCaseworkerValue,
       );
-      setFormData((prevState) => ({
-        ...prevState,
+      formValue = {
+        ...formValue,
         caseCaseworkerText: { id, description },
-      }));
+      };
     }
 
     if (
@@ -485,7 +486,7 @@ const CaseAssigneePage = () => {
     dispatch({
       type: "SET_FIELDS",
       payload: {
-        data: { ...formData },
+        data: { ...formValue },
       },
     });
 

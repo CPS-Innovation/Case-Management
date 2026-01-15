@@ -223,6 +223,7 @@ const FirstHearingPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    let formValue = formData;
     const input = document.getElementById(
       "first-hearing-court-location-text",
     ) as HTMLInputElement | null;
@@ -235,11 +236,10 @@ const FirstHearingPage = () => {
         courtLocations,
         inputCourtLocationValue,
       );
-
-      setFormData((prev) => ({
-        ...prev,
+      formValue = {
+        ...formValue,
         firstHearingCourtLocationText: { id, description },
-      }));
+      };
     }
 
     if (!validateFormData(courtLocations, inputCourtLocationValue)) return;
@@ -248,7 +248,7 @@ const FirstHearingPage = () => {
       type: "SET_FIELDS",
       payload: {
         data: {
-          ...formData,
+          ...formValue,
         },
       },
     });
