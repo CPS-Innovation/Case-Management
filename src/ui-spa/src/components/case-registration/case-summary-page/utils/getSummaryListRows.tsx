@@ -1,68 +1,41 @@
 import { format } from "date-fns";
-import { type CaseRegistrationFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import {
+  type CaseRegistrationFormData,
+  type CaseRegistrationActions,
+} from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
+import { type NavigateFunction } from "react-router-dom";
 import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
+import { type PoliceUnit } from "../../../../common/types/responses/PoliceUnits";
 
 export const getCaseDetailsSummaryListRows = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
   formData: CaseRegistrationFormData,
 ) => {
+  const handleAddChangeClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+
+    const payload: {
+      changeCaseArea?: boolean;
+      changeCaseDetails?: boolean;
+      fromCaseSummaryPage?: boolean;
+    } = {};
+    if (url === "/case-registration/areas") payload.changeCaseArea = true;
+    else if (url === "/case-registration") payload.fromCaseSummaryPage = true;
+    else payload.changeCaseDetails = true;
+
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload,
+    });
+    navigate(url);
+  };
   const urn = `${formData.urnPoliceForceText}${formData.urnPoliceUnitText}${formData.urnUniqueReferenceText}/${formData.urnYearReferenceText}`;
 
-  const firstHearingSummary =
-    formData.firstHearingRadio === "yes"
-      ? [
-          {
-            key: { children: <span>First Hearing Court Location</span> },
-            value: {
-              children: (
-                <p>{formData.firstHearingCourtLocationText.description}</p>
-              ),
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Court Location",
-                },
-              ],
-            },
-          },
-          {
-            key: { children: <span>First Hearing Date</span> },
-            value: {
-              children: (
-                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
-              ),
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Date",
-                },
-              ],
-            },
-          },
-        ]
-      : [
-          {
-            key: { children: <span>First Hearing details</span> },
-            value: {
-              children: <p>Not entered</p>,
-            },
-            actions: {
-              items: [
-                {
-                  children: <span>Change</span>,
-                  to: "/case-registration/first-hearing",
-                  visuallyHiddenText: "Edit First Hearing Date",
-                },
-              ],
-            },
-          },
-        ];
   const rows = [
     {
       key: { children: <span>Area</span> },
@@ -75,6 +48,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/areas",
             visuallyHiddenText: "Edit Case Area",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/areas"),
           },
         ],
       },
@@ -92,6 +67,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Case URN",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -107,6 +84,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Registering Unit",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -122,6 +101,8 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-details",
             visuallyHiddenText: "Edit Witness Care Unit",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/case-details"),
           },
         ],
       },
@@ -143,42 +124,149 @@ export const getCaseDetailsSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration",
             visuallyHiddenText: "Edit Operation Name",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration"),
           },
         ],
       },
     },
-    ...firstHearingSummary,
   ];
   return rows;
 };
 
-export const getSuspectSummaryListRows = (
+export const getFirstHearingSummaryRows = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
   formData: CaseRegistrationFormData,
 ) => {
-  const rows = [
+  const handleAddChangeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate("/case-registration/first-hearing");
+  };
+
+  const rows =
+    formData.firstHearingRadio === "yes"
+      ? [
+          {
+            key: { children: <span>First Hearing Court Location</span> },
+            value: {
+              children: (
+                <p>{formData.firstHearingCourtLocationText.description}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Court Location",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+          {
+            key: { children: <span>First Hearing Date</span> },
+            value: {
+              children: (
+                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
+              ),
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+        ]
+      : [
+          {
+            key: { children: <span>First Hearing details</span> },
+            value: {
+              children: <p>Not entered</p>,
+            },
+            actions: {
+              items: [
+                {
+                  children: <span>Change</span>,
+                  to: "/case-registration/first-hearing",
+                  visuallyHiddenText: "Edit First Hearing Date",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(event),
+                },
+              ],
+            },
+          },
+        ];
+  return rows;
+};
+
+export const getEmptySuspectSummaryRow = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
+) => {
+  const handleAddSuspectClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate(url);
+  };
+  return [
     {
       key: { children: <span>Suspects</span> },
-      value: {
-        children: <p>{formData.suspectDetailsRadio === "no" ? "No" : "Yes"}</p>,
-      },
+      value: { children: <p>Not entered</p> },
       actions: {
         items: [
           {
-            children: <span>Change</span>,
-            to: "/case-registration",
-            visuallyHiddenText: "Edit Suspect Details",
+            children: <span>Add a suspect</span>,
+            to: "/case-registration/suspect-0/add-suspect",
+            visuallyHiddenText: "Add Suspect",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddSuspectClick(
+                event,
+                "/case-registration/suspect-0/add-suspect",
+              ),
           },
         ],
       },
     },
   ];
-  return rows;
 };
 
 export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
   formData: CaseRegistrationFormData,
   caseMonitoringCodes: CaseMonitoringCodes,
 ) => {
+  const handleAddChargeClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate(url);
+  };
   const sortedMonitoringCodes = () => {
     const mappedCodes = formData.caseMonitoringCodesCheckboxes.map((code) => {
       const item = caseMonitoringCodes.find((item) => item.code === code);
@@ -204,6 +292,8 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-complexity",
             visuallyHiddenText: "Edit Case Complexity",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(event, "/case-registration/case-complexity"),
           },
         ],
       },
@@ -225,6 +315,11 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-monitoring-codes",
             visuallyHiddenText: "Edit Monitoring Codes",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChargeClick(
+                event,
+                "/case-registration/case-monitoring-codes",
+              ),
           },
         ],
       },
@@ -234,7 +329,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
 };
 
 const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
-  if (formData.caseInvestigatorTitleSelect) {
+  if (formData.caseInvestigatorTitleSelect.display) {
     return (
       <>
         <Tag gdsTagColour="blue">{`${formData.caseInvestigatorTitleSelect.display}`}</Tag>{" "}
@@ -250,8 +345,22 @@ const getInvestigatorSummaryText = (formData: CaseRegistrationFormData) => {
 };
 
 export const getWhosIsWorkingOnTheCaseSummaryListRows = (
+  dispatch: React.Dispatch<CaseRegistrationActions>,
+  navigate: NavigateFunction,
   formData: CaseRegistrationFormData,
+  policeUnit?: PoliceUnit,
 ) => {
+  const handleAddChangeClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate(url);
+  };
   const investigatorDetailsList =
     formData.caseInvestigatorRadio === "yes"
       ? [
@@ -266,6 +375,11 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   children: <span>Change</span>,
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police officer or investigator",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(
+                      event,
+                      "/case-registration/case-assignee",
+                    ),
                 },
               ],
             },
@@ -287,6 +401,11 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   children: <span>Change</span>,
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Shoulder Number",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(
+                      event,
+                      "/case-registration/case-assignee",
+                    ),
                 },
               ],
             },
@@ -295,11 +414,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             key: { children: <span>Police Unit</span> },
             value: {
               children: (
-                <p>
-                  {formData.caseInvestigatorPoliceUnitText
-                    ? formData.caseInvestigatorPoliceUnitText
-                    : "Not entered"}
-                </p>
+                <p>{policeUnit ? policeUnit.description : "Not entered"}</p>
               ),
             },
             actions: {
@@ -308,6 +423,11 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   children: <span>Change</span>,
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police Unit",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(
+                      event,
+                      "/case-registration/case-assignee",
+                    ),
                 },
               ],
             },
@@ -325,6 +445,11 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                   children: <span>Change</span>,
                   to: "/case-registration/case-assignee",
                   visuallyHiddenText: "Edit Police officer or investigator",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChangeClick(
+                      event,
+                      "/case-registration/case-assignee",
+                    ),
                 },
               ],
             },
@@ -349,6 +474,8 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Prosecutor",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/case-assignee"),
           },
         ],
       },
@@ -370,6 +497,8 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             children: <span>Change</span>,
             to: "/case-registration/case-assignee",
             visuallyHiddenText: "Edit Caseworker",
+            onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAddChangeClick(event, "/case-registration/case-assignee"),
           },
         ],
       },

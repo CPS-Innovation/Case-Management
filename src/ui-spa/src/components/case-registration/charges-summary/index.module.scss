@@ -1,0 +1,12 @@
+.chargesSummaryPage {
+  max-width: 66%;
+  & :global(.govuk-details) {
+    margin-bottom: 10px;
+  }
+  & :global(.govuk-summary-list) {
+    margin-bottom: 5px;
+  }
+  & .chargesSummaryWrapper {
+    margin-bottom: 60px;
+  }
+}

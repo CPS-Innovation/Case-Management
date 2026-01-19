@@ -9,7 +9,8 @@ import {
 import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
 const SuspectAliasesPage = () => {
@@ -29,8 +30,6 @@ const SuspectAliasesPage = () => {
     suspectId: string;
   };
 
-  const [searchParams] = useSearchParams();
-  const aliasParam = searchParams.get("alias");
   const [alias, setAlias] = useState<{
     firstName: string;
     lastName: string;
@@ -41,11 +40,6 @@ const SuspectAliasesPage = () => {
     return Number.parseInt(index, 10);
   }, [suspectId]);
 
-  const aliasIndex = useMemo(() => {
-    const index = Number.parseInt(aliasParam || "", 10);
-    return Number.isNaN(index) ? null : index;
-  }, [aliasParam]);
-
   const suspectAliases = useMemo(() => {
     const {
       formData: { suspects },
@@ -54,15 +48,6 @@ const SuspectAliasesPage = () => {
 
     return suspectAliases;
   }, [suspectIndex, state]);
-
-  useEffect(() => {
-    if (aliasIndex !== null && suspectAliases[aliasIndex]) {
-      setAlias({
-        firstName: suspectAliases[aliasIndex].firstName,
-        lastName: suspectAliases[aliasIndex].lastName,
-      });
-    }
-  }, [aliasIndex, suspectAliases]);
 
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(
@@ -132,18 +117,14 @@ const SuspectAliasesPage = () => {
     event.preventDefault();
 
     if (!validateFormData()) return;
-    const newAliases = [...suspectAliases];
-    if (aliasIndex === null) {
-      newAliases.push(alias);
-    } else {
-      newAliases[aliasIndex] = alias;
-    }
+    const newAliases = [...suspectAliases, alias];
     dispatch({
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: suspectIndex,
-        field: "suspectAliases",
-        value: newAliases,
+        data: {
+          suspectAliases: newAliases,
+        },
       },
     });
 
@@ -177,7 +158,7 @@ const SuspectAliasesPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>
-          What alias does {suspectFirstNameText} {suspectLastNameText} use?
+          {`What alias does ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} use?`}
         </h1>
         <span className="govuk-hint">
           You can add more aliases on the next page if needed.

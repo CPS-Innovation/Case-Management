@@ -2,20 +2,23 @@ import React, { forwardRef } from "react";
 import styles from "./DateInputNative.module.scss";
 type DateInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   className?: string;
-  label: React.ReactNode;
+  label?: React.ReactNode;
   errorMessage?: string;
   id: string;
+  hint?: React.ReactNode;
 };
 
 const DateInputNative = forwardRef<HTMLInputElement, DateInputProps>(
-  ({ className, errorMessage, ...props }, ref) => {
+  ({ className, errorMessage, hint, label, ...props }, ref) => {
     return (
       <div
         className={`govuk-form-group ${styles.dateInputWrapper} ${errorMessage ? "govuk-form-group--error" : ""}`}
       >
-        <label className="govuk-label" htmlFor={props.id}>
-          {props.label}
-        </label>
+        {label && (
+          <label className="govuk-label" htmlFor={props.id}>
+            {label}
+          </label>
+        )}
         {errorMessage && (
           <p
             className="govuk-error-message"
@@ -25,9 +28,9 @@ const DateInputNative = forwardRef<HTMLInputElement, DateInputProps>(
             {errorMessage}
           </p>
         )}
-        <span className={` govuk-hint ${styles.govukHint}`}>
-          For example, 17/5/2024
-        </span>
+        {hint && (
+          <span className={` govuk-hint ${styles.govukHint}`}>{hint}</span>
+        )}
 
         <input
           type="date"

@@ -13,6 +13,8 @@ import {
   getEthnicities,
   getReligions,
   getOffenderTypes,
+  getPoliceUnits,
+  getOffences,
 } from "./gateway-api";
 import { ApiError } from "../common/errors/ApiError";
 
@@ -487,5 +489,76 @@ describe("gateway-api", () => {
     });
 
     await expect(getOffenderTypes()).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it("getPoliceUnits - success", async () => {
+    const mockBody = [
+      { unitDescription: "Unit 1", code: "U1", description: "Description 1" },
+      { unitDescription: "Unit 2", code: "U2", description: "Description 2" },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getPoliceUnits();
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/police-units",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getPoliceUnits - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getPoliceUnits()).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it("getOffences - success", async () => {
+    const mockBody = [
+      {
+        code: "122",
+        description: "abc",
+        legislation: "Legislation 1",
+        effectiveFromDate: "2023-01-01",
+        effectiveToDate: null,
+      },
+    ];
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: true,
+      json: async () => mockBody,
+    });
+    const result = await getOffences("search-text", 100);
+    expect(result).toEqual(mockBody);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://mocked-out-api/api/v1/offences?legislation-partial=true&description-partial=true&items-per-page=100&multisearch-partial=true&multisearch=search-text",
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: "Bearer access-token",
+          "Correlation-Id": "mock-uuid",
+        },
+      }),
+    );
+  });
+  it("getOffences - failure throws ApiError", async () => {
+    (globalThis.fetch as any).mockResolvedValue({
+      ok: false,
+      status: 500,
+    });
+
+    await expect(getOffences("search-text", 100)).rejects.toBeInstanceOf(
+      ApiError,
+    );
   });
 });

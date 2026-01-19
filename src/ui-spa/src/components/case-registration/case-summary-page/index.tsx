@@ -10,13 +10,17 @@ import { Button, BackLink, SummaryList, ErrorSummary } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import {
   getCaseDetailsSummaryListRows,
-  getSuspectSummaryListRows,
+  getFirstHearingSummaryRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhosIsWorkingOnTheCaseSummaryListRows,
+  getEmptySuspectSummaryRow,
 } from "./utils/getSummaryListRows";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { submitCaseRegistration, validateUrn } from "../../../apis/gateway-api";
+import { getPoliceUnit } from "../../../common/utils/getPoliceUnit";
+import SuspectSummary from "../suspect-summary/SuspectSummary";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -31,8 +35,9 @@ const CaseSummaryPage = () => {
     urnErrorText?: ErrorText;
     genericError?: ErrorText;
   };
-  const { state } = useContext(CaseRegistrationFormContext);
+  const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const submitCaseRegistrationMutation = useMutation({
     mutationFn: submitCaseRegistration,
@@ -72,6 +77,15 @@ const CaseSummaryPage = () => {
 
     return errorSummary;
   }, [formDataErrors, errorSummaryProperties]);
+
+  const policeUnit = useMemo(
+    () =>
+      getPoliceUnit(
+        state.formData.urnPoliceUnitText,
+        state.apiData.policeUnits ?? [],
+      ),
+    [state.formData.urnPoliceUnitText, state.apiData.policeUnits],
+  );
 
   const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
@@ -117,6 +131,7 @@ const CaseSummaryPage = () => {
     const requestData = getCaseRegistrationRequestData(
       state.formData,
       state.apiData.caseMonitoringCodes!,
+      policeUnit,
     );
 
     submitCaseRegistrationMutation.mutate(requestData, {
@@ -137,27 +152,36 @@ const CaseSummaryPage = () => {
   };
 
   const caseDetailsSummaryListRows = useMemo(
-    () => getCaseDetailsSummaryListRows(state.formData),
-    [state.formData],
+    () => getCaseDetailsSummaryListRows(dispatch, navigate, state.formData),
+    [dispatch, navigate, state.formData],
   );
 
-  const suspectSummaryListRows = useMemo(
-    () => getSuspectSummaryListRows(state.formData),
-    [state.formData],
+  const caseFirstHearingSummaryListRows = useMemo(
+    () => getFirstHearingSummaryRows(dispatch, navigate, state.formData),
+    [dispatch, navigate, state.formData],
   );
 
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
     () =>
       getCaseComplexityAndMonitoringCodesSummaryListRows(
+        dispatch,
+        navigate,
         state.formData,
         state.apiData.caseMonitoringCodes!,
       ),
-    [state.formData, state.apiData.caseMonitoringCodes],
+    [dispatch, navigate, state.formData, state.apiData.caseMonitoringCodes],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
-    () => getWhosIsWorkingOnTheCaseSummaryListRows(state.formData),
-    [state.formData],
+    () =>
+      getWhosIsWorkingOnTheCaseSummaryListRows(
+        dispatch,
+        navigate,
+        state.formData,
+        policeUnit,
+      ),
+    [dispatch, navigate, state.formData, policeUnit],
   );
+
   return (
     <div className={styles.caseSummaryPage}>
       <BackLink
@@ -167,9 +191,7 @@ const CaseSummaryPage = () => {
         Back
       </BackLink>
 
-      <h1 className="govuk-heading-xl">
-        Check your answers before creating the case
-      </h1>
+      <h1>Check your answers before creating the case</h1>
 
       {!!errorList.length && (
         <div
@@ -188,7 +210,18 @@ const CaseSummaryPage = () => {
         <h2>Case Details</h2>
         <SummaryList rows={caseDetailsSummaryListRows} />
         <h2>Suspect</h2>
-        <SummaryList rows={suspectSummaryListRows} />
+        {!state.formData.suspects.length && (
+          <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
+        )}
+        {!!state.formData.suspects.length && (
+          <SuspectSummary isCaseSummaryPage={true} />
+        )}
+        {!!chargesCount && (
+          <>
+            <h2>First hearing Details</h2>
+            <SummaryList rows={caseFirstHearingSummaryListRows} />
+          </>
+        )}
         <h2>Case complexity and monitoring codes</h2>
         <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
         <h2>Working on the case</h2>

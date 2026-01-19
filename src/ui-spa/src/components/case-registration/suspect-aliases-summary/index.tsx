@@ -14,7 +14,11 @@ import {
   SummaryList,
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
+import {
+  getNextSuspectJourneyRoute,
+  getPreviousSuspectJourneyRoute,
+} from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -41,6 +45,14 @@ const SuspectAliasesSummaryPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const previousRoute = useMemo(() => {
+    return getPreviousSuspectJourneyRoute(
+      "suspect-add-aliases",
+      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      suspectIndex,
+    );
+  }, [state.formData.suspects, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -91,7 +103,7 @@ const SuspectAliasesSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const getSuspectSummaryListRows = (
+  const getAliasesSummaryListRows = (
     suspectAliases: { firstName?: string; lastName: string }[],
   ) => {
     const rows = suspectAliases.map((alias, index) => ({
@@ -99,17 +111,14 @@ const SuspectAliasesSummaryPage = () => {
       value: {
         children: (
           <p>
-            {alias.lastName}, {alias.firstName}
+            {alias.firstName
+              ? `${alias.lastName}, ${alias.firstName}`
+              : alias.lastName}
           </p>
         ),
       },
       actions: {
         items: [
-          {
-            children: <span>Change</span>,
-            to: `/case-registration/suspect-${suspectIndex}/suspect-add-aliases?alias=${index}`,
-            visuallyHiddenText: "Edit Suspect Details",
-          },
           {
             children: <span>Remove</span>,
             to: "#",
@@ -130,11 +139,12 @@ const SuspectAliasesSummaryPage = () => {
     const suspectAliases = suspects[suspectIndex]?.suspectAliases || [];
     const newAliases = suspectAliases.filter((_, i) => i !== index);
     dispatch({
-      type: "SET_SUSPECT_FIELD",
+      type: "SET_SUSPECT_FIELDS",
       payload: {
         index: suspectIndex,
-        field: "suspectAliases",
-        value: newAliases,
+        data: {
+          suspectAliases: newAliases,
+        },
       },
     });
   };
@@ -154,6 +164,7 @@ const SuspectAliasesSummaryPage = () => {
       "suspect-add-aliases",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
@@ -167,9 +178,7 @@ const SuspectAliasesSummaryPage = () => {
 
   return (
     <div className={pageStyles.caseSuspectAliasesSummaryPage}>
-      <BackLink to={`/case-registration/${suspectId}/suspect-add-aliases`}>
-        Back
-      </BackLink>
+      <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -185,10 +194,10 @@ const SuspectAliasesSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>
-          Aliases for {suspectLastNameText} {suspectFirstNameText}
+          {`Aliases for ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}`}
         </h1>
         <div className={pageStyles.summaryListWrapper}>
-          <SummaryList rows={getSuspectSummaryListRows(suspectAliases)} />
+          <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
         </div>
         {!suspectAliases.length && <span>There are no aliases</span>}
         <div className={styles.inputWrapper}>
@@ -199,13 +208,17 @@ const SuspectAliasesSummaryPage = () => {
                   <>
                     {suspectAliases.length ? (
                       <h2>
-                        Do you need to add another alias for{" "}
-                        {suspectLastNameText} {suspectFirstNameText}?
+                        {`Do you need to add another alias for ${formatNameUtil(
+                          suspectFirstNameText,
+                          suspectLastNameText,
+                        )}?`}
                       </h2>
                     ) : (
                       <h2>
-                        Do you need to add alias for {suspectLastNameText}{" "}
-                        {suspectFirstNameText}?
+                        {`Do you need to add alias for ${formatNameUtil(
+                          suspectFirstNameText,
+                          suspectLastNameText,
+                        )}?`}
                       </h2>
                     )}
                   </>

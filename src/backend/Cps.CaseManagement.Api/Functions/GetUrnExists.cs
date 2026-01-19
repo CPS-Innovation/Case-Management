@@ -1,6 +1,7 @@
 namespace Cps.CaseManagement.Api.Functions;
 
 using System.Net;
+using Cps.CaseManagement.Api.Attributes;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Services;
@@ -21,9 +22,10 @@ public class GetUrnExists(ILogger<GetUrnExists> logger,
 
   [Function(nameof(GetUrnExists))]
   [OpenApiOperation(operationId: nameof(GetUrnExists), tags: ["MDS"], Description = "Check if a URN exists.")]
+  [CmsAuthValuesAuth]
+  [BearerTokenAuth]
   [OpenApiParameter(name: "urn", In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The URN to check for existence.")]
   [OpenApiParameter(name: HttpHeaderKeys.CorrelationId, In = Microsoft.OpenApi.Models.ParameterLocation.Header, Required = true, Type = typeof(string), Description = "Correlation identifier for tracking the request.")]
-  [OpenApiParameter(name: HttpHeaderKeys.CmsAuthValues, In = Microsoft.OpenApi.Models.ParameterLocation.Cookie, Required = true, Type = typeof(string), Description = "CmsAuthValues to authenticate to CMS.")]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(bool), Description = ApiResponseDescriptions.Success)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
   [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.Unauthorized)]

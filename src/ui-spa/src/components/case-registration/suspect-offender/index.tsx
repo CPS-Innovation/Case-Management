@@ -7,11 +7,12 @@ import {
   useMemo,
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
+import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getOffenderTypes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
@@ -37,6 +38,23 @@ const SuspectOffenderPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+  const [formData, setFormData] = useState<{
+    suspectOffenderTypesRadio: {
+      shortCode: string;
+      display: string;
+      arrestDate: string;
+    };
+  }>({
+    suspectOffenderTypesRadio: state.formData.suspects[suspectIndex]
+      .suspectOffenderTypesRadio || {
+      shortCode: "",
+      display: "",
+      arrestDate: "",
+    },
+  });
+  const suspectData = useMemo(() => {
+    return state.formData.suspects[suspectIndex] || {};
+  }, [state.formData.suspects, suspectIndex]);
 
   const {
     data: offenderData,
@@ -77,13 +95,10 @@ const SuspectOffenderPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
     const { suspectOffenderTypesRadio = { shortCode: null, display: "" } } =
-      suspects[suspectIndex] || {};
+      formData;
 
     if (!suspectOffenderTypesRadio.shortCode) {
       errors.suspectOffenderTypesRadio = {
@@ -126,32 +141,62 @@ const SuspectOffenderPage = () => {
     }
   }, [offenderData, dispatch, isOffendersLoading]);
 
+  const handleDateChange = useCallback((value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      suspectOffenderTypesRadio: {
+        ...prevState.suspectOffenderTypesRadio,
+        arrestDate: value,
+      },
+    }));
+  }, []);
+
   const offenderItems = useMemo(() => {
     if (!state.apiData.suspectOffenderTypes) return [];
     return state.apiData.suspectOffenderTypes
       .filter((offender) => offender.description != "Unspecified")
-      .map((offender, index) => ({
-        id: `suspect-offender-radio-${index}`,
-        children: offender.display,
-        value: offender.shortCode,
-        "data-testid": `suspect-offender-radio-${index}`,
-      }));
-  }, [state.apiData.suspectOffenderTypes]);
+      .map((offender, index) => {
+        const conditional =
+          offender.shortCode === "PP"
+            ? undefined
+            : {
+                children: [
+                  <DateInputNative
+                    key="arrest-date-text"
+                    id="arrest-date-text"
+                    label={<h2>Arrest date (optional)</h2>}
+                    value={formData.suspectOffenderTypesRadio?.arrestDate || ""}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleDateChange(e.target.value)
+                    }
+                  />,
+                ],
+              };
+        return {
+          id: `suspect-offender-radio-${index}`,
+          children: offender.display,
+          value: offender.shortCode,
+          "data-testid": `suspect-offender-radio-${index}`,
+          conditional: conditional,
+        };
+      });
+  }, [
+    state.apiData.suspectOffenderTypes,
+    handleDateChange,
+    formData.suspectOffenderTypesRadio,
+  ]);
 
   const setFormValue = (value: string) => {
     const selectedOffender = state.apiData.suspectOffenderTypes?.find(
       (offender) => offender.shortCode === value,
     );
     if (selectedOffender) {
-      dispatch({
-        type: "SET_SUSPECT_FIELD",
-        payload: {
-          index: suspectIndex,
-          field: "suspectOffenderTypesRadio",
-          value: {
-            shortCode: selectedOffender.shortCode,
-            display: selectedOffender.display,
-          },
+      setFormData({
+        ...formData,
+        suspectOffenderTypesRadio: {
+          shortCode: selectedOffender.shortCode,
+          display: selectedOffender.display,
+          arrestDate: "",
         },
       });
     }
@@ -160,25 +205,25 @@ const SuspectOffenderPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-offender",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
 
-  const {
-    formData: { suspects },
-  } = state;
-
-  const {
-    suspectOffenderTypesRadio = { shortCode: null, display: "" },
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } = suspectData;
 
   return (
     <div>
@@ -203,8 +248,7 @@ const SuspectOffenderPage = () => {
               legend: {
                 children: (
                   <h1>
-                    What type of offender is {suspectLastNameText}{" "}
-                    {suspectFirstNameText}?
+                    {`What type of offender is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
                   </h1>
                 ),
               },
@@ -219,7 +263,7 @@ const SuspectOffenderPage = () => {
                 : undefined
             }
             items={offenderItems}
-            value={suspectOffenderTypesRadio.shortCode ?? ""}
+            value={formData.suspectOffenderTypesRadio.shortCode ?? ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

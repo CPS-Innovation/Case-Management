@@ -31,8 +31,17 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorLastNameText: "One",
       caseInvestigatorShoulderNameText: "Shoulder Name",
       caseInvestigatorShoulderNumberText: "Shoulder Number",
-      caseInvestigatorPoliceUnitText: "Police Unit",
+
       suspects: [],
+      victimsList: [],
+      wantToAddChargesRadio: "",
+      navigation: {
+        fromCaseSummaryPage: false,
+        fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
+      },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {
@@ -73,7 +82,7 @@ describe("getCaseRegistrationRequestData", () => {
       ],
       complexity: "HIGH",
       ociFirstName: "Investigator",
-      ociPoliceUnit: "Police Unit",
+      ociPoliceUnit: "",
       ociRank: "INV001",
       ociShoulderNumber: "Shoulder Number",
       ociSurname: "One",
@@ -92,8 +101,8 @@ describe("getCaseRegistrationRequestData", () => {
 
   it("Should return the correct default values if some of the values are not present", () => {
     const formData: CaseRegistrationFormData = {
-      operationNameRadio: "operationName",
-      suspectDetailsRadio: "suspectDetails",
+      operationNameRadio: "yes",
+      suspectDetailsRadio: "yes",
       operationNameText: "Operation Name",
       areaOrDivisionText: { id: 1, description: "Area 1" },
       urnPoliceForceText: "PF001",
@@ -119,8 +128,16 @@ describe("getCaseRegistrationRequestData", () => {
       caseInvestigatorLastNameText: "",
       caseInvestigatorShoulderNameText: "",
       caseInvestigatorShoulderNumberText: "",
-      caseInvestigatorPoliceUnitText: "",
       suspects: [],
+      victimsList: [],
+      wantToAddChargesRadio: "",
+      navigation: {
+        fromCaseSummaryPage: false,
+        fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
+      },
     };
     const monitoringCodesData: CaseMonitoringCode[] = [
       {
@@ -142,6 +159,12 @@ describe("getCaseRegistrationRequestData", () => {
     const result = getCaseRegistrationRequestData(
       formData,
       monitoringCodesData,
+      {
+        unitId: 2091,
+        unitDescription: "Plymouth Magistrates Court Unit",
+        code: "AC",
+        description: "CJU - Cornwall",
+      },
     );
     expect(result).toEqual({
       allocateWcuId: 0,
@@ -161,7 +184,7 @@ describe("getCaseRegistrationRequestData", () => {
       ],
       complexity: "HIGH",
       ociFirstName: "",
-      ociPoliceUnit: "",
+      ociPoliceUnit: "AC",
       ociRank: "",
       ociShoulderNumber: "",
       ociSurname: "",

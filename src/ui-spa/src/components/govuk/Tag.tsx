@@ -3,7 +3,7 @@ import { type TagColor } from "../../common/types//TagColor";
 
 export type TagProps = {
   children: React.ReactNode;
-  gdsTagColour: TagColor;
+  gdsTagColour?: TagColor;
   className?: string;
 };
 

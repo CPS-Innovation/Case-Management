@@ -5,7 +5,6 @@ using Microsoft.Azure.Functions.Worker.Middleware;
 using Microsoft.Extensions.Logging;
 using Cps.CaseManagement.Api.Context;
 using Cps.CaseManagement.Api.Exceptions;
-using Cps.CaseManagement.Api.Extensions;
 using Cps.CaseManagement.MdsClient.Exceptions;
 
 namespace Cps.CaseManagement.Api.Middleware;
@@ -29,14 +28,11 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
         {
             var statusCode = exception switch
             {
-                BadRequestException _ => HttpStatusCode.BadRequest,
                 ArgumentNullException or BadRequestException _ => HttpStatusCode.BadRequest,
                 CmsUnauthorizedException or CpsAuthenticationException _ => HttpStatusCode.Unauthorized,
                 MdsClientException mds => mds.StatusCode,
                 _ => HttpStatusCode.InternalServerError,
             };
-
-            var message = string.Empty;
 
             var httpRequestData = await context.GetHttpRequestDataAsync();
 
@@ -49,36 +45,42 @@ public class ExceptionHandlingMiddleware : IFunctionsWorkerMiddleware
                 }
                 catch
                 {
+                    _logger.LogTrace("Using fallback CorrelationId: {CorrelationId}", correlationId);
                 }
 
-                _logger.LogMethodError(correlationId, httpRequestData.Url.ToString(), message, exception);
+                _logger.LogError(exception, "Unhandled exception. CorrelationId: {CorrelationId}", correlationId);
 
-                var newHttpResponse = httpRequestData.CreateResponse(statusCode);
-
-                await newHttpResponse.WriteAsJsonAsync(new { ErrorMessage = exception.ToStringFullResponse(), CorrelationId = correlationId });
+                var response = httpRequestData.CreateResponse(statusCode);
+                await response.WriteAsJsonAsync(new
+                {
+                    ErrorMessage = "An unexpected error occurred. Please contact support with the CorrelationId.",
+                    CorrelationId = correlationId
+                });
 
                 var invocationResult = context.GetInvocationResult();
+                var httpOutputBinding = GetHttpOutputBindingFromMultipleOutputBinding(context);
 
-                var httpOutputBindingFromMultipleOutputBindings = GetHttpOutputBindingFromMultipleOutputBinding(context);
-
-                if (httpOutputBindingFromMultipleOutputBindings is not null)
+                if (httpOutputBinding is not null)
                 {
-                    httpOutputBindingFromMultipleOutputBindings.Value = newHttpResponse;
+                    httpOutputBinding.Value = response;
                 }
                 else
                 {
-                    invocationResult.Value = newHttpResponse;
+                    invocationResult.Value = response;
                 }
+            }
+            else
+            {
+                // If no HTTP request context exists, still log safely
+                _logger.LogError(exception, "Unhandled exception outside HTTP context.");
             }
         }
     }
 
-    private static OutputBindingData<HttpResponseData> GetHttpOutputBindingFromMultipleOutputBinding(FunctionContext context)
+    private static OutputBindingData<HttpResponseData>? GetHttpOutputBindingFromMultipleOutputBinding(FunctionContext context)
     {
         // The output binding entry name will be "$return" only when the function return type is HttpResponseData
-        var httpOutputBinding = context.GetOutputBindings<HttpResponseData>()
-        .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
-
-        return httpOutputBinding ?? throw new InvalidOperationException("HttpOutputBinding is null");
+        return context.GetOutputBindings<HttpResponseData>()
+            .FirstOrDefault(b => b.BindingType == "http" && b.Name != "$return");
     }
 }

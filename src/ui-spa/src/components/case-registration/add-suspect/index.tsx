@@ -16,8 +16,8 @@ import {
 } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import {
-  type CaseRegistrationState,
   type SuspectAdditionalDetailValue,
+  type SuspectTypeValue,
 } from "../../../common/reducers/caseRegistrationReducer";
 import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 
@@ -46,6 +46,26 @@ const AddSuspectPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const [formData, setFormData] = useState<{
+    addSuspectRadio: SuspectTypeValue;
+    suspectFirstNameText: string;
+    suspectLastNameText: string;
+    suspectCompanyNameText: string;
+    suspectAdditionalDetailsCheckboxes: SuspectAdditionalDetailValue[];
+  }>({
+    addSuspectRadio:
+      state.formData.suspects[suspectIndex]?.addSuspectRadio || "",
+    suspectFirstNameText:
+      state.formData.suspects[suspectIndex]?.suspectFirstNameText || "",
+    suspectLastNameText:
+      state.formData.suspects[suspectIndex]?.suspectLastNameText || "",
+    suspectCompanyNameText:
+      state.formData.suspects[suspectIndex]?.suspectCompanyNameText || "",
+    suspectAdditionalDetailsCheckboxes:
+      state.formData.suspects[suspectIndex]
+        ?.suspectAdditionalDetailsCheckboxes || [],
+  });
 
   const suspectAdditionalDetails: SuspectAdditionalDetailValue[] = useMemo(
     () => [
@@ -93,13 +113,13 @@ const AddSuspectPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
     const {
-      formData: { suspects },
-    } = state;
-    const { addSuspectRadio = "", suspectLastNameText = "" } =
-      suspects[suspectIndex] || {};
+      addSuspectRadio = "",
+      suspectLastNameText = "",
+      suspectCompanyNameText = "",
+    } = formData;
 
     if (!addSuspectRadio) {
       errors.addSuspectRadio = {
@@ -148,6 +168,23 @@ const AddSuspectPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const previousRoute = useMemo(() => {
+    if (
+      state.formData.navigation.fromCaseSummaryPage &&
+      !state.formData.navigation.fromSuspectSummaryPage
+    ) {
+      return "/case-registration/case-summary";
+    }
+    if (state.formData.navigation.fromSuspectSummaryPage) {
+      return "/case-registration/suspect-summary";
+    }
+
+    return "/case-registration/case-details";
+  }, [
+    state.formData.navigation.fromCaseSummaryPage,
+    state.formData.navigation.fromSuspectSummaryPage,
+  ]);
+
   const setFormValue = (
     fieldName:
       | "addSuspectRadio"
@@ -157,18 +194,31 @@ const AddSuspectPage = () => {
       | "suspectCompanyNameText",
     value: string | SuspectAdditionalDetailValue[],
   ) => {
-    dispatch({
-      type: "SET_SUSPECT_FIELD",
-      payload: { index: suspectIndex, field: fieldName, value: value },
-    });
+    const resetValues: {
+      suspectFirstNameText?: string;
+      suspectLastNameText?: string;
+      suspectAdditionalDetailsCheckboxes?: SuspectAdditionalDetailValue[];
+      suspectCompanyNameText?: string;
+    } = {};
+    if (fieldName === "addSuspectRadio" && value === "person") {
+      resetValues.suspectCompanyNameText = "";
+    }
+    if (fieldName === "addSuspectRadio" && value === "company") {
+      resetValues.suspectFirstNameText = "";
+      resetValues.suspectLastNameText = "";
+      resetValues.suspectAdditionalDetailsCheckboxes = [];
+    }
+    setFormData((prevState) => ({
+      ...prevState,
+      ...resetValues,
+      [fieldName]: value,
+    }));
   };
 
   const handleAdditionalDetailsChange = (
     value: SuspectAdditionalDetailValue,
   ) => {
-    const currentValues =
-      state.formData.suspects[suspectIndex]
-        .suspectAdditionalDetailsCheckboxes ?? [];
+    const currentValues = formData.suspectAdditionalDetailsCheckboxes;
     let newValues: SuspectAdditionalDetailValue[] = [];
     if (currentValues.includes(value)) {
       newValues = currentValues.filter((item) => item !== value);
@@ -182,31 +232,48 @@ const AddSuspectPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "RESET_SUSPECT_FIELD",
+      payload: { index: suspectIndex },
+    });
+
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: { index: suspectIndex, data: formData },
+    });
+
+    if (formData.addSuspectRadio === "company") {
+      navigate("/case-registration/suspect-summary");
+      return;
+    }
 
     const nextRoute = getNextSuspectJourneyRoute(
       "add-suspect",
-      state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+      formData.suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex]?.suspectAliases?.length > 0,
     );
 
     return navigate(nextRoute);
   };
 
-  const {
-    formData: { suspects },
-  } = state;
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false, fromSuspectSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
 
-  const {
-    addSuspectRadio = "",
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-    suspectCompanyNameText = "",
-    suspectAdditionalDetailsCheckboxes = [],
-  } = suspects[suspectIndex] || {};
   return (
-    <div className={styles.addSuspectPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+    <div>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -249,10 +316,10 @@ const AddSuspectPage = () => {
                       data-testid="suspect-first-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "First name",
+                        children: <b>First name (optional)</b>,
                       }}
                       type="text"
-                      value={suspectFirstNameText}
+                      value={formData.suspectFirstNameText}
                       onChange={(value: string) => {
                         setFormValue("suspectFirstNameText", value);
                       }}
@@ -263,7 +330,7 @@ const AddSuspectPage = () => {
                       data-testid="suspect-last-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Last name",
+                        children: <b>Last name</b>,
                       }}
                       errorMessage={
                         formDataErrors["suspectLastNameText"]
@@ -275,7 +342,7 @@ const AddSuspectPage = () => {
                           : undefined
                       }
                       type="text"
-                      value={suspectLastNameText}
+                      value={formData.suspectLastNameText}
                       onChange={(value: string) => {
                         setFormValue("suspectLastNameText", value);
                       }}
@@ -301,7 +368,9 @@ const AddSuspectPage = () => {
                         value: detail,
                         "data-testid": `case-additional-details-${index}`,
                         checked:
-                          suspectAdditionalDetailsCheckboxes?.includes(detail),
+                          formData.suspectAdditionalDetailsCheckboxes?.includes(
+                            detail,
+                          ),
                       }))}
                       onChange={(event) => {
                         const { value } = event.target;
@@ -326,7 +395,7 @@ const AddSuspectPage = () => {
                       data-testid="suspect-company-name-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: "Company name",
+                        children: <b>Company name</b>,
                       }}
                       errorMessage={
                         formDataErrors["suspectCompanyNameText"]
@@ -338,7 +407,7 @@ const AddSuspectPage = () => {
                           : undefined
                       }
                       type="text"
-                      value={suspectCompanyNameText}
+                      value={formData.suspectCompanyNameText}
                       onChange={(value: string) => {
                         setFormValue("suspectCompanyNameText", value);
                       }}
@@ -347,7 +416,7 @@ const AddSuspectPage = () => {
                 },
               },
             ]}
-            value={addSuspectRadio}
+            value={formData.addSuspectRadio}
             onChange={(value) => {
               if (value) setFormValue("addSuspectRadio", value);
             }}

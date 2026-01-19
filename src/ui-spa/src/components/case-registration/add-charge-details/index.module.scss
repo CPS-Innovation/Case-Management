@@ -1,0 +1,24 @@
+.resultsDivider {
+  border: none;
+  height: 1px;
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  background-color: #b1b4b6;
+}
+.suspectName {
+  margin-bottom: 8px;
+}
+.dateInputsWrapper {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  & :global(.govuk-button--secondary) {
+    flex-shrink: 0;
+    height: max-content;
+    margin-bottom: 1.25rem;
+  }
+  .dateInput {
+    width: 240px;
+  }
+}

@@ -20,6 +20,17 @@ import SuspectOffenderPage from "./case-registration/suspect-offender";
 import SuspectAliasesPage from "./case-registration/suspect-aliases";
 import SuspectAliasesSummaryPage from "./case-registration/suspect-aliases-summary";
 import SuspectSummaryPage from "./case-registration/suspect-summary";
+import SuspectRemoveConfirmationPage from "./case-registration/suspect-remove-confirmation";
+import WantToAddCharges from "./case-registration/want-to-add-charges";
+import AddChargeSuspectPage from "./case-registration/add-charge-suspect";
+import OffenceSearchPage from "./case-registration/charges-offence-search";
+import AddChargeDetailsPage from "./case-registration/add-charge-details";
+import ChargesSummaryPage from "./case-registration/charges-summary";
+import AddChargeVictimPage from "./case-registration/add-charge-victim";
+import ChargeRemoveConfirmationPage from "./case-registration/charge-remove-confirmation";
+import ChargesVictimDuplicateConfirmationPage from "./case-registration/charges-victim-duplicate-confirmation";
+import ChangeAreaConfirmationPage from "./case-registration/change-area-confirmation";
+import ChangeRegisteringUnitConfirmationPage from "./case-registration/change-registering-unit-confirmation";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -103,6 +114,50 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/suspect-summary"
           element={<SuspectSummaryPage />}
+        />
+        <Route
+          path="/case-registration/suspect-remove-confirmation"
+          element={<SuspectRemoveConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/want-to-add-charges"
+          element={<WantToAddCharges />}
+        />
+        <Route
+          path="/case-registration/add-charge-suspect"
+          element={<AddChargeSuspectPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/:chargeId/charges-offence-search"
+          element={<OffenceSearchPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/:chargeId/add-charge-details"
+          element={<AddChargeDetailsPage />}
+        />
+        <Route
+          path="/case-registration/charges-summary"
+          element={<ChargesSummaryPage />}
+        />
+        <Route
+          path="/case-registration/:suspectId/:chargeId/add-charge-victim"
+          element={<AddChargeVictimPage />}
+        />
+        <Route
+          path="/case-registration/charge-remove-confirmation"
+          element={<ChargeRemoveConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/charges-victim-duplicate-confirmation"
+          element={<ChargesVictimDuplicateConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/change-area-confirmation"
+          element={<ChangeAreaConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/change-registering-unit-confirmation"
+          element={<ChangeRegisteringUnitConfirmationPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

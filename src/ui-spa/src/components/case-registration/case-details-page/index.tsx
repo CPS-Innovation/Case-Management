@@ -13,7 +13,6 @@ import {
   ErrorSummary,
   Input,
 } from "../../govuk";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getRegisteringUnits } from "../../../common/utils/getRegisteringUnits";
 import { getWitnessCareUnits } from "../../../common/utils/getWitnessCareUnits";
@@ -42,13 +41,43 @@ const CaseDetailsPage = () => {
   const navigate = useNavigate();
   const isAreaSensitive = useIsAreaSensitive();
 
+  const [formData, setFormData] = useState<{
+    urnPoliceForceText: string;
+    urnPoliceUnitText: string;
+    urnUniqueReferenceText: string;
+    urnYearReferenceText: string;
+    registeringUnitText: { id: number | null; description: string };
+    witnessCareUnitText: { id: number | null; description: string };
+  }>({
+    urnPoliceForceText: state.formData.urnPoliceForceText || "",
+    urnPoliceUnitText: state.formData.urnPoliceUnitText || "",
+    urnUniqueReferenceText: state.formData.urnUniqueReferenceText || "",
+    urnYearReferenceText: state.formData.urnYearReferenceText || "",
+    registeringUnitText: state.formData.registeringUnitText || {
+      id: null,
+      description: "",
+    },
+    witnessCareUnitText: state.formData.witnessCareUnitText || {
+      id: null,
+      description: "",
+    },
+  });
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
+
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.changeCaseDetails) {
+      return "/case-registration/case-summary";
+    }
+    if (isAreaSensitive) return "/case-registration";
+
+    return "/case-registration/areas";
+  }, [state.formData.navigation.changeCaseDetails, isAreaSensitive]);
 
   const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
       validateUrn(
-        `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
+        `${formData.urnPoliceForceText}${formData.urnPoliceUnitText}${formData.urnUniqueReferenceText}${formData.urnYearReferenceText}`,
       ),
     enabled: false,
     retry: false,
@@ -152,27 +181,18 @@ const CaseDetailsPage = () => {
 
   const handleWitnessCareUnitConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(witnessCareUnits, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "witnessCareUnitText",
-        value: {
-          id,
-          description,
-        },
-      },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      witnessCareUnitText: { id, description },
+    }));
   };
 
   const handleRegisteringUnitConfirm = (value: string) => {
     const { id, description } = getSelectedUnit(registeringUnits, value);
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: "registeringUnitText",
-        value: { id, description },
-      },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      registeringUnitText: { id, description },
+    }));
   };
 
   const handleUrnValueChange = (
@@ -186,26 +206,23 @@ const CaseDetailsPage = () => {
     let newValue = value.replaceAll(/[^0-9a-zA-Z]/g, "");
     if (field !== "urnPoliceUnitText")
       newValue = newValue.replaceAll(/\D/g, "");
-    dispatch({
-      type: "SET_FIELD",
-      payload: { field, value: newValue },
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [field]: newValue,
+    }));
   };
 
   const validateFormData = (
-    state: CaseRegistrationState,
     registeringUnitInputValue: string,
     witnessCareUnitInputValue: string,
   ) => {
     const errors: FormDataErrors = {};
     const {
-      formData: {
-        urnPoliceForceText,
-        urnPoliceUnitText,
-        urnUniqueReferenceText,
-        urnYearReferenceText,
-      },
-    } = state;
+      urnPoliceForceText,
+      urnPoliceUnitText,
+      urnUniqueReferenceText,
+      urnYearReferenceText,
+    } = formData;
 
     if (!urnPoliceForceText) {
       errors.urnErrorText = {
@@ -290,26 +307,19 @@ const CaseDetailsPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    let formValue = formData;
     const registeringUnitInput = document.getElementById(
       "registering-unit-text",
     ) as HTMLInputElement | null;
     const registeringUnitInputValue = registeringUnitInput?.value ?? "";
     if (
-      state.formData.registeringUnitText?.description !==
-      registeringUnitInputValue
+      formData.registeringUnitText?.description !== registeringUnitInputValue
     ) {
       const { id, description } = getSelectedUnit(
         registeringUnits,
         registeringUnitInputValue,
       );
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "registeringUnitText",
-          value: { id, description },
-        },
-      });
+      formValue = { ...formValue, registeringUnitText: { id, description } };
     }
     const witnessCareUnitInput = document.getElementById(
       "witness-care-unit-text",
@@ -317,28 +327,15 @@ const CaseDetailsPage = () => {
 
     const witnessCareUnitInputValue = witnessCareUnitInput?.value ?? "";
     if (
-      state.formData.witnessCareUnitText?.description !==
-      witnessCareUnitInputValue
+      formData.witnessCareUnitText?.description !== witnessCareUnitInputValue
     ) {
       const { id, description } = getSelectedUnit(
         witnessCareUnits,
         witnessCareUnitInputValue,
       );
-      dispatch({
-        type: "SET_FIELD",
-        payload: {
-          field: "witnessCareUnitText",
-          value: { id, description },
-        },
-      });
+      formValue = { ...formValue, witnessCareUnitText: { id, description } };
     }
-    if (
-      !validateFormData(
-        state,
-        registeringUnitInputValue,
-        witnessCareUnitInputValue,
-      )
-    )
+    if (!validateFormData(registeringUnitInputValue, witnessCareUnitInputValue))
       return;
     const { data } = await refetchValidateUrn();
     if (data) {
@@ -353,22 +350,87 @@ const CaseDetailsPage = () => {
       }));
       return;
     }
+    if (
+      state.formData.navigation.changeCaseDetails &&
+      state.formData.registeringUnitText.id !==
+        formValue.registeringUnitText?.id
+    ) {
+      navigate("/case-registration/change-registering-unit-confirmation", {
+        state: {
+          formData: formValue,
+        },
+      });
+      return;
+    }
+
+    if (
+      state.formData.registeringUnitText.id !==
+      formValue.registeringUnitText?.id
+    ) {
+      dispatch({
+        type: "RESET_RU_DEPENDENT_FIELDS",
+      });
+    }
+
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formValue,
+        },
+      },
+    });
+
+    if (state.formData.navigation.changeCaseDetails) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseDetails: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
+    if (state.formData.navigation.changeCaseArea) {
+      if (state.formData.firstHearingRadio) {
+        navigate("/case-registration/first-hearing");
+        return;
+      }
+      navigate("/case-registration/case-assignee");
+      return;
+    }
+
     if (state.formData.suspectDetailsRadio === "yes") {
       const suspectIndex = state.formData.suspects.length
         ? state.formData.suspects.length - 1
         : 0;
-      return navigate(`/case-registration/suspect-${suspectIndex}/add-suspect`);
+      if (!state.formData.suspects.length) {
+        return navigate(
+          `/case-registration/suspect-${suspectIndex}/add-suspect`,
+        );
+      }
+      return navigate(`/case-registration/suspect-summary`);
     }
+
     return navigate("/case-registration/case-complexity");
+  };
+
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { changeCaseDetails: false },
+      });
+    }
+    navigate(previousRoute);
   };
 
   return (
     <div className={styles.caseDetailsPage}>
-      <BackLink
-        to={`${isAreaSensitive ? "/case-registration" : "/case-registration/areas"}`}
-      >
-        Back
-      </BackLink>
+      {!state.formData.navigation.changeCaseArea && (
+        <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+          Back
+        </BackLink>
+      )}
       <h1>Case Details</h1>
       {!!errorList.length && (
         <div
@@ -403,7 +465,7 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-force-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-force-text"
               label={{ children: "Police force" }}
-              value={state.formData.urnPoliceForceText}
+              value={formData.urnPoliceForceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceForceText", val)
               }
@@ -414,7 +476,7 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-unit-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-police-unit-text"
               label={{ children: "Police Unit" }}
-              value={state.formData.urnPoliceUnitText}
+              value={formData.urnPoliceUnitText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnPoliceUnitText", val)
               }
@@ -425,7 +487,7 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-5 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-unique-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-unique-reference-text"
               label={{ children: "Unique Reference" }}
-              value={state.formData.urnUniqueReferenceText}
+              value={formData.urnUniqueReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnUniqueReferenceText", val)
               }
@@ -436,7 +498,7 @@ const CaseDetailsPage = () => {
               className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-year-reference-text") ? "govuk-input--error" : ""}`}
               data-testid="urn-year-reference-text"
               label={{ children: "Year Reference" }}
-              value={state.formData.urnYearReferenceText}
+              value={formData.urnYearReferenceText}
               onChange={(val: string) =>
                 handleUrnValueChange("urnYearReferenceText", val)
               }
@@ -451,7 +513,7 @@ const CaseDetailsPage = () => {
             source={registeringUnitSuggest}
             confirmOnBlur={false}
             onConfirm={handleRegisteringUnitConfirm}
-            defaultValue={state.formData.registeringUnitText?.description}
+            defaultValue={formData.registeringUnitText?.description}
             label={{ children: <h2>What is the registering unit?</h2> }}
             errorMessage={
               formDataErrors["registeringUnitErrorText"]
@@ -468,7 +530,7 @@ const CaseDetailsPage = () => {
             source={witnessCareUnitSuggest}
             confirmOnBlur={false}
             onConfirm={handleWitnessCareUnitConfirm}
-            defaultValue={state.formData.witnessCareUnitText?.description}
+            defaultValue={formData.witnessCareUnitText?.description}
             label={{ children: <h2>What is the witness care unit (WCU)?</h2> }}
             errorMessage={
               formDataErrors["witnessCareUnitErrorText"]

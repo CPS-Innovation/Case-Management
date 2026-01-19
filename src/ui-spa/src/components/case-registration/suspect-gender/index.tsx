@@ -8,9 +8,9 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getGenders } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getNextSuspectJourneyRoute,
@@ -37,6 +37,16 @@ const SuspectGenderPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
+
+  const [formData, setFormData] = useState<{
+    suspectGenderRadio: { shortCode: string; description: string };
+  }>({
+    suspectGenderRadio: state.formData.suspects[suspectIndex]
+      .suspectGenderRadio || {
+      shortCode: "",
+      description: "",
+    },
+  });
 
   const {
     data: gendersData,
@@ -78,13 +88,10 @@ const SuspectGenderPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
     const { suspectGenderRadio = { shortCode: null, description: "" } } =
-      suspects[suspectIndex] || {};
+      formData;
 
     if (!suspectGenderRadio.shortCode) {
       errors.suspectGenderRadio = {
@@ -147,13 +154,9 @@ const SuspectGenderPage = () => {
       (gender) => gender.shortCode === value,
     );
     if (selectedGender) {
-      dispatch({
-        type: "SET_SUSPECT_FIELD",
-        payload: {
-          index: suspectIndex,
-          field: "suspectGenderRadio",
-          value: selectedGender,
-        },
+      setFormData({
+        ...formData,
+        suspectGenderRadio: selectedGender,
       });
     }
   };
@@ -161,12 +164,20 @@ const SuspectGenderPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-gender",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
@@ -175,11 +186,8 @@ const SuspectGenderPage = () => {
     formData: { suspects },
   } = state;
 
-  const {
-    suspectGenderRadio = { shortCode: null, description: "" },
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -204,7 +212,7 @@ const SuspectGenderPage = () => {
               legend: {
                 children: (
                   <h1>
-                    {`What is ${suspectLastNameText} ${suspectFirstNameText}'s gender?`}
+                    {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s gender?`}
                   </h1>
                 ),
               },
@@ -218,7 +226,7 @@ const SuspectGenderPage = () => {
                 : undefined
             }
             items={genderItems}
-            value={suspectGenderRadio.shortCode || ""}
+            value={formData.suspectGenderRadio.shortCode || ""}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}

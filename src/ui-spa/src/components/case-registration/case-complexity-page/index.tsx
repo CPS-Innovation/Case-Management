@@ -8,8 +8,8 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { getCaseComplexities } from "../../../apis/gateway-api";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
@@ -26,6 +26,16 @@ const CaseComplexityPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
+
+  const [formData, setFormData] = useState<{
+    caseComplexityRadio: { shortCode: string; description: string };
+  }>({
+    caseComplexityRadio: state.formData.caseComplexityRadio || {
+      shortCode: "",
+      description: "",
+    },
+  });
 
   const {
     data: caseComplexitiesData,
@@ -54,11 +64,9 @@ const CaseComplexityPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { caseComplexityRadio },
-    } = state;
+    const { caseComplexityRadio } = formData;
 
     if (!caseComplexityRadio.shortCode) {
       errors.caseComplexityRadio = {
@@ -79,6 +87,23 @@ const CaseComplexityPage = () => {
     }
     return [] as { shortCode: number; description: string }[];
   }, [state.apiData.caseComplexities]);
+
+  const previousRoute = useMemo(() => {
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      return "/case-registration/case-summary";
+    }
+    if (chargesCount) {
+      return "/case-registration/first-hearing";
+    }
+    if (state.formData.suspects.length > 0) {
+      return "/case-registration/want-to-add-charges";
+    }
+    return "/case-registration/case-details";
+  }, [
+    chargesCount,
+    state.formData.suspects.length,
+    state.formData.navigation.fromCaseSummaryPage,
+  ]);
 
   const errorList = useMemo(() => {
     const validErrorKeys = Object.keys(formDataErrors).filter(
@@ -112,19 +137,15 @@ const CaseComplexityPage = () => {
     }
   }, [caseComplexitiesData, dispatch, isCaseComplexitiesLoading]);
 
-  const setFormValue = (fieldName: "caseComplexityRadio", value: string) => {
+  const setFormValue = (value: string) => {
     const selectedItem = caseComplexities.find(
       (complexity) => `${complexity.shortCode}` === value,
     );
     if (!selectedItem) return;
-    dispatch({
-      type: "SET_FIELD",
-      payload: {
-        field: fieldName,
-        value: {
-          shortCode: `${selectedItem.shortCode}`,
-          description: selectedItem.description,
-        },
+    setFormData({
+      caseComplexityRadio: {
+        shortCode: `${selectedItem.shortCode}`,
+        description: selectedItem.description,
       },
     });
   };
@@ -132,14 +153,42 @@ const CaseComplexityPage = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
 
+    dispatch({
+      type: "SET_FIELDS",
+      payload: {
+        data: {
+          ...formData,
+        },
+      },
+    });
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+      navigate("/case-registration/case-summary");
+      return;
+    }
     return navigate("/case-registration/case-monitoring-codes");
   };
 
+  const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    if (previousRoute === "/case-registration/case-summary") {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
+    navigate(previousRoute);
+  };
   return (
     <div className={styles.caseComplexityPage}>
-      <BackLink to="/case-registration/first-hearing">Back</BackLink>
+      <BackLink to={previousRoute} onClick={handleBackLinkClick}>
+        Back
+      </BackLink>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -175,9 +224,9 @@ const CaseComplexityPage = () => {
               value: complexity.shortCode.toString(),
               "data-testid": `case-complexity-radio-${index}`,
             }))}
-            value={state.formData.caseComplexityRadio.shortCode}
+            value={formData.caseComplexityRadio.shortCode}
             onChange={(value) => {
-              if (value) setFormValue("caseComplexityRadio", value);
+              if (value) setFormValue(value);
             }}
           ></Radios>
         </div>

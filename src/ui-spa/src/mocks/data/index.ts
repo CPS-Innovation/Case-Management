@@ -22,3 +22,7 @@ export { suspectReligionDev } from "./suspectReligion.dev";
 export { suspectReligionPlaywright } from "./suspectReligion.playwright";
 export { suspectOffenderTypesDev } from "./suspectOffenderTypes.dev";
 export { suspectOffenderTypesPlaywright } from "./suspectOffenderTypes.playwright";
+export { policeUnitsDev } from "./policeUnits.dev";
+export { policeUnitsPlaywright } from "./policeUnits.playwright";
+export { offencesDev } from "./offences.dev";
+export { offencesPlaywright } from "./offences.playwright";

@@ -20,10 +20,14 @@ import {
   suspectEthnicitiesPlaywright,
   suspectGenderDev,
   suspectGenderPlaywright,
+  policeUnitsDev,
+  policeUnitsPlaywright,
   suspectReligionDev,
   suspectReligionPlaywright,
   suspectOffenderTypesDev,
   suspectOffenderTypesPlaywright,
+  offencesDev,
+  offencesPlaywright,
 } from "../mocks/data";
 
 export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
@@ -91,6 +95,11 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json(results);
     }),
+    http.get(`${baseUrl}/api/v1/police-units`, async () => {
+      const results = isDevMock() ? policeUnitsDev : policeUnitsPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
+    }),
     http.get(`${baseUrl}/api/v1/genders`, async () => {
       const results = isDevMock() ? suspectGenderDev : suspectGenderPlaywright;
       await delay(RESPONSE_DELAY);
@@ -121,6 +130,11 @@ export const setupHandlers = (baseUrl: string, apiMockSource: string) => {
       await delay(RESPONSE_DELAY);
       return HttpResponse.json({ caseId: 12345 });
       // return new HttpResponse(null, { status: 500 });
+    }),
+    http.get(`${baseUrl}/api/v1/offences`, async () => {
+      const results = isDevMock() ? offencesDev : offencesPlaywright;
+      await delay(RESPONSE_DELAY);
+      return HttpResponse.json(results);
     }),
   ];
 };

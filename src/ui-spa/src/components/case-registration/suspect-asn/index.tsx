@@ -8,7 +8,6 @@ import {
 } from "react";
 import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getNextSuspectJourneyRoute,
@@ -36,6 +35,12 @@ const SuspectASNPage = () => {
     return Number.parseInt(index, 10);
   }, [suspectId]);
 
+  const [formData, setFormData] = useState<{
+    suspectASNText: string;
+  }>({
+    suspectASNText: state.formData.suspects[suspectIndex].suspectASNText || "",
+  });
+
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(
       "suspect-asn",
@@ -61,13 +66,9 @@ const SuspectASNPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
-    const { suspectASNText = "" } = suspects[suspectIndex] || {};
-
+    const { suspectASNText = "" } = formData;
     if (!suspectASNText) {
       errors.suspectASNText = {
         errorSummaryText: "Please add the Arrest Summons Number (ASN)",
@@ -99,34 +100,30 @@ const SuspectASNPage = () => {
   }, [errorList]);
 
   const setFormValue = (value: string) => {
-    dispatch({
-      type: "SET_SUSPECT_FIELD",
-      payload: {
-        index: suspectIndex,
-        field: "suspectASNText",
-        value: value,
-      },
-    });
+    setFormData({ ...formData, suspectASNText: value });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-asn",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
-
-  const {
-    formData: { suspects },
-  } = state;
-
-  const { suspectASNText = "" } = suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -162,7 +159,7 @@ const SuspectASNPage = () => {
               children: <h1>What is the Arrest Summons Number (ASN)?</h1>,
             }}
             type="text"
-            value={suspectASNText}
+            value={formData.suspectASNText}
             onChange={(value: string) => {
               setFormValue(value);
             }}

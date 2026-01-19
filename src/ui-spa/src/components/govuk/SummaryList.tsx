@@ -4,13 +4,13 @@ import React from "react";
 type Props = {
   rows: {
     key: { children: React.ReactNode };
-    value: { children: React.ReactNode };
-    actions: {
+    value?: { children: React.ReactNode };
+    actions?: {
       items: {
         children: React.ReactNode;
         to?: string;
         visuallyHiddenText?: string;
-        onClick?: () => void;
+        onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
       }[];
     };
   }[];

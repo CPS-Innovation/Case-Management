@@ -8,12 +8,13 @@ import {
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
-import { type CaseRegistrationState } from "../../../common/reducers/caseRegistrationReducer";
+import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import styles from "../index.module.scss";
 
 const SuspectSDOPage = () => {
@@ -35,7 +36,12 @@ const SuspectSDOPage = () => {
     const index = suspectId.replace("suspect-", "");
     return Number.parseInt(index, 10);
   }, [suspectId]);
-
+  const [formData, setFormData] = useState<{
+    suspectSDORadio: GeneralRadioValue;
+  }>({
+    suspectSDORadio:
+      state.formData.suspects[suspectIndex].suspectSDORadio || "",
+  });
   const previousRoute = useMemo(() => {
     return getPreviousSuspectJourneyRoute(
       "suspect-sdo",
@@ -61,12 +67,9 @@ const SuspectSDOPage = () => {
     [formDataErrors],
   );
 
-  const validateFormData = (state: CaseRegistrationState) => {
+  const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const {
-      formData: { suspects },
-    } = state;
-    const { suspectSDORadio = "" } = suspects[suspectIndex] || {};
+    const { suspectSDORadio = "" } = formData;
 
     if (!suspectSDORadio) {
       errors.suspectSDORadio = {
@@ -99,25 +102,29 @@ const SuspectSDOPage = () => {
   }, [errorList]);
 
   const setFormValue = (value: string) => {
-    dispatch({
-      type: "SET_SUSPECT_FIELD",
-      payload: {
-        index: suspectIndex,
-        field: "suspectSDORadio",
-        value: value,
-      },
+    setFormData({
+      ...formData,
+      suspectSDORadio: value as GeneralRadioValue,
     });
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateFormData(state)) return;
+    if (!validateFormData()) return;
+    dispatch({
+      type: "SET_SUSPECT_FIELDS",
+      payload: {
+        index: suspectIndex,
+        data: formData,
+      },
+    });
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-sdo",
       state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
       suspectIndex,
+      state.formData.suspects[suspectIndex].suspectAliases.length > 0,
     );
     return navigate(nextRoute);
   };
@@ -125,11 +132,8 @@ const SuspectSDOPage = () => {
   const {
     formData: { suspects },
   } = state;
-  const {
-    suspectFirstNameText = "",
-    suspectLastNameText = "",
-    suspectSDORadio = "",
-  } = suspects[suspectIndex] || {};
+  const { suspectFirstNameText = "", suspectLastNameText = "" } =
+    suspects[suspectIndex] || {};
 
   return (
     <div>
@@ -154,8 +158,8 @@ const SuspectSDOPage = () => {
               legend: {
                 children: (
                   <h1>
-                    Is {suspectLastNameText} {suspectFirstNameText} a serious
-                    dangerous offender (SDO)?
+                    {`Is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} a serious
+                    dangerous offender (SDO)?`}
                   </h1>
                 ),
               },
@@ -181,7 +185,7 @@ const SuspectSDOPage = () => {
                 "data-testid": `suspect-SDO-radio-no`,
               },
             ]}
-            value={suspectSDORadio}
+            value={formData.suspectSDORadio}
             onChange={(value) => {
               if (value) setFormValue(value);
             }}
