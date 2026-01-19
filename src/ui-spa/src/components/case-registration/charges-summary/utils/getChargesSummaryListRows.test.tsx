@@ -31,17 +31,23 @@ describe("getChargesSummaryListRows", () => {
       offenceToDate: "1990-06-26",
       addVictimRadio: "yes",
       victim: {
+        victimId: "victim-1",
+      },
+    };
+    const victimList = [
+      {
+        victimId: "victim-1",
         victimFirstNameText: "John",
         victimLastNameText: "Doe",
         victimAdditionalDetailsCheckboxes: [
-          "Vulnerable",
-          "Intimidated",
-          "Witness",
+          "Vulnerable" as const,
+          "Intimidated" as const,
+          "Witness" as const,
         ],
       },
-    };
+    ];
 
-    const rows = getChargesSummaryListRows(charge, true);
+    const rows = getChargesSummaryListRows(charge, victimList, true);
     renderRows(rows);
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent("offence-code-1");
     expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(
@@ -75,14 +81,22 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "",
       addVictimRadio: "yes",
-      victim: {
-        victimFirstNameText: "John",
-        victimLastNameText: "Doe",
-        victimAdditionalDetailsCheckboxes: ["Vulnerable", "Witness"],
-      },
+      victim: { victimId: "victim-1" },
     };
 
-    const rows = getChargesSummaryListRows(charge, true);
+    const victimList = [
+      {
+        victimId: "victim-1",
+        victimFirstNameText: "John",
+        victimLastNameText: "Doe",
+        victimAdditionalDetailsCheckboxes: [
+          "Vulnerable" as const,
+          "Witness" as const,
+        ],
+      },
+    ];
+
+    const rows = getChargesSummaryListRows(charge, victimList, true);
 
     renderRows(rows);
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent("offence-code-1");
@@ -117,14 +131,22 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "",
       addVictimRadio: "yes",
-      victim: {
-        victimFirstNameText: "John",
-        victimLastNameText: "Doe",
-        victimAdditionalDetailsCheckboxes: ["Vulnerable", "Witness"],
-      },
+      victim: { victimId: "victim-1" },
     };
 
-    const rows = getChargesSummaryListRows(charge, false);
+    const victimList = [
+      {
+        victimId: "victim-1",
+        victimFirstNameText: "John",
+        victimLastNameText: "Doe",
+        victimAdditionalDetailsCheckboxes: [
+          "Vulnerable" as const,
+          "Witness" as const,
+        ],
+      },
+    ];
+
+    const rows = getChargesSummaryListRows(charge, victimList, false);
 
     renderRows(rows);
 

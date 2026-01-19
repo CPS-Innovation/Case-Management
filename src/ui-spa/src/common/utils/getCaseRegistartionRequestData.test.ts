@@ -65,7 +65,7 @@ describe("getCaseRegistrationRequestData", () => {
       monitoringCodesData,
     );
     expect(result).toEqual({
-      allocateWcuId: 1,
+      allocatedWcuId: 1,
       caseWorker: "1",
       courtLocationId: 1,
       courtLocationName: "Court Location 1",
@@ -81,11 +81,11 @@ describe("getCaseRegistrationRequestData", () => {
         },
       ],
       complexity: "HIGH",
-      ociFirstName: "Investigator",
-      ociPoliceUnit: "",
-      ociRank: "INV001",
-      ociShoulderNumber: "Shoulder Number",
-      ociSurname: "One",
+      oicFirstnames: "Investigator",
+      oicPoliceUnit: "",
+      oicRank: "INV001",
+      oicShoulderNumber: "Shoulder Number",
+      oicSurname: "One",
       operationName: "Operation Name",
       prosecutorId: 1,
       registeringAreaId: 1,
@@ -96,6 +96,8 @@ describe("getCaseRegistrationRequestData", () => {
         uniqueRef: "URN001",
         year: 21,
       },
+      victims: [],
+      defendants: [],
     });
   });
 
@@ -167,7 +169,7 @@ describe("getCaseRegistrationRequestData", () => {
       },
     );
     expect(result).toEqual({
-      allocateWcuId: 0,
+      allocatedWcuId: 0,
       caseWorker: "",
       courtLocationId: 0,
       courtLocationName: "",
@@ -183,11 +185,11 @@ describe("getCaseRegistrationRequestData", () => {
         },
       ],
       complexity: "HIGH",
-      ociFirstName: "",
-      ociPoliceUnit: "AC",
-      ociRank: "",
-      ociShoulderNumber: "",
-      ociSurname: "",
+      oicFirstnames: "",
+      oicPoliceUnit: "AC",
+      oicRank: "",
+      oicShoulderNumber: "",
+      oicSurname: "",
       operationName: "Operation Name",
       prosecutorId: 0,
       registeringAreaId: 1,
@@ -198,6 +200,8 @@ describe("getCaseRegistrationRequestData", () => {
         uniqueRef: "URN001",
         year: 21,
       },
+      victims: [],
+      defendants: [],
     });
   });
 });

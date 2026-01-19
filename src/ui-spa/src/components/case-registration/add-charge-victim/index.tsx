@@ -252,9 +252,9 @@ const AddChargeVictimPage = () => {
 
     const isVictimNameExists = state.formData.victimsList.some((victim) => {
       return (
-        victim.firstName.toLowerCase() ===
+        victim.victimFirstNameText.toLowerCase() ===
           victimDetails.victimFirstNameText.toLowerCase() &&
-        victim.lastName.toLowerCase() ===
+        victim.victimLastNameText.toLowerCase() ===
           victimDetails.victimLastNameText.toLowerCase()
       );
     });
@@ -276,43 +276,18 @@ const AddChargeVictimPage = () => {
       return;
     }
 
-    let selectedVictimDetails = {
-      firstName: victimDetails.victimFirstNameText,
-      lastName: victimDetails.victimLastNameText,
-    };
-
-    if (victimDetails.selectedVictimRadio !== "new-victim") {
-      const selectedVictim = state.formData.victimsList.find((victim) => {
-        return victim.id === victimDetails.selectedVictimRadio;
-      });
-      if (selectedVictim) {
-        selectedVictimDetails = {
-          firstName: selectedVictim.firstName,
-          lastName: selectedVictim.lastName,
-        };
-      }
-    }
-
-    dispatch({
-      type: "SET_CHARGE_FIELDS",
-      payload: {
-        suspectIndex: suspectIndex,
-        chargeIndex: chargeIndex,
-        data: {
-          victim: {
-            victimFirstNameText: selectedVictimDetails.firstName,
-            victimLastNameText: selectedVictimDetails.lastName,
-            victimAdditionalDetailsCheckboxes:
-              victimDetails.victimAdditionalDetailsCheckboxes,
-          },
-        },
-      },
-    });
-
     if (
       !state.formData.victimsList.length ||
       victimDetails.selectedVictimRadio === "new-victim"
     ) {
+      const newVictim = {
+        victimId: uuidv4(),
+        victimFirstNameText: victimDetails.victimFirstNameText,
+        victimLastNameText: victimDetails.victimLastNameText,
+        victimAdditionalDetailsCheckboxes:
+          victimDetails.victimAdditionalDetailsCheckboxes,
+      };
+
       dispatch({
         type: "SET_FIELDS",
         payload: {
@@ -320,25 +295,78 @@ const AddChargeVictimPage = () => {
             victimsList: [
               ...state.formData.victimsList,
               {
-                id: uuidv4(),
-                firstName: victimDetails.victimFirstNameText,
-                lastName: victimDetails.victimLastNameText,
+                ...newVictim,
               },
             ],
           },
         },
       });
-    }
 
+      dispatch({
+        type: "SET_CHARGE_FIELDS",
+        payload: {
+          suspectIndex: suspectIndex,
+          chargeIndex: chargeIndex,
+          data: {
+            victim: {
+              ...newVictim,
+            },
+          },
+        },
+      });
+    } else if (victimDetails.selectedVictimRadio !== "new-victim") {
+      const selectedVictim = state.formData.victimsList.find((victim) => {
+        return victim.victimId === victimDetails.selectedVictimRadio;
+      });
+
+      const filteredVictimsList = state.formData.victimsList.filter(
+        (victim) => victim.victimId !== victimDetails.selectedVictimRadio,
+      );
+      if (selectedVictim) {
+        dispatch({
+          type: "SET_FIELDS",
+          payload: {
+            data: {
+              victimsList: [
+                ...filteredVictimsList,
+                {
+                  ...selectedVictim,
+                  victimAdditionalDetailsCheckboxes:
+                    victimDetails.victimAdditionalDetailsCheckboxes,
+                },
+              ],
+            },
+          },
+        });
+        dispatch({
+          type: "SET_CHARGE_FIELDS",
+          payload: {
+            suspectIndex: suspectIndex,
+            chargeIndex: chargeIndex,
+            data: {
+              victim: {
+                ...selectedVictim,
+                victimAdditionalDetailsCheckboxes:
+                  victimDetails.victimAdditionalDetailsCheckboxes,
+              },
+            },
+          },
+        });
+      }
+    }
     return navigate("/case-registration/charges-summary");
   };
 
   const availableVictimItems = useMemo(() => {
+    console.log("Victims List:", state.formData.victimsList);
     const availableVictims = state.formData.victimsList.map((victim, index) => {
       return {
         id: `add-victim-radio-${index}`,
-        children: formatNameUtil(victim.firstName, victim.lastName),
-        value: victim.id,
+        children: formatNameUtil(
+          victim.victimFirstNameText,
+          victim.victimLastNameText,
+        ),
+        value: victim.victimId,
         "data-testid": `add-victim-radio-${index}`,
       };
     });

@@ -223,6 +223,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                 <SummaryList
                                   rows={getChargesSummaryListRows(
                                     charge,
+                                    state.formData.victimsList,
                                     isCaseSummaryPage,
                                     suspect.suspectId,
                                     charge.chargeId,
@@ -263,6 +264,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                           <SummaryList
                             rows={getChargesSummaryListRows(
                               charge,
+                              state.formData.victimsList,
                               isCaseSummaryPage,
                               suspect.suspectId,
                               charge.chargeId,

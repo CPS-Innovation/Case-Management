@@ -84,6 +84,7 @@ export type VictimAdditionalDetailsValue =
   | "Intimidated"
   | "Witness";
 export type Victim = {
+  victimId: string;
   victimFirstNameText: string;
   victimLastNameText: string;
   victimAdditionalDetailsCheckboxes: VictimAdditionalDetailsValue[];
@@ -96,7 +97,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
-  victim: Victim | null;
+  victim: { victimId: string } | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
@@ -131,7 +132,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimsList: { id: string; firstName: string; lastName: string }[];
+  victimsList: Victim[];
   navigation: {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
@@ -289,7 +290,7 @@ export type CaseRegistrationActions =
           caseInvestigatorShoulderNameText?: string;
           caseInvestigatorShoulderNumberText?: string;
           wantToAddChargesRadio?: GeneralRadioValue;
-          victimsList?: { id: string; firstName: string; lastName: string }[];
+          victimsList?: Victim[];
         };
       };
     }
