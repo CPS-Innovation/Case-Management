@@ -25,6 +25,7 @@ describe("getChargesSummaryListRows", () => {
         legislation: "Theft Act 1968",
         effectiveFromDate: "20-03-1990",
         effectiveToDate: "20-06-1990",
+        modeOfTrial: "abc",
       },
 
       offenceFromDate: "1990-03-23",
@@ -76,6 +77,7 @@ describe("getChargesSummaryListRows", () => {
         legislation: "Theft Act 1968",
         effectiveFromDate: "20-03-1990",
         effectiveToDate: "20-06-1990",
+        modeOfTrial: "abc",
       },
 
       offenceFromDate: "1990-03-23",
@@ -126,6 +128,7 @@ describe("getChargesSummaryListRows", () => {
         legislation: "Theft Act 1968",
         effectiveFromDate: "20-03-1990",
         effectiveToDate: "20-06-1990",
+        modeOfTrial: "abc",
       },
 
       offenceFromDate: "1990-03-23",

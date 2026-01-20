@@ -70,6 +70,7 @@ describe("getChargesSummaryList", () => {
         legislation: "Theft Act",
         effectiveFromDate: "2022-01-01",
         effectiveToDate: "2022-12-31",
+        modeOfTrial: "abc",
       },
       offenceFromDate: "2022-01-01",
       offenceToDate: "2022-12-31",

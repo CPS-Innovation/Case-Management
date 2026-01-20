@@ -50,11 +50,10 @@ export type CaseRegistration = {
     charges: {
       offenceCode: string;
       offenceDescription: string;
-      offenceId: string;
       dateFrom: string | null;
       dateTo: string | null;
       victimIndexId: number; //default -1 for no victim
       modeOfTrial: string;
-    };
+    }[];
   }[];
 };

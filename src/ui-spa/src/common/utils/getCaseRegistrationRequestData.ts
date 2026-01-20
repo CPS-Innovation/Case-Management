@@ -3,6 +3,7 @@ import {
   type CaseRegistrationFormData,
   type GeneralRadioValue,
   type SuspectFormData,
+  type Victim,
 } from "../reducers/caseRegistrationReducer";
 import { type CaseMonitoringCode } from "../types/responses/CaseMonitoringCodes";
 import { type CaseRegistration } from "../types/requests/CaseRegistration";
@@ -51,12 +52,27 @@ export const getCaseRegistrationRequestData = (
     oicFirstnames: formData.caseInvestigatorFirstNameText,
     oicShoulderNumber: formData.caseInvestigatorShoulderNumberText,
     oicPoliceUnit: policeUnit ? policeUnit.code : "",
-    defendants: getSuspectRequestData(formData.suspects),
-    victims: [] as any,
+    defendants: getSuspectRequestData(formData.suspects, formData.victimsList),
+    victims: getVictimRequestData(formData.victimsList),
   };
 };
 
-const getSuspectRequestData = (suspects: SuspectFormData[]) => {
+const getVictimRequestData = (victims: Victim[]) => {
+  return victims.map((victim) => ({
+    forename: victim.victimFirstNameText,
+    surname: victim.victimLastNameText,
+    isVulnerable:
+      victim.victimAdditionalDetailsCheckboxes.includes("Vulnerable"),
+    isIntimidated:
+      victim.victimAdditionalDetailsCheckboxes.includes("Intimidated"),
+    isWitness: victim.victimAdditionalDetailsCheckboxes.includes("Witness"),
+  }));
+};
+
+const getSuspectRequestData = (
+  suspects: SuspectFormData[],
+  victims: Victim[],
+) => {
   const disability = (suspectDisabilityRadio: GeneralRadioValue) => {
     if (!suspectDisabilityRadio) return "";
     return suspectDisabilityRadio === "yes" ? "Y" : "N";
@@ -65,6 +81,11 @@ const getSuspectRequestData = (suspects: SuspectFormData[]) => {
   const getDOBString = (day: string, month: string, year: string) => {
     if (!day || !month || !year) return null;
     return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  };
+
+  const getVictimIndex = (victim: { victimId: string } | null) => {
+    if (!victim) return -1;
+    return victims.findIndex(({ victimId }) => victimId === victimId);
   };
   return suspects.map((suspect) => ({
     isDefendant: suspect.addSuspectRadio === "person",
@@ -89,14 +110,13 @@ const getSuspectRequestData = (suspects: SuspectFormData[]) => {
       firstName: alias.firstName,
       lastName: alias.lastName,
     })),
-    charges: [] as any,
-
-    // charges: suspect.charges.map((charge) => ({
-    //   offenceId: charge.offenceId,
-    //   dateFrom: charge.dateFrom,
-    //   dateTo: charge.dateTo,
-    //   victimIndexId: charge.victimIndexId,
-    //   modeOfTrial: charge.modeOfTrial,
-    // })),
+    charges: suspect.charges.map((charge) => ({
+      offenceCode: charge.selectedOffence.code,
+      offenceDescription: charge.selectedOffence.description,
+      modeOfTrial: charge.selectedOffence.modeOfTrial,
+      dateFrom: charge.offenceFromDate ? charge.offenceFromDate : null,
+      dateTo: charge.offenceToDate ? charge.offenceToDate : null,
+      victimIndexId: getVictimIndex(charge.victim),
+    })),
   }));
 };

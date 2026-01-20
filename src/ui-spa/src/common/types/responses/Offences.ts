@@ -4,6 +4,7 @@ export type Offence = {
   legislation: string;
   effectiveFromDate: string;
   effectiveToDate: string | null;
+  modeOfTrial: string;
 };
 
 export type Offences = { offences: Offence[]; total: number };

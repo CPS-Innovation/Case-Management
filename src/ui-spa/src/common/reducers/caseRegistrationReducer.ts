@@ -192,6 +192,7 @@ export const chargeInitialState: ChargesFormData = {
     legislation: "",
     effectiveFromDate: "",
     effectiveToDate: "",
+    modeOfTrial: "",
   },
 
   offenceFromDate: "",
