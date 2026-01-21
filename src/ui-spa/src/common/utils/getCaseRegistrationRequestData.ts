@@ -102,7 +102,9 @@ const getSuspectRequestData = (
     ethnicity: suspect.suspectEthnicityRadio.shortCode,
     religion: suspect.suspectReligionRadio.shortCode,
     type: suspect.suspectOffenderTypesRadio.shortCode,
-    arrestDate: suspect.suspectOffenderTypesRadio.arrestDate ?? null,
+    arrestDate: suspect.suspectOffenderTypesRadio.arrestDate
+      ? suspect.suspectOffenderTypesRadio.arrestDate
+      : null,
     seriousDangerousOffender: suspect.suspectSDORadio === "yes",
     arrestSummonsNumber: suspect.suspectASNText,
     isNotYetCharged: suspect.charges.length === 0,

@@ -334,7 +334,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
-          victim?: Victim | null;
+          victim?: { victimId: string } | null;
         };
       };
     }

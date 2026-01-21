@@ -158,6 +158,47 @@ const AddChargeVictimPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const setFormValue = useCallback(
+    (
+      fieldName:
+        | "selectedVictimRadio"
+        | "victimFirstNameText"
+        | "victimLastNameText",
+      value: string,
+    ) => {
+      if (fieldName === "selectedVictimRadio") {
+        if (value === "new-victim") {
+          setVictimDetails({
+            selectedVictimRadio: value,
+            victimFirstNameText: "",
+            victimLastNameText: "",
+            victimAdditionalDetailsCheckboxes: [],
+          });
+          return;
+        } else {
+          const selectedVictim = state.formData.victimsList.find((victim) => {
+            return victim.victimId === value;
+          });
+          if (selectedVictim) {
+            setVictimDetails({
+              selectedVictimRadio: value,
+              victimFirstNameText: selectedVictim.victimFirstNameText,
+              victimLastNameText: selectedVictim.victimLastNameText,
+              victimAdditionalDetailsCheckboxes:
+                selectedVictim.victimAdditionalDetailsCheckboxes,
+            });
+          }
+          return;
+        }
+      }
+      setVictimDetails((prevState) => ({
+        ...prevState,
+        [fieldName]: value,
+      }));
+    },
+    [state.formData.victimsList],
+  );
+
   const setAdditionalDetailsCheckboxes = useCallback(
     (value: VictimAdditionalDetailsValue) => {
       const currentValues =
@@ -243,7 +284,7 @@ const AddChargeVictimPage = () => {
         />
       </>
     );
-  }, [victimDetails]);
+  }, [victimDetails, setFormValue]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -309,7 +350,7 @@ const AddChargeVictimPage = () => {
           chargeIndex: chargeIndex,
           data: {
             victim: {
-              ...newVictim,
+              victimId: newVictim.victimId,
             },
           },
         },
@@ -345,9 +386,7 @@ const AddChargeVictimPage = () => {
             chargeIndex: chargeIndex,
             data: {
               victim: {
-                ...selectedVictim,
-                victimAdditionalDetailsCheckboxes:
-                  victimDetails.victimAdditionalDetailsCheckboxes,
+                victimId: selectedVictim.victimId,
               },
             },
           },
@@ -358,7 +397,6 @@ const AddChargeVictimPage = () => {
   };
 
   const availableVictimItems = useMemo(() => {
-    console.log("Victims List:", state.formData.victimsList);
     const availableVictims = state.formData.victimsList.map((victim, index) => {
       return {
         id: `add-victim-radio-${index}`,
@@ -367,6 +405,9 @@ const AddChargeVictimPage = () => {
           victim.victimLastNameText,
         ),
         value: victim.victimId,
+        conditional: {
+          children: [renderVictimAdditionalDetails()],
+        },
         "data-testid": `add-victim-radio-${index}`,
       };
     });
@@ -378,24 +419,15 @@ const AddChargeVictimPage = () => {
         value: "new-victim",
         "data-testid": `add-victim-radio-add-new-victim`,
         conditional: {
-          children: [renderNewVictimFields()],
+          children: [renderNewVictimFields(), renderVictimAdditionalDetails()],
         },
       },
     ];
-  }, [state.formData.victimsList, renderNewVictimFields]);
-
-  const setFormValue = (
-    fieldName:
-      | "selectedVictimRadio"
-      | "victimFirstNameText"
-      | "victimLastNameText",
-    value: string,
-  ) => {
-    setVictimDetails((prevState) => ({
-      ...prevState,
-      [fieldName]: value,
-    }));
-  };
+  }, [
+    state.formData.victimsList,
+    renderNewVictimFields,
+    renderVictimAdditionalDetails,
+  ]);
 
   return (
     <div>
@@ -457,9 +489,13 @@ const AddChargeVictimPage = () => {
           )}
 
           <>
-            {state.formData.victimsList.length === 0 && renderNewVictimFields()}
+            {state.formData.victimsList.length === 0 && (
+              <>
+                {renderNewVictimFields()}
+                <div>{renderVictimAdditionalDetails()}</div>
+              </>
+            )}
           </>
-          <div>{renderVictimAdditionalDetails()}</div>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
           Save and Continue
