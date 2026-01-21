@@ -75,7 +75,6 @@ const AddSuspectPage = () => {
       "Religion",
       "Ethnicity",
       "Alias details",
-      "Serious dangerous offender (SDO)",
       "Arrest summons number (ASN)",
       "Type of offender",
     ],

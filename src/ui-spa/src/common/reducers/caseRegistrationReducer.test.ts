@@ -35,7 +35,6 @@ describe("caseRegistrationReducer", () => {
     suspectReligionRadio: { shortCode: "ch", description: "Christian" },
     suspectEthnicityRadio: { shortCode: "BR", description: "British" },
     suspectAliases: [{ firstName: "cc", lastName: "dd" }],
-    suspectSDORadio: "yes",
     suspectASNText: "122wws",
     suspectOffenderTypesRadio: {
       shortCode: "yo",
@@ -646,7 +645,6 @@ describe("caseRegistrationReducer", () => {
       suspectGenderRadio: { shortCode: "", description: "" },
       suspectEthnicityRadio: { shortCode: "", description: "" },
       suspectAliases: [],
-      suspectSDORadio: "",
       suspectASNText: "",
       suspectOffenderTypesRadio: {
         shortCode: "",
