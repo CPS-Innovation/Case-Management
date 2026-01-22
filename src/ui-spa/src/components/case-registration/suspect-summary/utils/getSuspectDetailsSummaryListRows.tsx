@@ -103,13 +103,6 @@ export const getSuspectDetailsSummaryListRows = (
       },
     },
     ...getAliasesList(suspect.suspectAliases),
-
-    suspect.suspectSDORadio && {
-      key: { children: <span>Serious dangerous offender (SDO)</span> },
-      value: {
-        children: <span>{suspect.suspectSDORadio}</span>,
-      },
-    },
     suspect.suspectASNText && {
       key: { children: <span>Arrest summons</span> },
       value: {

@@ -48,7 +48,6 @@ export type SuspectAdditionalDetailValue =
   | "Religion"
   | "Ethnicity"
   | "Alias details"
-  | "Serious dangerous offender (SDO)"
   | "Arrest summons number (ASN)"
   | "Type of offender";
 
@@ -65,7 +64,6 @@ export type SuspectFormData = {
   suspectReligionRadio: { shortCode: string; description: string };
   suspectEthnicityRadio: { shortCode: string; description: string };
   suspectAliases: { firstName: string; lastName: string }[];
-  suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
   suspectOffenderTypesRadio: {
     shortCode: string;
@@ -172,7 +170,6 @@ export const suspectInitialState: SuspectFormData = {
   suspectReligionRadio: { shortCode: "", description: "" },
   suspectEthnicityRadio: { shortCode: "", description: "" },
   suspectAliases: [],
-  suspectSDORadio: "",
   suspectASNText: "",
   suspectOffenderTypesRadio: { shortCode: "", display: "", arrestDate: "" },
   suspectCompanyNameText: "",
@@ -307,7 +304,6 @@ export type CaseRegistrationActions =
           suspectReligionRadio?: { shortCode: string; description: string };
           suspectEthnicityRadio?: { shortCode: string; description: string };
           suspectAliases?: { firstName: string; lastName: string }[];
-          suspectSDORadio?: GeneralRadioValue;
           suspectASNText?: string;
           suspectOffenderTypesRadio?: {
             shortCode: string;
@@ -898,9 +894,6 @@ const resetSuspectAdditionalDetails = (
   }
   if (!value.includes("Alias details")) {
     resetValues.suspectAliases = [];
-  }
-  if (!value.includes("Serious dangerous offender (SDO)")) {
-    resetValues.suspectSDORadio = "";
   }
   if (!value.includes("Arrest summons number (ASN)")) {
     resetValues.suspectASNText = "";

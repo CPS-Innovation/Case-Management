@@ -1,11 +1,5 @@
 export const suspectOffenderTypesPlaywright = [
   {
-    shortCode: "BP",
-    description: "Both PPO & PYO",
-    display:
-      "Both prolific priority offender (PPO) and prolific youth offender (PYO)",
-  },
-  {
     shortCode: "PP",
     description: "PPO",
     display: "Prolific priority offender (PPO)",

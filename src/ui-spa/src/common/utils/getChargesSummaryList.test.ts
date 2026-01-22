@@ -18,7 +18,6 @@ describe("getChargesSummaryList", () => {
         suspectReligionRadio: { shortCode: "", description: "" },
         suspectEthnicityRadio: { shortCode: "", description: "" },
         suspectAliases: [],
-        suspectSDORadio: "" as const,
         suspectASNText: "",
         suspectOffenderTypesRadio: {
           shortCode: "",
@@ -48,7 +47,6 @@ describe("getChargesSummaryList", () => {
       suspectReligionRadio: { shortCode: "", description: "" },
       suspectEthnicityRadio: { shortCode: "", description: "" },
       suspectAliases: [],
-      suspectSDORadio: "" as const,
       suspectASNText: "",
       suspectOffenderTypesRadio: {
         shortCode: "",

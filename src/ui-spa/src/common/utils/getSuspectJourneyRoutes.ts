@@ -33,10 +33,6 @@ const routeSequence: {
     description: "Alias details",
   },
   {
-    route: "suspect-sdo",
-    description: "Serious dangerous offender (SDO)",
-  },
-  {
     route: "suspect-asn",
     description: "Arrest summons number (ASN)",
   },
