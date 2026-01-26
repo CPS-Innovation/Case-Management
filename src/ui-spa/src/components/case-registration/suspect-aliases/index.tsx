@@ -10,6 +10,7 @@ import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -106,10 +107,13 @@ const SuspectAliasesPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const setFormValue = (key: "firstName" | "lastName", value: string) => {
+  const setFormValue = (fieldName: "firstName" | "lastName", value: string) => {
+    if (fieldName === "firstName" || fieldName === "lastName") {
+      value = sanitizeNameText(value as string);
+    }
     setAlias((prevState) => ({
       ...prevState,
-      [key]: value,
+      [fieldName]: value,
     }));
   };
 

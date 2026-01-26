@@ -15,6 +15,7 @@ import {
 } from "../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useIsAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
+import { sanitizeOperationNameText } from "../../common/utils/sanitizeOperationNameText";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -233,6 +234,9 @@ const CaseRegistrationPage = () => {
       | "operationNameText",
     value: string,
   ) => {
+    if (fieldName === "operationNameText") {
+      value = sanitizeOperationNameText(value);
+    }
     const newValue = {
       [fieldName]: value,
     };

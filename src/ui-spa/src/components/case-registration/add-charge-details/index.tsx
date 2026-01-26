@@ -11,6 +11,7 @@ import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -118,6 +119,7 @@ const AddChargeDetailsPage = () => {
 
   const validateFormData = () => {
     const errors: FormDataErrors = {};
+    const { firstHearingDateText } = state.formData;
     const { addVictimRadio, offenceFromDate, offenceToDate } = formData;
 
     if (!addVictimRadio) {
@@ -140,6 +142,67 @@ const AddChargeDetailsPage = () => {
       errors.offenceToDate = {
         errorSummaryText: "Select an offence to date",
         inputErrorText: "Select a date",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceFromDate &&
+      firstHearingDateText &&
+      !isValidOnOrBeforeDate(offenceFromDate, firstHearingDateText)
+    ) {
+      errors.offenceFromDate = {
+        errorSummaryText:
+          "The charge from date cannot be later than the first hearing date.",
+        inputErrorText:
+          "The charge from date cannot be later than the first hearing date.",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceToDate &&
+      offenceFromDate &&
+      !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
+    ) {
+      errors.offenceToDate = {
+        errorSummaryText: "Charge date from must be before charge date to.",
+        inputErrorText: "Charge date from must be before charge date to.",
+        hasLink: true,
+      };
+      errors.offenceFromDate = {
+        errorSummaryText: "Charge date from must be before charge date to.",
+        inputErrorText: "Charge date from must be before charge date to.",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceToDate &&
+      firstHearingDateText &&
+      !isValidOnOrBeforeDate(offenceToDate, firstHearingDateText)
+    ) {
+      errors.offenceToDate = {
+        errorSummaryText:
+          "The charge to date cannot be later than the first hearing date.",
+        inputErrorText:
+          "The charge to date cannot be later than the first hearing date.",
+        hasLink: true,
+      };
+    }
+
+    if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
+      errors.offenceToDate = {
+        errorSummaryText: "Charge date to must be on or before today’s date.",
+        inputErrorText: "Charge date to must be on or before today’s date.",
+        hasLink: true,
+      };
+    }
+
+    if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
+      errors.offenceFromDate = {
+        errorSummaryText: "Charge date from must be on or before today’s date.",
+        inputErrorText: "Charge date from must be on or before today’s date.",
         hasLink: true,
       };
     }
