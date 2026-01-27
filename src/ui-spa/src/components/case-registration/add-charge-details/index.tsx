@@ -147,20 +147,6 @@ const AddChargeDetailsPage = () => {
     }
 
     if (
-      offenceFromDate &&
-      firstHearingDateText &&
-      !isValidOnOrBeforeDate(offenceFromDate, firstHearingDateText)
-    ) {
-      errors.offenceFromDate = {
-        errorSummaryText:
-          "The charge from date cannot be later than the first hearing date.",
-        inputErrorText:
-          "The charge from date cannot be later than the first hearing date.",
-        hasLink: true,
-      };
-    }
-
-    if (
       offenceToDate &&
       offenceFromDate &&
       !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
@@ -187,6 +173,20 @@ const AddChargeDetailsPage = () => {
           "The charge to date cannot be later than the first hearing date.",
         inputErrorText:
           "The charge to date cannot be later than the first hearing date.",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceFromDate &&
+      firstHearingDateText &&
+      !isValidOnOrBeforeDate(offenceFromDate, firstHearingDateText)
+    ) {
+      errors.offenceFromDate = {
+        errorSummaryText:
+          "The charge from date cannot be later than the first hearing date.",
+        inputErrorText:
+          "The charge from date cannot be later than the first hearing date.",
         hasLink: true,
       };
     }

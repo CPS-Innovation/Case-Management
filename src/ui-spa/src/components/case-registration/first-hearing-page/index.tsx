@@ -19,7 +19,6 @@ import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getCourtsByUnitId } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { isValidOnOrAfterDate } from "../../../common/utils/isValidOnOrAfterDate";
 import { isOnOrAfterChargeDates } from "../../../common/utils/chargeDatesUtil";
 import styles from "./index.module.scss";
 
@@ -125,13 +124,6 @@ const FirstHearingPage = () => {
           "First hearing date may not be earlier than any charges dates",
         inputErrorText:
           "First hearing date may not be earlier than any charges dates",
-        hasLink: true,
-      };
-    }
-    if (firstHearingDateText && !isValidOnOrAfterDate(firstHearingDateText)) {
-      errors.firstHearingDateText = {
-        errorSummaryText: "First hearing date must be on or after today",
-        inputErrorText: "First hearing date must be on or after today",
         hasLink: true,
       };
     }

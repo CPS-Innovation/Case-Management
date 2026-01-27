@@ -18,7 +18,6 @@ import {
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
 import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
-import { isOnOrBeforeChargeDates } from "../../../common/utils/chargeDatesUtil";
 import styles from "../index.module.scss";
 
 const SuspectOffenderPage = () => {
@@ -123,19 +122,6 @@ const SuspectOffenderPage = () => {
       errors.suspectArrestDate = {
         errorSummaryText: "Arrest date must be on or before today",
         inputErrorText: "Arrest date must be on or before today",
-      };
-    }
-
-    if (
-      suspectOffenderTypesRadio?.arrestDate &&
-      !isOnOrBeforeChargeDates(
-        suspectOffenderTypesRadio?.arrestDate,
-        state.formData.suspects,
-      )
-    ) {
-      errors.suspectArrestDate = {
-        errorSummaryText: "Arrest date may not be later than any charges dates",
-        inputErrorText: "Arrest date may not be later than any charges dates",
       };
     }
 
