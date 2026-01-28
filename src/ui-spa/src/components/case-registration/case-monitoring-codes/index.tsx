@@ -12,6 +12,7 @@ import { getCaseMonitoringCodes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
+import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
 import styles from "./index.module.scss";
 const PRE_CHARGE_DECISION_CODE = "CSEA";
 
@@ -46,10 +47,12 @@ const CaseMonitoringCodesPage = () => {
     retry: false,
   });
 
-  const isOptional = useMemo(
-    () => state.formData.suspectDetailsRadio === "yes",
-    [state.formData.suspectDetailsRadio],
-  );
+  const isOptional = useMemo(() => {
+    const chargesList = getChargesSummaryList(state.formData.suspects);
+    return (
+      chargesList.length > 0 && state.formData.suspectDetailsRadio === "yes"
+    );
+  }, [state.formData.suspectDetailsRadio, state.formData.suspects]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
