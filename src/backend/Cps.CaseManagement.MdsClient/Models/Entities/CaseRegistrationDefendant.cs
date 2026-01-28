@@ -48,6 +48,9 @@ public class CaseRegistrationDefendant
 
     public int NumberOfCharges => this.Charges?.Count ?? 0;
 
+    [JsonPropertyName("isNotYetCharged")]
+    public bool IsNotYetCharged { get; set; }
+
     [JsonPropertyName("charges")]
     public ICollection<CaseRegistrationCharge>? Charges { get; set; } = [];
 }

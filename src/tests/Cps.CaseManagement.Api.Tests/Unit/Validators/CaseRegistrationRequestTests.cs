@@ -388,6 +388,21 @@ public class CaseRegistrationRequestValidatorTests
     }
 
     [Fact]
+    public void Defendant_Charges_Empty_AndNotYetCharged_ShouldNotFail()
+    {
+        var req = GetValidRequest();
+        if (req.Defendants != null && req.Defendants.Count > 0)
+        {
+            var defendants = req.Defendants.ToList();
+            defendants[0].Charges = [];
+            defendants[0].IsNotYetCharged = true;
+            req.Defendants = defendants;
+        }
+        var result = _validator.TestValidate(req);
+        result.ShouldNotHaveValidationErrorFor("Defendants[0].Charges");
+    }
+
+    [Fact]
     public void Charge_OffenceCode_Empty_ShouldFail()
     {
         var req = GetValidRequest();
