@@ -1,7 +1,7 @@
 import type { ChargesFormData } from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../govuk";
 import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
-import { formatDate } from "../../../../common/utils/formatDate";
+import { format } from "date-fns";
 import styles from "./index.module.scss";
 
 export const getChargesSummaryListRows = (
@@ -27,6 +27,7 @@ export const getChargesSummaryListRows = (
                 : `/case-registration/charges-summary`,
             },
             visuallyHiddenText: "Remove Charge",
+            className: "govuk-link--no-visited-state",
           },
         ],
       },
@@ -37,8 +38,8 @@ export const getChargesSummaryListRows = (
         children: (
           <span>
             {charge.offenceToDate
-              ? `${formatDate(charge.offenceFromDate, false, "dd MMM yyyy")} to ${formatDate(charge.offenceToDate, false, "dd MMM yyyy")}`
-              : formatDate(charge.offenceFromDate, false, "dd MMM yyyy")}
+              ? `${format(charge.offenceFromDate, "dd MMMM yyyy")} to ${format(charge.offenceToDate, "dd MMMM yyyy")}`
+              : format(charge.offenceFromDate, "dd MMMM yyyy")}
           </span>
         ),
       },

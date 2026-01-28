@@ -431,7 +431,7 @@ const CaseDetailsPage = () => {
           Back
         </BackLink>
       )}
-      <h1>Case Details</h1>
+      <h1>Case details</h1>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -541,7 +541,7 @@ const CaseDetailsPage = () => {
         )}
 
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

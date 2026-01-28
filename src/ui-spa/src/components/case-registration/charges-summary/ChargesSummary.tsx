@@ -51,6 +51,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                   : `/case-registration/charges-summary`,
               },
               visuallyHiddenText: "Remove Charge",
+              className: "govuk-link--no-visited-state",
             },
           ],
         },

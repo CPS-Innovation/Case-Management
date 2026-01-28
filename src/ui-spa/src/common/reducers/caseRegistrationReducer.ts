@@ -42,13 +42,13 @@ export type CaseRegistrationField =
   | "wantToAddChargesRadio"
   | "victimsList";
 export type SuspectAdditionalDetailValue =
-  | "Date of Birth"
+  | "Date of birth"
   | "Gender"
   | "Disability"
   | "Religion"
   | "Ethnicity"
   | "Alias details"
-  | "Arrest summons number (ASN)"
+  | "Arrest Summons Number (ASN)"
   | "Type of offender";
 
 export type SuspectTypeValue = "person" | "company" | "";

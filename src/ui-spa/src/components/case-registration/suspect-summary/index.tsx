@@ -85,6 +85,13 @@ const SuspectSummaryPage = () => {
     return "/case-registration/case-details";
   }, [state.formData.navigation.fromCaseSummaryPage]);
 
+  const getTitle = useCallback(() => {
+    if (state.formData.suspects.length > 1) {
+      return `You have added ${state.formData.suspects.length} suspects`;
+    }
+    return `You have added ${state.formData.suspects.length}suspect`;
+  }, [state.formData.suspects.length]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -150,7 +157,7 @@ const SuspectSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added ${state.formData.suspects.length} suspects`}</h1>
+        <h1>{getTitle()}</h1>
         <SuspectSummary />
         <div className={styles.inputWrapper}>
           <Radios
@@ -189,7 +196,7 @@ const SuspectSummaryPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

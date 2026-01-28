@@ -69,13 +69,13 @@ const AddSuspectPage = () => {
 
   const suspectAdditionalDetails: SuspectAdditionalDetailValue[] = useMemo(
     () => [
-      "Date of Birth",
+      "Date of birth",
       "Gender",
       "Disability",
       "Religion",
       "Ethnicity",
       "Alias details",
-      "Arrest summons number (ASN)",
+      "Arrest Summons Number (ASN)",
       "Type of offender",
     ],
     [],
@@ -298,7 +298,7 @@ const AddSuspectPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>{`Add Suspect ${suspectIndex + 1}`}</h1>,
+                children: <h1>Add a suspect</h1>,
               },
             }}
             errorMessage={
@@ -429,7 +429,7 @@ const AddSuspectPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

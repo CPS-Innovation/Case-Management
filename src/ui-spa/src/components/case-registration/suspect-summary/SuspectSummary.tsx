@@ -130,6 +130,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
           items: [
             {
               children: <span>Remove</span>,
+              className: "govuk-link--no-visited-state",
               to: `/case-registration/suspect-remove-confirmation`,
               state: {
                 suspectId: suspect.suspectId,
@@ -141,6 +142,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             },
             {
               children: <span>Change</span>,
+              className: "govuk-link--no-visited-state",
               to: `/case-registration/suspect-${index}/add-suspect`,
               visuallyHiddenText: "Edit Suspect Details",
               onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>

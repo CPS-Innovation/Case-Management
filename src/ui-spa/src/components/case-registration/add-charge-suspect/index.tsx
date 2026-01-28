@@ -109,7 +109,7 @@ const AddChargeSuspectPage = () => {
         id: "suspect-radio-new",
         children: "Suspect not listed",
         hint: {
-          children: "Select this option to add their details on the next page.",
+          children: "Select this option to add their details on the next page",
         },
         value: "add-new-suspect",
         "data-testid": "suspect-radio-new",
@@ -185,7 +185,7 @@ const AddChargeSuspectPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

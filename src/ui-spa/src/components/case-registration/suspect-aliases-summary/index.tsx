@@ -104,24 +104,19 @@ const SuspectAliasesSummaryPage = () => {
   }, [errorList]);
 
   const getAliasesSummaryListRows = (
-    suspectAliases: { firstName?: string; lastName: string }[],
+    suspectAliases: { firstName: string; lastName: string }[],
   ) => {
     const rows = suspectAliases.map((alias, index) => ({
-      key: { children: <span>Alias {index + 1}</span> },
-      value: {
-        children: (
-          <p>
-            {alias.firstName
-              ? `${alias.lastName}, ${alias.firstName}`
-              : alias.lastName}
-          </p>
-        ),
+      key: {
+        children: <p>{formatNameUtil(alias.firstName, alias.lastName)}</p>,
       },
+      value: undefined,
       actions: {
         items: [
           {
             children: <span>Remove</span>,
             to: "#",
+            className: "govuk-link--no-visited-state",
             visuallyHiddenText: "remove a suspect alias",
             role: "button",
             onClick: () => handleRemoveAlias(index),
@@ -254,7 +249,7 @@ const SuspectAliasesSummaryPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

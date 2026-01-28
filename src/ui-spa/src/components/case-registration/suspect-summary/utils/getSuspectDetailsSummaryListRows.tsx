@@ -1,4 +1,5 @@
 import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
 import { format } from "date-fns";
 
 const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
@@ -9,13 +10,7 @@ const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   return aliases.map((alias) => ({
     key: { children: <span>Alias</span> },
     value: {
-      children: (
-        <span>
-          {alias.firstName
-            ? `${alias.lastName}, ${alias.firstName} `
-            : alias.lastName}
-        </span>
-      ),
+      children: <span>{formatNameUtil(alias.firstName, alias.lastName)}</span>,
     },
   }));
 };
@@ -45,14 +40,14 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
     },
     !Number.isNaN(new Date(suspectOffenderTypesRadio.arrestDate).getTime()) && {
       key: {
-        children: <span>Arrest Date </span>,
+        children: <span>Arrest date </span>,
       },
       value: {
         children: (
           <span>
             {format(
               new Date(suspectOffenderTypesRadio.arrestDate),
-              "dd/MM/yyyy",
+              "dd MMMM yyyy",
             )}
           </span>
         ),
