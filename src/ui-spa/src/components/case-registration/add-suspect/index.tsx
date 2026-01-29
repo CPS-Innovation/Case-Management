@@ -122,24 +122,24 @@ const AddSuspectPage = () => {
 
     if (!addSuspectRadio) {
       errors.addSuspectRadio = {
-        errorSummaryText: "Please select an option for adding a suspect",
-        inputErrorText: "Please select an option for adding a suspect",
+        errorSummaryText: "Select whether the suspect is a person or a company",
+        inputErrorText: "Select whether the suspect is a person or a company",
         hasLink: true,
       };
     }
 
     if (addSuspectRadio == "person" && !suspectLastNameText) {
       errors.suspectLastNameText = {
-        errorSummaryText: "Please add Last name for the suspect",
-        inputErrorText: "Please add Last name for the suspect",
+        errorSummaryText: "Enter the last name",
+        inputErrorText: "Enter the last name",
         hasLink: true,
       };
     }
 
     if (addSuspectRadio == "company" && !suspectCompanyNameText) {
       errors.suspectCompanyNameText = {
-        errorSummaryText: "Please add Company name for the suspect",
-        inputErrorText: "Please add Company name for the suspect",
+        errorSummaryText: "Enter the company name",
+        inputErrorText: "Enter the company name",
         hasLink: true,
       };
     }
@@ -298,8 +298,13 @@ const AddSuspectPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Add a suspect</h1>,
+                children: (
+                  <h1 className={styles.labelHeading}>Add a suspect</h1>
+                ),
               },
+            }}
+            hint={{
+              children: "Choose the type of suspect you want to add",
             }}
             errorMessage={
               formDataErrors["addSuspectRadio"]
@@ -358,10 +363,10 @@ const AddSuspectPage = () => {
                       fieldset={{
                         legend: {
                           children: (
-                            <h2>
+                            <span className="govuk-!-font-weight-bold">
                               Do you want to add any additional details about
                               this suspect?
-                            </h2>
+                            </span>
                           ),
                         },
                       }}

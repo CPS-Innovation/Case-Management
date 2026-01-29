@@ -75,8 +75,12 @@ const SuspectAliasesSummaryPage = () => {
 
     if (!addMoreAliasesRadio) {
       errors.addMoreAliasesRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: suspectAliases.length
+          ? "Select if you need to add another alias"
+          : "Select if you need to add an alias",
+        inputErrorText: suspectAliases.length
+          ? "Select if you need to add another alias"
+          : "Select if you need to add an alias",
       };
     }
 
@@ -191,30 +195,37 @@ const SuspectAliasesSummaryPage = () => {
         <h1>
           {`Aliases for ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}`}
         </h1>
-        <div className={pageStyles.summaryListWrapper}>
-          <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
-        </div>
-        {!suspectAliases.length && <span>There are no aliases</span>}
+        {!!suspectAliases.length && (
+          <div className={pageStyles.summaryListWrapper}>
+            <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
+          </div>
+        )}
+        {!suspectAliases.length && (
+          <div className={pageStyles.noAliasesText}>
+            <span>There are no aliases</span>
+          </div>
+        )}
         <div className={styles.inputWrapper}>
           <Radios
+            className="govuk-radios--inline"
             fieldset={{
               legend: {
                 children: (
                   <>
                     {suspectAliases.length ? (
-                      <h2>
+                      <span className="govuk-!-font-weight-bold">
                         {`Do you need to add another alias for ${formatNameUtil(
                           suspectFirstNameText,
                           suspectLastNameText,
                         )}?`}
-                      </h2>
+                      </span>
                     ) : (
-                      <h2>
-                        {`Do you need to add alias for ${formatNameUtil(
+                      <span className="govuk-!-font-weight-bold">
+                        {`Do you need to add an alias for ${formatNameUtil(
                           suspectFirstNameText,
                           suspectLastNameText,
                         )}?`}
-                      </h2>
+                      </span>
                     )}
                   </>
                 ),

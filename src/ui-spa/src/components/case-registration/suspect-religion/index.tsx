@@ -96,8 +96,8 @@ const SuspectReligionPage = () => {
 
     if (!suspectReligionRadio.shortCode) {
       errors.suspectReligionRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the defendant's religion",
+        inputErrorText: "Select the defendant's religion",
       };
     }
 
@@ -213,7 +213,7 @@ const SuspectReligionPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>
+                  <h1 className={styles.labelHeading}>
                     {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s
                     religion?`}
                   </h1>

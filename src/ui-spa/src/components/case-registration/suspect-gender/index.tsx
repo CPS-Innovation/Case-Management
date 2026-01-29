@@ -95,8 +95,8 @@ const SuspectGenderPage = () => {
 
     if (!suspectGenderRadio.shortCode) {
       errors.suspectGenderRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select a gender",
+        inputErrorText: "Select a gender",
       };
     }
 
@@ -211,7 +211,7 @@ const SuspectGenderPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>
+                  <h1 className={styles.labelHeading}>
                     {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s gender?`}
                   </h1>
                 ),

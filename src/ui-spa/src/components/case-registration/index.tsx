@@ -100,30 +100,54 @@ const CaseRegistrationPage = () => {
     const errors: FormDataErrors = {};
     const { operationNameRadio, suspectDetailsRadio, operationNameText } =
       formData;
-    if (!operationNameRadio) {
-      errors.operationNameRadio = {
-        errorSummaryText: "Please select an option for operation name",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-    if (!suspectDetailsRadio) {
-      errors.suspectDetailsRadio = {
-        errorSummaryText: "Please select an option for suspect details",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
+
     if (operationNameRadio === "no" && suspectDetailsRadio === "no") {
-      errors.genericError = {
-        errorSummaryText: "Add an operation name or suspect details",
+      errors.operationNameRadio = {
+        errorSummaryText:
+          "You need to select an operation name, suspect details or both",
+        inputErrorText: "Select if you have an operation name",
+        hasLink: true,
+      };
+      errors.suspectDetailsRadio = {
+        errorSummaryText: "",
+        inputErrorText: "Select if you have suspect details",
+        hasLink: true,
+      };
+    }
+
+    if (!operationNameRadio && !suspectDetailsRadio) {
+      errors.operationNameRadio = {
+        errorSummaryText:
+          "Select if you have an operation name, suspect details or both",
+        inputErrorText: "Select if you have an operation name",
+        hasLink: true,
+      };
+      errors.suspectDetailsRadio = {
+        errorSummaryText: "",
+        inputErrorText: "Select if you have suspect details",
         hasLink: false,
       };
+    } else {
+      if (!operationNameRadio) {
+        errors.operationNameRadio = {
+          errorSummaryText: "Select if you have an operation name",
+          inputErrorText: "Select if you have an operation name",
+          hasLink: true,
+        };
+      }
+      if (!suspectDetailsRadio) {
+        errors.suspectDetailsRadio = {
+          errorSummaryText: "Select if you have suspect details",
+          inputErrorText: "Select if you have suspect details",
+          hasLink: true,
+        };
+      }
     }
 
     if (operationNameRadio == "yes" && !operationNameText) {
       errors.operationNameText = {
-        errorSummaryText: "Operation name should not be empty",
+        errorSummaryText: "You need to enter an operation name",
+        inputErrorText: "Enter an operation name",
         hasLink: true,
       };
     }
@@ -271,14 +295,16 @@ const CaseRegistrationPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>{`Do you have an operation name?`}</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">{`Do you have an operation name?`}</span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["operationNameRadio"]
                 ? {
                     children:
-                      formDataErrors["operationNameRadio"].errorSummaryText,
+                      formDataErrors["operationNameRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -299,7 +325,7 @@ const CaseRegistrationPage = () => {
                           ? {
                               children:
                                 formDataErrors["operationNameText"]
-                                  .errorSummaryText,
+                                  .inputErrorText,
                             }
                           : undefined
                       }
@@ -330,14 +356,16 @@ const CaseRegistrationPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>{`Do you have any suspect details?`}</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">{`Do you have any suspect details?`}</span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectDetailsRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectDetailsRadio"].errorSummaryText,
+                      formDataErrors["suspectDetailsRadio"].inputErrorText,
                   }
                 : undefined
             }
