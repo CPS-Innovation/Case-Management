@@ -17,6 +17,7 @@ import {
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type VictimAdditionalDetailsValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import styles from "../index.module.scss";
@@ -363,6 +364,12 @@ const AddChargeVictimPage = () => {
       | "victimLastNameText",
     value: string,
   ) => {
+    if (
+      fieldName === "victimFirstNameText" ||
+      fieldName === "victimLastNameText"
+    ) {
+      value = sanitizeNameText(value as string);
+    }
     setVictimDetails((prevState) => ({
       ...prevState,
       [fieldName]: value,

@@ -20,7 +20,7 @@ import {
   type SuspectTypeValue,
 } from "../../../common/reducers/caseRegistrationReducer";
 import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
-
+import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -199,6 +199,13 @@ const AddSuspectPage = () => {
       suspectAdditionalDetailsCheckboxes?: SuspectAdditionalDetailValue[];
       suspectCompanyNameText?: string;
     } = {};
+    if (
+      fieldName === "suspectFirstNameText" ||
+      fieldName === "suspectLastNameText"
+    ) {
+      value = sanitizeNameText(value as string);
+    }
+
     if (fieldName === "addSuspectRadio" && value === "person") {
       resetValues.suspectCompanyNameText = "";
     }
