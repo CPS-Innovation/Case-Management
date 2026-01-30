@@ -72,8 +72,8 @@ const SuspectASNPage = () => {
     const { suspectASNText = "" } = formData;
     if (!suspectASNText) {
       errors.suspectASNText = {
-        errorSummaryText: "Please add the Arrest Summons Number (ASN)",
-        inputErrorText: "Please add the Arrest Summons Number (ASN)",
+        errorSummaryText: "Enter the Arrest Summons Number (ASN)",
+        inputErrorText: "Enter the Arrest Summons Number (ASN)",
       };
     }
 

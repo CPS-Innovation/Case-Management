@@ -50,8 +50,12 @@ const SuspectSummaryPage = () => {
 
     if (!addMoreSuspectsRadio) {
       errors.addMoreSuspectsRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: state.formData.suspects.length
+          ? "Select whether you need to add another suspect"
+          : "Select whether you need to add a suspect",
+        inputErrorText: state.formData.suspects.length
+          ? "Select whether you need to add another suspect"
+          : "Select whether you need to add a suspect",
       };
     }
 
@@ -89,7 +93,7 @@ const SuspectSummaryPage = () => {
     if (state.formData.suspects.length > 1) {
       return `You have added ${state.formData.suspects.length} suspects`;
     }
-    return `You have added ${state.formData.suspects.length}suspect`;
+    return `You have added ${state.formData.suspects.length} suspect`;
   }, [state.formData.suspects.length]);
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -158,13 +162,27 @@ const SuspectSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>{getTitle()}</h1>
-        <SuspectSummary />
+        <div className={pageStyles.summaryWrapper}>
+          <SuspectSummary />
+        </div>
         <div className={styles.inputWrapper}>
           <Radios
             className="govuk-radios--inline"
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another suspect? </h2>,
+                children: (
+                  <>
+                    {state.formData.suspects.length ? (
+                      <span className="govuk-!-font-weight-bold">
+                        Do you need to add another suspect?
+                      </span>
+                    ) : (
+                      <span className="govuk-!-font-weight-bold">
+                        Do you need to add a suspect?
+                      </span>
+                    )}
+                  </>
+                ),
               },
             }}
             errorMessage={
@@ -177,16 +195,16 @@ const SuspectSummaryPage = () => {
             }
             items={[
               {
-                id: `suspect-add-more-suspects-radio-yes`,
+                id: "add-more-suspects-radio-yes",
                 children: "Yes",
                 value: "yes",
-                "data-testid": `suspect-add-more-suspects-radio-yes`,
+                "data-testid": "add-more-suspects-radio-yes",
               },
               {
-                id: `suspect-add-more-suspects-radio-no`,
+                id: "add-more-suspects-radio-no",
                 children: "No",
                 value: "no",
-                "data-testid": `suspect-add-more-suspects-radio-no`,
+                "data-testid": "add-more-suspects-radio-no",
               },
             ]}
             value={addMoreSuspectsRadio}

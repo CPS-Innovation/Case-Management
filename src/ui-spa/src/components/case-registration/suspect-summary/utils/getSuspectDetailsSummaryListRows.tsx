@@ -99,7 +99,7 @@ export const getSuspectDetailsSummaryListRows = (
     },
     ...getAliasesList(suspect.suspectAliases),
     suspect.suspectASNText && {
-      key: { children: <span>Arrest summons</span> },
+      key: { children: <span>Arrest Summons Number</span> },
       value: {
         children: <span>{suspect.suspectASNText}</span>,
       },
