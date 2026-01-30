@@ -228,7 +228,9 @@ const SuspectDOBPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>{`What is  ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s date of birth?`}</h1>
+                  <h1
+                    className={styles.labelHeading}
+                  >{`What is  ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s date of birth?`}</h1>
                 ),
               },
             }}
@@ -282,7 +284,7 @@ const SuspectDOBPage = () => {
           />
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

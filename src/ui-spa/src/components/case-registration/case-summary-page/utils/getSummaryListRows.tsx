@@ -175,7 +175,7 @@ export const getFirstHearingSummaryRows = (
             key: { children: <span>First Hearing Date</span> },
             value: {
               children: (
-                <p>{format(formData.firstHearingDateText, "dd/MM/yyyy")}</p>
+                <p>{format(formData.firstHearingDateText, "dd MMMM yyyy")}</p>
               ),
             },
             actions: {

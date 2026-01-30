@@ -72,8 +72,8 @@ const SuspectASNPage = () => {
     const { suspectASNText = "" } = formData;
     if (!suspectASNText) {
       errors.suspectASNText = {
-        errorSummaryText: "Please add the Arrest Summons Number (ASN)",
-        inputErrorText: "Please add the Arrest Summons Number (ASN)",
+        errorSummaryText: "Enter the Arrest Summons Number (ASN)",
+        inputErrorText: "Enter the Arrest Summons Number (ASN)",
       };
     }
 
@@ -158,7 +158,11 @@ const SuspectASNPage = () => {
             }
             className="govuk-input--width-20"
             label={{
-              children: <h1>What is the Arrest Summons Number (ASN)?</h1>,
+              children: (
+                <h1 className={styles.labelHeading}>
+                  What is the Arrest Summons Number (ASN)?
+                </h1>
+              ),
             }}
             type="text"
             value={formData.suspectASNText}
@@ -166,7 +170,7 @@ const SuspectASNPage = () => {
           />
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

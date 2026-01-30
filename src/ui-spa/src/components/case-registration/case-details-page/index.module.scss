@@ -1,12 +1,4 @@
 .caseDetailsPage {
-  h2 {
-    font-size: 1.1875rem;
-    margin-bottom: 0;
-    margin-top: 0;
-  }
-  & :global(.govuk-fieldset.govuk-form-group) {
-    margin-bottom: 1.875rem;
-  }
   & :global(.govuk-fieldset.govuk-form-group--error) {
     padding-left: 15px;
     border-top: none;
@@ -26,10 +18,10 @@
 .urnInputsWrapper {
   display: flex;
   gap: 0.2rem;
+  & :global(.govuk-form-group) {
+    margin-bottom: 1.875rem;
+  }
   :global(.govuk-label) {
     display: none;
-  }
-  & :global(.govuk-form-group) {
-    margin-bottom: 0;
   }
 }

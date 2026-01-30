@@ -42,13 +42,13 @@ export type CaseRegistrationField =
   | "wantToAddChargesRadio"
   | "victimsList";
 export type SuspectAdditionalDetailValue =
-  | "Date of Birth"
+  | "Date of birth"
   | "Gender"
   | "Disability"
   | "Religion"
   | "Ethnicity"
   | "Alias details"
-  | "Arrest summons number (ASN)"
+  | "Arrest Summons Number (ASN)"
   | "Type of offender";
 
 export type SuspectTypeValue = "person" | "company" | "";
@@ -875,7 +875,7 @@ const resetSuspectAdditionalDetails = (
   value: SuspectAdditionalDetailValue[],
   resetValues: Partial<SuspectFormData>,
 ) => {
-  if (!value.includes("Date of Birth")) {
+  if (!value.includes("Date of birth")) {
     resetValues.suspectDOBDayText = "";
     resetValues.suspectDOBMonthText = "";
     resetValues.suspectDOBYearText = "";
@@ -895,7 +895,7 @@ const resetSuspectAdditionalDetails = (
   if (!value.includes("Alias details")) {
     resetValues.suspectAliases = [];
   }
-  if (!value.includes("Arrest summons number (ASN)")) {
+  if (!value.includes("Arrest Summons Number (ASN)")) {
     resetValues.suspectASNText = "";
   }
   if (!value.includes("Type of offender")) {

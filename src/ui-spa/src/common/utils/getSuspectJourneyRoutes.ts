@@ -10,7 +10,7 @@ const routeSequence: {
   },
   {
     route: "suspect-dob",
-    description: "Date of Birth",
+    description: "Date of birth",
   },
   {
     route: "suspect-gender",
@@ -34,7 +34,7 @@ const routeSequence: {
   },
   {
     route: "suspect-asn",
-    description: "Arrest summons number (ASN)",
+    description: "Arrest Summons Number (ASN)",
   },
   {
     route: "suspect-offender",

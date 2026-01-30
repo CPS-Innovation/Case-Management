@@ -5,6 +5,7 @@ import {
   useContext,
   useCallback,
   useMemo,
+  use,
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
@@ -85,6 +86,13 @@ const SuspectSummaryPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const getTitle = useCallback(() => {
+    if (chargesCount > 1) {
+      return `You have added ${chargesCount} charges`;
+    }
+    return `You have added ${chargesCount} charge`;
+  }, [chargesCount]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -146,7 +154,7 @@ const SuspectSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added ${chargesCount} charges`}</h1>
+        <h1>{getTitle()}</h1>
         <div className={pageStyles.chargesSummaryWrapper}>
           <ChargesSummary />
         </div>
@@ -188,7 +196,7 @@ const SuspectSummaryPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

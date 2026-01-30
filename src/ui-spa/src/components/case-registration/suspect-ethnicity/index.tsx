@@ -95,8 +95,8 @@ const SuspectEthnicityPage = () => {
 
     if (!suspectEthnicityRadio.shortCode) {
       errors.suspectEthnicityRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the defendant's ethnicity",
+        inputErrorText: "Select the defendant's ethnicity",
       };
     }
 
@@ -213,7 +213,9 @@ const SuspectEthnicityPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>{`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s ethnicity?`}</h1>
+                  <h1
+                    className={styles.labelHeading}
+                  >{`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s ethnicity?`}</h1>
                 ),
               },
             }}
@@ -233,7 +235,7 @@ const SuspectEthnicityPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>
