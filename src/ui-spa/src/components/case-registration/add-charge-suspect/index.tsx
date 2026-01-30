@@ -46,8 +46,8 @@ const AddChargeSuspectPage = () => {
       if (errorKey === "addChargeSuspectRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#suspect-religion-radio-0",
-          "data-testid": "suspect-religion-radio-link",
+          href: "#suspect-radio-0",
+          "data-testid": "suspect-radio-link",
         };
       }
 
@@ -62,8 +62,8 @@ const AddChargeSuspectPage = () => {
 
     if (!addChargeSuspectRadio.suspectId) {
       errors.addChargeSuspectRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select which suspect you need to add charges for",
+        inputErrorText: "Select which suspect you need to add charges for",
       };
       isValid = false;
     }
@@ -165,7 +165,9 @@ const AddChargeSuspectPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>Which suspect to do you want to add charges for?</h1>
+                  <h1 className={styles.labelHeading}>
+                    Which suspect to do you want to add charges for?
+                  </h1>
                 ),
               },
             }}

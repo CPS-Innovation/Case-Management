@@ -20,8 +20,7 @@ import { getCourtsByUnitId } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { isOnOrAfterChargeDates } from "../../../common/utils/chargeDatesUtil";
-import styles from "./index.module.scss";
-
+import styles from "../index.module.scss";
 const FirstHearingPage = () => {
   type ErrorText = {
     errorSummaryText: string;
@@ -130,8 +129,8 @@ const FirstHearingPage = () => {
 
     if (!firstHearingRadio) {
       errors.firstHearingRadio = {
-        errorSummaryText: "Please select an option for first hearing",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select if you need to add first hearing details",
+        inputErrorText: "Select if you need to add first hearing details",
         hasLink: true,
       };
     }
@@ -139,8 +138,8 @@ const FirstHearingPage = () => {
     if (firstHearingRadio === "yes") {
       if (!inputCourtLocationValue) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Please select a court location for first hearing",
-          inputErrorText: "Please select a court location",
+          errorSummaryText: "Select a location",
+          inputErrorText: "Select the court location",
           hasLink: true,
         };
       } else if (
@@ -149,7 +148,8 @@ const FirstHearingPage = () => {
         ) === -1
       ) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Court location is invalid",
+          errorSummaryText: "Select a location",
+          inputErrorText: "Select the court location",
           hasLink: true,
         };
       }
@@ -157,8 +157,8 @@ const FirstHearingPage = () => {
 
     if (firstHearingRadio == "yes" && !firstHearingDateText) {
       errors.firstHearingDateText = {
-        errorSummaryText: "Please select a date for first hearing",
-        inputErrorText: "Please select a date",
+        errorSummaryText: "Enter the date",
+        inputErrorText: "Enter the date of first hearing",
         hasLink: true,
       };
     }
@@ -297,7 +297,7 @@ const FirstHearingPage = () => {
   };
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div>
       {!state.formData.navigation.changeCaseArea &&
         !state.formData.navigation.changeCaseDetails && (
           <BackLink to={previousRoute} onClick={handleBackLinkClick}>
@@ -322,14 +322,18 @@ const FirstHearingPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>Do you have details of the first hearing?</h1>,
+                children: (
+                  <h1 className={styles.labelHeading}>
+                    Do you have details of the first hearing?
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["firstHearingRadio"]
                 ? {
                     children:
-                      formDataErrors["firstHearingRadio"].errorSummaryText,
+                      formDataErrors["firstHearingRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -354,13 +358,15 @@ const FirstHearingPage = () => {
                         }
                         label={{
                           children: (
-                            <h2>What is the first hearing court location?</h2>
+                            <span className="govuk-!-font-weight-bold">
+                              Court location
+                            </span>
                           ),
                         }}
                         errorMessage={
                           formDataErrors["firstHearingCourtLocationText"]
                             ? formDataErrors["firstHearingCourtLocationText"]
-                                .errorSummaryText
+                                .inputErrorText
                             : undefined
                         }
                       />
@@ -368,7 +374,9 @@ const FirstHearingPage = () => {
                     <DateInputNative
                       key="first-hearing-date-text"
                       id="first-hearing-date-text"
-                      label={<h2>Date</h2>}
+                      label={
+                        <span className="govuk-!-font-weight-bold">Date</span>
+                      }
                       value={formData.firstHearingDateText}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleDateChange(e.target.value)
@@ -376,7 +384,7 @@ const FirstHearingPage = () => {
                       errorMessage={
                         formDataErrors["firstHearingDateText"]
                           ? formDataErrors["firstHearingDateText"]
-                              .errorSummaryText
+                              .inputErrorText
                           : undefined
                       }
                     />,

@@ -158,7 +158,11 @@ const SuspectASNPage = () => {
             }
             className="govuk-input--width-20"
             label={{
-              children: <h1>What is the Arrest Summons Number (ASN)?</h1>,
+              children: (
+                <h1 className={styles.labelHeading}>
+                  What is the Arrest Summons Number (ASN)?
+                </h1>
+              ),
             }}
             type="text"
             value={formData.suspectASNText}

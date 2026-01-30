@@ -282,7 +282,7 @@ const SuspectOffenderPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>
+                  <h1 className={styles.labelHeading}>
                     {`What type of offender is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
                   </h1>
                 ),

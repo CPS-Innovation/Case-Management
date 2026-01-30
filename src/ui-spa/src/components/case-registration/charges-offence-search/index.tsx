@@ -122,8 +122,8 @@ const ChargesOffenceSearch = () => {
 
     if (!searchText) {
       errors.offenceSearchText = {
-        errorSummaryText: "Please add a search key",
-        inputErrorText: "Please add a search key",
+        errorSummaryText: "Enter an offence",
+        inputErrorText: "Enter an offence to search for",
       };
       isValid = false;
     }
