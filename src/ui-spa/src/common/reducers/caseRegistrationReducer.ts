@@ -460,6 +460,9 @@ export type CaseRegistrationActions =
     }
   | {
       type: "RESET_RU_DEPENDENT_FIELDS";
+    }
+  | {
+      type: "REMOVE_ALL_SUSPECTS";
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -499,6 +502,7 @@ export const caseRegistrationReducer = (
         ...state,
         formData: {
           ...state.formData,
+          suspectDetailsRadio: "yes",
           suspects,
         },
       };
@@ -796,6 +800,16 @@ export const caseRegistrationReducer = (
           firstHearingCourtLocationText: { id: null, description: "" },
           caseProsecutorText: { id: null, description: "" },
           caseCaseworkerText: { id: null, description: "" },
+        },
+      };
+    }
+
+    case "REMOVE_ALL_SUSPECTS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects: [],
         },
       };
     }

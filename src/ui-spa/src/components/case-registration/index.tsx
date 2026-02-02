@@ -227,6 +227,27 @@ const CaseRegistrationPage = () => {
     event.preventDefault();
 
     if (!validateFormData()) return;
+
+    let nextRoute = "/case-registration/areas";
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      nextRoute = "/case-registration/case-summary";
+    } else if (isAreaSensitive) {
+      nextRoute = "/case-registration/case-details";
+    }
+
+    if (
+      formData.suspectDetailsRadio === "no" &&
+      state.formData.suspects.length > 0
+    ) {
+      navigate("/case-registration/remove-all-suspects-confirmation", {
+        state: {
+          backRoute: "/case-registration",
+          nextRoute: nextRoute,
+          formData: formData,
+        },
+      });
+      return;
+    }
     dispatch({
       type: "SET_FIELDS",
       payload: {
@@ -240,15 +261,9 @@ const CaseRegistrationPage = () => {
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
       });
-      navigate("/case-registration/case-summary");
-      return;
     }
-    if (!isAreaSensitive) {
-      navigate("/case-registration/areas");
-      return;
-    }
-    navigate("/case-registration/case-details");
-    return;
+
+    navigate(nextRoute);
   };
 
   const setFormValue = (
