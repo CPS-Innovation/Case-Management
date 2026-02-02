@@ -74,7 +74,7 @@ export const getCaseDetailsSummaryListRows = (
       },
     },
     {
-      key: { children: <span>Registering Unit</span> },
+      key: { children: <span>Registering unit</span> },
       value: {
         children: <p>{formData.registeringUnitText?.description}</p>,
       },
@@ -108,7 +108,7 @@ export const getCaseDetailsSummaryListRows = (
       },
     },
     {
-      key: { children: <span>Operation Name</span> },
+      key: { children: <span>Operation name</span> },
       value: {
         children: (
           <p>
@@ -153,7 +153,7 @@ export const getFirstHearingSummaryRows = (
     formData.firstHearingRadio === "yes"
       ? [
           {
-            key: { children: <span>First Hearing Court Location</span> },
+            key: { children: <span>First hearing court location</span> },
             value: {
               children: (
                 <p>{formData.firstHearingCourtLocationText.description}</p>
@@ -172,7 +172,7 @@ export const getFirstHearingSummaryRows = (
             },
           },
           {
-            key: { children: <span>First Hearing Date</span> },
+            key: { children: <span>First hearing date</span> },
             value: {
               children: (
                 <p>{format(formData.firstHearingDateText, "dd MMMM yyyy")}</p>
@@ -193,7 +193,7 @@ export const getFirstHearingSummaryRows = (
         ]
       : [
           {
-            key: { children: <span>First Hearing details</span> },
+            key: { children: <span>First hearing details</span> },
             value: {
               children: <p>Not entered</p>,
             },
@@ -282,7 +282,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
 
   const rows = [
     {
-      key: { children: <span>Case Complexity</span> },
+      key: { children: <span>Case complexity</span> },
       value: {
         children: <p>{formData.caseComplexityRadio?.description}</p>,
       },
@@ -299,7 +299,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
       },
     },
     {
-      key: { children: <span>Monitoring Codes</span> },
+      key: { children: <span>Monitoring codes</span> },
       value: {
         children: (
           <ul className="govuk-list govuk-list--bullet">
@@ -411,7 +411,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
             },
           },
           {
-            key: { children: <span>Police Unit</span> },
+            key: { children: <span>Police unit</span> },
             value: {
               children: (
                 <p>{policeUnit ? policeUnit.description : "Not entered"}</p>

@@ -151,14 +151,10 @@ const AddChargeDetailsPage = () => {
       offenceFromDate &&
       !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
     ) {
-      errors.offenceToDate = {
-        errorSummaryText: "Charge date from must be before charge date to.",
-        inputErrorText: "Charge date from must be before charge date to.",
-        hasLink: true,
-      };
       errors.offenceFromDate = {
-        errorSummaryText: "Charge date from must be before charge date to.",
-        inputErrorText: "Charge date from must be before charge date to.",
+        errorSummaryText: "Start date must be the same or before the end date.",
+        inputErrorText:
+          "Enter a start date that is the same or before the end date.",
         hasLink: true,
       };
     }
@@ -190,19 +186,19 @@ const AddChargeDetailsPage = () => {
         hasLink: true,
       };
     }
-
-    if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
-      errors.offenceToDate = {
-        errorSummaryText: "Charge date to must be on or before today’s date.",
-        inputErrorText: "Charge date to must be on or before today’s date.",
+    if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
+      errors.offenceFromDate = {
+        errorSummaryText: "Offence start date must be today or in the past",
+        inputErrorText:
+          "Enter an offence start date that is today or in the past",
         hasLink: true,
       };
     }
-
-    if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
-      errors.offenceFromDate = {
-        errorSummaryText: "Charge date from must be on or before today’s date.",
-        inputErrorText: "Charge date from must be on or before today’s date.",
+    if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
+      errors.offenceToDate = {
+        errorSummaryText: "Offence end date must be today or in the past",
+        inputErrorText:
+          "Enter an offence end date that is today or in the past",
         hasLink: true,
       };
     }
@@ -281,7 +277,7 @@ const AddChargeDetailsPage = () => {
   };
 
   return (
-    <div>
+    <div className={pageStyles.addChargeDetailsPage}>
       <BackLink
         to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`}
       >
@@ -316,7 +312,9 @@ const AddChargeDetailsPage = () => {
       <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
-          <h2>When was the offence?</h2>
+          <span className="govuk-!-font-weight-bold">
+            When was the offence?
+          </span>
           <div className={pageStyles.dateInputsWrapper}>
             <DateInputNative
               key="offence-from-date-text"
@@ -328,25 +326,28 @@ const AddChargeDetailsPage = () => {
               }
               errorMessage={
                 formDataErrors["offenceFromDate"]
-                  ? formDataErrors["offenceFromDate"].errorSummaryText
+                  ? formDataErrors["offenceFromDate"].inputErrorText
                   : undefined
               }
             />
             {showDateRange && (
-              <DateInputNative
-                key="offence-to-date-text"
-                id="offence-to-date-text"
-                className={pageStyles.dateInput}
-                value={formData.offenceToDate}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleDateChange("offenceToDate", e.target.value)
-                }
-                errorMessage={
-                  formDataErrors["offenceToDate"]
-                    ? formDataErrors["offenceToDate"].errorSummaryText
-                    : undefined
-                }
-              />
+              <>
+                <span className={pageStyles.dateRangeSeparator}> to </span>
+                <DateInputNative
+                  key="offence-to-date-text"
+                  id="offence-to-date-text"
+                  className={pageStyles.dateInput}
+                  value={formData.offenceToDate}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleDateChange("offenceToDate", e.target.value)
+                  }
+                  errorMessage={
+                    formDataErrors["offenceToDate"]
+                      ? formDataErrors["offenceToDate"].inputErrorText
+                      : undefined
+                  }
+                />
+              </>
             )}
             <Button
               className="govuk-button--secondary"
@@ -360,13 +361,17 @@ const AddChargeDetailsPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>Is there a victim?</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">
+                    Is there a victim?
+                  </span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["addVictimRadio"]
                 ? {
-                    children: formDataErrors["addVictimRadio"].errorSummaryText,
+                    children: formDataErrors["addVictimRadio"].inputErrorText,
                   }
                 : undefined
             }

@@ -1,24 +1,29 @@
-.resultsDivider {
-  border: none;
-  height: 1px;
-  width: 100%;
-  margin-top: 16px;
-  margin-bottom: 16px;
-  background-color: #b1b4b6;
-}
-.suspectName {
-  margin-bottom: 8px;
-}
-.dateInputsWrapper {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  & :global(.govuk-button--secondary) {
-    flex-shrink: 0;
-    height: max-content;
-    margin-bottom: 1.25rem;
+.addChargeDetailsPage {
+  .resultsDivider {
+    border: none;
+    height: 1px;
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    background-color: #b1b4b6;
   }
-  .dateInput {
-    width: 240px;
+  .suspectName {
+    margin-bottom: 8px;
+  }
+  .dateRangeSeparator {
+    margin: 0 1.875rem 2.3rem 1.875rem;
+  }
+  .dateInputsWrapper {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    margin-top: 0.625rem;
+
+    .dateInput {
+      width: 240px;
+    }
+    & :global(.govuk-error-message) {
+      max-width: 15.625rem;
+    }
   }
 }

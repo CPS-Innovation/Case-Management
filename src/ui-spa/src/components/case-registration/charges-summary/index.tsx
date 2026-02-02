@@ -51,9 +51,14 @@ const SuspectSummaryPage = () => {
 
     if (!addMoreChargesRadio) {
       errors.addMoreChargesRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: chargesCount
+          ? "Select whether you need to add another charge"
+          : "Select whether you need to add a charge",
+        inputErrorText: chargesCount
+          ? "Select whether you need to add another charge"
+          : "Select whether you need to add a charge",
       };
+
       isValid = false;
     }
 
@@ -163,7 +168,13 @@ const SuspectSummaryPage = () => {
             className="govuk-radios--inline"
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another charge? </h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">
+                    {chargesCount
+                      ? `Do you need to add another charge?`
+                      : `Do you need to add a charge?`}
+                  </span>
+                ),
               },
             }}
             errorMessage={

@@ -129,8 +129,8 @@ const AddChargeVictimPage = () => {
     if (victimsList.length === 0 || selectedVictimRadio === "new-victim") {
       if (!victimLastNameText) {
         errors.victimLastNameText = {
-          errorSummaryText: "Please enter the victim's last name",
-          inputErrorText: "Please enter a last name",
+          errorSummaryText: "Enter a name",
+          inputErrorText: "Enter the victim's last name",
           hasLink: true,
         };
       }
@@ -222,13 +222,17 @@ const AddChargeVictimPage = () => {
     const victimType = [
       { name: "The victim is vulnerable", value: "Vulnerable" },
       { name: "The victim has been intimidated", value: "Intimidated" },
-      { name: "The victim is also a witness", value: "Witness" },
+      { name: "The victim is a witness", value: "Witness" },
     ] as { name: string; value: VictimAdditionalDetailsValue }[];
     return (
       <Checkboxes
         fieldset={{
           legend: {
-            children: <h2>Victim details (optional)</h2>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim details (optional)
+              </span>
+            ),
           },
         }}
         items={victimType.map((victimType, index) => ({
@@ -260,7 +264,11 @@ const AddChargeVictimPage = () => {
           data-testid="victim-firstname-text"
           className="govuk-input--width-20"
           label={{
-            children: <b>Victim first name (optional)</b>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim first name (optional)
+              </span>
+            ),
           }}
           type="text"
           value={victimDetails.victimFirstNameText}
@@ -275,8 +283,19 @@ const AddChargeVictimPage = () => {
           data-testid="victim-lastname-text"
           className="govuk-input--width-20"
           label={{
-            children: <b>Victim last name </b>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim last name{" "}
+              </span>
+            ),
           }}
+          errorMessage={
+            formDataErrors["victimLastNameText"]
+              ? {
+                  children: formDataErrors["victimLastNameText"].inputErrorText,
+                }
+              : undefined
+          }
           type="text"
           value={victimDetails.victimLastNameText}
           onChange={(value: string) => {
@@ -285,7 +304,7 @@ const AddChargeVictimPage = () => {
         />
       </>
     );
-  }, [victimDetails, setFormValue]);
+  }, [victimDetails, formDataErrors, setFormValue]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -470,14 +489,18 @@ const AddChargeVictimPage = () => {
             <Radios
               fieldset={{
                 legend: {
-                  children: <h2>Select or add a victim</h2>,
+                  children: (
+                    <span className="govuk-!-font-weight-bold">
+                      Select or add a victim
+                    </span>
+                  ),
                 },
               }}
               errorMessage={
                 formDataErrors["selectedVictimRadio"]
                   ? {
                       children:
-                        formDataErrors["selectedVictimRadio"].errorSummaryText,
+                        formDataErrors["selectedVictimRadio"].inputErrorText,
                     }
                   : undefined
               }

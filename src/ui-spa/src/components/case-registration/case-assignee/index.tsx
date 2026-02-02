@@ -659,7 +659,11 @@ const CaseAssigneePage = () => {
                       className="govuk-input--width-20 "
                       label={{
                         htmlFor: "case-investigator-title-select",
-                        children: <b>Rank (optional)</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            Rank (optional)
+                          </span>
+                        ),
                         className: styles.investigatorTitleSelectLabel,
                       }}
                       id="case-investigator-title-select"
@@ -683,7 +687,11 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-firstname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: <b>First name (optional)</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            First name (optional)
+                          </span>
+                        ),
                       }}
                       type="text"
                       value={formData.caseInvestigatorFirstNameText}
@@ -697,7 +705,11 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-lastname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: <b>Last name</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            Last name
+                          </span>
+                        ),
                       }}
                       errorMessage={
                         formDataErrors["caseInvestigatorLastNameText"]
@@ -723,7 +735,9 @@ const CaseAssigneePage = () => {
                         children: (
                           <div className={pageStyles.shoulderNumberLabel}>
                             {policeUnitLabel && <span>{policeUnitLabel}</span>}
-                            <b>Shoulder number (optional)</b>
+                            <span className="govuk-!-font-weight-bold">
+                              Shoulder number (optional)
+                            </span>
                           </div>
                         ),
                       }}

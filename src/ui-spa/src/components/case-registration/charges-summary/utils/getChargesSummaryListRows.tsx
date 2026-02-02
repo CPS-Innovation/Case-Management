@@ -38,7 +38,7 @@ export const getChargesSummaryListRows = (
       },
     },
     {
-      key: { children: <b>Date of Offence</b> },
+      key: { children: <b>Date of offence</b> },
       value: {
         children: (
           <span>
