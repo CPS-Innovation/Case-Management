@@ -55,7 +55,7 @@ describe("getChargesSummaryListRows", () => {
       "Theft description",
     );
     expect(screen.getByTestId(`row-1-key`)).toHaveTextContent(
-      "Date of Offence",
+      "Date of offence",
     );
     expect(screen.getByTestId(`row-1-value`)).toHaveTextContent(
       "23 March 1990 to 26 June 1990",
@@ -106,7 +106,7 @@ describe("getChargesSummaryListRows", () => {
       "Theft description",
     );
     expect(screen.getByTestId(`row-1-key`)).toHaveTextContent(
-      "Date of Offence",
+      "Date of offence",
     );
     expect(screen.getByTestId(`row-1-value`)).toHaveTextContent(
       "23 March 1990",
@@ -155,7 +155,7 @@ describe("getChargesSummaryListRows", () => {
     renderRows(rows);
 
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent(
-      "Date of Offence",
+      "Date of offence",
     );
     expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(
       "23 March 1990",
