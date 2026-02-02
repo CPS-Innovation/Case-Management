@@ -13,7 +13,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
 import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
-import styles from "./index.module.scss";
+import pageStyles from "./index.module.scss";
+import styles from "../index.module.scss";
 const PRE_CHARGE_DECISION_CODE = "CSEA";
 
 const CaseMonitoringCodesPage = () => {
@@ -195,7 +196,7 @@ const CaseMonitoringCodesPage = () => {
   };
 
   return (
-    <div className={styles.caseMonitoringCodesPage}>
+    <div className={pageStyles.caseMonitoringCodesPage}>
       <BackLink to={previousRoute} onClick={handleBackLinkClick}>
         Back
       </BackLink>
@@ -217,7 +218,9 @@ const CaseMonitoringCodesPage = () => {
           <Checkboxes
             fieldset={{
               legend: {
-                children: <h1>Add monitoring codes</h1>,
+                children: (
+                  <h1 className={styles.labelHeading}>Add monitoring codes</h1>
+                ),
               },
             }}
             hint={

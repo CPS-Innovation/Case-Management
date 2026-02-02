@@ -387,6 +387,7 @@ const FirstHearingPage = () => {
                               .inputErrorText
                           : undefined
                       }
+                      hint={<span>For example, 17/05/2024</span>}
                     />,
                   ],
                 },
