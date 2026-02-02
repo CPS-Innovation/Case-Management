@@ -31,17 +31,24 @@ describe("getChargesSummaryListRows", () => {
       offenceToDate: "1990-06-26",
       addVictimRadio: "yes",
       victim: {
-        victimFirstNameText: "John",
-        victimLastNameText: "Doe",
-        victimAdditionalDetailsCheckboxes: [
-          "Vulnerable",
-          "Intimidated",
-          "Witness",
-        ],
+        victimId: "victim-1",
       },
     };
 
-    const rows = getChargesSummaryListRows(charge, true);
+    const victimList = [
+      {
+        victimId: "victim-1",
+        victimFirstNameText: "John",
+        victimLastNameText: "Doe",
+        victimAdditionalDetailsCheckboxes: [
+          "Vulnerable" as const,
+          "Intimidated" as const,
+          "Witness" as const,
+        ],
+      },
+    ];
+
+    const rows = getChargesSummaryListRows(charge, victimList, true);
     renderRows(rows);
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent("offence-code-1");
     expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(
@@ -51,7 +58,7 @@ describe("getChargesSummaryListRows", () => {
       "Date of Offence",
     );
     expect(screen.getByTestId(`row-1-value`)).toHaveTextContent(
-      "23 Mar 1990 to 26 Jun 1990",
+      "23 March 1990 to 26 June 1990",
     );
     expect(screen.getByTestId(`row-2-key`)).toHaveTextContent("Victim");
     expect(screen.getByTestId(`row-2-value`)).toHaveTextContent("DOE, John");
@@ -76,13 +83,22 @@ describe("getChargesSummaryListRows", () => {
       offenceToDate: "",
       addVictimRadio: "yes",
       victim: {
-        victimFirstNameText: "John",
-        victimLastNameText: "Doe",
-        victimAdditionalDetailsCheckboxes: ["Vulnerable", "Witness"],
+        victimId: "victim-1",
       },
     };
+    const victimList = [
+      {
+        victimId: "victim-1",
+        victimFirstNameText: "John",
+        victimLastNameText: "Doe",
+        victimAdditionalDetailsCheckboxes: [
+          "Vulnerable" as const,
+          "Witness" as const,
+        ],
+      },
+    ];
 
-    const rows = getChargesSummaryListRows(charge, true);
+    const rows = getChargesSummaryListRows(charge, victimList, true);
 
     renderRows(rows);
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent("offence-code-1");
@@ -92,7 +108,9 @@ describe("getChargesSummaryListRows", () => {
     expect(screen.getByTestId(`row-1-key`)).toHaveTextContent(
       "Date of Offence",
     );
-    expect(screen.getByTestId(`row-1-value`)).toHaveTextContent("23 Mar 1990");
+    expect(screen.getByTestId(`row-1-value`)).toHaveTextContent(
+      "23 March 1990",
+    );
     expect(screen.getByTestId(`row-2-key`)).toHaveTextContent("Victim");
     expect(screen.getByTestId(`row-2-value`)).toHaveTextContent("DOE, John");
     expect(screen.getByTestId(`row-2-value`)).toHaveTextContent("Vulnerable");
@@ -117,21 +135,31 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "",
       addVictimRadio: "yes",
-      victim: {
-        victimFirstNameText: "John",
-        victimLastNameText: "Doe",
-        victimAdditionalDetailsCheckboxes: ["Vulnerable", "Witness"],
-      },
+      victim: { victimId: "victim-1" },
     };
 
-    const rows = getChargesSummaryListRows(charge, false);
+    const victimList = [
+      {
+        victimId: "victim-1",
+        victimFirstNameText: "John",
+        victimLastNameText: "Doe",
+        victimAdditionalDetailsCheckboxes: [
+          "Vulnerable" as const,
+          "Witness" as const,
+        ],
+      },
+    ];
+
+    const rows = getChargesSummaryListRows(charge, victimList, false);
 
     renderRows(rows);
 
     expect(screen.getByTestId(`row-0-key`)).toHaveTextContent(
       "Date of Offence",
     );
-    expect(screen.getByTestId(`row-0-value`)).toHaveTextContent("23 Mar 1990");
+    expect(screen.getByTestId(`row-0-value`)).toHaveTextContent(
+      "23 March 1990",
+    );
     expect(screen.getByTestId(`row-1-key`)).toHaveTextContent("Victim");
     expect(screen.getByTestId(`row-1-value`)).toHaveTextContent("DOE, John");
     expect(screen.getByTestId(`row-1-value`)).toHaveTextContent("Vulnerable");

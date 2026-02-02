@@ -5,7 +5,6 @@ import {
   useContext,
   useCallback,
   useMemo,
-  use,
 } from "react";
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
