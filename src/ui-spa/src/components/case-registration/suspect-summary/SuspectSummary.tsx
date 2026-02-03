@@ -233,7 +233,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                 />
                               </div>
                             ))}
-                            <div>
+                            <div className={styles.addNewChargeSummary}>
                               <SummaryList
                                 rows={addNewChargeRow(
                                   index,
@@ -274,7 +274,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                           />
                         </div>
                       ))}
-                      <div>
+                      <div className={styles.addNewChargeSummary}>
                         <SummaryList
                           rows={addNewChargeRow(index, suspect.charges.length)}
                         />

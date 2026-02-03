@@ -1,4 +1,5 @@
 .suspectSummary {
+  margin-bottom: 3.75rem;
   .suspectRowWrapper {
     & :global(.govuk-summary-list) {
       margin-bottom: 0;
@@ -20,5 +21,10 @@
   & :global(.govuk-details) {
     margin-top: 0.5rem;
     margin-bottom: 1rem;
+  }
+  .addNewChargeSummary {
+    & :global(.govuk-summary-list) {
+      margin-bottom: 1rem;
+    }
   }
 }
