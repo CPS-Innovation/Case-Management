@@ -76,7 +76,12 @@ const ChangeRegisteringUnitConfirmationPage = () => {
             Continue and change the registering unit
           </Button>
 
-          <Link to={"/case-registration/case-details"}>Cancel</Link>
+          <Link
+            to={"/case-registration/case-details"}
+            className="govuk-link--no-visited-state"
+          >
+            Cancel
+          </Link>
         </div>
       </form>
     </div>

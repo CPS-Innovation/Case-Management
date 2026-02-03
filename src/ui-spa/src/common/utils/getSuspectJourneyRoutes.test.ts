@@ -11,13 +11,13 @@ describe("getSuspectJourneyRoutes", () => {
     });
 
     it("getNextSuspectJourneyRoute returns next route when there is a following selected step", () => {
-      const selections = ["Date of Birth", "Gender", "Disability"] as any;
+      const selections = ["Date of birth", "Gender", "Disability"] as any;
       const next = getNextSuspectJourneyRoute("suspect-dob", selections, 3);
       expect(next).toBe("/case-registration/suspect-3/suspect-gender");
     });
 
     it("getNextSuspectJourneyRoute returns summary when current is the last selected step", () => {
-      const selections = ["Date of Birth"] as any;
+      const selections = ["Date of birth"] as any;
       const next = getNextSuspectJourneyRoute("suspect-dob", selections, 2);
       expect(next).toBe("/case-registration/suspect-summary");
     });
@@ -25,7 +25,7 @@ describe("getSuspectJourneyRoutes", () => {
 
   describe("getPreviousSuspectJourneyRoute", () => {
     it("getPreviousSuspectJourneyRoute returns previous route when available", () => {
-      const selections = ["Date of Birth", "Gender"] as any;
+      const selections = ["Date of birth", "Gender"] as any;
       const prev = getPreviousSuspectJourneyRoute(
         "suspect-gender",
         selections,

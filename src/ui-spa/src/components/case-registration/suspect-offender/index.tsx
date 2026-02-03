@@ -120,15 +120,15 @@ const SuspectOffenderPage = () => {
       !isValidOnOrBeforeDate(suspectOffenderTypesRadio?.arrestDate)
     ) {
       errors.suspectArrestDate = {
-        errorSummaryText: "Arrest date must be on or before today",
-        inputErrorText: "Arrest date must be on or before today",
+        errorSummaryText: "Arrest date must be today or in the past",
+        inputErrorText: "Enter an arrest date that is today or in the past",
       };
     }
 
     if (!suspectOffenderTypesRadio.shortCode) {
       errors.suspectOffenderTypesRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select an offender type",
+        inputErrorText: "Select the type of offender",
       };
     }
 
@@ -189,7 +189,11 @@ const SuspectOffenderPage = () => {
                   <DateInputNative
                     key="suspect-arrest-date"
                     id="suspect-arrest-date"
-                    label={<h2>Arrest date (optional)</h2>}
+                    label={
+                      <span className="govuk-!-font-weight-bold">
+                        Arrest date (optional)
+                      </span>
+                    }
                     value={formData.suspectOffenderTypesRadio?.arrestDate || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleDateChange(e.target.value)
@@ -278,7 +282,7 @@ const SuspectOffenderPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>
+                  <h1 className={styles.labelHeading}>
                     {`What type of offender is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
                   </h1>
                 ),
@@ -301,7 +305,7 @@ const SuspectOffenderPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

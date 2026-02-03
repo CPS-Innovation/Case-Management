@@ -32,6 +32,12 @@ const ChargesVictimDuplicateConfirmationPage = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    const newVictim = {
+      victimId: uuidv4(),
+      victimFirstNameText: victimFirstName,
+      victimLastNameText: victimLastName,
+      victimAdditionalDetailsCheckboxes: victimAdditionalDetailsCheckboxes,
+    };
 
     dispatch({
       type: "SET_CHARGE_FIELDS",
@@ -40,10 +46,7 @@ const ChargesVictimDuplicateConfirmationPage = () => {
         chargeIndex: chargeIndex,
         data: {
           victim: {
-            victimFirstNameText: victimFirstName,
-            victimLastNameText: victimLastName,
-            victimAdditionalDetailsCheckboxes:
-              victimAdditionalDetailsCheckboxes,
+            ...newVictim,
           },
         },
       },
@@ -56,9 +59,7 @@ const ChargesVictimDuplicateConfirmationPage = () => {
           victimsList: [
             ...state.formData.victimsList,
             {
-              id: uuidv4(),
-              firstName: victimFirstName,
-              lastName: victimLastName,
+              ...newVictim,
             },
           ],
         },
@@ -88,10 +89,12 @@ const ChargesVictimDuplicateConfirmationPage = () => {
         </div>
         <div className={pageStyles.buttonWrapper}>
           <Button type="submit" onClick={() => handleSubmit}>
-            Save and Continue
+            Save and continue
           </Button>
 
-          <Link to={backRoute}>Cancel</Link>
+          <Link to={backRoute} className="govuk-link--no-visited-state">
+            Cancel
+          </Link>
         </div>
       </form>
     </div>

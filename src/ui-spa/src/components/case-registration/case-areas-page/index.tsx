@@ -11,7 +11,8 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { getAreasOrDivisions } from "../../../common/utils/getAreasOrDivisions";
 import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { useNavigate } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const CaseAreasPage = () => {
   type ErrorText = {
@@ -94,7 +95,8 @@ const CaseAreasPage = () => {
 
     if (!inputAreaValue) {
       errors.areaOrDivisionText = {
-        errorSummaryText: "Case area should not be empty",
+        errorSummaryText: "Select a division or area",
+        inputErrorText: "Select a division or area",
         hasLink: true,
       };
     } else if (
@@ -196,11 +198,10 @@ const CaseAreasPage = () => {
     navigate(previousRoute);
   };
   return (
-    <div className={styles.caseAreasPage}>
+    <div className={pageStyles.caseAreasPage}>
       <BackLink to={previousRoute} onClick={handleBackLinkClick}>
         Back
       </BackLink>
-      <h1>What is the division or area?</h1>
       {!!errorList.length && (
         <div
           ref={errorSummaryRef}
@@ -215,23 +216,27 @@ const CaseAreasPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <AutoComplete
-          id="area-or-division-text"
-          inputClasses={"govuk-input--error"}
-          source={areaSuggests}
-          confirmOnBlur={false}
-          onConfirm={handleAreaConfirm}
-          defaultValue={formData.areaOrDivisionText.description}
-          errorMessage={
-            formDataErrors["areaOrDivisionText"]
-              ? formDataErrors["areaOrDivisionText"].errorSummaryText
-              : undefined
-          }
-        />
-
-        <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
-        </Button>
+        <div className={styles.inputWrapper}>
+          <AutoComplete
+            id="area-or-division-text"
+            inputClasses={"govuk-input--error"}
+            label={{ children: <h1>What is the division or area?</h1> }}
+            source={areaSuggests}
+            confirmOnBlur={false}
+            onConfirm={handleAreaConfirm}
+            defaultValue={formData.areaOrDivisionText.description}
+            errorMessage={
+              formDataErrors["areaOrDivisionText"]
+                ? formDataErrors["areaOrDivisionText"].inputErrorText
+                : undefined
+            }
+          />
+        </div>
+        <div className="btnWrapper">
+          <Button type="submit" onClick={() => handleSubmit}>
+            Save and continue
+          </Button>
+        </div>
       </form>
     </div>
   );

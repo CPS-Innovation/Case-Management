@@ -36,7 +36,7 @@ const WantToAddCharges = () => {
       if (errorKey === "wantToAddChargesRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#add-radio-yes",
+          href: "#want-to-add-charges-radio-yes",
           "data-testid": "add-charges-radio-link",
         };
       }
@@ -53,8 +53,14 @@ const WantToAddCharges = () => {
 
     if (!wantToAddChargesRadio) {
       errors.wantToAddChargesRadio = {
-        errorSummaryText: "Please select an option ",
-        inputErrorText: "Please select an option",
+        errorSummaryText:
+          state.formData.suspects.length > 1
+            ? "Select whether you need to add charges for any suspects"
+            : "Select whether you need to add charges for the suspect",
+        inputErrorText:
+          state.formData.suspects.length > 1
+            ? "Select whether you need to add charges for any suspects"
+            : "Select whether you need to add charges for the suspect",
       };
       isValid = false;
     }
@@ -136,7 +142,7 @@ const WantToAddCharges = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1>
+                  <h1 className={styles.labelHeading}>
                     {suspects.length > 1
                       ? `Do you want to add charges for any of the suspects?`
                       : `Do you want to add charges for the suspect?`}
@@ -173,7 +179,7 @@ const WantToAddCharges = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

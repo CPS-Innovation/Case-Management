@@ -5,6 +5,7 @@ import { type ChargesFormData } from "../../../common/reducers/caseRegistrationR
 import { getChargesSummaryListRows } from "./utils/getChargesSummaryListRows";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import pageStyles from "./index.module.scss";
 
 type ChargesSummaryProps = {
   isCaseSummaryPage?: boolean;
@@ -51,6 +52,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                   : `/case-registration/charges-summary`,
               },
               visuallyHiddenText: "Remove Charge",
+              className: "govuk-link--no-visited-state",
             },
           ],
         },
@@ -82,7 +84,10 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
               <h2 className="govuk-!-margin-top-8">{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
             )}
             {suspectCharge.charges.map((charge) => (
-              <div key={`${charge.selectedOffence.code}-${charge.chargeId}`}>
+              <div
+                key={`${charge.selectedOffence.code}-${charge.chargeId}`}
+                className={pageStyles.chargeWrapper}
+              >
                 <SummaryList
                   rows={chargesSummaryRow(
                     charge,
@@ -95,6 +100,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                     <SummaryList
                       rows={getChargesSummaryListRows(
                         charge,
+                        state.formData.victimsList,
                         isCaseSummaryPage,
                         suspectCharge.suspectId,
                         charge.chargeId,

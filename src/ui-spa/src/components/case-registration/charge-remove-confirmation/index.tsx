@@ -42,10 +42,12 @@ const ChargeRemoveConfirmationPage = () => {
         </div>
         <div className={pageStyles.buttonWrapper}>
           <Button type="submit" onClick={() => handleSubmit}>
-            Save and Continue
+            Save and continue
           </Button>
 
-          <Link to={backRoute}>Cancel</Link>
+          <Link to={backRoute} className="govuk-link--no-visited-state">
+            Cancel
+          </Link>
         </div>
       </form>
     </div>

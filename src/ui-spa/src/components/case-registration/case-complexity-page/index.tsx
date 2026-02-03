@@ -12,7 +12,7 @@ import { getCaseComplexities } from "../../../apis/gateway-api";
 import useChargesCount from "../../../common/hooks/useChargesCount";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const CaseComplexityPage = () => {
   type ErrorText = {
@@ -70,8 +70,8 @@ const CaseComplexityPage = () => {
 
     if (!caseComplexityRadio.shortCode) {
       errors.caseComplexityRadio = {
-        errorSummaryText: "Please select an option for case complexity",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the case complexity",
+        inputErrorText: "Select the case complexity",
         hasLink: true,
       };
     }
@@ -207,14 +207,18 @@ const CaseComplexityPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>What is the case complexity?</h1>,
+                children: (
+                  <h1 className={styles.labelHeading}>
+                    What is the case complexity?
+                  </h1>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["caseComplexityRadio"]
                 ? {
                     children:
-                      formDataErrors["caseComplexityRadio"].errorSummaryText,
+                      formDataErrors["caseComplexityRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -231,7 +235,7 @@ const CaseComplexityPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

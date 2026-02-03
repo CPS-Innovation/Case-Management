@@ -98,9 +98,9 @@ describe("getSuspectDetailsSummaryListRows", () => {
     expect(screen.getByTestId(`row-4-key`)).toHaveTextContent(/Ethnicity/i);
     expect(screen.getByTestId(`row-4-value`)).toHaveTextContent("British");
     expect(screen.getByTestId(`row-5-key`)).toHaveTextContent(/Alias/i);
-    expect(screen.getByTestId(`row-5-value`)).toHaveTextContent("Doe, Johnny");
+    expect(screen.getByTestId(`row-5-value`)).toHaveTextContent("DOE, Johnny");
     expect(screen.getByTestId(`row-6-key`)).toHaveTextContent(/Alias/i);
-    expect(screen.getByTestId(`row-6-value`)).toHaveTextContent("Doe, Jane");
+    expect(screen.getByTestId(`row-6-value`)).toHaveTextContent("DOE, Jane");
     expect(screen.getByTestId(`row-7-key`)).toHaveTextContent(
       /Arrest summons/i,
     );
@@ -112,7 +112,9 @@ describe("getSuspectDetailsSummaryListRows", () => {
       "Youth offender",
     );
     expect(screen.getByTestId(`row-9-key`)).toHaveTextContent(/Arrest Date/i);
-    expect(screen.getByTestId(`row-9-value`)).toHaveTextContent("12/02/2020");
+    expect(screen.getByTestId(`row-9-value`)).toHaveTextContent(
+      "12 February 2020",
+    );
   });
 
   it("omits Arrest Date entry for PP offender type", () => {
