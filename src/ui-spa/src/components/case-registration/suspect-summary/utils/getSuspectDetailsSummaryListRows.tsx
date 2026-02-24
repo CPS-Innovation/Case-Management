@@ -1,6 +1,7 @@
 import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
 import { format } from "date-fns";
+import pageStyles from "../SuspectSummary.module.scss";
 
 const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   if (!aliases || aliases.length === 0) {
@@ -82,7 +83,11 @@ export const getSuspectDetailsSummaryListRows = (
     suspect.suspectDisabilityRadio && {
       key: { children: <span>Disability</span> },
       value: {
-        children: <span>{suspect.suspectDisabilityRadio}</span>,
+        children: (
+          <span className={pageStyles.capitalizeText}>
+            {suspect.suspectDisabilityRadio}
+          </span>
+        ),
       },
     },
     suspect.suspectReligionRadio.description && {
