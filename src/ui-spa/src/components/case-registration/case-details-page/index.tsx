@@ -523,7 +523,7 @@ const CaseDetailsPage = () => {
               }}
               errorMessage={
                 formDataErrors["registeringUnitErrorText"]
-                  ? formDataErrors["registeringUnitErrorText"].errorSummaryText
+                  ? formDataErrors["registeringUnitErrorText"].inputErrorText
                   : undefined
               }
             />
@@ -546,7 +546,7 @@ const CaseDetailsPage = () => {
               }}
               errorMessage={
                 formDataErrors["witnessCareUnitErrorText"]
-                  ? formDataErrors["witnessCareUnitErrorText"].errorSummaryText
+                  ? formDataErrors["witnessCareUnitErrorText"].inputErrorText
                   : undefined
               }
             />
