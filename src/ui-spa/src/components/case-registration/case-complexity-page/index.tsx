@@ -207,11 +207,7 @@ const CaseComplexityPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: (
-                  <h1 className={styles.labelHeading}>
-                    What is the case complexity?
-                  </h1>
-                ),
+                children: <h1>What is the case complexity?</h1>,
               },
             }}
             errorMessage={

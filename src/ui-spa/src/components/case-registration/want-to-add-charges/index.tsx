@@ -142,7 +142,7 @@ const WantToAddCharges = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1 className={styles.labelHeading}>
+                  <h1>
                     {suspects.length > 1
                       ? `Do you want to add charges for any of the suspects?`
                       : `Do you want to add charges for the suspect?`}

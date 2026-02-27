@@ -160,7 +160,7 @@ const SuspectDisabilityPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1 className={styles.labelHeading}>
+                  <h1>
                     {` Does ${formatNameUtil(
                       suspectFirstNameText,
                       suspectLastNameText,

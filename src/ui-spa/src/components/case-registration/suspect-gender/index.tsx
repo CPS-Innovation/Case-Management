@@ -211,7 +211,7 @@ const SuspectGenderPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1 className={styles.labelHeading}>
+                  <h1>
                     {`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s gender?`}
                   </h1>
                 ),

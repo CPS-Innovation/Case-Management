@@ -165,9 +165,7 @@ const AddChargeSuspectPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1 className={styles.labelHeading}>
-                    Which suspect to do you want to add charges for?
-                  </h1>
+                  <h1>Which suspect to do you want to add charges for?</h1>
                 ),
               },
             }}

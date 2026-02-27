@@ -322,11 +322,7 @@ const FirstHearingPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: (
-                  <h1 className={styles.labelHeading}>
-                    Do you have details of the first hearing?
-                  </h1>
-                ),
+                children: <h1>Do you have details of the first hearing?</h1>,
               },
             }}
             errorMessage={

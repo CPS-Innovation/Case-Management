@@ -218,9 +218,7 @@ const CaseMonitoringCodesPage = () => {
           <Checkboxes
             fieldset={{
               legend: {
-                children: (
-                  <h1 className={styles.labelHeading}>Add monitoring codes</h1>
-                ),
+                children: <h1>Add monitoring codes</h1>,
               },
             }}
             hint={

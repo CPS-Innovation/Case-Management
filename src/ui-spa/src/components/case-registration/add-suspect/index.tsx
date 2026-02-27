@@ -298,9 +298,7 @@ const AddSuspectPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: (
-                  <h1 className={styles.labelHeading}>Add a suspect</h1>
-                ),
+                children: <h1>Add a suspect</h1>,
               },
             }}
             hint={{

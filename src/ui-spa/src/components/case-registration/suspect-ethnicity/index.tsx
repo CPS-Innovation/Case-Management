@@ -213,9 +213,7 @@ const SuspectEthnicityPage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h1
-                    className={styles.labelHeading}
-                  >{`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s ethnicity?`}</h1>
+                  <h1>{`What is ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}'s ethnicity?`}</h1>
                 ),
               },
             }}
