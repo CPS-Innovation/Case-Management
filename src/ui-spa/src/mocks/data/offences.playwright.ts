@@ -9,6 +9,7 @@ export const offencesPlaywright: Offences = {
         "Contrary to sections 5(1)(f) and 21(1) of the Wildlife and Countryside Act 1981.",
       effectiveFromDate: "1998-03-17T00:00:00",
       effectiveToDate: "1998-04-17T00:00:00",
+      modeOfTrial: "abc",
     },
     {
       code: "PB92005",
@@ -17,6 +18,7 @@ export const offencesPlaywright: Offences = {
         "Contrary to sections 1(1) and 12 of the Protection of Badgers Act 1992.",
       effectiveFromDate: "1998-03-17T00:00:00",
       effectiveToDate: null,
+      modeOfTrial: "abc",
     },
     {
       code: "TH68040",
@@ -24,6 +26,7 @@ export const offencesPlaywright: Offences = {
       legislation: "Contrary to section 9(1)(b) of the Theft Act 1968.",
       effectiveFromDate: "1998-03-17T00:00:00",
       effectiveToDate: null,
+      modeOfTrial: "abc",
     },
   ],
   total: 3,

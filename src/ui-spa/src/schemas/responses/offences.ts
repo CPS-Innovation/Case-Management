@@ -6,6 +6,7 @@ export const offenceSchema = z.object({
   legislation: z.string(),
   effectiveFromDate: z.string(),
   effectiveToDate: z.string().nullable(),
+  modeOfTrial: z.string(),
 });
 
 export const offencesSchema = z.object({
