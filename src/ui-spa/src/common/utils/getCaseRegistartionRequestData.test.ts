@@ -1,6 +1,6 @@
 import { getCaseRegistrationRequestData } from "./getCaseRegistrationRequestData";
 import { type CaseRegistrationFormData } from "../reducers/caseRegistrationReducer";
-import { type CaseMonitoringCode } from "../types/responses/CaseMonitoringCodes";
+import { type CaseMonitoringCode } from "../../schemas";
 describe("getCaseRegistrationRequestData", () => {
   it("returns correct CaseRegistration request data", () => {
     const formData: CaseRegistrationFormData = {

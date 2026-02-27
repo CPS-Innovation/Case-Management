@@ -1,4 +1,4 @@
-import { type Offences } from "../../common/types/responses/Offences";
+import { type Offences } from "../../schemas";
 
 export const offencesPlaywright: Offences = {
   offences: [

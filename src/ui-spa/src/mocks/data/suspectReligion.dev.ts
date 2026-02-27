@@ -1,4 +1,4 @@
-import { type Religions } from "../../common/types/responses/Religions";
+import { type Religions } from "../../schemas";
 export const suspectReligionDev: Religions = [
   { shortCode: "christianity", description: "Christianity" },
   { shortCode: "islam", description: "Islam" },

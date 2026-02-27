@@ -1,22 +1,24 @@
 import { v4 as uuidv4 } from "uuid";
 import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../config";
 import { getAccessToken } from "../auth";
-import type { CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
-import type { CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
-import type { CourtLocations } from "../common/types/responses/CourtLocations";
-import type { CaseComplexities } from "../common/types/responses/CaseComplexities";
-import type { CaseMonitoringCodes } from "../common/types/responses/CaseMonitoringCodes";
+import type {
+  CaseAreasAndRegisteringUnits,
+  CaseAreasAndWitnessCareUnits,
+  CourtLocations,
+  CaseComplexities,
+  CaseMonitoringCodes,
+  CaseProsecutors,
+  CaseCaseworkers,
+  InvestigatorTitles,
+  CaseRegistration,
+  Genders,
+  Ethnicities,
+  Religions,
+  OffenderTypes,
+  PoliceUnits,
+  Offences,
+} from "../schemas";
 import { ApiError } from "../common/errors/ApiError";
-import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors";
-import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
-import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
-import type { CaseRegistration } from "../common/types/requests/CaseRegistration";
-import type { Genders } from "../common/types/responses/Genders";
-import type { Ethnicities } from "../common/types/responses/Ethnicities";
-import type { Religions } from "../common/types/responses/Religions";
-import type { OffenderTypes } from "../common/types/responses/OffenderTypes";
-import type { PoliceUnits } from "../common/types/responses/PoliceUnits";
-import type { Offences } from "../common/types/responses/Offences";
 
 export const CORRELATION_ID = "Correlation-Id";
 

@@ -1,7 +1,9 @@
 import { type CaseRegistrationFormData } from "../reducers/caseRegistrationReducer";
-import { type CaseMonitoringCode } from "../types/responses/CaseMonitoringCodes";
-import { type CaseRegistration } from "../types/requests/CaseRegistration";
-import { type PoliceUnit } from "../types/responses/PoliceUnits";
+import type {
+  CaseMonitoringCode,
+  PoliceUnit,
+  CaseRegistration,
+} from "../../schemas";
 
 export const getCaseRegistrationRequestData = (
   formData: CaseRegistrationFormData,

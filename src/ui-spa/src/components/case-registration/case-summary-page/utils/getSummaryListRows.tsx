@@ -5,8 +5,7 @@ import {
 } from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../../components/govuk";
 import { type NavigateFunction } from "react-router-dom";
-import { type CaseMonitoringCodes } from "../../../../common/types/responses/CaseMonitoringCodes";
-import { type PoliceUnit } from "../../../../common/types/responses/PoliceUnits";
+import type { CaseMonitoringCodes, PoliceUnit } from "../../../../schemas";
 
 export const getCaseDetailsSummaryListRows = (
   dispatch: React.Dispatch<CaseRegistrationActions>,
