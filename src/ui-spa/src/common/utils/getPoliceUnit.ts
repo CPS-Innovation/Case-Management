@@ -1,4 +1,4 @@
-import { type PoliceUnits } from "../types/responses/PoliceUnits";
+import { type PoliceUnits } from "../../schemas";
 export const getPoliceUnit = (
   urnPoliceUnitText: string,
   policeUnits: PoliceUnits,

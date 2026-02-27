@@ -1,4 +1,4 @@
-import { type CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
+import { type CaseAreasAndWitnessCareUnits } from "../../schemas";
 
 export const getWitnessCareUnits = (
   data: CaseAreasAndWitnessCareUnits,
