@@ -46,7 +46,7 @@ const ChargesVictimDuplicateConfirmationPage = () => {
         chargeIndex: chargeIndex,
         data: {
           victim: {
-            ...newVictim,
+            victimId: newVictim.victimId,
           },
         },
       },
