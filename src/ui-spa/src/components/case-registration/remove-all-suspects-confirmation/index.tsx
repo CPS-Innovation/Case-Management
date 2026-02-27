@@ -52,14 +52,12 @@ const RemoveAllSuspectsConfirmationPage = () => {
 
       <form onSubmit={handleSubmit}>
         <h1>Are you sure you want to delete the suspect details?</h1>
-        <div className={pageStyles.summaryListWrapper}>
-          <div>
-            <p>
-              Changing your answer to No will delete information you entered
-              including any charges or victims.
-            </p>
-            <p>You will not be able to recover this.</p>
-          </div>
+        <div>
+          <p>
+            Changing your answer to No will delete information you entered
+            including any charges or victims.
+          </p>
+          <p>You will not be able to recover this.</p>
         </div>
         <div className={pageStyles.buttonWrapper}>
           <Button type="submit" onClick={() => handleSubmit}>
