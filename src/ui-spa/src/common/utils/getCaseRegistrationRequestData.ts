@@ -1,7 +1,7 @@
 import type {
   CaseMonitoringCode,
   PoliceUnit,
-  CaseRegistration,
+  CaseRegistrationRequestData,
 } from "../../schemas";
 import {
   type CaseRegistrationFormData,
@@ -14,7 +14,7 @@ export const getCaseRegistrationRequestData = (
   formData: CaseRegistrationFormData,
   monitoringCodesData: CaseMonitoringCode[],
   policeUnit?: PoliceUnit,
-): CaseRegistration => {
+): CaseRegistrationRequestData => {
   const monitoringCodes = monitoringCodesData
     .filter((mCode) =>
       formData.caseMonitoringCodesCheckboxes.includes(mCode.code),
@@ -84,8 +84,7 @@ const getSuspectRequestData = (
     return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
   };
 
-  const getVictimIndex = (victim: { victimId: string } | null) => {
-    if (!victim) return -1;
+  const getVictimIndex = (victim: { victimId: string }) => {
     return victims.findIndex(({ victimId }) => victim.victimId === victimId);
   };
   return suspects.map((suspect) => ({
@@ -118,9 +117,9 @@ const getSuspectRequestData = (
       offenceCode: charge.selectedOffence.code,
       offenceDescription: charge.selectedOffence.description,
       modeOfTrial: charge.selectedOffence.modeOfTrial,
-      dateFrom: charge.offenceFromDate ? charge.offenceFromDate : null,
+      dateFrom: charge.offenceFromDate,
       dateTo: charge.offenceToDate ? charge.offenceToDate : null,
-      victimIndexId: getVictimIndex(charge.victim),
+      victimIndexId: charge.victim ? getVictimIndex(charge.victim) : -1,
     })),
   }));
 };

@@ -71,4 +71,6 @@ export const caseRegistrationSchema = z.object({
   ),
 });
 
-export type CaseRegistration = z.infer<typeof caseRegistrationSchema>;
+export type CaseRegistrationRequestData = z.infer<
+  typeof caseRegistrationSchema
+>;

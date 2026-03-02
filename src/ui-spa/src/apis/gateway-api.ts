@@ -10,7 +10,7 @@ import type {
   CaseProsecutors,
   CaseCaseworkers,
   InvestigatorTitles,
-  CaseRegistration,
+  CaseRegistrationRequestData,
   Genders,
   Ethnicities,
   Religions,
@@ -276,7 +276,9 @@ export const getOffences = async (
   }
   return (await response.json()) as Offences;
 };
-export const submitCaseRegistration = async (data: CaseRegistration) => {
+export const submitCaseRegistration = async (
+  data: CaseRegistrationRequestData,
+) => {
   const url = `${GATEWAY_BASE_URL}/api/v1/cases`;
   const response = await fetch(url, {
     method: "POST",
