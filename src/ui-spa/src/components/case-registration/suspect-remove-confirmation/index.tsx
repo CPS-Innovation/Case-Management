@@ -40,21 +40,21 @@ const SuspectRemoveConfirmationPage = () => {
         <h1>
           {`Are you sure you want to remove ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
         </h1>
-        <div className={pageStyles.summaryListWrapper}>
-          <div>
-            <p>
-              This will permanently remove all the details you&apos;ve entered
-              including any linked charges.
-            </p>
-            <p>You will not be able to restore them.</p>
-          </div>
+        <div>
+          <p>
+            This will permanently remove all the details you&apos;ve entered
+            including any linked charges.
+          </p>
+          <p>You will not be able to restore them.</p>
         </div>
         <div className={pageStyles.buttonWrapper}>
           <Button type="submit" onClick={() => handleSubmit}>
-            Save and Continue
+            Save and continue
           </Button>
 
-          <Link to={backRoute}>Cancel</Link>
+          <Link to={backRoute} className="govuk-link--no-visited-state">
+            Cancel
+          </Link>
         </div>
       </form>
     </div>

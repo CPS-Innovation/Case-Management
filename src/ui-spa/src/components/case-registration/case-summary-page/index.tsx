@@ -207,7 +207,7 @@ const CaseSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h2>Case Details</h2>
+        <h2>Case details</h2>
         <SummaryList rows={caseDetailsSummaryListRows} />
         <h2>Suspect</h2>
         {!state.formData.suspects.length && (
@@ -218,7 +218,7 @@ const CaseSummaryPage = () => {
         )}
         {!!chargesCount && (
           <>
-            <h2>First hearing Details</h2>
+            <h2>First hearing details</h2>
             <SummaryList rows={caseFirstHearingSummaryListRows} />
           </>
         )}

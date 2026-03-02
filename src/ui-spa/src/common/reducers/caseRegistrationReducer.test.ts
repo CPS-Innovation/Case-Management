@@ -26,7 +26,7 @@ describe("caseRegistrationReducer", () => {
     suspectFirstNameText: "aa",
     suspectLastNameText: "bb",
     suspectAdditionalDetailsCheckboxes: [
-      "Date of Birth",
+      "Date of birth",
       "Disability",
       "Religion",
     ],

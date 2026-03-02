@@ -129,8 +129,8 @@ const AddChargeVictimPage = () => {
     if (victimsList.length === 0 || selectedVictimRadio === "new-victim") {
       if (!victimLastNameText) {
         errors.victimLastNameText = {
-          errorSummaryText: "Please enter the victim's last name",
-          inputErrorText: "Please enter a last name",
+          errorSummaryText: "Enter a name",
+          inputErrorText: "Enter the victim's last name",
           hasLink: true,
         };
       }
@@ -159,6 +159,47 @@ const AddChargeVictimPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
+  const setFormValue = useCallback(
+    (
+      fieldName:
+        | "selectedVictimRadio"
+        | "victimFirstNameText"
+        | "victimLastNameText",
+      value: string,
+    ) => {
+      if (fieldName === "selectedVictimRadio") {
+        if (value === "new-victim") {
+          setVictimDetails({
+            selectedVictimRadio: value,
+            victimFirstNameText: "",
+            victimLastNameText: "",
+            victimAdditionalDetailsCheckboxes: [],
+          });
+          return;
+        } else {
+          const selectedVictim = state.formData.victimsList.find((victim) => {
+            return victim.victimId === value;
+          });
+          if (selectedVictim) {
+            setVictimDetails({
+              selectedVictimRadio: value,
+              victimFirstNameText: selectedVictim.victimFirstNameText,
+              victimLastNameText: selectedVictim.victimLastNameText,
+              victimAdditionalDetailsCheckboxes:
+                selectedVictim.victimAdditionalDetailsCheckboxes,
+            });
+          }
+          return;
+        }
+      }
+      setVictimDetails((prevState) => ({
+        ...prevState,
+        [fieldName]: sanitizeNameText(value),
+      }));
+    },
+    [state.formData.victimsList],
+  );
+
   const setAdditionalDetailsCheckboxes = useCallback(
     (value: VictimAdditionalDetailsValue) => {
       const currentValues =
@@ -181,13 +222,17 @@ const AddChargeVictimPage = () => {
     const victimType = [
       { name: "The victim is vulnerable", value: "Vulnerable" },
       { name: "The victim has been intimidated", value: "Intimidated" },
-      { name: "The victim is also a witness", value: "Witness" },
+      { name: "The victim is a witness", value: "Witness" },
     ] as { name: string; value: VictimAdditionalDetailsValue }[];
     return (
       <Checkboxes
         fieldset={{
           legend: {
-            children: <h2>Victim details (optional)</h2>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim details (optional)
+              </span>
+            ),
           },
         }}
         items={victimType.map((victimType, index) => ({
@@ -219,7 +264,11 @@ const AddChargeVictimPage = () => {
           data-testid="victim-firstname-text"
           className="govuk-input--width-20"
           label={{
-            children: <b>Victim first name (optional)</b>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim first name (optional)
+              </span>
+            ),
           }}
           type="text"
           value={victimDetails.victimFirstNameText}
@@ -234,8 +283,19 @@ const AddChargeVictimPage = () => {
           data-testid="victim-lastname-text"
           className="govuk-input--width-20"
           label={{
-            children: <b>Victim last name </b>,
+            children: (
+              <span className="govuk-!-font-weight-bold">
+                Victim last name{" "}
+              </span>
+            ),
           }}
+          errorMessage={
+            formDataErrors["victimLastNameText"]
+              ? {
+                  children: formDataErrors["victimLastNameText"].inputErrorText,
+                }
+              : undefined
+          }
           type="text"
           value={victimDetails.victimLastNameText}
           onChange={(value: string) => {
@@ -244,7 +304,7 @@ const AddChargeVictimPage = () => {
         />
       </>
     );
-  }, [victimDetails]);
+  }, [victimDetails, formDataErrors, setFormValue]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -253,9 +313,9 @@ const AddChargeVictimPage = () => {
 
     const isVictimNameExists = state.formData.victimsList.some((victim) => {
       return (
-        victim.firstName.toLowerCase() ===
+        victim.victimFirstNameText.toLowerCase() ===
           victimDetails.victimFirstNameText.toLowerCase() &&
-        victim.lastName.toLowerCase() ===
+        victim.victimLastNameText.toLowerCase() ===
           victimDetails.victimLastNameText.toLowerCase()
       );
     });
@@ -277,43 +337,17 @@ const AddChargeVictimPage = () => {
       return;
     }
 
-    let selectedVictimDetails = {
-      firstName: victimDetails.victimFirstNameText,
-      lastName: victimDetails.victimLastNameText,
-    };
-
-    if (victimDetails.selectedVictimRadio !== "new-victim") {
-      const selectedVictim = state.formData.victimsList.find((victim) => {
-        return victim.id === victimDetails.selectedVictimRadio;
-      });
-      if (selectedVictim) {
-        selectedVictimDetails = {
-          firstName: selectedVictim.firstName,
-          lastName: selectedVictim.lastName,
-        };
-      }
-    }
-
-    dispatch({
-      type: "SET_CHARGE_FIELDS",
-      payload: {
-        suspectIndex: suspectIndex,
-        chargeIndex: chargeIndex,
-        data: {
-          victim: {
-            victimFirstNameText: selectedVictimDetails.firstName,
-            victimLastNameText: selectedVictimDetails.lastName,
-            victimAdditionalDetailsCheckboxes:
-              victimDetails.victimAdditionalDetailsCheckboxes,
-          },
-        },
-      },
-    });
-
     if (
       !state.formData.victimsList.length ||
       victimDetails.selectedVictimRadio === "new-victim"
     ) {
+      const newVictim = {
+        victimId: uuidv4(),
+        victimFirstNameText: victimDetails.victimFirstNameText,
+        victimLastNameText: victimDetails.victimLastNameText,
+        victimAdditionalDetailsCheckboxes:
+          victimDetails.victimAdditionalDetailsCheckboxes,
+      };
       dispatch({
         type: "SET_FIELDS",
         payload: {
@@ -321,14 +355,62 @@ const AddChargeVictimPage = () => {
             victimsList: [
               ...state.formData.victimsList,
               {
-                id: uuidv4(),
-                firstName: victimDetails.victimFirstNameText,
-                lastName: victimDetails.victimLastNameText,
+                ...newVictim,
               },
             ],
           },
         },
       });
+
+      dispatch({
+        type: "SET_CHARGE_FIELDS",
+        payload: {
+          suspectIndex: suspectIndex,
+          chargeIndex: chargeIndex,
+          data: {
+            victim: {
+              victimId: newVictim.victimId,
+            },
+          },
+        },
+      });
+    } else if (victimDetails.selectedVictimRadio !== "new-victim") {
+      const selectedVictim = state.formData.victimsList.find((victim) => {
+        return victim.victimId === victimDetails.selectedVictimRadio;
+      });
+
+      const filteredVictimsList = state.formData.victimsList.filter(
+        (victim) => victim.victimId !== victimDetails.selectedVictimRadio,
+      );
+      if (selectedVictim) {
+        dispatch({
+          type: "SET_FIELDS",
+          payload: {
+            data: {
+              victimsList: [
+                ...filteredVictimsList,
+                {
+                  ...selectedVictim,
+                  victimAdditionalDetailsCheckboxes:
+                    victimDetails.victimAdditionalDetailsCheckboxes,
+                },
+              ],
+            },
+          },
+        });
+        dispatch({
+          type: "SET_CHARGE_FIELDS",
+          payload: {
+            suspectIndex: suspectIndex,
+            chargeIndex: chargeIndex,
+            data: {
+              victim: {
+                victimId: selectedVictim.victimId,
+              },
+            },
+          },
+        });
+      }
     }
 
     return navigate("/case-registration/charges-summary");
@@ -338,8 +420,14 @@ const AddChargeVictimPage = () => {
     const availableVictims = state.formData.victimsList.map((victim, index) => {
       return {
         id: `add-victim-radio-${index}`,
-        children: formatNameUtil(victim.firstName, victim.lastName),
-        value: victim.id,
+        children: formatNameUtil(
+          victim.victimFirstNameText,
+          victim.victimLastNameText,
+        ),
+        value: victim.victimId,
+        conditional: {
+          children: [renderVictimAdditionalDetails()],
+        },
         "data-testid": `add-victim-radio-${index}`,
       };
     });
@@ -351,30 +439,15 @@ const AddChargeVictimPage = () => {
         value: "new-victim",
         "data-testid": `add-victim-radio-add-new-victim`,
         conditional: {
-          children: [renderNewVictimFields()],
+          children: [renderNewVictimFields(), renderVictimAdditionalDetails()],
         },
       },
     ];
-  }, [state.formData.victimsList, renderNewVictimFields]);
-
-  const setFormValue = (
-    fieldName:
-      | "selectedVictimRadio"
-      | "victimFirstNameText"
-      | "victimLastNameText",
-    value: string,
-  ) => {
-    if (
-      fieldName === "victimFirstNameText" ||
-      fieldName === "victimLastNameText"
-    ) {
-      value = sanitizeNameText(value as string);
-    }
-    setVictimDetails((prevState) => ({
-      ...prevState,
-      [fieldName]: value,
-    }));
-  };
+  }, [
+    state.formData.victimsList,
+    renderNewVictimFields,
+    renderVictimAdditionalDetails,
+  ]);
 
   return (
     <div>
@@ -416,14 +489,18 @@ const AddChargeVictimPage = () => {
             <Radios
               fieldset={{
                 legend: {
-                  children: <h2>Select or add a victim</h2>,
+                  children: (
+                    <span className="govuk-!-font-weight-bold">
+                      Select or add a victim
+                    </span>
+                  ),
                 },
               }}
               errorMessage={
                 formDataErrors["selectedVictimRadio"]
                   ? {
                       children:
-                        formDataErrors["selectedVictimRadio"].errorSummaryText,
+                        formDataErrors["selectedVictimRadio"].inputErrorText,
                     }
                   : undefined
               }
@@ -436,12 +513,16 @@ const AddChargeVictimPage = () => {
           )}
 
           <>
-            {state.formData.victimsList.length === 0 && renderNewVictimFields()}
+            {state.formData.victimsList.length === 0 && (
+              <>
+                {renderNewVictimFields()}
+                <div>{renderVictimAdditionalDetails()}</div>
+              </>
+            )}
           </>
-          <div>{renderVictimAdditionalDetails()}</div>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

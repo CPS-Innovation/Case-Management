@@ -68,7 +68,12 @@ const ChangeAreaConfirmationPage = () => {
             Continue and change the area
           </Button>
 
-          <Link to={"/case-registration/areas"}>Cancel</Link>
+          <Link
+            to={"/case-registration/areas"}
+            className="govuk-link--no-visited-state"
+          >
+            Cancel
+          </Link>
         </div>
       </form>
     </div>

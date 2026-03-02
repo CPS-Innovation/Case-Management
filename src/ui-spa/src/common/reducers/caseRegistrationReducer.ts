@@ -42,13 +42,13 @@ export type CaseRegistrationField =
   | "wantToAddChargesRadio"
   | "victimsList";
 export type SuspectAdditionalDetailValue =
-  | "Date of Birth"
+  | "Date of birth"
   | "Gender"
   | "Disability"
   | "Religion"
   | "Ethnicity"
   | "Alias details"
-  | "Arrest summons number (ASN)"
+  | "Arrest Summons Number (ASN)"
   | "Type of offender";
 
 export type SuspectTypeValue = "person" | "company" | "";
@@ -82,6 +82,7 @@ export type VictimAdditionalDetailsValue =
   | "Intimidated"
   | "Witness";
 export type Victim = {
+  victimId: string;
   victimFirstNameText: string;
   victimLastNameText: string;
   victimAdditionalDetailsCheckboxes: VictimAdditionalDetailsValue[];
@@ -94,7 +95,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
-  victim: Victim | null;
+  victim: { victimId: string } | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
@@ -129,7 +130,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimsList: { id: string; firstName: string; lastName: string }[];
+  victimsList: Victim[];
   navigation: {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
@@ -286,7 +287,7 @@ export type CaseRegistrationActions =
           caseInvestigatorShoulderNameText?: string;
           caseInvestigatorShoulderNumberText?: string;
           wantToAddChargesRadio?: GeneralRadioValue;
-          victimsList?: { id: string; firstName: string; lastName: string }[];
+          victimsList?: Victim[];
         };
       };
     }
@@ -328,7 +329,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
-          victim?: Victim | null;
+          victim?: { victimId: string } | null;
         };
       };
     }
@@ -459,6 +460,9 @@ export type CaseRegistrationActions =
     }
   | {
       type: "RESET_RU_DEPENDENT_FIELDS";
+    }
+  | {
+      type: "REMOVE_ALL_SUSPECTS";
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -498,6 +502,7 @@ export const caseRegistrationReducer = (
         ...state,
         formData: {
           ...state.formData,
+          suspectDetailsRadio: "yes",
           suspects,
         },
       };
@@ -799,6 +804,16 @@ export const caseRegistrationReducer = (
       };
     }
 
+    case "REMOVE_ALL_SUSPECTS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects: [],
+        },
+      };
+    }
+
     default:
       return state;
   }
@@ -875,7 +890,7 @@ const resetSuspectAdditionalDetails = (
   value: SuspectAdditionalDetailValue[],
   resetValues: Partial<SuspectFormData>,
 ) => {
-  if (!value.includes("Date of Birth")) {
+  if (!value.includes("Date of birth")) {
     resetValues.suspectDOBDayText = "";
     resetValues.suspectDOBMonthText = "";
     resetValues.suspectDOBYearText = "";
@@ -895,7 +910,7 @@ const resetSuspectAdditionalDetails = (
   if (!value.includes("Alias details")) {
     resetValues.suspectAliases = [];
   }
-  if (!value.includes("Arrest summons number (ASN)")) {
+  if (!value.includes("Arrest Summons Number (ASN)")) {
     resetValues.suspectASNText = "";
   }
   if (!value.includes("Type of offender")) {

@@ -1,5 +1,7 @@
 import { type SuspectFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
 import { format } from "date-fns";
+import pageStyles from "../SuspectSummary.module.scss";
 
 const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   if (!aliases || aliases.length === 0) {
@@ -9,13 +11,7 @@ const getAliasesList = (aliases: { firstName: string; lastName: string }[]) => {
   return aliases.map((alias) => ({
     key: { children: <span>Alias</span> },
     value: {
-      children: (
-        <span>
-          {alias.firstName
-            ? `${alias.lastName}, ${alias.firstName} `
-            : alias.lastName}
-        </span>
-      ),
+      children: <span>{formatNameUtil(alias.firstName, alias.lastName)}</span>,
     },
   }));
 };
@@ -45,14 +41,14 @@ const getOffenderTypeList = (suspectOffenderTypesRadio: {
     },
     !Number.isNaN(new Date(suspectOffenderTypesRadio.arrestDate).getTime()) && {
       key: {
-        children: <span>Arrest Date </span>,
+        children: <span>Arrest date </span>,
       },
       value: {
         children: (
           <span>
             {format(
               new Date(suspectOffenderTypesRadio.arrestDate),
-              "dd/MM/yyyy",
+              "dd MMMM yyyy",
             )}
           </span>
         ),
@@ -87,7 +83,11 @@ export const getSuspectDetailsSummaryListRows = (
     suspect.suspectDisabilityRadio && {
       key: { children: <span>Disability</span> },
       value: {
-        children: <span>{suspect.suspectDisabilityRadio}</span>,
+        children: (
+          <span className={pageStyles.capitalizeText}>
+            {suspect.suspectDisabilityRadio}
+          </span>
+        ),
       },
     },
     suspect.suspectReligionRadio.description && {
@@ -104,7 +104,7 @@ export const getSuspectDetailsSummaryListRows = (
     },
     ...getAliasesList(suspect.suspectAliases),
     suspect.suspectASNText && {
-      key: { children: <span>Arrest summons</span> },
+      key: { children: <span>Arrest Summons Number</span> },
       value: {
         children: <span>{suspect.suspectASNText}</span>,
       },

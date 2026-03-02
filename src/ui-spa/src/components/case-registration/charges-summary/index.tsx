@@ -51,9 +51,14 @@ const SuspectSummaryPage = () => {
 
     if (!addMoreChargesRadio) {
       errors.addMoreChargesRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: chargesCount
+          ? "Select whether you need to add another charge"
+          : "Select whether you need to add a charge",
+        inputErrorText: chargesCount
+          ? "Select whether you need to add another charge"
+          : "Select whether you need to add a charge",
       };
+
       isValid = false;
     }
 
@@ -84,6 +89,13 @@ const SuspectSummaryPage = () => {
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
+
+  const getTitle = useCallback(() => {
+    if (chargesCount > 1) {
+      return `You have added ${chargesCount} charges`;
+    }
+    return `You have added ${chargesCount} charge`;
+  }, [chargesCount]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -146,7 +158,7 @@ const SuspectSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>{`You have added ${chargesCount} charges`}</h1>
+        <h1>{getTitle()}</h1>
         <div className={pageStyles.chargesSummaryWrapper}>
           <ChargesSummary />
         </div>
@@ -156,7 +168,13 @@ const SuspectSummaryPage = () => {
             className="govuk-radios--inline"
             fieldset={{
               legend: {
-                children: <h2>Do you need to add another charge? </h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">
+                    {chargesCount
+                      ? `Do you need to add another charge?`
+                      : `Do you need to add a charge?`}
+                  </span>
+                ),
               },
             }}
             errorMessage={
@@ -188,7 +206,7 @@ const SuspectSummaryPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

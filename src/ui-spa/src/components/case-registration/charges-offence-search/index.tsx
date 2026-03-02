@@ -20,7 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import useChargesCount from "../../../common/hooks/useChargesCount";
-import { formatDate } from "../../../common/utils/formatDate";
+import { format } from "date-fns";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
 
@@ -122,8 +122,8 @@ const ChargesOffenceSearch = () => {
 
     if (!searchText) {
       errors.offenceSearchText = {
-        errorSummaryText: "Please add a search key",
-        inputErrorText: "Please add a search key",
+        errorSummaryText: "Enter an offence",
+        inputErrorText: "Enter an offence to search for",
       };
       isValid = false;
     }
@@ -208,11 +208,9 @@ const ChargesOffenceSearch = () => {
   ) => {
     if (!effectiveFromDate && !effectiveToDate) return "--";
     const from = effectiveFromDate
-      ? formatDate(effectiveFromDate, false, "dd MMM yyyy")
+      ? format(effectiveFromDate, "dd MMM yyyy")
       : "--";
-    const to = effectiveToDate
-      ? formatDate(effectiveToDate, false, "dd MMM yyyy")
-      : "--";
+    const to = effectiveToDate ? format(effectiveToDate, "dd MMM yyyy") : "--";
     return to === "--" ? `From ${from}` : `From ${from} to ${to}`;
   };
 
@@ -318,7 +316,7 @@ const ChargesOffenceSearch = () => {
               className="govuk-input--width-30"
               disabled={isFetching}
               label={{
-                children: <b>Search for Offence</b>,
+                children: <b>Search for an offence</b>,
               }}
               hint={{
                 children:

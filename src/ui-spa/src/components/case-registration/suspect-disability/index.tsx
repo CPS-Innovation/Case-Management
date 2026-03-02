@@ -75,8 +75,8 @@ const SuspectDisabilityPage = () => {
 
     if (!suspectDisabilityRadio) {
       errors.suspectDisabilityRadio = {
-        errorSummaryText: "Please select an option ",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select whether the defendant has a disability",
+        inputErrorText: "Select whether the defendant has a disability",
       };
     }
 
@@ -198,7 +198,7 @@ const SuspectDisabilityPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

@@ -1,15 +1,20 @@
-import type { ChargesFormData } from "../../../../common/reducers/caseRegistrationReducer";
+import type {
+  ChargesFormData,
+  Victim,
+} from "../../../../common/reducers/caseRegistrationReducer";
 import { Tag } from "../../../govuk";
 import { formatNameUtil } from "../../../../common/utils/formatNameUtil";
-import { formatDate } from "../../../../common/utils/formatDate";
+import { format } from "date-fns";
 import styles from "./index.module.scss";
 
 export const getChargesSummaryListRows = (
   charge: ChargesFormData,
+  victimList: Victim[],
   isCaseSummaryPage: boolean = false,
   suspectId?: string,
   chargeId?: string,
 ) => {
+  const victim = victimList.find((v) => v.victimId === charge.victim?.victimId);
   const rows = [
     isCaseSummaryPage && {
       key: { children: <b>{charge.selectedOffence.code}</b> },
@@ -27,35 +32,36 @@ export const getChargesSummaryListRows = (
                 : `/case-registration/charges-summary`,
             },
             visuallyHiddenText: "Remove Charge",
+            className: "govuk-link--no-visited-state",
           },
         ],
       },
     },
     {
-      key: { children: <b>Date of Offence</b> },
+      key: { children: <b>Date of offence</b> },
       value: {
         children: (
           <span>
             {charge.offenceToDate
-              ? `${formatDate(charge.offenceFromDate, false, "dd MMM yyyy")} to ${formatDate(charge.offenceToDate, false, "dd MMM yyyy")}`
-              : formatDate(charge.offenceFromDate, false, "dd MMM yyyy")}
+              ? `${format(charge.offenceFromDate, "dd MMMM yyyy")} to ${format(charge.offenceToDate, "dd MMMM yyyy")}`
+              : format(charge.offenceFromDate, "dd MMMM yyyy")}
           </span>
         ),
       },
     },
-    charge.victim && {
+    victim && {
       key: { children: <b>Victim</b> },
       value: {
         children: (
           <div>
             <span>
               {formatNameUtil(
-                charge.victim?.victimFirstNameText,
-                charge.victim?.victimLastNameText,
+                victim?.victimFirstNameText,
+                victim?.victimLastNameText,
               )}
             </span>
             <div className={styles.tagsContainer}>
-              {charge.victim.victimAdditionalDetailsCheckboxes.map(
+              {victim?.victimAdditionalDetailsCheckboxes.map(
                 (detail, index) => (
                   <Tag key={index} gdsTagColour="blue">
                     {detail}

@@ -30,6 +30,7 @@ import ChargeRemoveConfirmationPage from "./case-registration/charge-remove-conf
 import ChargesVictimDuplicateConfirmationPage from "./case-registration/charges-victim-duplicate-confirmation";
 import ChangeAreaConfirmationPage from "./case-registration/change-area-confirmation";
 import ChangeRegisteringUnitConfirmationPage from "./case-registration/change-registering-unit-confirmation";
+import RemoveAllSuspectsConfirmationPage from "./case-registration/remove-all-suspects-confirmation";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -153,6 +154,10 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/change-registering-unit-confirmation"
           element={<ChangeRegisteringUnitConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/remove-all-suspects-confirmation"
+          element={<RemoveAllSuspectsConfirmationPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />
