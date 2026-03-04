@@ -851,12 +851,6 @@ export const getResetFieldValues = (
       firstHearingDateText: "",
     };
   }
-  if (data.suspectDetailsRadio === "no") {
-    resetValues = {
-      ...resetValues,
-      suspects: [],
-    };
-  }
 
   return resetValues;
 };

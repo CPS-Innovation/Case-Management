@@ -1293,6 +1293,39 @@ describe("caseRegistrationReducer", () => {
     const state = caseRegistrationReducer(modifiedState, action);
     expect(state).toEqual(modifiedState);
   });
+
+  it("REMOVE_ALL_SUSPECTS should remove all the suspects", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          suspectState,
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectId: "suspect-2",
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_ALL_SUSPECTS",
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(expectedResult);
+  });
 });
 describe("getResetFieldValues", () => {
   it("should reset caseProsecutorText and caseCaseworkerText when caseProsecutorRadio is 'no'", () => {

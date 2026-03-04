@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-export const caseRegistrationSchema = z.object({
-  urn: {
+export const caseRegistrationRequestDataSchema = z.object({
+  urn: z.object({
     policeForce: z.string(),
     policeUnit: z.string(),
     uniqueRef: z.string(),
     year: z.number(),
-  },
+  }),
   registeringAreaId: z.number(),
   registeringUnitId: z.number(),
   allocatedWcuId: z.number(),
@@ -72,5 +72,5 @@ export const caseRegistrationSchema = z.object({
 });
 
 export type CaseRegistrationRequestData = z.infer<
-  typeof caseRegistrationSchema
+  typeof caseRegistrationRequestDataSchema
 >;

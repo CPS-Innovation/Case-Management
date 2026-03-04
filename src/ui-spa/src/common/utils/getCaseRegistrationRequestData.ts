@@ -1,7 +1,8 @@
-import type {
-  CaseMonitoringCode,
-  PoliceUnit,
-  CaseRegistrationRequestData,
+import {
+  type CaseMonitoringCode,
+  type PoliceUnit,
+  type CaseRegistrationRequestData,
+  caseRegistrationRequestDataSchema,
 } from "../../schemas";
 import {
   type CaseRegistrationFormData,
@@ -26,7 +27,7 @@ export const getCaseRegistrationRequestData = (
       };
     });
 
-  return {
+  const requestData: CaseRegistrationRequestData = {
     urn: {
       policeForce: formData.urnPoliceForceText,
       policeUnit: formData.urnPoliceUnitText,
@@ -56,6 +57,17 @@ export const getCaseRegistrationRequestData = (
     defendants: getSuspectRequestData(formData.suspects, formData.victimsList),
     victims: getVictimRequestData(formData.victimsList),
   };
+
+  const validatedData =
+    caseRegistrationRequestDataSchema.safeParse(requestData);
+
+  if (!validatedData.success) {
+    console.warn(
+      `Invalid case registration request data: ${JSON.stringify(validatedData.error)}`,
+    );
+  }
+
+  return requestData;
 };
 
 const getVictimRequestData = (victims: Victim[]) => {

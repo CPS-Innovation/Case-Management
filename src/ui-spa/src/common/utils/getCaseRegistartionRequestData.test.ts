@@ -745,4 +745,62 @@ describe("getCaseRegistrationRequestData", () => {
     );
     expect(result).toEqual(expectedResult);
   });
+
+  it("should calls console.warn when schema validation fails", () => {
+    const formData: CaseRegistrationFormData = {
+      operationNameRadio: "yes",
+      suspectDetailsRadio: "yes",
+      operationNameText: "Operation Name",
+      areaOrDivisionText: { id: 1, description: "Area 1" },
+      urnPoliceForceText: "PF001",
+      urnPoliceUnitText: "PU001",
+      urnUniqueReferenceText: "URN001",
+      urnYearReferenceText: "21",
+      registeringUnitText: { id: 1, description: "Registering Unit 1" },
+      witnessCareUnitText: { id: null, description: "" },
+      firstHearingRadio: "no",
+      firstHearingCourtLocationText: { id: null, description: "" },
+      firstHearingDateText: "",
+      caseComplexityRadio: { shortCode: "HIGH", description: "High" },
+      caseMonitoringCodesCheckboxes: ["MC001", "MC002"],
+      caseProsecutorRadio: "no",
+      caseInvestigatorRadio: "no",
+      caseProsecutorText: { id: null, description: "" },
+      caseCaseworkerText: { id: null, description: "" },
+      caseInvestigatorTitleSelect: {
+        shortCode: null,
+        display: "",
+      },
+      caseInvestigatorFirstNameText: "",
+      caseInvestigatorLastNameText: "",
+      caseInvestigatorShoulderNameText: "",
+      caseInvestigatorShoulderNumberText: "",
+      suspects: [],
+      victimsList: [],
+      wantToAddChargesRadio: "",
+      navigation: {
+        fromCaseSummaryPage: false,
+        fromChargeSummaryPage: false,
+        fromSuspectSummaryPage: false,
+        changeCaseArea: false,
+        changeCaseDetails: false,
+      },
+    };
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // Act
+    getCaseRegistrationRequestData(formData, [], {
+      code: 123,
+      description: "Police Force 1",
+    } as any);
+
+    // Assert
+    expect(warnSpy).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringMatching(/^Invalid case registration request data:/),
+    );
+
+    warnSpy.mockRestore();
+  });
 });
