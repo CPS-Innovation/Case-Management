@@ -12,5 +12,7 @@ export * from "./responses/offences";
 export * from "./responses/offenderTypes";
 export * from "./responses/policeUnits";
 export * from "./responses/religions";
+export * from "./responses/validateUrn";
+export * from "./responses/caseRegistration";
 export * from "./tagColor";
 export * from "./requests/caseRegistration";

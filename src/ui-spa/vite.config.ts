@@ -36,6 +36,7 @@ export default defineConfig(({ command, mode }) => {
         }),
     ].filter(Boolean),
     test: {
+      silent: true,
       globals: true,
       environment: "jsdom",
       setupFiles: ["./src/tests/setup.ts"],
