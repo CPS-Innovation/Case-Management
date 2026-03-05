@@ -464,6 +464,7 @@ describe("caseRegistrationReducer", () => {
             legislation: "sample legislation",
             effectiveFromDate: "2024-01-01",
             effectiveToDate: "2024-12-31",
+            modeOfTrial: "abc",
           },
         },
       },
@@ -481,6 +482,7 @@ describe("caseRegistrationReducer", () => {
         legislation: "sample legislation",
         effectiveFromDate: "2024-01-01",
         effectiveToDate: "2024-12-31",
+        modeOfTrial: "abc",
       },
       offenceFromDate: "",
       offenceToDate: "",
@@ -1034,6 +1036,7 @@ describe("caseRegistrationReducer", () => {
                 "Contrary to sections 5(1)(f) and 21(1) of the Wildlife and Countryside Act 1981.",
               effectiveFromDate: "1998-03-17T00:00:00",
               effectiveToDate: "1998-04-17T00:00:00",
+              modeOfTrial: "abc",
             },
             {
               code: "PB92005",
@@ -1042,6 +1045,7 @@ describe("caseRegistrationReducer", () => {
                 "Contrary to sections 1(1) and 12 of the Protection of Badgers Act 1992.",
               effectiveFromDate: "1998-03-17T00:00:00",
               effectiveToDate: null,
+              modeOfTrial: "abc",
             },
           ],
           total: 2,
@@ -1288,6 +1292,39 @@ describe("caseRegistrationReducer", () => {
     };
     const state = caseRegistrationReducer(modifiedState, action);
     expect(state).toEqual(modifiedState);
+  });
+
+  it("REMOVE_ALL_SUSPECTS should remove all the suspects", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          suspectState,
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectId: "suspect-2",
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "REMOVE_ALL_SUSPECTS",
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(expectedResult);
   });
 });
 describe("getResetFieldValues", () => {

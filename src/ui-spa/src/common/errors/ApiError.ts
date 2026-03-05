@@ -11,9 +11,7 @@ export class ApiError extends Error {
     customProperties?: Record<string, string>,
     customMessage?: string,
   ) {
-    super(
-      `An error occurred contacting the server at ${path}: ${message}; status - ${statusText} (${status})`,
-    );
+    super(`API Error: ${path} returned ${status} ${statusText} - ${message}`);
     this.path = path;
     this.code = status;
     this.customProperties = customProperties;

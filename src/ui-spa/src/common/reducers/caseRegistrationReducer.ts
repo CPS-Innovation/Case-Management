@@ -1,17 +1,20 @@
-import type { CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
-import type { CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
-import type { CourtLocations } from "../types/responses/CourtLocations";
-import type { CaseComplexities } from "../types/responses/CaseComplexities";
-import type { CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes";
-import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
-import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
-import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
-import type { PoliceUnits } from "../types/responses/PoliceUnits";
-import type { Genders } from "../types/responses/Genders";
-import type { Ethnicities } from "../types/responses/Ethnicities";
-import type { Religions } from "../types/responses/Religions";
-import type { OffenderTypes } from "../types/responses/OffenderTypes";
-import type { Offences, Offence } from "../types/responses/Offences";
+import type {
+  CaseAreasAndRegisteringUnits,
+  CaseAreasAndWitnessCareUnits,
+  CourtLocations,
+  CaseComplexities,
+  CaseMonitoringCodes,
+  CaseProsecutors,
+  CaseCaseworkers,
+  InvestigatorTitles,
+  PoliceUnits,
+  Genders,
+  Ethnicities,
+  Religions,
+  OffenderTypes,
+  Offences,
+  Offence,
+} from "../../schemas";
 import { v4 as uuidv4 } from "uuid";
 
 export type CaseRegistrationField =
@@ -189,6 +192,7 @@ export const chargeInitialState: ChargesFormData = {
     legislation: "",
     effectiveFromDate: "",
     effectiveToDate: "",
+    modeOfTrial: "",
   },
 
   offenceFromDate: "",
@@ -845,12 +849,6 @@ export const getResetFieldValues = (
       ...resetValues,
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
-    };
-  }
-  if (data.suspectDetailsRadio === "no") {
-    resetValues = {
-      ...resetValues,
-      suspects: [],
     };
   }
 

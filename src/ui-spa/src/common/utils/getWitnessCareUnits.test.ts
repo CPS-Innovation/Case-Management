@@ -1,5 +1,5 @@
 import { getWitnessCareUnits } from "./getWitnessCareUnits";
-import type { CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
+import type { CaseAreasAndWitnessCareUnits } from "../../schemas";
 
 describe("getWitnessCareUnits", () => {
   it("returns unique unitId and unitDescription for a given area", () => {

@@ -1,4 +1,4 @@
-import { type Ethnicities } from "../../common/types/responses/Ethnicities";
+import { type Ethnicities } from "../../schemas";
 export const suspectEthnicitiesDev: Ethnicities = [
   { shortCode: "asian", description: "Asian" },
   { shortCode: "black", description: "Black" },
