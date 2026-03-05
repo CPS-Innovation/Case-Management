@@ -17,6 +17,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useIsAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
 import { sanitizeOperationNameText } from "../../common/utils/sanitizeOperationNameText";
+import { DEFAULT_COMPLEXITY_DESCRIPTION } from "../../common/constants/general";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -239,21 +240,23 @@ const CaseRegistrationPage = () => {
   }, [witnessCareUnitsData, dispatch, state.apiData.areasAndWitnessCareUnits]);
 
   useEffect(() => {
-    if (caseComplexitiesData && !state.apiData.caseComplexities) {
-      dispatch({
-        type: "SET_CASE_COMPLEXITIES",
-        payload: {
-          caseComplexities: caseComplexitiesData,
-        },
-      });
-      if (
-        caseComplexitiesData &&
-        !state.formData.caseComplexityRadio.shortCode
-      ) {
+    if (caseComplexitiesData) {
+      if (!state.apiData.caseComplexities) {
+        dispatch({
+          type: "SET_CASE_COMPLEXITIES",
+          payload: {
+            caseComplexities: caseComplexitiesData,
+          },
+        });
+
         const defaultComplexity = caseComplexitiesData.find(
-          (complexity) => complexity.description === "Basic",
+          (complexity) =>
+            complexity.description === DEFAULT_COMPLEXITY_DESCRIPTION,
         );
-        if (defaultComplexity) {
+        if (
+          defaultComplexity &&
+          !state.formData.caseComplexityRadio.shortCode
+        ) {
           dispatch({
             type: "SET_FIELDS",
             payload: {

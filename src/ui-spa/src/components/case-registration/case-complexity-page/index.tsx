@@ -151,19 +151,18 @@ const CaseComplexityPage = () => {
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
       });
-      navigate("/case-registration/case-summary");
-      return;
     }
-    return navigate("/case-registration/case-monitoring-codes");
+    navigate("/case-registration/case-summary");
   };
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    dispatch({
-      type: "SET_NAVIGATION_DATA",
-      payload: { fromCaseSummaryPage: false },
-    });
-
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromCaseSummaryPage: false },
+      });
+    }
     navigate(previousRoute);
   };
   return (
