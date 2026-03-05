@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
 import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import useChargesCount from "../../../common/hooks/useChargesCount";
 import pageStyles from "./index.module.scss";
 import styles from "../index.module.scss";
 const PRE_CHARGE_DECISION_CODE = "CSEA";
@@ -29,6 +30,7 @@ const CaseMonitoringCodesPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const [formData, setFormData] = useState<{
     caseMonitoringCodesCheckboxes: string[];
@@ -97,9 +99,18 @@ const CaseMonitoringCodesPage = () => {
     if (state.formData.navigation.fromCaseSummaryPage) {
       return "/case-registration/case-summary";
     }
-
-    return "/case-registration/case-complexity";
-  }, [state.formData.navigation.fromCaseSummaryPage]);
+    if (chargesCount) {
+      return "/case-registration/first-hearing";
+    }
+    if (state.formData.suspects.length > 0) {
+      return "/case-registration/want-to-add-charges";
+    }
+    return "/case-registration/case-details";
+  }, [
+    chargesCount,
+    state.formData.suspects.length,
+    state.formData.navigation.fromCaseSummaryPage,
+  ]);
 
   useEffect(() => {
     if (caseMonitoringCodesError) throw caseMonitoringCodesError;

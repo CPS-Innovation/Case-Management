@@ -282,7 +282,7 @@ const FirstHearingPage = () => {
       return;
     }
 
-    return navigate("/case-registration/case-complexity");
+    return navigate("/case-registration/case-monitoring-codes");
   };
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {

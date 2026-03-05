@@ -12,6 +12,7 @@ import { type GeneralRadioValue } from "../../common/reducers/caseRegistrationRe
 import {
   getCaseAreasAndRegisteringUnits,
   getCaseAreasAndWitnessCareUnits,
+  getCaseComplexities,
 } from "../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useIsAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
@@ -61,6 +62,16 @@ const CaseRegistrationPage = () => {
       enabled: !state.apiData.areasAndWitnessCareUnits,
     },
   );
+
+  const { data: caseComplexitiesData, error: caseComplexitiesError } = useQuery(
+    {
+      queryKey: ["case-complexities"],
+      queryFn: () => getCaseComplexities(),
+      enabled: !state.apiData.caseComplexities,
+      retry: false,
+    },
+  );
+
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -179,6 +190,10 @@ const CaseRegistrationPage = () => {
   }, [witnessCareUnitsError]);
 
   useEffect(() => {
+    if (caseComplexitiesError) throw caseComplexitiesError;
+  }, [caseComplexitiesError]);
+
+  useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
@@ -222,6 +237,43 @@ const CaseRegistrationPage = () => {
       });
     }
   }, [witnessCareUnitsData, dispatch, state.apiData.areasAndWitnessCareUnits]);
+
+  useEffect(() => {
+    if (caseComplexitiesData && !state.apiData.caseComplexities) {
+      dispatch({
+        type: "SET_CASE_COMPLEXITIES",
+        payload: {
+          caseComplexities: caseComplexitiesData,
+        },
+      });
+      if (
+        caseComplexitiesData &&
+        !state.formData.caseComplexityRadio.shortCode
+      ) {
+        const defaultComplexity = caseComplexitiesData.find(
+          (complexity) => complexity.description === "Basic",
+        );
+        if (defaultComplexity) {
+          dispatch({
+            type: "SET_FIELDS",
+            payload: {
+              data: {
+                caseComplexityRadio: {
+                  shortCode: defaultComplexity.shortCode,
+                  description: defaultComplexity.description,
+                },
+              },
+            },
+          });
+        }
+      }
+    }
+  }, [
+    caseComplexitiesData,
+    dispatch,
+    state.apiData.caseComplexities,
+    state.formData.caseComplexityRadio.shortCode,
+  ]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

@@ -128,7 +128,7 @@ const SuspectSummaryPage = () => {
       navigate("/case-registration/want-to-add-charges");
       return;
     }
-    navigate("/case-registration/case-complexity");
+    navigate("/case-registration/case-monitoring-codes");
   };
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
