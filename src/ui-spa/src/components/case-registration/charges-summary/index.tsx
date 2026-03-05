@@ -124,7 +124,7 @@ const SuspectSummaryPage = () => {
       navigate("/case-registration/first-hearing");
       return;
     }
-    navigate("/case-registration/case-complexity");
+    navigate("/case-registration/case-monitoring-codes");
   };
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {

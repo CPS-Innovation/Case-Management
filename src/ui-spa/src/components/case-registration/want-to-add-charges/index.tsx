@@ -106,7 +106,7 @@ const WantToAddCharges = () => {
     });
     const { wantToAddChargesRadio } = formData;
     if (wantToAddChargesRadio === "no") {
-      return navigate("/case-registration/case-complexity");
+      return navigate("/case-registration/case-monitoring-codes");
     }
     if (wantToAddChargesRadio === "yes" && state.formData.suspects.length > 1) {
       return navigate("/case-registration/add-charge-suspect");
