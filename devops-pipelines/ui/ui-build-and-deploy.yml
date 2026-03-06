@@ -9,7 +9,7 @@ trigger:
 pr: none
 
 variables:
-  - group: cm-deployment-global
+  - group: cmrc-deployment-global
 
 stages:
   - template: ../templates/ui-build-and-deploy-stages.yml
@@ -29,10 +29,10 @@ stages:
   # - template: ../templates/ui-build-and-deploy-stages.yml
   #   parameters:
   #     environment: 'prod'
-  #     agentPool: 'CM Prod Pool'
+  #     agentPool: 'CMRC Prod Pool'
   #     requireValidation: true
   #     notifyUsers: $(notifyUsers)
   #     approvers: $(approvers)
-  #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
+  #     azureSubscription: 'Azure Pipeline: CMRC -Prod'
   #     deployToSlot: true
   #     slotName: 'stg'
