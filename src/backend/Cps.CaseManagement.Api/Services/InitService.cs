@@ -19,9 +19,9 @@ public class InitService(ILogger<InitService> logger, IConfiguration configurati
     public async Task<InitResult> ProcessRequest(HttpRequest req, Guid correlationId, string? cc)
     {
         var redirectUrlCwa = _configuration["RedirectUrl:CaseworkApp"] ?? string.Empty;
-        var redirectUrlCaseManagement = _configuration["RedirectUrl:CaseManagementUi"] ?? string.Empty;
+        var redirectUrlRegisterCase = _configuration["RedirectUrl:RegisterCaseUi"] ?? string.Empty;
 
-        if (string.IsNullOrEmpty(redirectUrlCwa) || string.IsNullOrEmpty(redirectUrlCaseManagement))
+        if (string.IsNullOrEmpty(redirectUrlCwa) || string.IsNullOrEmpty(redirectUrlRegisterCase))
         {
             _logger.LogError("One or more redirect URL's are missing.");
             return new InitResult
@@ -46,12 +46,12 @@ public class InitService(ILogger<InitService> logger, IConfiguration configurati
                 _logger.LogError(ex, "Failed to get ct from mds GetCmsModernTokenAsync");
             }
 
-            _logger.LogInformation("Redirecting to {RedirectUrlCaseManagement} with correlationId {CorrelationId}", redirectUrlCaseManagement, correlationId);
+            _logger.LogInformation("Redirecting to {RedirectUrlRegisterCase} with correlationId {CorrelationId}", redirectUrlRegisterCase, correlationId);
 
             return new InitResult
             {
                 Status = InitResultStatus.Redirect,
-                RedirectUrl = redirectUrlCaseManagement,
+                RedirectUrl = redirectUrlRegisterCase,
                 ShouldSetCookie = true,
                 Cc = cc,
                 Ct = ct
