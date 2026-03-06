@@ -74,7 +74,7 @@ stages:
   #     notifyUsers: $(notifyUsers)
   #     approvers: $(approvers)
   #     agentPool: 'CMRC Prod Pool'
-  #     azureSubscription: 'Azure Pipeline: CMRC -Prod'
+  #     azureSubscription: 'Azure Pipeline: CMRC - Prod'
   #     deployToSlot: true
   #     slotName: 'stg'
   #     buildArtifact: $(buildArtifact)

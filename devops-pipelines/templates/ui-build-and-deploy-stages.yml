@@ -15,7 +15,7 @@ parameters:
       - 'CMRC Prod Pool'
   - name: azureSubscription
     type: string
-    default: 'Azure Pipeline: CMRC -Pre-Prod'
+    default: 'Azure Pipeline: CMRC - Pre-Prod'
   - name: requireValidation
     type: boolean
     default: false

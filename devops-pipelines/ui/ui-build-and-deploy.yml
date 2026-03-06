@@ -33,6 +33,6 @@ stages:
   #     requireValidation: true
   #     notifyUsers: $(notifyUsers)
   #     approvers: $(approvers)
-  #     azureSubscription: 'Azure Pipeline: CMRC -Prod'
+  #     azureSubscription: 'Azure Pipeline: CMRC - Prod'
   #     deployToSlot: true
   #     slotName: 'stg'

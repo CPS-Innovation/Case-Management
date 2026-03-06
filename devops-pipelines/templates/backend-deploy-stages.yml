@@ -24,7 +24,7 @@ parameters:
     default: ''
   - name: azureSubscription
     type: string
-    default: 'Azure Pipeline: CMRC -Pre-Prod'
+    default: 'Azure Pipeline: CMRC - Pre-Prod'
   - name: deployToSlot
     type: boolean
     default: false
