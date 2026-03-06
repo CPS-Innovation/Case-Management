@@ -18,6 +18,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { type VictimAdditionalDetailsValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
+import { DEFAULT_VICTIM_ADDITIONAL_DETAIL_VALUE } from "../../../common/constants/general";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import styles from "../index.module.scss";
@@ -45,7 +46,7 @@ const AddChargeVictimPage = () => {
     selectedVictimRadio: "",
     victimFirstNameText: "",
     victimLastNameText: "",
-    victimAdditionalDetailsCheckboxes: [],
+    victimAdditionalDetailsCheckboxes: [DEFAULT_VICTIM_ADDITIONAL_DETAIL_VALUE],
   });
   const navigate = useNavigate();
   const { suspectId, chargeId } = useParams<{
@@ -173,7 +174,9 @@ const AddChargeVictimPage = () => {
             selectedVictimRadio: value,
             victimFirstNameText: "",
             victimLastNameText: "",
-            victimAdditionalDetailsCheckboxes: [],
+            victimAdditionalDetailsCheckboxes: [
+              DEFAULT_VICTIM_ADDITIONAL_DETAIL_VALUE,
+            ],
           });
           return;
         } else {
