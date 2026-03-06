@@ -12,7 +12,7 @@ parameters:
 jobs:
 - job: Set_Flag
   displayName: "Set the 'isFriday' Flag"
-  pool: 'CM PreProd Pool'
+  pool: 'CMRC PreProd Pool'
   steps:
   - script: |
       isFriday=false

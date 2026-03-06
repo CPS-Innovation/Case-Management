@@ -11,7 +11,7 @@
         "CallingAppValidScopes": "user_impersonation",
         "MdsOptions__BaseUrl": "http://localhost:7079",
         "MdsOptions__AccessKey": "xxx",
-        "RedirectUrl__CaseManagementUi": "http://localhost:5173",
+        "RedirectUrl__RegisterCaseUi": "http://localhost:5173",
         "RedirectUrl__CaseworkApp": "https://example.com/polaris?r="
     },
     "Host": {

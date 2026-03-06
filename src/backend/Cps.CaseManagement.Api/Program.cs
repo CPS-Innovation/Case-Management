@@ -82,7 +82,7 @@ var host = new HostBuilder()
         services.AddSingleton<IMdsMapper, MdsMapper>();
         services.AddScoped<IMdsService, MdsService>();
         services.AddScoped<IInitService, InitService>();
-        services.AddSingleton<IOpenApiConfigurationOptions, CaseManagementApiOpenApiConfigurationOptions>();
+        services.AddSingleton<IOpenApiConfigurationOptions, RegisterCaseApiOpenApiConfigurationOptions>();
         services.AddSingleton<IRequestValidator, RequestValidator>();
     })
     .Build();

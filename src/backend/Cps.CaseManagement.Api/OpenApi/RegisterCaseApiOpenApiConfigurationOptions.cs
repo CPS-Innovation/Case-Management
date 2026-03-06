@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Cps.CaseManagement.Api.OpenApi;
 
-public class CaseManagementApiOpenApiConfigurationOptions : BaseOpenApiConfigurationOptions
+public class RegisterCaseApiOpenApiConfigurationOptions : BaseOpenApiConfigurationOptions
 {
     public override List<IDocumentFilter> DocumentFilters { get; set; } = new List<IDocumentFilter>
     {
@@ -18,8 +18,8 @@ public class CaseManagementApiOpenApiConfigurationOptions : BaseOpenApiConfigura
     public override OpenApiInfo Info { get; set; } = new OpenApiInfo
     {
         Version = "1.0.0",
-        Title = "Case Management Case API Endpoints",
-        Description = "HTTP API Endpoints for interaction with Case Management.",
+        Title = "Case Management Register a Case API Endpoints",
+        Description = "HTTP API Endpoints for interaction with Case Management Register a Case.",
         TermsOfService = null,
         Contact = new OpenApiContact()
         {

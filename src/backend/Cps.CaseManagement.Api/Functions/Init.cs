@@ -19,7 +19,7 @@ public class Init(ILogger<Init> logger, IInitService initService)
     private readonly IInitService _initService = initService;
 
     [Function(nameof(Init))]
-    [OpenApiOperation(operationId: nameof(Init), tags: ["Authentication"], Description = "Represents a function that is the entry point for the Case Management application")]
+    [OpenApiOperation(operationId: nameof(Init), tags: ["Authentication"], Description = "Represents a function that is the entry point for the Case Management Register a Case application")]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: ContentType.ApplicationJson, bodyType: typeof(string), Description = ApiResponseDescriptions.Success)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.BadRequest, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.BadRequest)]
     [OpenApiResponseWithBody(statusCode: HttpStatusCode.Unauthorized, contentType: ContentType.TextPlain, typeof(string), Description = ApiResponseDescriptions.Unauthorized)]

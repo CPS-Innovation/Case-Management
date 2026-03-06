@@ -9,13 +9,13 @@ parameters:
       - prod
   - name: agentPool
     type: string
-    default: 'CM PreProd Pool'
+    default: 'CMRC PreProd Pool'
     values:
-      - 'CM PreProd Pool'
-      - 'CM Prod Pool'
+      - 'CMRC PreProd Pool'
+      - 'CMRC Prod Pool'
   - name: azureSubscription
     type: string
-    default: 'Azure Pipeline: Case Management - Pre-Prod'
+    default: 'Azure Pipeline: CMRC - Pre-Prod'
   - name: requireValidation
     type: boolean
     default: false
@@ -34,7 +34,7 @@ parameters:
 
 stages:
 - stage: Approve_Deployment_${{ parameters.environment }}
-  displayName: 'CM ${{ parameters.environment }} - Approve Deployment'
+  displayName: 'CMRC ${{ parameters.environment }} - Approve Deployment'
   condition: and(succeeded(), ${{ eq(parameters.requireValidation, true) }})
   jobs:
   - template: ./manual-validation-jobs.yml
@@ -50,13 +50,13 @@ stages:
   ${{ else }}:
     dependsOn: []
   variables:
-    buildArtifact: 'cm-ui-${{ parameters.environment }}-drop'
+    buildArtifact: 'cmrc-ui-${{ parameters.environment }}-drop'
   jobs:
     - job: Build_and_Publish_Artifact
       displayName: 'Build UI SPA for the ${{ parameters.environment}} environment'
       pool: ${{ parameters.agentPool }}
       variables:
-      - group: cm-ui-config-${{ parameters.environment }}
+      - group: cmrc-ui-config-${{ parameters.environment }}
       - name: nodeVersion
         value: '20.x'
       - name: workingDir
@@ -99,13 +99,13 @@ stages:
     - deployment: Deploy_UI
       displayName: 'Deploy UI SPA to the ${{ parameters.environment}} environment'
       dependsOn: Build_and_Publish_Artifact
-      environment: 'CM-UI-${{ parameters.environment }}'
+      environment: 'CMRC-UI-${{ parameters.environment }}'
       pool: ${{ parameters.agentPool }}
       variables:
         - name: resourceGroupName
-          value: 'rg-cm-${{ parameters.environment }}'
+          value: 'rg-cmrc-${{ parameters.environment }}'
         - name: webAppName
-          value: 'cm-app-ui-spa-${{ parameters.environment }}'
+          value: 'cmrc-app-ui-spa-${{ parameters.environment }}'
       strategy:
         runOnce:
           deploy:
