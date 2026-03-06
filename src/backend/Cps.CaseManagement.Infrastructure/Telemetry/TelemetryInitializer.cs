@@ -11,6 +11,6 @@ public class TelemetryInitializer : ITelemetryInitializer
     {
         telemetry.Context.GlobalProperties["telemetryVersion"] = Version;
         telemetry.Context.GlobalProperties["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Unknown";
-        telemetry.Context.GlobalProperties["appName"] = "Cps.CaseManagement";
+        telemetry.Context.GlobalProperties["appName"] = "Cps.RegisterCase";
     }
 }

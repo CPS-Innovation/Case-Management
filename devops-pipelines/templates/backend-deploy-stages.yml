@@ -9,10 +9,10 @@ parameters:
       - prod
   - name: agentPool
     type: string
-    default: 'CM PreProd Pool'
+    default: 'CMRC PreProd Pool'
     values:
-      - 'CM PreProd Pool'
-      - 'CM Prod Pool'
+      - 'CMRC PreProd Pool'
+      - 'CMRC Prod Pool'
   - name: requireValidation
     type: boolean
     default: false
@@ -24,7 +24,7 @@ parameters:
     default: ''
   - name: azureSubscription
     type: string
-    default: 'Azure Pipeline: Case Management - Pre-Prod'
+    default: 'Azure Pipeline: CMRC - Pre-Prod'
   - name: deployToSlot
     type: boolean
     default: false
@@ -63,7 +63,7 @@ stages:
   jobs:
     - deployment: Deploy_Backend
       displayName: '${{ parameters.environment }} - Deploy Backend'
-      environment: 'CM-Backend-${{ parameters.environment }}'
+      environment: 'CMRC-Backend-${{ parameters.environment }}'
       strategy:
         runOnce:
           deploy:
@@ -108,7 +108,7 @@ stages:
                 parameters:
                   environment: ${{ parameters.environment }}
                   azureSubscription: ${{ parameters.azureSubscription }}
-                  functionAppName: 'fa-cm-api-${{ parameters.environment }}'
+                  functionAppName: 'fa-cmrc-api-${{ parameters.environment }}'
                   buildArtifact: ${{ parameters.buildArtifact }}
                   deployToSlot: ${{ parameters.deployToSlot }}
                   slotName: ${{ parameters.slotName }}
