@@ -3,7 +3,7 @@ parameters:
   type: string
 - name: projectAcronym
   type: string
-  default: cm
+  default: cmrc
 - name: postmanCollectionPath
   type: string
 - name: appName
