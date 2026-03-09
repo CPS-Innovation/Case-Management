@@ -8,7 +8,7 @@ pr:
     include:
       - src/ui-spa/*
 
-pool: 'CM PreProd Pool'
+pool: 'CMRC PreProd Pool'
 
 variables:
   - name: nodeVersion
