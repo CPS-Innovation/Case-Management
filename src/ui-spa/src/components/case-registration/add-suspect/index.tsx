@@ -206,14 +206,6 @@ const AddSuspectPage = () => {
       value = sanitizeNameText(value as string);
     }
 
-    if (fieldName === "addSuspectRadio" && value === "person") {
-      resetValues.suspectCompanyNameText = "";
-    }
-    if (fieldName === "addSuspectRadio" && value === "company") {
-      resetValues.suspectFirstNameText = "";
-      resetValues.suspectLastNameText = "";
-      resetValues.suspectAdditionalDetailsCheckboxes = [];
-    }
     setFormData((prevState) => ({
       ...prevState,
       ...resetValues,
@@ -239,14 +231,15 @@ const AddSuspectPage = () => {
     event.preventDefault();
 
     if (!validateFormData()) return;
-    dispatch({
-      type: "RESET_SUSPECT_FIELD",
-      payload: { index: suspectIndex },
-    });
 
     dispatch({
       type: "SET_SUSPECT_FIELDS",
       payload: { index: suspectIndex, data: formData },
+    });
+
+    dispatch({
+      type: "RESET_SUSPECT_FIELD",
+      payload: { index: suspectIndex },
     });
 
     if (formData.addSuspectRadio === "company") {

@@ -891,34 +891,33 @@ const resetSuspectAdditionalDetails = (
   resetValues: Partial<SuspectFormData>,
 ) => {
   if (!value.includes("Date of birth")) {
-    resetValues.suspectDOBDayText = "";
-    resetValues.suspectDOBMonthText = "";
-    resetValues.suspectDOBYearText = "";
+    resetValues.suspectDOBDayText = suspectInitialState.suspectDOBDayText;
+    resetValues.suspectDOBMonthText = suspectInitialState.suspectDOBMonthText;
+    resetValues.suspectDOBYearText = suspectInitialState.suspectDOBYearText;
   }
   if (!value.includes("Gender")) {
-    resetValues.suspectGenderRadio = { shortCode: "", description: "" };
+    resetValues.suspectGenderRadio = suspectInitialState.suspectGenderRadio;
   }
   if (!value.includes("Disability")) {
-    resetValues.suspectDisabilityRadio = "";
+    resetValues.suspectDisabilityRadio =
+      suspectInitialState.suspectDisabilityRadio;
   }
   if (!value.includes("Religion")) {
-    resetValues.suspectReligionRadio = { shortCode: "", description: "" };
+    resetValues.suspectReligionRadio = suspectInitialState.suspectReligionRadio;
   }
   if (!value.includes("Ethnicity")) {
-    resetValues.suspectEthnicityRadio = { shortCode: "", description: "" };
+    resetValues.suspectEthnicityRadio =
+      suspectInitialState.suspectEthnicityRadio;
   }
   if (!value.includes("Alias details")) {
-    resetValues.suspectAliases = [];
+    resetValues.suspectAliases = suspectInitialState.suspectAliases;
   }
   if (!value.includes("Arrest Summons Number (ASN)")) {
-    resetValues.suspectASNText = "";
+    resetValues.suspectASNText = suspectInitialState.suspectASNText;
   }
   if (!value.includes("Type of offender")) {
-    resetValues.suspectOffenderTypesRadio = {
-      shortCode: "",
-      display: "",
-      arrestDate: "",
-    };
+    resetValues.suspectOffenderTypesRadio =
+      suspectInitialState.suspectOffenderTypesRadio;
   }
 
   return resetValues;
