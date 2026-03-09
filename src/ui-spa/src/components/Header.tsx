@@ -15,7 +15,7 @@ export default function Header() {
           >
             <span className="govuk-header__logotype">
               <span className="govuk-header__logotype-text">
-                Case Management
+                Case Management Register a Case
               </span>
             </span>
           </a>

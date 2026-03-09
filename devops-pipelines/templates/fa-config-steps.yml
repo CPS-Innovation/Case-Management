@@ -49,8 +49,8 @@ steps:
             "slotSetting": false
           },
           {
-            "name": "RedirectUrl__CaseManagementUi",
-            "value": "$(RedirectUrlCaseManagementUi)",
+            "name": "RedirectUrl__RegisterCaseUi",
+            "value": "$(RedirectUrlRegisterCaseUi)",
             "slotSetting": false
           },
           {

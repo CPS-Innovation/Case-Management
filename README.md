@@ -1,4 +1,4 @@
-# Case Management
+# Case Management Register a Case
 
 ## Introduction
 
