@@ -200,7 +200,7 @@ describe("gateway-api", () => {
       "API Error: https://mocked-out-api/api/v1/wms-units returned 200 OK - SyntaxError: Unexpected token < in JSON",
     );
   });
-  it("getCaseAreasAndRegisteringUnits - response schema validation failed", async () => {
+  it("getCaseAreasAndWitnessCareUnits - response schema validation failed", async () => {
     const mockBody = [
       {
         areaId: 2,
@@ -650,7 +650,7 @@ describe("gateway-api", () => {
       "API Error: https://mocked-out-api/api/v1/titles returned 200 OK - SyntaxError: Unexpected token < in JSON",
     );
   });
-  it("getCaseCaseworkers - response schema validation failed", async () => {
+  it("getInvestigatorTitles - response schema validation failed", async () => {
     const mockBody = "abc";
     (globalThis.fetch as any).mockResolvedValue({
       ok: true,
@@ -820,6 +820,9 @@ describe("gateway-api", () => {
     });
 
     await expect(getReligions()).rejects.toBeInstanceOf(ApiError);
+    await expect(getReligions()).rejects.toThrow(
+      "API Error: https://mocked-out-api/api/v1/religions returned 500 Internal Server Error - getting religions failed",
+    );
   });
 
   it("getReligions - invalid json response throws error", async () => {
@@ -884,7 +887,7 @@ describe("gateway-api", () => {
 
     await expect(getOffenderTypes()).rejects.toBeInstanceOf(ApiError);
     await expect(getOffenderTypes()).rejects.toThrow(
-      "API Error: https://mocked-out-api/api/v1/offender-categories returned 500 Internal Server Error",
+      "API Error: https://mocked-out-api/api/v1/offender-categories returned 500 Internal Server Error - getting offender categories failed",
     );
   });
 
@@ -951,7 +954,7 @@ describe("gateway-api", () => {
 
     await expect(getPoliceUnits()).rejects.toBeInstanceOf(ApiError);
     await expect(getPoliceUnits()).rejects.toThrow(
-      "API Error: https://mocked-out-api/api/v1/police-units returned 500 Internal Server Error",
+      "API Error: https://mocked-out-api/api/v1/police-units returned 500 Internal Server Error - getting police units failed",
     );
   });
 
