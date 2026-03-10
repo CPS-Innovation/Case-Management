@@ -1,22 +1,43 @@
 import { v4 as uuidv4 } from "uuid";
 import { GATEWAY_BASE_URL, GATEWAY_SCOPE } from "../config";
 import { getAccessToken } from "../auth";
-import type { CaseAreasAndRegisteringUnits } from "../common/types/responses/CaseAreasAndRegisteringUnits";
-import type { CaseAreasAndWitnessCareUnits } from "../common/types/responses/CaseAreasAndWitnessCareUnits";
-import type { CourtLocations } from "../common/types/responses/CourtLocations";
-import type { CaseComplexities } from "../common/types/responses/CaseComplexities";
-import type { CaseMonitoringCodes } from "../common/types/responses/CaseMonitoringCodes";
+import { z } from "zod";
+import {
+  type CaseAreasAndRegisteringUnits,
+  type CaseAreasAndWitnessCareUnits,
+  type CourtLocations,
+  type CaseComplexities,
+  type CaseMonitoringCodes,
+  type CaseProsecutors,
+  type CaseCaseworkers,
+  type InvestigatorTitles,
+  type CaseRegistrationRequestData,
+  type Genders,
+  type Ethnicities,
+  type Religions,
+  type OffenderTypes,
+  type PoliceUnits,
+  type Offences,
+  type ValidateUrn,
+  type CaseRegistrationResponse,
+  caseAreasAndRegisteringUnitsSchema,
+  caseAreasAndWitnessCareUnitsSchema,
+  courtLocationsSchema,
+  caseComplexitiesSchema,
+  caseMonitoringCodesSchema,
+  caseProsecutorsSchema,
+  caseCaseworkersSchema,
+  investigatorTitlesSchema,
+  gendersSchema,
+  ethnicitiesSchema,
+  religionsSchema,
+  offenderTypesSchema,
+  policeUnitsSchema,
+  offencesSchema,
+  validateUrnSchema,
+  caseRegistrationResponseSchema,
+} from "../schemas";
 import { ApiError } from "../common/errors/ApiError";
-import type { CaseProsecutors } from "../common/types/responses/CaseProsecutors";
-import type { CaseCaseworkers } from "../common/types/responses/CaseCaseworkers";
-import type { InvestigatorTitles } from "../common/types/responses/InvestigatorTitles";
-import type { CaseRegistration } from "../common/types/requests/CaseRegistration";
-import type { Genders } from "../common/types/responses/Genders";
-import type { Ethnicities } from "../common/types/responses/Ethnicities";
-import type { Religions } from "../common/types/responses/Religions";
-import type { OffenderTypes } from "../common/types/responses/OffenderTypes";
-import type { PoliceUnits } from "../common/types/responses/PoliceUnits";
-import type { Offences } from "../common/types/responses/Offences";
 
 export const CORRELATION_ID = "Correlation-Id";
 
@@ -27,26 +48,57 @@ const buildCommonHeaders = async (): Promise<Record<string, string>> => {
   };
 };
 
-export const getCaseAreasAndRegisteringUnits = async () => {
-  const url = `${GATEWAY_BASE_URL}/api/v1/units`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      ...(await buildCommonHeaders()),
-    },
-  });
-
-  if (!response.ok) {
-    throw new ApiError(
-      `Getting case areas and registering units failed`,
-      url,
-      response,
-    );
+export const parseAndValidateResponse = async <T>(
+  response: Response,
+  url: string,
+  schema: z.ZodType<T>,
+  contextText: string,
+): Promise<T> => {
+  let parsedJson: unknown;
+  try {
+    parsedJson = await response.json();
+  } catch (error) {
+    throw new ApiError(`${error}`, url, response);
   }
-  return (await response.json()) as CaseAreasAndRegisteringUnits;
+
+  const result = schema.safeParse(parsedJson);
+
+  if (!result.success) {
+    console.warn(`${contextText} validation failed`, result.error);
+    throw new ApiError(`response schema validation failed`, url, response);
+  }
+
+  return result.data;
 };
+
+export const getCaseAreasAndRegisteringUnits: () => Promise<CaseAreasAndRegisteringUnits> =
+  async () => {
+    const url = `${GATEWAY_BASE_URL}/api/v1/units`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        ...(await buildCommonHeaders()),
+      },
+    });
+
+    if (!response.ok) {
+      throw new ApiError(
+        `Getting case areas and registering units failed`,
+        url,
+        response,
+      );
+    }
+
+    const result = await parseAndValidateResponse<CaseAreasAndRegisteringUnits>(
+      response,
+      url,
+      caseAreasAndRegisteringUnitsSchema,
+      "caseAreasAndRegisteringUnitsSchema",
+    );
+    return result;
+  };
 
 export const getCaseAreasAndWitnessCareUnits = async () => {
   const url = `${GATEWAY_BASE_URL}/api/v1/wms-units`;
@@ -66,7 +118,14 @@ export const getCaseAreasAndWitnessCareUnits = async () => {
       response,
     );
   }
-  return (await response.json()) as CaseAreasAndWitnessCareUnits;
+
+  const result = await parseAndValidateResponse<CaseAreasAndWitnessCareUnits>(
+    response,
+    url,
+    caseAreasAndWitnessCareUnitsSchema,
+    "caseAreasAndWitnessCareUnitsSchema",
+  );
+  return result;
 };
 
 export const validateUrn = async (urn: string) => {
@@ -84,7 +143,13 @@ export const validateUrn = async (urn: string) => {
     throw new ApiError(`URN validation failed`, url, response);
   }
 
-  return (await response.json()) as boolean;
+  const result = await parseAndValidateResponse<ValidateUrn>(
+    response,
+    url,
+    validateUrnSchema,
+    "validateUrnSchema",
+  );
+  return result;
 };
 
 export const getCourtsByUnitId = async (registeringUnitId: number) => {
@@ -100,7 +165,14 @@ export const getCourtsByUnitId = async (registeringUnitId: number) => {
   if (!response.ok) {
     throw new ApiError(`getting courts by unit ID failed`, url, response);
   }
-  return (await response.json()) as CourtLocations;
+
+  const result = await parseAndValidateResponse<CourtLocations>(
+    response,
+    url,
+    courtLocationsSchema,
+    "courtLocationsSchema",
+  );
+  return result;
 };
 
 export const getCaseComplexities = async () => {
@@ -114,9 +186,16 @@ export const getCaseComplexities = async () => {
   });
 
   if (!response.ok) {
-    throw new ApiError(`getting complexities failed`, url, response);
+    throw new ApiError(`getting case complexities failed`, url, response);
   }
-  return (await response.json()) as CaseComplexities;
+
+  const result = await parseAndValidateResponse<CaseComplexities>(
+    response,
+    url,
+    caseComplexitiesSchema,
+    "caseComplexitiesSchema",
+  );
+  return result;
 };
 
 export const getCaseMonitoringCodes = async () => {
@@ -132,7 +211,14 @@ export const getCaseMonitoringCodes = async () => {
   if (!response.ok) {
     throw new ApiError(`getting monitoring codes failed`, url, response);
   }
-  return (await response.json()) as CaseMonitoringCodes;
+
+  const result = await parseAndValidateResponse<CaseMonitoringCodes>(
+    response,
+    url,
+    caseMonitoringCodesSchema,
+    "caseMonitoringCodesSchema",
+  );
+  return result;
 };
 
 export const getCaseProsecutors = async (registeringUnitId: number) => {
@@ -148,7 +234,14 @@ export const getCaseProsecutors = async (registeringUnitId: number) => {
   if (!response.ok) {
     throw new ApiError(`getting prosecutors by unit ID failed`, url, response);
   }
-  return (await response.json()) as CaseProsecutors;
+
+  const result = await parseAndValidateResponse<CaseProsecutors>(
+    response,
+    url,
+    caseProsecutorsSchema,
+    "caseProsecutorsSchema",
+  );
+  return result;
 };
 
 export const getCaseCaseworkers = async (registeringUnitId: number) => {
@@ -164,7 +257,14 @@ export const getCaseCaseworkers = async (registeringUnitId: number) => {
   if (!response.ok) {
     throw new ApiError(`getting caseworkers by unit ID failed`, url, response);
   }
-  return (await response.json()) as CaseCaseworkers;
+
+  const result = await parseAndValidateResponse<CaseCaseworkers>(
+    response,
+    url,
+    caseCaseworkersSchema,
+    "caseCaseworkersSchema",
+  );
+  return result;
 };
 
 export const getInvestigatorTitles = async () => {
@@ -179,7 +279,14 @@ export const getInvestigatorTitles = async () => {
   if (!response.ok) {
     throw new ApiError(`getting investigator titles failed`, url, response);
   }
-  return (await response.json()) as InvestigatorTitles;
+
+  const result = await parseAndValidateResponse<InvestigatorTitles>(
+    response,
+    url,
+    investigatorTitlesSchema,
+    "investigatorTitlesSchema",
+  );
+  return result;
 };
 
 export const getGenders = async () => {
@@ -194,7 +301,14 @@ export const getGenders = async () => {
   if (!response.ok) {
     throw new ApiError(`getting genders failed`, url, response);
   }
-  return (await response.json()) as Genders;
+
+  const result = await parseAndValidateResponse<Genders>(
+    response,
+    url,
+    gendersSchema,
+    "gendersSchema",
+  );
+  return result;
 };
 
 export const getEthnicities = async () => {
@@ -209,7 +323,14 @@ export const getEthnicities = async () => {
   if (!response.ok) {
     throw new ApiError(`getting ethnicities failed`, url, response);
   }
-  return (await response.json()) as Ethnicities;
+
+  const result = await parseAndValidateResponse<Ethnicities>(
+    response,
+    url,
+    ethnicitiesSchema,
+    "ethnicitiesSchema",
+  );
+  return result;
 };
 
 export const getReligions = async () => {
@@ -224,7 +345,14 @@ export const getReligions = async () => {
   if (!response.ok) {
     throw new ApiError(`getting religions failed`, url, response);
   }
-  return (await response.json()) as Religions;
+
+  const result = await parseAndValidateResponse<Religions>(
+    response,
+    url,
+    religionsSchema,
+    "religionsSchema",
+  );
+  return result;
 };
 
 export const getOffenderTypes = async () => {
@@ -239,7 +367,14 @@ export const getOffenderTypes = async () => {
   if (!response.ok) {
     throw new ApiError(`getting offender categories failed`, url, response);
   }
-  return (await response.json()) as OffenderTypes;
+
+  const result = await parseAndValidateResponse<OffenderTypes>(
+    response,
+    url,
+    offenderTypesSchema,
+    "offenderTypesSchema",
+  );
+  return result;
 };
 
 export const getPoliceUnits = async () => {
@@ -254,7 +389,14 @@ export const getPoliceUnits = async () => {
   if (!response.ok) {
     throw new ApiError(`getting police units failed`, url, response);
   }
-  return (await response.json()) as PoliceUnits;
+
+  const result = await parseAndValidateResponse<PoliceUnits>(
+    response,
+    url,
+    policeUnitsSchema,
+    "policeUnitsSchema",
+  );
+  return result;
 };
 
 export const getOffences = async (
@@ -272,9 +414,18 @@ export const getOffences = async (
   if (!response.ok) {
     throw new ApiError(`getting offences failed`, url, response);
   }
-  return (await response.json()) as Offences;
+
+  const result = await parseAndValidateResponse<Offences>(
+    response,
+    url,
+    offencesSchema,
+    "offencesSchema",
+  );
+  return result;
 };
-export const submitCaseRegistration = async (data: CaseRegistration) => {
+export const submitCaseRegistration = async (
+  data: CaseRegistrationRequestData,
+) => {
   const url = `${GATEWAY_BASE_URL}/api/v1/cases`;
   const response = await fetch(url, {
     method: "POST",
@@ -287,5 +438,12 @@ export const submitCaseRegistration = async (data: CaseRegistration) => {
   if (!response.ok) {
     throw new ApiError(`registering case api failed `, url, response);
   }
-  return (await response.json()) as { caseId: number };
+
+  const result = await parseAndValidateResponse<CaseRegistrationResponse>(
+    response,
+    url,
+    caseRegistrationResponseSchema,
+    "caseRegistrationResponseSchema",
+  );
+  return result;
 };

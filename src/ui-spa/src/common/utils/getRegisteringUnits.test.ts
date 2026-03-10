@@ -1,5 +1,5 @@
 import { getRegisteringUnits } from "./getRegisteringUnits";
-import type { CaseAreasAndRegisteringUnits } from "../types/responses/CaseAreasAndRegisteringUnits";
+import type { CaseAreasAndRegisteringUnits } from "../../schemas";
 
 describe("getRegisteringUnits", () => {
   it("returns unique unitId and unitDescription for a given area", () => {

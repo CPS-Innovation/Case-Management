@@ -1,4 +1,4 @@
-import { type CaseCaseworkers } from "../../common/types/responses/CaseCaseworkers";
+import { type CaseCaseworkers } from "../../schemas";
 
 export const caseCaseworkersDev: CaseCaseworkers = [
   { id: 1, description: "Caseworker A" },

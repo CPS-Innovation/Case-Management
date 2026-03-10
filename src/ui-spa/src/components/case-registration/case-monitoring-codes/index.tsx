@@ -11,7 +11,7 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { getCaseMonitoringCodes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
+import { type CaseMonitoringCodes } from "../../../schemas";
 import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
 import useChargesCount from "../../../common/hooks/useChargesCount";
 import pageStyles from "./index.module.scss";
