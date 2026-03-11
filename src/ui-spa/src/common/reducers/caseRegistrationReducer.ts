@@ -1,17 +1,20 @@
-import type { CaseAreasAndRegisteringUnits } from "../../common/types/responses/CaseAreasAndRegisteringUnits";
-import type { CaseAreasAndWitnessCareUnits } from "../types/responses/CaseAreasAndWitnessCareUnits";
-import type { CourtLocations } from "../types/responses/CourtLocations";
-import type { CaseComplexities } from "../types/responses/CaseComplexities";
-import type { CaseMonitoringCodes } from "../types/responses/CaseMonitoringCodes";
-import type { CaseProsecutors } from "../types/responses/CaseProsecutors";
-import type { CaseCaseworkers } from "../types/responses/CaseCaseworkers";
-import type { InvestigatorTitles } from "../types/responses/InvestigatorTitles";
-import type { PoliceUnits } from "../types/responses/PoliceUnits";
-import type { Genders } from "../types/responses/Genders";
-import type { Ethnicities } from "../types/responses/Ethnicities";
-import type { Religions } from "../types/responses/Religions";
-import type { OffenderTypes } from "../types/responses/OffenderTypes";
-import type { Offences, Offence } from "../types/responses/Offences";
+import type {
+  CaseAreasAndRegisteringUnits,
+  CaseAreasAndWitnessCareUnits,
+  CourtLocations,
+  CaseComplexities,
+  CaseMonitoringCodes,
+  CaseProsecutors,
+  CaseCaseworkers,
+  InvestigatorTitles,
+  PoliceUnits,
+  Genders,
+  Ethnicities,
+  Religions,
+  OffenderTypes,
+  Offences,
+  Offence,
+} from "../../schemas";
 import { v4 as uuidv4 } from "uuid";
 
 export type CaseRegistrationField =
@@ -42,14 +45,13 @@ export type CaseRegistrationField =
   | "wantToAddChargesRadio"
   | "victimsList";
 export type SuspectAdditionalDetailValue =
-  | "Date of Birth"
+  | "Date of birth"
   | "Gender"
   | "Disability"
   | "Religion"
   | "Ethnicity"
   | "Alias details"
-  | "Serious dangerous offender (SDO)"
-  | "Arrest summons number (ASN)"
+  | "Arrest Summons Number (ASN)"
   | "Type of offender";
 
 export type SuspectTypeValue = "person" | "company" | "";
@@ -65,7 +67,6 @@ export type SuspectFormData = {
   suspectReligionRadio: { shortCode: string; description: string };
   suspectEthnicityRadio: { shortCode: string; description: string };
   suspectAliases: { firstName: string; lastName: string }[];
-  suspectSDORadio: GeneralRadioValue;
   suspectASNText: string;
   suspectOffenderTypesRadio: {
     shortCode: string;
@@ -84,6 +85,7 @@ export type VictimAdditionalDetailsValue =
   | "Intimidated"
   | "Witness";
 export type Victim = {
+  victimId: string;
   victimFirstNameText: string;
   victimLastNameText: string;
   victimAdditionalDetailsCheckboxes: VictimAdditionalDetailsValue[];
@@ -96,7 +98,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
-  victim: Victim | null;
+  victim: { victimId: string } | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
 export type ChargeFieldNames = keyof ChargesFormData;
@@ -131,7 +133,7 @@ export type CaseRegistrationFormData = {
   caseInvestigatorShoulderNumberText: string;
   suspects: SuspectFormData[];
   wantToAddChargesRadio: GeneralRadioValue;
-  victimsList: { id: string; firstName: string; lastName: string }[];
+  victimsList: Victim[];
   navigation: {
     fromCaseSummaryPage: boolean;
     fromChargeSummaryPage: boolean;
@@ -172,7 +174,6 @@ export const suspectInitialState: SuspectFormData = {
   suspectReligionRadio: { shortCode: "", description: "" },
   suspectEthnicityRadio: { shortCode: "", description: "" },
   suspectAliases: [],
-  suspectSDORadio: "",
   suspectASNText: "",
   suspectOffenderTypesRadio: { shortCode: "", display: "", arrestDate: "" },
   suspectCompanyNameText: "",
@@ -191,6 +192,7 @@ export const chargeInitialState: ChargesFormData = {
     legislation: "",
     effectiveFromDate: "",
     effectiveToDate: "",
+    modeOfTrial: "",
   },
 
   offenceFromDate: "",
@@ -289,7 +291,7 @@ export type CaseRegistrationActions =
           caseInvestigatorShoulderNameText?: string;
           caseInvestigatorShoulderNumberText?: string;
           wantToAddChargesRadio?: GeneralRadioValue;
-          victimsList?: { id: string; firstName: string; lastName: string }[];
+          victimsList?: Victim[];
         };
       };
     }
@@ -307,7 +309,6 @@ export type CaseRegistrationActions =
           suspectReligionRadio?: { shortCode: string; description: string };
           suspectEthnicityRadio?: { shortCode: string; description: string };
           suspectAliases?: { firstName: string; lastName: string }[];
-          suspectSDORadio?: GeneralRadioValue;
           suspectASNText?: string;
           suspectOffenderTypesRadio?: {
             shortCode: string;
@@ -332,7 +333,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
-          victim?: Victim | null;
+          victim?: { victimId: string } | null;
         };
       };
     }
@@ -463,6 +464,9 @@ export type CaseRegistrationActions =
     }
   | {
       type: "RESET_RU_DEPENDENT_FIELDS";
+    }
+  | {
+      type: "REMOVE_ALL_SUSPECTS";
     };
 
 export type DispatchType = React.Dispatch<CaseRegistrationActions>;
@@ -502,6 +506,7 @@ export const caseRegistrationReducer = (
         ...state,
         formData: {
           ...state.formData,
+          suspectDetailsRadio: "yes",
           suspects,
         },
       };
@@ -803,6 +808,16 @@ export const caseRegistrationReducer = (
       };
     }
 
+    case "REMOVE_ALL_SUSPECTS": {
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects: [],
+        },
+      };
+    }
+
     default:
       return state;
   }
@@ -834,12 +849,6 @@ export const getResetFieldValues = (
       ...resetValues,
       firstHearingCourtLocationText: { id: null, description: "" },
       firstHearingDateText: "",
-    };
-  }
-  if (data.suspectDetailsRadio === "no") {
-    resetValues = {
-      ...resetValues,
-      suspects: [],
     };
   }
 
@@ -879,38 +888,34 @@ const resetSuspectAdditionalDetails = (
   value: SuspectAdditionalDetailValue[],
   resetValues: Partial<SuspectFormData>,
 ) => {
-  if (!value.includes("Date of Birth")) {
-    resetValues.suspectDOBDayText = "";
-    resetValues.suspectDOBMonthText = "";
-    resetValues.suspectDOBYearText = "";
+  if (!value.includes("Date of birth")) {
+    resetValues.suspectDOBDayText = suspectInitialState.suspectDOBDayText;
+    resetValues.suspectDOBMonthText = suspectInitialState.suspectDOBMonthText;
+    resetValues.suspectDOBYearText = suspectInitialState.suspectDOBYearText;
   }
   if (!value.includes("Gender")) {
-    resetValues.suspectGenderRadio = { shortCode: "", description: "" };
+    resetValues.suspectGenderRadio = suspectInitialState.suspectGenderRadio;
   }
   if (!value.includes("Disability")) {
-    resetValues.suspectDisabilityRadio = "";
+    resetValues.suspectDisabilityRadio =
+      suspectInitialState.suspectDisabilityRadio;
   }
   if (!value.includes("Religion")) {
-    resetValues.suspectReligionRadio = { shortCode: "", description: "" };
+    resetValues.suspectReligionRadio = suspectInitialState.suspectReligionRadio;
   }
   if (!value.includes("Ethnicity")) {
-    resetValues.suspectEthnicityRadio = { shortCode: "", description: "" };
+    resetValues.suspectEthnicityRadio =
+      suspectInitialState.suspectEthnicityRadio;
   }
   if (!value.includes("Alias details")) {
-    resetValues.suspectAliases = [];
+    resetValues.suspectAliases = suspectInitialState.suspectAliases;
   }
-  if (!value.includes("Serious dangerous offender (SDO)")) {
-    resetValues.suspectSDORadio = "";
-  }
-  if (!value.includes("Arrest summons number (ASN)")) {
-    resetValues.suspectASNText = "";
+  if (!value.includes("Arrest Summons Number (ASN)")) {
+    resetValues.suspectASNText = suspectInitialState.suspectASNText;
   }
   if (!value.includes("Type of offender")) {
-    resetValues.suspectOffenderTypesRadio = {
-      shortCode: "",
-      display: "",
-      arrestDate: "",
-    };
+    resetValues.suspectOffenderTypesRadio =
+      suspectInitialState.suspectOffenderTypesRadio;
   }
 
   return resetValues;

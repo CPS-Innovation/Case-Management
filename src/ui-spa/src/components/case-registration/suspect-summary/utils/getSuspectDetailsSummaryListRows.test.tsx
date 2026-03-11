@@ -34,7 +34,6 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectReligionRadio: { shortCode: "", description: "" },
       suspectEthnicityRadio: { shortCode: "", description: "" },
       suspectAliases: [],
-      suspectSDORadio: "",
       suspectASNText: "",
       suspectOffenderTypesRadio: {
         shortCode: "",
@@ -73,7 +72,6 @@ describe("getSuspectDetailsSummaryListRows", () => {
           lastName: "Doe",
         },
       ],
-      suspectSDORadio: "yes",
       suspectASNText: "r123456",
       suspectOffenderTypesRadio: {
         shortCode: "YO",
@@ -100,25 +98,23 @@ describe("getSuspectDetailsSummaryListRows", () => {
     expect(screen.getByTestId(`row-4-key`)).toHaveTextContent(/Ethnicity/i);
     expect(screen.getByTestId(`row-4-value`)).toHaveTextContent("British");
     expect(screen.getByTestId(`row-5-key`)).toHaveTextContent(/Alias/i);
-    expect(screen.getByTestId(`row-5-value`)).toHaveTextContent("Doe, Johnny");
+    expect(screen.getByTestId(`row-5-value`)).toHaveTextContent("DOE, Johnny");
     expect(screen.getByTestId(`row-6-key`)).toHaveTextContent(/Alias/i);
-    expect(screen.getByTestId(`row-6-value`)).toHaveTextContent("Doe, Jane");
+    expect(screen.getByTestId(`row-6-value`)).toHaveTextContent("DOE, Jane");
     expect(screen.getByTestId(`row-7-key`)).toHaveTextContent(
-      "Serious dangerous offender (SDO)",
-    );
-    expect(screen.getByTestId(`row-7-value`)).toHaveTextContent("yes");
-    expect(screen.getByTestId(`row-8-key`)).toHaveTextContent(
       /Arrest summons/i,
     );
-    expect(screen.getByTestId(`row-8-value`)).toHaveTextContent("r123456");
-    expect(screen.getByTestId(`row-9-key`)).toHaveTextContent(
+    expect(screen.getByTestId(`row-7-value`)).toHaveTextContent("r123456");
+    expect(screen.getByTestId(`row-8-key`)).toHaveTextContent(
       /Type of offender/i,
     );
-    expect(screen.getByTestId(`row-9-value`)).toHaveTextContent(
+    expect(screen.getByTestId(`row-8-value`)).toHaveTextContent(
       "Youth offender",
     );
-    expect(screen.getByTestId(`row-10-key`)).toHaveTextContent(/Arrest Date/i);
-    expect(screen.getByTestId(`row-10-value`)).toHaveTextContent("12/02/2020");
+    expect(screen.getByTestId(`row-9-key`)).toHaveTextContent(/Arrest Date/i);
+    expect(screen.getByTestId(`row-9-value`)).toHaveTextContent(
+      "12 February 2020",
+    );
   });
 
   it("omits Arrest Date entry for PP offender type", () => {
@@ -133,7 +129,6 @@ describe("getSuspectDetailsSummaryListRows", () => {
       suspectReligionRadio: { shortCode: "", description: "" },
       suspectEthnicityRadio: { shortCode: "", description: "" },
       suspectAliases: [],
-      suspectSDORadio: "",
       suspectASNText: "",
       suspectOffenderTypesRadio: {
         shortCode: "PP",

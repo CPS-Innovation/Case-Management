@@ -96,8 +96,8 @@ const SuspectReligionPage = () => {
 
     if (!suspectReligionRadio.shortCode) {
       errors.suspectReligionRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the defendant's religion",
+        inputErrorText: "Select the defendant's religion",
       };
     }
 
@@ -236,7 +236,7 @@ const SuspectReligionPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

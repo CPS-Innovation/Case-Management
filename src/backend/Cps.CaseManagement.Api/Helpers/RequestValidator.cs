@@ -21,9 +21,9 @@ public class RequestValidator : IRequestValidator
         {
             requestObject = JsonSerializer.Deserialize<T>(requestJson);
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
-            return InvalidRequest<T>("Invalid JSON format.");
+            return InvalidRequest<T>($"Invalid JSON format: {ex.Message}");
         }
 
         if (requestObject == null)

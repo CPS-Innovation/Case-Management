@@ -1,5 +1,5 @@
 import * as GDS from "govuk-react-jsx";
-import { type TagColor } from "../../common/types//TagColor";
+import { type TagColor } from "../../schemas";
 
 export type TagProps = {
   children: React.ReactNode;

@@ -13,6 +13,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { sanitizeASNText } from "../../../common/utils/sanitizeASNText";
 import styles from "../index.module.scss";
 
 const SuspectASNPage = () => {
@@ -71,8 +72,8 @@ const SuspectASNPage = () => {
     const { suspectASNText = "" } = formData;
     if (!suspectASNText) {
       errors.suspectASNText = {
-        errorSummaryText: "Please add the Arrest Summons Number (ASN)",
-        inputErrorText: "Please add the Arrest Summons Number (ASN)",
+        errorSummaryText: "Enter the Arrest Summons Number (ASN)",
+        inputErrorText: "Enter the Arrest Summons Number (ASN)",
       };
     }
 
@@ -100,6 +101,7 @@ const SuspectASNPage = () => {
   }, [errorList]);
 
   const setFormValue = (value: string) => {
+    value = sanitizeASNText(value);
     setFormData({ ...formData, suspectASNText: value });
   };
 
@@ -160,13 +162,11 @@ const SuspectASNPage = () => {
             }}
             type="text"
             value={formData.suspectASNText}
-            onChange={(value: string) => {
-              setFormValue(value);
-            }}
+            onChange={setFormValue}
           />
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

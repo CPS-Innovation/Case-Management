@@ -1,4 +1,4 @@
-import { type PoliceUnits } from "../../common/types/responses/PoliceUnits";
+import { type PoliceUnits } from "../../schemas";
 
 export const policeUnitsDev: PoliceUnits = [
   {

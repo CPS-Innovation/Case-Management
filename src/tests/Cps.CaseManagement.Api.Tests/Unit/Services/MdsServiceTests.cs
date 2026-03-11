@@ -369,6 +369,75 @@ public class MdsServiceTests
     }
 
     [Fact]
+    public async Task GetOffenderCategoriesAsync_FiltersOutBPShortCode()
+    {
+        // Arrange
+        var bpEntity = _fixture
+            .Build<OffenderCategoryEntity>()
+            .With(e => e.ShortCode, "BP")
+            .Create();
+
+        var validEntity1 = _fixture
+            .Build<OffenderCategoryEntity>()
+            .With(e => e.ShortCode, "AA")
+            .Create();
+
+        var validEntity2 = _fixture
+            .Build<OffenderCategoryEntity>()
+            .With(e => e.ShortCode, "ZZ")
+            .Create();
+
+        var entities = new List<OffenderCategoryEntity>
+        {
+            bpEntity,
+            validEntity1,
+            validEntity2
+        };
+
+        var dto1 = _fixture.Create<OffenderCategoryDto>();
+        var dto2 = _fixture.Create<OffenderCategoryDto>();
+
+        _mdsClientMock
+            .Setup(c => c.GetOffenderCategoriesAsync(_mdsBaseArgDto))
+            .ReturnsAsync(entities);
+
+        _mdsMapperMock
+            .Setup(m => m.MapOffenderCategoryEntityToDto(validEntity1))
+            .Returns(dto1);
+
+        _mdsMapperMock
+            .Setup(m => m.MapOffenderCategoryEntityToDto(validEntity2))
+            .Returns(dto2);
+
+        // Act
+        var result = await _service.GetOffenderCategoriesAsync(_mdsBaseArgDto);
+
+        // Assert
+        var resultList = result.ToList();
+
+        Assert.Equal(2, resultList.Count);
+        Assert.Contains(dto1, resultList);
+        Assert.Contains(dto2, resultList);
+
+        _mdsClientMock.Verify(
+            c => c.GetOffenderCategoriesAsync(_mdsBaseArgDto),
+            Times.Once);
+
+        _mdsMapperMock.Verify(
+            m => m.MapOffenderCategoryEntityToDto(bpEntity),
+            Times.Never);
+
+        _mdsMapperMock.Verify(
+            m => m.MapOffenderCategoryEntityToDto(validEntity1),
+            Times.Once);
+
+        _mdsMapperMock.Verify(
+            m => m.MapOffenderCategoryEntityToDto(validEntity2),
+            Times.Once);
+    }
+
+
+    [Fact]
     public async Task GetProsecutorsAsync_ReturnsExpectedProsecutors_WhenResponseIsSuccessful()
     {
         // Arrange

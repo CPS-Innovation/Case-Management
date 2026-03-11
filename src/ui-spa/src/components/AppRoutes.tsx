@@ -14,7 +14,6 @@ import SuspectGenderPage from "./case-registration/suspect-gender";
 import SuspectEthnicityPage from "./case-registration/suspect-ethnicity";
 import SuspectReligionPage from "./case-registration/suspect-religion";
 import SuspectDisabilityPage from "./case-registration/suspect-disability";
-import SuspectSDOPage from "./case-registration/suspect-sdo";
 import SuspectASNPage from "./case-registration/suspect-asn";
 import SuspectOffenderPage from "./case-registration/suspect-offender";
 import SuspectAliasesPage from "./case-registration/suspect-aliases";
@@ -31,6 +30,7 @@ import ChargeRemoveConfirmationPage from "./case-registration/charge-remove-conf
 import ChargesVictimDuplicateConfirmationPage from "./case-registration/charges-victim-duplicate-confirmation";
 import ChangeAreaConfirmationPage from "./case-registration/change-area-confirmation";
 import ChangeRegisteringUnitConfirmationPage from "./case-registration/change-registering-unit-confirmation";
+import RemoveAllSuspectsConfirmationPage from "./case-registration/remove-all-suspects-confirmation";
 import ProtectedRoutes from "./ProtectedRoutes";
 
 const AppRoutes = () => {
@@ -90,10 +90,6 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/:suspectId/suspect-disability"
           element={<SuspectDisabilityPage />}
-        />
-        <Route
-          path="/case-registration/:suspectId/suspect-sdo"
-          element={<SuspectSDOPage />}
         />
         <Route
           path="/case-registration/:suspectId/suspect-asn"
@@ -158,6 +154,10 @@ const AppRoutes = () => {
         <Route
           path="/case-registration/change-registering-unit-confirmation"
           element={<ChangeRegisteringUnitConfirmationPage />}
+        />
+        <Route
+          path="/case-registration/remove-all-suspects-confirmation"
+          element={<RemoveAllSuspectsConfirmationPage />}
         />
       </Route>
       <Route path="*" element={<Navigate to="/case-registration" replace />} />

@@ -9,10 +9,9 @@ import {
 import { Radios, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getCaseComplexities } from "../../../apis/gateway-api";
-import useChargesCount from "../../../common/hooks/useChargesCount";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import styles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const CaseComplexityPage = () => {
   type ErrorText = {
@@ -26,7 +25,8 @@ const CaseComplexityPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
-  const { chargesCount } = useChargesCount(state.formData.suspects);
+
+  const previousRoute = "/case-registration/case-summary";
 
   const [formData, setFormData] = useState<{
     caseComplexityRadio: { shortCode: string; description: string };
@@ -70,8 +70,8 @@ const CaseComplexityPage = () => {
 
     if (!caseComplexityRadio.shortCode) {
       errors.caseComplexityRadio = {
-        errorSummaryText: "Please select an option for case complexity",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the case complexity",
+        inputErrorText: "Select the case complexity",
         hasLink: true,
       };
     }
@@ -87,23 +87,6 @@ const CaseComplexityPage = () => {
     }
     return [] as { shortCode: number; description: string }[];
   }, [state.apiData.caseComplexities]);
-
-  const previousRoute = useMemo(() => {
-    if (state.formData.navigation.fromCaseSummaryPage) {
-      return "/case-registration/case-summary";
-    }
-    if (chargesCount) {
-      return "/case-registration/first-hearing";
-    }
-    if (state.formData.suspects.length > 0) {
-      return "/case-registration/want-to-add-charges";
-    }
-    return "/case-registration/case-details";
-  }, [
-    chargesCount,
-    state.formData.suspects.length,
-    state.formData.navigation.fromCaseSummaryPage,
-  ]);
 
   const errorList = useMemo(() => {
     const validErrorKeys = Object.keys(formDataErrors).filter(
@@ -168,15 +151,13 @@ const CaseComplexityPage = () => {
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
       });
-      navigate("/case-registration/case-summary");
-      return;
     }
-    return navigate("/case-registration/case-monitoring-codes");
+    navigate("/case-registration/case-summary");
   };
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    if (previousRoute === "/case-registration/case-summary") {
+    if (state.formData.navigation.fromCaseSummaryPage) {
       dispatch({
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
@@ -214,7 +195,7 @@ const CaseComplexityPage = () => {
               formDataErrors["caseComplexityRadio"]
                 ? {
                     children:
-                      formDataErrors["caseComplexityRadio"].errorSummaryText,
+                      formDataErrors["caseComplexityRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -231,7 +212,7 @@ const CaseComplexityPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

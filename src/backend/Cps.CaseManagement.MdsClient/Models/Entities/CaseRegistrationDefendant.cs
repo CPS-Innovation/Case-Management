@@ -46,8 +46,11 @@ public class CaseRegistrationDefendant
     [JsonPropertyName("arrestSummonsNumber")]
     public string JsonPropertyNameArrestSummonsNumber { get; set; } = string.Empty;
 
-    public int NumberOfCharges => this.Charges.Count;
+    public int NumberOfCharges => this.Charges?.Count ?? 0;
+
+    [JsonPropertyName("isNotYetCharged")]
+    public bool IsNotYetCharged { get; set; }
 
     [JsonPropertyName("charges")]
-    public ICollection<CaseRegistrationCharge> Charges { get; set; } = [];
+    public ICollection<CaseRegistrationCharge>? Charges { get; set; } = [];
 }

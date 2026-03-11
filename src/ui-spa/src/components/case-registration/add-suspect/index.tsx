@@ -20,7 +20,7 @@ import {
   type SuspectTypeValue,
 } from "../../../common/reducers/caseRegistrationReducer";
 import { getNextSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
-
+import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 
@@ -69,14 +69,13 @@ const AddSuspectPage = () => {
 
   const suspectAdditionalDetails: SuspectAdditionalDetailValue[] = useMemo(
     () => [
-      "Date of Birth",
+      "Date of birth",
       "Gender",
       "Disability",
       "Religion",
       "Ethnicity",
       "Alias details",
-      "Serious dangerous offender (SDO)",
-      "Arrest summons number (ASN)",
+      "Arrest Summons Number (ASN)",
       "Type of offender",
     ],
     [],
@@ -123,24 +122,24 @@ const AddSuspectPage = () => {
 
     if (!addSuspectRadio) {
       errors.addSuspectRadio = {
-        errorSummaryText: "Please select an option for adding a suspect",
-        inputErrorText: "Please select an option for adding a suspect",
+        errorSummaryText: "Select whether the suspect is a person or a company",
+        inputErrorText: "Select whether the suspect is a person or a company",
         hasLink: true,
       };
     }
 
     if (addSuspectRadio == "person" && !suspectLastNameText) {
       errors.suspectLastNameText = {
-        errorSummaryText: "Please add Last name for the suspect",
-        inputErrorText: "Please add Last name for the suspect",
+        errorSummaryText: "Enter the last name",
+        inputErrorText: "Enter the last name",
         hasLink: true,
       };
     }
 
     if (addSuspectRadio == "company" && !suspectCompanyNameText) {
       errors.suspectCompanyNameText = {
-        errorSummaryText: "Please add Company name for the suspect",
-        inputErrorText: "Please add Company name for the suspect",
+        errorSummaryText: "Enter the company name",
+        inputErrorText: "Enter the company name",
         hasLink: true,
       };
     }
@@ -200,14 +199,13 @@ const AddSuspectPage = () => {
       suspectAdditionalDetailsCheckboxes?: SuspectAdditionalDetailValue[];
       suspectCompanyNameText?: string;
     } = {};
-    if (fieldName === "addSuspectRadio" && value === "person") {
-      resetValues.suspectCompanyNameText = "";
+    if (
+      fieldName === "suspectFirstNameText" ||
+      fieldName === "suspectLastNameText"
+    ) {
+      value = sanitizeNameText(value as string);
     }
-    if (fieldName === "addSuspectRadio" && value === "company") {
-      resetValues.suspectFirstNameText = "";
-      resetValues.suspectLastNameText = "";
-      resetValues.suspectAdditionalDetailsCheckboxes = [];
-    }
+
     setFormData((prevState) => ({
       ...prevState,
       ...resetValues,
@@ -233,14 +231,15 @@ const AddSuspectPage = () => {
     event.preventDefault();
 
     if (!validateFormData()) return;
-    dispatch({
-      type: "RESET_SUSPECT_FIELD",
-      payload: { index: suspectIndex },
-    });
 
     dispatch({
       type: "SET_SUSPECT_FIELDS",
       payload: { index: suspectIndex, data: formData },
+    });
+
+    dispatch({
+      type: "RESET_SUSPECT_FIELD",
+      payload: { index: suspectIndex },
     });
 
     if (formData.addSuspectRadio === "company") {
@@ -292,8 +291,11 @@ const AddSuspectPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h1>{`Add Suspect ${suspectIndex + 1}`}</h1>,
+                children: <h1>Add a suspect</h1>,
               },
+            }}
+            hint={{
+              children: "Choose the type of suspect you want to add",
             }}
             errorMessage={
               formDataErrors["addSuspectRadio"]
@@ -352,10 +354,10 @@ const AddSuspectPage = () => {
                       fieldset={{
                         legend: {
                           children: (
-                            <h2>
+                            <span className="govuk-!-font-weight-bold">
                               Do you want to add any additional details about
                               this suspect?
-                            </h2>
+                            </span>
                           ),
                         },
                       }}
@@ -423,7 +425,7 @@ const AddSuspectPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

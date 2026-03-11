@@ -36,7 +36,7 @@ const WantToAddCharges = () => {
       if (errorKey === "wantToAddChargesRadio") {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
-          href: "#add-radio-yes",
+          href: "#want-to-add-charges-radio-yes",
           "data-testid": "add-charges-radio-link",
         };
       }
@@ -53,8 +53,14 @@ const WantToAddCharges = () => {
 
     if (!wantToAddChargesRadio) {
       errors.wantToAddChargesRadio = {
-        errorSummaryText: "Please select an option ",
-        inputErrorText: "Please select an option",
+        errorSummaryText:
+          state.formData.suspects.length > 1
+            ? "Select whether you need to add charges for any suspects"
+            : "Select whether you need to add charges for the suspect",
+        inputErrorText:
+          state.formData.suspects.length > 1
+            ? "Select whether you need to add charges for any suspects"
+            : "Select whether you need to add charges for the suspect",
       };
       isValid = false;
     }
@@ -100,7 +106,7 @@ const WantToAddCharges = () => {
     });
     const { wantToAddChargesRadio } = formData;
     if (wantToAddChargesRadio === "no") {
-      return navigate("/case-registration/case-complexity");
+      return navigate("/case-registration/case-monitoring-codes");
     }
     if (wantToAddChargesRadio === "yes" && state.formData.suspects.length > 1) {
       return navigate("/case-registration/add-charge-suspect");
@@ -173,7 +179,7 @@ const WantToAddCharges = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

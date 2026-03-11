@@ -1,4 +1,4 @@
-import { type CaseAreasAndRegisteringUnits } from "../types/responses/CaseAreasAndRegisteringUnits";
+import { type CaseAreasAndRegisteringUnits } from "../../schemas";
 
 export const getAreasOrDivisions = (data: CaseAreasAndRegisteringUnits) => {
   return data.allUnits.reduce<{ id: number; description: string }[]>(

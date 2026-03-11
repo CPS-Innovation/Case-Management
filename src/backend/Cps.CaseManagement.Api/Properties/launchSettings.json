@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Cps_CaseManagement_Api": {
+    "Cps_RegisterCase_Api": {
       "commandName": "Project",
       "commandLineArgs": "--port 7129",
       "launchBrowser": false

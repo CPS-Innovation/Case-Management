@@ -6,7 +6,7 @@ describe("ApiError", () => {
       "/api/test",
       {
         status: 500,
-        statusText: "internal server error",
+        statusText: "Internal Server Error",
       },
       { retry: "true" },
       "test api error",
@@ -15,7 +15,7 @@ describe("ApiError", () => {
     expect(error).toEqual(
       expect.objectContaining({
         message:
-          "An error occurred contacting the server at /api/test: test api error; status - internal server error (500)",
+          "API Error: /api/test returned 500 Internal Server Error - test api error",
         name: "API_ERROR",
         path: "/api/test",
         code: 500,
@@ -38,6 +38,6 @@ it("should throw an ApiError", () => {
 
   expect(thrower).toThrowError(ApiError);
   expect(thrower).toThrowError(
-    "An error occurred contacting the server at /some/path: api error; status - Internal Server Error (500)",
+    "API Error: /some/path returned 500 Internal Server Error - api error",
   );
 });

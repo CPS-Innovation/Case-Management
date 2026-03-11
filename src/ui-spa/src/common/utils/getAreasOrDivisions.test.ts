@@ -1,5 +1,5 @@
 import { getAreasOrDivisions } from "./getAreasOrDivisions";
-import type { CaseAreasAndRegisteringUnits } from "../types/responses/CaseAreasAndRegisteringUnits";
+import type { CaseAreasAndRegisteringUnits } from "../../schemas";
 
 describe("getAreasOrDivisions", () => {
   it("returns unique areaId and areaDescription pairs", () => {

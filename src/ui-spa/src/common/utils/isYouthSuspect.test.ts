@@ -14,7 +14,6 @@ describe("isYouthSuspect / isUnder18", () => {
   it("returns true for offender shortCode which includes youth offender", () => {
     const codes = [
       offenderTypeShortCodes.PROLIFIC_YOUTH_OFFENDER,
-      offenderTypeShortCodes.BOTH_OFFENDER_TYPES,
       offenderTypeShortCodes.YOUTH_OFFENDER,
     ];
     for (const code of codes) {

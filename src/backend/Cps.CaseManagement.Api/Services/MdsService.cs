@@ -64,6 +64,8 @@ public class MdsService(IMdsClient mdsClient, IMdsMapper mdsMapper, ILogger<MdsS
     {
         _logger.LogDebug("Fetching offender categories from MDS");
         var entities = await _mdsClient.GetOffenderCategoriesAsync(arg);
+        entities = entities.Where(e => e.ShortCode != "BP");
+
         return entities.Select(e => _mdsMapper.MapOffenderCategoryEntityToDto(e));
     }
 

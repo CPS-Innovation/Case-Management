@@ -17,6 +17,7 @@ import {
   getNextSuspectJourneyRoute,
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
+import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
 import styles from "../index.module.scss";
 
 const SuspectOffenderPage = () => {
@@ -26,6 +27,7 @@ const SuspectOffenderPage = () => {
   };
   type FormDataErrors = {
     suspectOffenderTypesRadio?: ErrorText;
+    suspectArrestDate?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -90,6 +92,14 @@ const SuspectOffenderPage = () => {
         };
       }
 
+      if (errorKey === "suspectArrestDate") {
+        return {
+          children: formDataErrors[errorKey]?.errorSummaryText,
+          href: "#suspect-arrest-date",
+          "data-testid": "suspect-arrest-date-link",
+        };
+      }
+
       return null;
     },
     [formDataErrors],
@@ -97,13 +107,28 @@ const SuspectOffenderPage = () => {
 
   const validateFormData = () => {
     const errors: FormDataErrors = {};
-    const { suspectOffenderTypesRadio = { shortCode: null, display: "" } } =
-      formData;
+    const {
+      suspectOffenderTypesRadio = {
+        shortCode: null,
+        display: "",
+        arrestDate: "",
+      },
+    } = formData;
+
+    if (
+      suspectOffenderTypesRadio?.arrestDate &&
+      !isValidOnOrBeforeDate(suspectOffenderTypesRadio?.arrestDate)
+    ) {
+      errors.suspectArrestDate = {
+        errorSummaryText: "Arrest date must be today or in the past",
+        inputErrorText: "Enter an arrest date that is today or in the past",
+      };
+    }
 
     if (!suspectOffenderTypesRadio.shortCode) {
       errors.suspectOffenderTypesRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select an offender type",
+        inputErrorText: "Select the type of offender",
       };
     }
 
@@ -162,12 +187,21 @@ const SuspectOffenderPage = () => {
             : {
                 children: [
                   <DateInputNative
-                    key="arrest-date-text"
-                    id="arrest-date-text"
-                    label={<h2>Arrest date (optional)</h2>}
+                    key="suspect-arrest-date"
+                    id="suspect-arrest-date"
+                    label={
+                      <span className="govuk-!-font-weight-bold">
+                        Arrest date (optional)
+                      </span>
+                    }
                     value={formData.suspectOffenderTypesRadio?.arrestDate || ""}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       handleDateChange(e.target.value)
+                    }
+                    errorMessage={
+                      formDataErrors["suspectArrestDate"]
+                        ? formDataErrors["suspectArrestDate"].inputErrorText
+                        : undefined
                     }
                   />,
                 ],
@@ -184,6 +218,7 @@ const SuspectOffenderPage = () => {
     state.apiData.suspectOffenderTypes,
     handleDateChange,
     formData.suspectOffenderTypesRadio,
+    formDataErrors,
   ]);
 
   const setFormValue = (value: string) => {
@@ -270,7 +305,7 @@ const SuspectOffenderPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

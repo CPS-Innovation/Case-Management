@@ -95,8 +95,8 @@ const SuspectEthnicityPage = () => {
 
     if (!suspectEthnicityRadio.shortCode) {
       errors.suspectEthnicityRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select the defendant's ethnicity",
+        inputErrorText: "Select the defendant's ethnicity",
       };
     }
 
@@ -233,7 +233,7 @@ const SuspectEthnicityPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

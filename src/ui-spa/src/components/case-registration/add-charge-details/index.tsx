@@ -11,6 +11,7 @@ import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -118,6 +119,7 @@ const AddChargeDetailsPage = () => {
 
   const validateFormData = () => {
     const errors: FormDataErrors = {};
+    const { firstHearingDateText } = state.formData;
     const { addVictimRadio, offenceFromDate, offenceToDate } = formData;
 
     if (!addVictimRadio) {
@@ -140,6 +142,63 @@ const AddChargeDetailsPage = () => {
       errors.offenceToDate = {
         errorSummaryText: "Select an offence to date",
         inputErrorText: "Select a date",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceToDate &&
+      offenceFromDate &&
+      !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
+    ) {
+      errors.offenceFromDate = {
+        errorSummaryText: "Start date must be the same or before the end date.",
+        inputErrorText:
+          "Enter a start date that is the same or before the end date.",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceToDate &&
+      firstHearingDateText &&
+      !isValidOnOrBeforeDate(offenceToDate, firstHearingDateText)
+    ) {
+      errors.offenceToDate = {
+        errorSummaryText:
+          "The charge to date cannot be later than the first hearing date.",
+        inputErrorText:
+          "The charge to date cannot be later than the first hearing date.",
+        hasLink: true,
+      };
+    }
+
+    if (
+      offenceFromDate &&
+      firstHearingDateText &&
+      !isValidOnOrBeforeDate(offenceFromDate, firstHearingDateText)
+    ) {
+      errors.offenceFromDate = {
+        errorSummaryText:
+          "The charge from date cannot be later than the first hearing date.",
+        inputErrorText:
+          "The charge from date cannot be later than the first hearing date.",
+        hasLink: true,
+      };
+    }
+    if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
+      errors.offenceFromDate = {
+        errorSummaryText: "Offence start date must be today or in the past",
+        inputErrorText:
+          "Enter an offence start date that is today or in the past",
+        hasLink: true,
+      };
+    }
+    if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
+      errors.offenceToDate = {
+        errorSummaryText: "Offence end date must be today or in the past",
+        inputErrorText:
+          "Enter an offence end date that is today or in the past",
         hasLink: true,
       };
     }
@@ -218,7 +277,7 @@ const AddChargeDetailsPage = () => {
   };
 
   return (
-    <div>
+    <div className={pageStyles.addChargeDetailsPage}>
       <BackLink
         to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`}
       >
@@ -253,7 +312,9 @@ const AddChargeDetailsPage = () => {
       <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
         <div className={styles.inputWrapper}>
-          <h2>When was the offence?</h2>
+          <span className="govuk-!-font-weight-bold">
+            When was the offence?
+          </span>
           <div className={pageStyles.dateInputsWrapper}>
             <DateInputNative
               key="offence-from-date-text"
@@ -265,25 +326,28 @@ const AddChargeDetailsPage = () => {
               }
               errorMessage={
                 formDataErrors["offenceFromDate"]
-                  ? formDataErrors["offenceFromDate"].errorSummaryText
+                  ? formDataErrors["offenceFromDate"].inputErrorText
                   : undefined
               }
             />
             {showDateRange && (
-              <DateInputNative
-                key="offence-to-date-text"
-                id="offence-to-date-text"
-                className={pageStyles.dateInput}
-                value={formData.offenceToDate}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleDateChange("offenceToDate", e.target.value)
-                }
-                errorMessage={
-                  formDataErrors["offenceToDate"]
-                    ? formDataErrors["offenceToDate"].errorSummaryText
-                    : undefined
-                }
-              />
+              <>
+                <span className={pageStyles.dateRangeSeparator}> to </span>
+                <DateInputNative
+                  key="offence-to-date-text"
+                  id="offence-to-date-text"
+                  className={pageStyles.dateInput}
+                  value={formData.offenceToDate}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleDateChange("offenceToDate", e.target.value)
+                  }
+                  errorMessage={
+                    formDataErrors["offenceToDate"]
+                      ? formDataErrors["offenceToDate"].inputErrorText
+                      : undefined
+                  }
+                />
+              </>
             )}
             <Button
               className="govuk-button--secondary"
@@ -297,13 +361,17 @@ const AddChargeDetailsPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>Is there a victim?</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">
+                    Is there a victim?
+                  </span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["addVictimRadio"]
                 ? {
-                    children: formDataErrors["addVictimRadio"].errorSummaryText,
+                    children: formDataErrors["addVictimRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -328,7 +396,7 @@ const AddChargeDetailsPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

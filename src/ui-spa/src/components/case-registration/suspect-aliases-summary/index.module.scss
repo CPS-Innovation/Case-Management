@@ -1,5 +1,13 @@
 .caseSuspectAliasesSummaryPage {
+  .noAliasesText {
+    margin-bottom: 2rem;
+  }
   .summaryListWrapper {
     max-width: 65%;
+  }
+  & :global(.govuk-summary-list__key) {
+    p {
+      margin: 0;
+    }
   }
 }

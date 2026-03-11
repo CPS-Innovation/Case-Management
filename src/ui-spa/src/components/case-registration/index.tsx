@@ -12,9 +12,12 @@ import { type GeneralRadioValue } from "../../common/reducers/caseRegistrationRe
 import {
   getCaseAreasAndRegisteringUnits,
   getCaseAreasAndWitnessCareUnits,
+  getCaseComplexities,
 } from "../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useIsAreaSensitive } from "../../common/hooks/useIsAreaSensitive";
+import { sanitizeOperationNameText } from "../../common/utils/sanitizeOperationNameText";
+import { DEFAULT_COMPLEXITY_DESCRIPTION } from "../../common/constants/general";
 import { useNavigate } from "react-router-dom";
 import styles from "./index.module.scss";
 
@@ -60,6 +63,16 @@ const CaseRegistrationPage = () => {
       enabled: !state.apiData.areasAndWitnessCareUnits,
     },
   );
+
+  const { data: caseComplexitiesData, error: caseComplexitiesError } = useQuery(
+    {
+      queryKey: ["case-complexities"],
+      queryFn: () => getCaseComplexities(),
+      enabled: !state.apiData.caseComplexities,
+      retry: false,
+    },
+  );
+
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
   const errorSummaryProperties = useCallback(
@@ -99,30 +112,54 @@ const CaseRegistrationPage = () => {
     const errors: FormDataErrors = {};
     const { operationNameRadio, suspectDetailsRadio, operationNameText } =
       formData;
-    if (!operationNameRadio) {
-      errors.operationNameRadio = {
-        errorSummaryText: "Please select an option for operation name",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-    if (!suspectDetailsRadio) {
-      errors.suspectDetailsRadio = {
-        errorSummaryText: "Please select an option for suspect details",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
+
     if (operationNameRadio === "no" && suspectDetailsRadio === "no") {
-      errors.genericError = {
-        errorSummaryText: "Add an operation name or suspect details",
+      errors.operationNameRadio = {
+        errorSummaryText:
+          "You need to select an operation name, suspect details or both",
+        inputErrorText: "Select if you have an operation name",
+        hasLink: true,
+      };
+      errors.suspectDetailsRadio = {
+        errorSummaryText: "",
+        inputErrorText: "Select if you have suspect details",
+        hasLink: true,
+      };
+    }
+
+    if (!operationNameRadio && !suspectDetailsRadio) {
+      errors.operationNameRadio = {
+        errorSummaryText:
+          "Select if you have an operation name, suspect details or both",
+        inputErrorText: "Select if you have an operation name",
+        hasLink: true,
+      };
+      errors.suspectDetailsRadio = {
+        errorSummaryText: "",
+        inputErrorText: "Select if you have suspect details",
         hasLink: false,
       };
+    } else {
+      if (!operationNameRadio) {
+        errors.operationNameRadio = {
+          errorSummaryText: "Select if you have an operation name",
+          inputErrorText: "Select if you have an operation name",
+          hasLink: true,
+        };
+      }
+      if (!suspectDetailsRadio) {
+        errors.suspectDetailsRadio = {
+          errorSummaryText: "Select if you have suspect details",
+          inputErrorText: "Select if you have suspect details",
+          hasLink: true,
+        };
+      }
     }
 
     if (operationNameRadio == "yes" && !operationNameText) {
       errors.operationNameText = {
-        errorSummaryText: "Operation name should not be empty",
+        errorSummaryText: "You need to enter an operation name",
+        inputErrorText: "Enter an operation name",
         hasLink: true,
       };
     }
@@ -152,6 +189,10 @@ const CaseRegistrationPage = () => {
   useEffect(() => {
     if (witnessCareUnitsError) throw witnessCareUnitsError;
   }, [witnessCareUnitsError]);
+
+  useEffect(() => {
+    if (caseComplexitiesError) throw caseComplexitiesError;
+  }, [caseComplexitiesError]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -198,10 +239,70 @@ const CaseRegistrationPage = () => {
     }
   }, [witnessCareUnitsData, dispatch, state.apiData.areasAndWitnessCareUnits]);
 
+  useEffect(() => {
+    if (caseComplexitiesData) {
+      if (!state.apiData.caseComplexities) {
+        dispatch({
+          type: "SET_CASE_COMPLEXITIES",
+          payload: {
+            caseComplexities: caseComplexitiesData,
+          },
+        });
+
+        const defaultComplexity = caseComplexitiesData.find(
+          (complexity) =>
+            complexity.description === DEFAULT_COMPLEXITY_DESCRIPTION,
+        );
+        if (
+          defaultComplexity &&
+          !state.formData.caseComplexityRadio.shortCode
+        ) {
+          dispatch({
+            type: "SET_FIELDS",
+            payload: {
+              data: {
+                caseComplexityRadio: {
+                  shortCode: defaultComplexity.shortCode,
+                  description: defaultComplexity.description,
+                },
+              },
+            },
+          });
+        }
+      }
+    }
+  }, [
+    caseComplexitiesData,
+    dispatch,
+    state.apiData.caseComplexities,
+    state.formData.caseComplexityRadio.shortCode,
+  ]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateFormData()) return;
+
+    let nextRoute = "/case-registration/areas";
+    if (state.formData.navigation.fromCaseSummaryPage) {
+      nextRoute = "/case-registration/case-summary";
+    } else if (isAreaSensitive) {
+      nextRoute = "/case-registration/case-details";
+    }
+
+    if (
+      formData.suspectDetailsRadio === "no" &&
+      state.formData.suspects.length > 0
+    ) {
+      navigate("/case-registration/remove-all-suspects-confirmation", {
+        state: {
+          backRoute: "/case-registration",
+          nextRoute: nextRoute,
+          formData: formData,
+        },
+      });
+      return;
+    }
     dispatch({
       type: "SET_FIELDS",
       payload: {
@@ -215,15 +316,9 @@ const CaseRegistrationPage = () => {
         type: "SET_NAVIGATION_DATA",
         payload: { fromCaseSummaryPage: false },
       });
-      navigate("/case-registration/case-summary");
-      return;
     }
-    if (!isAreaSensitive) {
-      navigate("/case-registration/areas");
-      return;
-    }
-    navigate("/case-registration/case-details");
-    return;
+
+    navigate(nextRoute);
   };
 
   const setFormValue = (
@@ -233,6 +328,9 @@ const CaseRegistrationPage = () => {
       | "operationNameText",
     value: string,
   ) => {
+    if (fieldName === "operationNameText") {
+      value = sanitizeOperationNameText(value);
+    }
     const newValue = {
       [fieldName]: value,
     };
@@ -267,14 +365,16 @@ const CaseRegistrationPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>{`Do you have an operation name?`}</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">{`Do you have an operation name?`}</span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["operationNameRadio"]
                 ? {
                     children:
-                      formDataErrors["operationNameRadio"].errorSummaryText,
+                      formDataErrors["operationNameRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -295,7 +395,7 @@ const CaseRegistrationPage = () => {
                           ? {
                               children:
                                 formDataErrors["operationNameText"]
-                                  .errorSummaryText,
+                                  .inputErrorText,
                             }
                           : undefined
                       }
@@ -326,14 +426,16 @@ const CaseRegistrationPage = () => {
           <Radios
             fieldset={{
               legend: {
-                children: <h2>{`Do you have any suspect details?`}</h2>,
+                children: (
+                  <span className="govuk-!-font-weight-bold">{`Do you have any suspect details?`}</span>
+                ),
               },
             }}
             errorMessage={
               formDataErrors["suspectDetailsRadio"]
                 ? {
                     children:
-                      formDataErrors["suspectDetailsRadio"].errorSummaryText,
+                      formDataErrors["suspectDetailsRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -357,7 +459,7 @@ const CaseRegistrationPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

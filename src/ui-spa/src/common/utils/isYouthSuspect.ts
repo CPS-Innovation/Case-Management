@@ -6,8 +6,6 @@ export const isYouthSuspect = (suspect: SuspectFormData): boolean => {
     suspect.suspectOffenderTypesRadio.shortCode ===
       offenderTypeShortCodes.PROLIFIC_YOUTH_OFFENDER ||
     suspect.suspectOffenderTypesRadio.shortCode ===
-      offenderTypeShortCodes.BOTH_OFFENDER_TYPES ||
-    suspect.suspectOffenderTypesRadio.shortCode ===
       offenderTypeShortCodes.YOUTH_OFFENDER
   ) {
     return true;

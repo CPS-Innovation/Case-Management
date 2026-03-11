@@ -95,8 +95,8 @@ const SuspectGenderPage = () => {
 
     if (!suspectGenderRadio.shortCode) {
       errors.suspectGenderRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select a gender",
+        inputErrorText: "Select a gender",
       };
     }
 
@@ -233,7 +233,7 @@ const SuspectGenderPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

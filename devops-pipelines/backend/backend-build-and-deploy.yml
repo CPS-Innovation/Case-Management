@@ -10,18 +10,18 @@ trigger:
 pr: none
 
 variables:
-- group: 'cm-deployment-global'
+- group: 'cmrc-deployment-global'
 - name: 'buildConfiguration'
   value: 'Release'
 - name: 'dotNetVersion'
   value: '8.x'
 - name: 'buildArtifact'
-  value: 'cm-main-api-drop'
+  value: 'cmrc-main-api-drop'
 
 stages:
   - stage: Build
     displayName: 'Build Main API'
-    pool: 'CM PreProd Pool'
+    pool: 'CMRC PreProd Pool'
     jobs:
       - job: Build_Main_API
         displayName: 'Build Main API'
@@ -46,13 +46,13 @@ stages:
   - stage: Run_Postman_Tests_dev
     displayName: 'Dev - Run Postman Tests'
     dependsOn: 'Deploy_Backend_dev' # final stage of /templates/backend-deploy-stages.yml
-    pool: 'CM PreProd Pool'
+    pool: 'CMRC PreProd Pool'
     jobs:
     - template: ../templates/postman-test-job.yml
       parameters:
-        appName: 'fa-cm-api-dev'
+        appName: 'fa-cmrc-api-dev'
         environment: 'dev'
-        postmanCollectionPath: '$(System.DefaultWorkingDirectory)/src/backend/postman/CaseRegistrationAPITests.postman_collection.json'
+        postmanCollectionPath: '$(System.DefaultWorkingDirectory)/src/backend/postman/RegisterCaseAPITests.postman_collection.json'
         nodeVersion: '20.x'
 
   - template: ../templates/backend-deploy-stages.yml
@@ -73,8 +73,8 @@ stages:
   #     requireValidation: true
   #     notifyUsers: $(notifyUsers)
   #     approvers: $(approvers)
-  #     agentPool: 'CM Prod Pool'
-  #     azureSubscription: 'Azure Pipeline: Case Management - Prod'
+  #     agentPool: 'CMRC Prod Pool'
+  #     azureSubscription: 'Azure Pipeline: CMRC - Prod'
   #     deployToSlot: true
   #     slotName: 'stg'
   #     buildArtifact: $(buildArtifact)

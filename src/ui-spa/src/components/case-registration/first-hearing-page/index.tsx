@@ -19,8 +19,8 @@ import { getSelectedUnit } from "../../../common/utils/getSelectedUnit";
 import { getCourtsByUnitId } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import styles from "./index.module.scss";
-
+import { isOnOrAfterChargeDates } from "../../../common/utils/chargeDatesUtil";
+import styles from "../index.module.scss";
 const FirstHearingPage = () => {
   type ErrorText = {
     errorSummaryText: string;
@@ -114,11 +114,23 @@ const FirstHearingPage = () => {
   ) => {
     const errors: FormDataErrors = {};
     const { firstHearingRadio, firstHearingDateText } = formData;
+    if (
+      firstHearingDateText &&
+      !isOnOrAfterChargeDates(firstHearingDateText, state.formData.suspects)
+    ) {
+      errors.firstHearingDateText = {
+        errorSummaryText:
+          "First hearing date may not be earlier than any charges dates",
+        inputErrorText:
+          "First hearing date may not be earlier than any charges dates",
+        hasLink: true,
+      };
+    }
 
     if (!firstHearingRadio) {
       errors.firstHearingRadio = {
-        errorSummaryText: "Please select an option for first hearing",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select if you need to add first hearing details",
+        inputErrorText: "Select if you need to add first hearing details",
         hasLink: true,
       };
     }
@@ -126,8 +138,8 @@ const FirstHearingPage = () => {
     if (firstHearingRadio === "yes") {
       if (!inputCourtLocationValue) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Please select a court location for first hearing",
-          inputErrorText: "Please select a court location",
+          errorSummaryText: "Select a location",
+          inputErrorText: "Select the court location",
           hasLink: true,
         };
       } else if (
@@ -136,7 +148,8 @@ const FirstHearingPage = () => {
         ) === -1
       ) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Court location is invalid",
+          errorSummaryText: "Select a location",
+          inputErrorText: "Select the court location",
           hasLink: true,
         };
       }
@@ -144,8 +157,8 @@ const FirstHearingPage = () => {
 
     if (firstHearingRadio == "yes" && !firstHearingDateText) {
       errors.firstHearingDateText = {
-        errorSummaryText: "Please select a date for first hearing",
-        inputErrorText: "Please select a date",
+        errorSummaryText: "Enter the date",
+        inputErrorText: "Enter the date of first hearing",
         hasLink: true,
       };
     }
@@ -269,7 +282,7 @@ const FirstHearingPage = () => {
       return;
     }
 
-    return navigate("/case-registration/case-complexity");
+    return navigate("/case-registration/case-monitoring-codes");
   };
 
   const handleBackLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -284,7 +297,7 @@ const FirstHearingPage = () => {
   };
 
   return (
-    <div className={styles.caseDetailsPage}>
+    <div>
       {!state.formData.navigation.changeCaseArea &&
         !state.formData.navigation.changeCaseDetails && (
           <BackLink to={previousRoute} onClick={handleBackLinkClick}>
@@ -316,7 +329,7 @@ const FirstHearingPage = () => {
               formDataErrors["firstHearingRadio"]
                 ? {
                     children:
-                      formDataErrors["firstHearingRadio"].errorSummaryText,
+                      formDataErrors["firstHearingRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -341,13 +354,15 @@ const FirstHearingPage = () => {
                         }
                         label={{
                           children: (
-                            <h2>What is the first hearing court location?</h2>
+                            <span className="govuk-!-font-weight-bold">
+                              Court location
+                            </span>
                           ),
                         }}
                         errorMessage={
                           formDataErrors["firstHearingCourtLocationText"]
                             ? formDataErrors["firstHearingCourtLocationText"]
-                                .errorSummaryText
+                                .inputErrorText
                             : undefined
                         }
                       />
@@ -355,7 +370,9 @@ const FirstHearingPage = () => {
                     <DateInputNative
                       key="first-hearing-date-text"
                       id="first-hearing-date-text"
-                      label={<h2>Date</h2>}
+                      label={
+                        <span className="govuk-!-font-weight-bold">Date</span>
+                      }
                       value={formData.firstHearingDateText}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                         handleDateChange(e.target.value)
@@ -363,9 +380,10 @@ const FirstHearingPage = () => {
                       errorMessage={
                         formDataErrors["firstHearingDateText"]
                           ? formDataErrors["firstHearingDateText"]
-                              .errorSummaryText
+                              .inputErrorText
                           : undefined
                       }
+                      hint={<span>For example, 17/05/2024</span>}
                     />,
                   ],
                 },
@@ -383,7 +401,7 @@ const FirstHearingPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

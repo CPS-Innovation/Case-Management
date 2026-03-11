@@ -10,8 +10,10 @@ import { Input, Button, ErrorSummary, BackLink } from "../../govuk";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { getPreviousSuspectJourneyRoute } from "../../../common/utils/getSuspectJourneyRoutes";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
+import pageStyles from "./index.module.scss";
 
 const SuspectAliasesPage = () => {
   type ErrorText = {
@@ -78,8 +80,8 @@ const SuspectAliasesPage = () => {
 
     if (!lastName) {
       errors.suspectAliasesLastNameText = {
-        errorSummaryText: "Please add the last name",
-        inputErrorText: "Please add the last name ",
+        errorSummaryText: "Enter a last name",
+        inputErrorText: "Enter a last name",
       };
     }
 
@@ -106,10 +108,13 @@ const SuspectAliasesPage = () => {
     if (errorList.length) errorSummaryRef.current?.focus();
   }, [errorList]);
 
-  const setFormValue = (key: "firstName" | "lastName", value: string) => {
+  const setFormValue = (fieldName: "firstName" | "lastName", value: string) => {
+    if (fieldName === "firstName" || fieldName === "lastName") {
+      value = sanitizeNameText(value);
+    }
     setAlias((prevState) => ({
       ...prevState,
-      [key]: value,
+      [fieldName]: value,
     }));
   };
 
@@ -141,7 +146,7 @@ const SuspectAliasesPage = () => {
     suspects[suspectIndex] || {};
 
   return (
-    <div className={styles.caseSuspectAliasesPage}>
+    <div className={pageStyles.caseSuspectAliasesPage}>
       <BackLink to={previousRoute}>Back</BackLink>
       {!!errorList.length && (
         <div
@@ -157,12 +162,14 @@ const SuspectAliasesPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h1>
-          {`What alias does ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} use?`}
-        </h1>
-        <span className="govuk-hint">
-          You can add more aliases on the next page if needed.
-        </span>
+        <div className={pageStyles.headingWrapper}>
+          <h1>
+            {`What alias does ${formatNameUtil(suspectFirstNameText, suspectLastNameText)} use?`}
+          </h1>
+          <span className="govuk-hint">
+            You can add more aliases on the next page if needed
+          </span>
+        </div>
         <div className={styles.inputWrapper}>
           <Input
             key="suspect-aliases-first-name-text"
@@ -170,7 +177,9 @@ const SuspectAliasesPage = () => {
             data-testid="suspect-aliases-first-name-text"
             className="govuk-input--width-20"
             label={{
-              children: <h2>First name</h2>,
+              children: (
+                <span className="govuk-!-font-weight-bold">First name</span>
+              ),
             }}
             hint={{ children: "Leave blank if you only have one name" }}
             type="text"
@@ -194,7 +203,9 @@ const SuspectAliasesPage = () => {
                 : undefined
             }
             label={{
-              children: <h2>Last name</h2>,
+              children: (
+                <span className="govuk-!-font-weight-bold">Last name</span>
+              ),
             }}
             type="text"
             value={lastName}
@@ -204,7 +215,7 @@ const SuspectAliasesPage = () => {
           />
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

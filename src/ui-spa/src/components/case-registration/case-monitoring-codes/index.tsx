@@ -11,8 +11,11 @@ import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegis
 import { getCaseMonitoringCodes } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { type CaseMonitoringCodes } from "../../../common/types/responses/CaseMonitoringCodes";
-import styles from "./index.module.scss";
+import { type CaseMonitoringCodes } from "../../../schemas";
+import { getChargesSummaryList } from "../../../common/utils/getChargesSummaryList";
+import useChargesCount from "../../../common/hooks/useChargesCount";
+import pageStyles from "./index.module.scss";
+import styles from "../index.module.scss";
 const PRE_CHARGE_DECISION_CODE = "CSEA";
 
 const CaseMonitoringCodesPage = () => {
@@ -27,6 +30,7 @@ const CaseMonitoringCodesPage = () => {
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
   const navigate = useNavigate();
+  const { chargesCount } = useChargesCount(state.formData.suspects);
 
   const [formData, setFormData] = useState<{
     caseMonitoringCodesCheckboxes: string[];
@@ -46,10 +50,12 @@ const CaseMonitoringCodesPage = () => {
     retry: false,
   });
 
-  const isOptional = useMemo(
-    () => state.formData.suspectDetailsRadio === "yes",
-    [state.formData.suspectDetailsRadio],
-  );
+  const isOptional = useMemo(() => {
+    const chargesList = getChargesSummaryList(state.formData.suspects);
+    return (
+      chargesList.length > 0 && state.formData.suspectDetailsRadio === "yes"
+    );
+  }, [state.formData.suspectDetailsRadio, state.formData.suspects]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
 
@@ -93,9 +99,18 @@ const CaseMonitoringCodesPage = () => {
     if (state.formData.navigation.fromCaseSummaryPage) {
       return "/case-registration/case-summary";
     }
-
-    return "/case-registration/case-complexity";
-  }, [state.formData.navigation.fromCaseSummaryPage]);
+    if (chargesCount) {
+      return "/case-registration/first-hearing";
+    }
+    if (state.formData.suspects.length > 0) {
+      return "/case-registration/want-to-add-charges";
+    }
+    return "/case-registration/case-details";
+  }, [
+    chargesCount,
+    state.formData.suspects.length,
+    state.formData.navigation.fromCaseSummaryPage,
+  ]);
 
   useEffect(() => {
     if (caseMonitoringCodesError) throw caseMonitoringCodesError;
@@ -192,7 +207,7 @@ const CaseMonitoringCodesPage = () => {
   };
 
   return (
-    <div className={styles.caseMonitoringCodesPage}>
+    <div className={pageStyles.caseMonitoringCodesPage}>
       <BackLink to={previousRoute} onClick={handleBackLinkClick}>
         Back
       </BackLink>
@@ -251,7 +266,7 @@ const CaseMonitoringCodesPage = () => {
           />
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

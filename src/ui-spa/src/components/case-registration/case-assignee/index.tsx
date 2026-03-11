@@ -28,7 +28,8 @@ import {
 } from "../../../apis/gateway-api";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import styles from "./index.module.scss";
+import pageStyles from "./index.module.scss";
+import styles from "../index.module.scss";
 
 const CaseAssigneePage = () => {
   type ErrorText = {
@@ -199,8 +200,9 @@ const CaseAssigneePage = () => {
     if (!caseProsecutorRadio) {
       errors.caseProsecutorRadio = {
         errorSummaryText:
-          "Please select an option for case prosecutor or caseworker",
-        inputErrorText: "Please select an option",
+          "Select whether you need to add a prosecutor and caseworker",
+        inputErrorText:
+          "Select whether you need to add a prosecutor and caseworker",
         hasLink: true,
       };
     }
@@ -208,10 +210,8 @@ const CaseAssigneePage = () => {
     if (caseProsecutorRadio === "yes") {
       if (!inputProsecutorValue && !inputCaseworkerValue) {
         errors.caseProsecutorRadio = {
-          errorSummaryText:
-            "Please complete one of the values or select ‘No’ to the question",
-          inputErrorText:
-            "Please complete one of the values or select ‘No’ to the question",
+          errorSummaryText: "Select a name",
+          inputErrorText: "Select a prosecutor or caseworker name",
           hasLink: true,
         };
       }
@@ -222,7 +222,8 @@ const CaseAssigneePage = () => {
         ) === -1
       ) {
         errors.caseProsecutorText = {
-          errorSummaryText: "Prosecutor name is invalid",
+          errorSummaryText: "Select a name",
+          inputErrorText: "Select a prosecutor name",
           hasLink: true,
         };
       }
@@ -234,7 +235,8 @@ const CaseAssigneePage = () => {
         ) === -1
       ) {
         errors.caseCaseworkerText = {
-          errorSummaryText: "Caseworker name is invalid",
+          errorSummaryText: "Select a name",
+          inputErrorText: "Select a caseworker name",
           hasLink: true,
         };
       }
@@ -243,8 +245,9 @@ const CaseAssigneePage = () => {
     if (!caseInvestigatorRadio) {
       errors.caseInvestigatorRadio = {
         errorSummaryText:
-          "Please select an option for add a police officer or investigator?",
-        inputErrorText: "Please select an option",
+          "Select whether you need to add a police officer or investigator",
+        inputErrorText:
+          "Select whether you need to add a police officer or investigator",
         hasLink: true,
       };
     }
@@ -252,13 +255,13 @@ const CaseAssigneePage = () => {
     if (caseInvestigatorRadio === "yes") {
       if (!caseInvestigatorLastNameText) {
         errors.caseInvestigatorLastNameText = {
-          errorSummaryText:
-            "Please enter a last name for the police officer or investigator",
-          inputErrorText: "Please enter a last name",
+          errorSummaryText: "Enter a name",
+          inputErrorText: "Enter the investigator's last name",
           hasLink: true,
         };
       }
     }
+
     const isValid = !Object.entries(errors).filter(([, value]) => value).length;
 
     setFormDataErrors(errors);
@@ -522,7 +525,7 @@ const CaseAssigneePage = () => {
   };
 
   return (
-    <div className={styles.caseAssigneePage}>
+    <div className={pageStyles.caseAssigneePage}>
       {!state.formData.navigation.changeCaseArea &&
         !state.formData.navigation.changeCaseDetails && (
           <BackLink to={previousRoute} onClick={handleBackLinkClick}>
@@ -549,7 +552,9 @@ const CaseAssigneePage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h2>Do you want to add a prosecutor or caseworker?</h2>
+                  <span className="govuk-!-font-weight-bold">
+                    Do you want to add a prosecutor and caseworker?
+                  </span>
                 ),
               },
             }}
@@ -557,7 +562,7 @@ const CaseAssigneePage = () => {
               formDataErrors["caseProsecutorRadio"]
                 ? {
                     children:
-                      formDataErrors["caseProsecutorRadio"].errorSummaryText,
+                      formDataErrors["caseProsecutorRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -584,7 +589,7 @@ const CaseAssigneePage = () => {
                         errorMessage={
                           formDataErrors["caseProsecutorText"]
                             ? formDataErrors["caseProsecutorText"]
-                                .errorSummaryText
+                                .inputErrorText
                             : undefined
                         }
                       />
@@ -604,7 +609,7 @@ const CaseAssigneePage = () => {
                         errorMessage={
                           formDataErrors["caseCaseworkerText"]
                             ? formDataErrors["caseCaseworkerText"]
-                                .errorSummaryText
+                                .inputErrorText
                             : undefined
                         }
                       />
@@ -627,7 +632,9 @@ const CaseAssigneePage = () => {
             fieldset={{
               legend: {
                 children: (
-                  <h2>Do you want to add a police officer or investigator?</h2>
+                  <span className="govuk-!-font-weight-bold">
+                    Do you want to add a police officer or investigator?
+                  </span>
                 ),
               },
             }}
@@ -635,7 +642,7 @@ const CaseAssigneePage = () => {
               formDataErrors["caseInvestigatorRadio"]
                 ? {
                     children:
-                      formDataErrors["caseInvestigatorRadio"].errorSummaryText,
+                      formDataErrors["caseInvestigatorRadio"].inputErrorText,
                   }
                 : undefined
             }
@@ -652,7 +659,11 @@ const CaseAssigneePage = () => {
                       className="govuk-input--width-20 "
                       label={{
                         htmlFor: "case-investigator-title-select",
-                        children: <b>Rank (optional)</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            Rank (optional)
+                          </span>
+                        ),
                         className: styles.investigatorTitleSelectLabel,
                       }}
                       id="case-investigator-title-select"
@@ -676,7 +687,11 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-firstname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: <b>First name (optional)</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            First name (optional)
+                          </span>
+                        ),
                       }}
                       type="text"
                       value={formData.caseInvestigatorFirstNameText}
@@ -690,14 +705,18 @@ const CaseAssigneePage = () => {
                       data-testid="case-investigator-lastname-text"
                       className="govuk-input--width-20"
                       label={{
-                        children: <b>Last name</b>,
+                        children: (
+                          <span className="govuk-!-font-weight-bold">
+                            Last name
+                          </span>
+                        ),
                       }}
                       errorMessage={
                         formDataErrors["caseInvestigatorLastNameText"]
                           ? {
                               children:
                                 formDataErrors["caseInvestigatorLastNameText"]
-                                  .errorSummaryText,
+                                  .inputErrorText,
                             }
                           : undefined
                       }
@@ -714,9 +733,11 @@ const CaseAssigneePage = () => {
                       className="govuk-input--width-20"
                       label={{
                         children: (
-                          <div className={styles.shoulderNumberLabel}>
+                          <div className={pageStyles.shoulderNumberLabel}>
                             {policeUnitLabel && <span>{policeUnitLabel}</span>}
-                            <b>Shoulder number (optional)</b>
+                            <span className="govuk-!-font-weight-bold">
+                              Shoulder number (optional)
+                            </span>
                           </div>
                         ),
                       }}
@@ -733,6 +754,7 @@ const CaseAssigneePage = () => {
                 },
               },
               {
+                id: "case-investigator-radio-no",
                 children: "No",
                 value: "no",
                 "data-testid": "case-investigator-radio-no",
@@ -745,7 +767,7 @@ const CaseAssigneePage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and Continue
+          Save and continue
         </Button>
       </form>
     </div>

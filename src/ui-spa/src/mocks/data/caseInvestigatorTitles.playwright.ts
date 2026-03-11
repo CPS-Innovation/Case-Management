@@ -1,4 +1,4 @@
-import { type InvestigatorTitles } from "../../common/types/responses/InvestigatorTitles";
+import { type InvestigatorTitles } from "../../schemas";
 export const caseInvestigatorTitlesPlaywright: InvestigatorTitles = [
   {
     shortCode: "PC",
