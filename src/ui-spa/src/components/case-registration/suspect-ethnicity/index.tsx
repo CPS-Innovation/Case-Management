@@ -136,18 +136,12 @@ const SuspectEthnicityPage = () => {
 
   const ethnicityItems = useMemo(() => {
     if (!state.apiData.suspectEthnicities) return [];
-    return state.apiData.suspectEthnicities
-      .filter(
-        (ethnicity) =>
-          ethnicity.description != "Not stated" &&
-          ethnicity.description != "Not Provided",
-      )
-      .map((ethnicity, index) => ({
-        id: `suspect-ethnicity-radio-${index}`,
-        children: ethnicity.description,
-        value: ethnicity.shortCode,
-        "data-testid": `suspect-ethnicity-radio-${index}`,
-      }));
+    return state.apiData.suspectEthnicities.map((ethnicity, index) => ({
+      id: `suspect-ethnicity-radio-${index}`,
+      children: ethnicity.description,
+      value: ethnicity.shortCode,
+      "data-testid": `suspect-ethnicity-radio-${index}`,
+    }));
   }, [state.apiData.suspectEthnicities]);
 
   const setFormValue = (value: string) => {
