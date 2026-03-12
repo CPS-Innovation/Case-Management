@@ -73,6 +73,7 @@ describe("getChargesSummaryList", () => {
       offenceFromDate: "2022-01-01",
       offenceToDate: "2022-12-31",
       addVictimRadio: "yes" as const,
+      chargedWithAdultRadio: "no" as const,
       victim: null,
     };
     const suspects = [

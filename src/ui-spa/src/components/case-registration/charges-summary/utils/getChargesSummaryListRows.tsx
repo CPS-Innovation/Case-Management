@@ -73,6 +73,14 @@ export const getChargesSummaryListRows = (
         ),
       },
     },
+    charge.chargedWithAdultRadio && {
+      key: { children: <b>Charged with an adult</b> },
+      value: {
+        children: (
+          <span>{charge.chargedWithAdultRadio === "yes" ? "Yes" : "No"}</span>
+        ),
+      },
+    },
   ];
 
   return rows.filter((row) => !!row);
