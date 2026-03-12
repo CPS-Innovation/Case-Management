@@ -475,6 +475,7 @@ describe("caseRegistrationReducer", () => {
     );
     expect(state.formData.suspects[0].charges[0]).toEqual({
       chargeId: "test-uuid",
+      chargedWithAdultRadio: "",
       offenceSearchText: "New Offence",
       selectedOffence: {
         code: "ABC",
