@@ -31,6 +31,7 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "1990-06-26",
       addVictimRadio: "yes",
+      chargedWithAdultRadio: "no",
       victim: {
         victimId: "victim-1",
       },
@@ -84,6 +85,7 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "",
       addVictimRadio: "yes",
+      chargedWithAdultRadio: "no",
       victim: {
         victimId: "victim-1",
       },
@@ -138,6 +140,7 @@ describe("getChargesSummaryListRows", () => {
       offenceFromDate: "1990-03-23",
       offenceToDate: "",
       addVictimRadio: "yes",
+      chargedWithAdultRadio: "no",
       victim: { victimId: "victim-1" },
     };
 

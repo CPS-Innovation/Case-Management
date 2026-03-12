@@ -502,6 +502,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceFromDate: "2026-03-02",
               offenceToDate: "2026-03-02",
               addVictimRadio: "yes",
+              chargedWithAdultRadio: "no",
               victim: {
                 victimId: "123",
               },
@@ -522,6 +523,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceFromDate: "2026-03-02",
               offenceToDate: "",
               addVictimRadio: "no",
+              chargedWithAdultRadio: "no",
               victim: null,
             },
           ],

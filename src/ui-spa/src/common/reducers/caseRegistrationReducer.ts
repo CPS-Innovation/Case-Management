@@ -98,6 +98,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
+  chargedWithAdultRadio: GeneralRadioValue;
   victim: { victimId: string } | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
@@ -198,6 +199,7 @@ export const chargeInitialState: ChargesFormData = {
   offenceFromDate: "",
   offenceToDate: "",
   addVictimRadio: "",
+  chargedWithAdultRadio: "",
   victim: null,
 };
 
@@ -333,6 +335,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
+          chargedWithAdultRadio?: GeneralRadioValue;
           victim?: { victimId: string } | null;
         };
       };
