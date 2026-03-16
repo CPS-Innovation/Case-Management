@@ -1,5 +1,6 @@
 import { useContext, useMemo } from "react";
 import { Panel } from "../../govuk";
+import { HOME_PAGE_URL } from "../../../config";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import styles from "./index.module.scss";
 const CaseRegistrationConfirmationPage = () => {
@@ -20,10 +21,10 @@ const CaseRegistrationConfirmationPage = () => {
         </div>
       </Panel>
       <h2>Next steps</h2>
-      <p>You can continue to view or edit the case details.</p>
-      <p>
-        For large and complex cases, you can now set up folders for materials.
-      </p>
+      <p>Use the URN to find the case.</p>
+      <a href={HOME_PAGE_URL} className="govuk-link">
+        Return to the home page
+      </a>
     </div>
   );
 };

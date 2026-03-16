@@ -6,5 +6,6 @@ export const TENANT_ID = `${import.meta.env.VITE_TENANT_ID}`;
 export const MOCK_AUTH = `${import.meta.env.VITE_MOCK_AUTH}` === "true";
 export const PRIVATE_BETA_USER_GROUP = `${import.meta.env.VITE_PRIVATE_BETA_USER_GROUP}`;
 export const PRIVATE_BETA_CONTACT_EMAIL = `${import.meta.env.VITE_PRIVATE_BETA_CONTACT_EMAIL}`;
+export const HOME_PAGE_URL = `${import.meta.env.VITE_HOME_PAGE_URL}`;
 
 console.log(JSON.stringify(import.meta.env));
