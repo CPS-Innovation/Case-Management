@@ -90,7 +90,7 @@ stages:
             workingDirectory: '$(workingDir)'
           
           - publish: '$(workingDir)/$(covDir)/unit/index.html'
-            artifact: '$(System.JobId)-unit-coverage-report'
+            artifact: 'unit-coverage-report-$(System.JobId)'
             displayName: 'Publish Unit Test Coverage Report as Pipeline Artifact'
 
 # ---------- INTEGRATION TESTS (Playwright) ----------
@@ -127,7 +127,7 @@ stages:
             workingDirectory: '$(workingDir)'
 
           - publish: '$(workingDir)/$(covDir)/integration/index.html'
-            artifact: '$(System.JobId)-integration-coverage-report'
+            artifact: 'integration-coverage-report-$(System.JobId)'
             displayName: 'Publish integration Coverage Report as Pipeline Artifact'
           
           - script: |
