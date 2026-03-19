@@ -270,29 +270,40 @@ const CaseDetailsPage = () => {
       };
     }
     if (!isAreaSensitive) {
-      if (
-        !registeringUnitInputValue ||
-        !registeringUnits.some(
-          (ru) => ru.description === registeringUnitInputValue,
-        )
-      ) {
+      if (!registeringUnitInputValue) {
         errors.registeringUnitErrorText = {
           errorSummaryText: "Select the registering unit",
           inputErrorText: "Select the registering unit",
           hasLink: true,
         };
+      } else if (
+        !registeringUnits.some(
+          (ru) => ru.description === registeringUnitInputValue,
+        )
+      ) {
+        errors.registeringUnitErrorText = {
+          errorSummaryText: "Select a valid registering unit",
+          inputErrorText: "Select a valid registering unit",
+          hasLink: true,
+        };
       }
     }
+
     if (witnessCareUnits.length) {
-      if (
-        !witnessCareUnitInputValue ||
+      if (!witnessCareUnitInputValue) {
+        errors.witnessCareUnitErrorText = {
+          errorSummaryText: "Select the witness care unit",
+          inputErrorText: "Select the witness care unit",
+          hasLink: true,
+        };
+      } else if (
         !witnessCareUnits.some(
           (wcu) => wcu.description === witnessCareUnitInputValue,
         )
       ) {
         errors.witnessCareUnitErrorText = {
-          errorSummaryText: "Select the witness care unit",
-          inputErrorText: "Select the witness care unit",
+          errorSummaryText: "Select a valid witness care unit",
+          inputErrorText: "Select a valid witness care unit",
           hasLink: true,
         };
       }
@@ -464,7 +475,10 @@ const CaseDetailsPage = () => {
                 maxLength={2}
                 className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-force-text") ? "govuk-input--error" : ""}`}
                 data-testid="urn-police-force-text"
-                label={{ children: "Police force" }}
+                label={{
+                  children: "Police force",
+                  className: "govuk-visually-hidden",
+                }}
                 value={formData.urnPoliceForceText}
                 onChange={(val: string) =>
                   handleUrnValueChange("urnPoliceForceText", val)
@@ -475,7 +489,10 @@ const CaseDetailsPage = () => {
                 maxLength={2}
                 className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-police-unit-text") ? "govuk-input--error" : ""}`}
                 data-testid="urn-police-unit-text"
-                label={{ children: "Police Unit" }}
+                label={{
+                  children: "Police unit",
+                  className: "govuk-visually-hidden",
+                }}
                 value={formData.urnPoliceUnitText}
                 onChange={(val: string) =>
                   handleUrnValueChange("urnPoliceUnitText", val)
@@ -486,7 +503,10 @@ const CaseDetailsPage = () => {
                 maxLength={5}
                 className={`govuk-input--width-5 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-unique-reference-text") ? "govuk-input--error" : ""}`}
                 data-testid="urn-unique-reference-text"
-                label={{ children: "Unique Reference" }}
+                label={{
+                  children: "Unique reference",
+                  className: "govuk-visually-hidden",
+                }}
                 value={formData.urnUniqueReferenceText}
                 onChange={(val: string) =>
                   handleUrnValueChange("urnUniqueReferenceText", val)
@@ -497,7 +517,10 @@ const CaseDetailsPage = () => {
                 maxLength={2}
                 className={`govuk-input--width-2 ${formDataErrors.urnErrorText?.errorIds?.includes("urn-year-reference-text") ? "govuk-input--error" : ""}`}
                 data-testid="urn-year-reference-text"
-                label={{ children: "Year Reference" }}
+                label={{
+                  children: "Year reference",
+                  className: "govuk-visually-hidden",
+                }}
                 value={formData.urnYearReferenceText}
                 onChange={(val: string) =>
                   handleUrnValueChange("urnYearReferenceText", val)
