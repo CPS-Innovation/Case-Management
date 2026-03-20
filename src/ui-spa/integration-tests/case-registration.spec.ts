@@ -2,6 +2,8 @@ import { expect, test } from "./utils/test";
 import { CaseRegistrationHomePage } from "./pages/caseRegistrationHomePage";
 import { CaseAreasPage } from "./pages/caseAreasPage";
 import { CaseDetailsPage } from "./pages/caseDetailsPage";
+import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
+import { CaseAssigneePage } from "./pages/caseAssigneePage";
 
 test.describe("Case Registration", () => {
   test("Should successfully complete non suspect journey", async ({ page }) => {
@@ -39,10 +41,29 @@ test.describe("Case Registration", () => {
     await caseDetailsPage.saveAndContinue();
     await caseDetailsPage.verifyErrorSummaryClear();
 
-    await expect(page).toHaveURL(
-      "http://localhost:5173/case-registration/case-monitoring-codes",
-    );
+    const caseMonitoringPage = new CaseMonitoringPage(page);
+    await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.verifyPageElements(45);
+    await caseMonitoringPage.verifyPreChargeCheckboxChecked();
+    await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
+    await caseMonitoringPage.saveAndContinue();
+    await caseMonitoringPage.verifyErrorSummaryClear();
 
-    await expect(page.locator("h1")).toHaveText("Add monitoring codes");
+    const caseAssigneePage = new CaseAssigneePage(page);
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyPageElements();
+    await caseAssigneePage.errorValidations();
+    await caseAssigneePage.addProsecutorYes();
+    await caseAssigneePage.addInvestigatorYes();
+    await caseAssigneePage.enterProsecutorName("Prosecutor A");
+    await caseAssigneePage.enterCaseworkerName("Caseworker A");
+    // await caseAssigneePage.addInvestigatorTitle("Police Constable");
+    await caseAssigneePage.addInvestigatorFirstName("Investigator F");
+    await caseAssigneePage.addInvestigatorLastName("Investigator L");
+    await caseAssigneePage.addInvestigatorShoulderNumber("12345");
+    await caseAssigneePage.saveAndContinue();
+    await expect(page).toHaveURL(
+      "http://localhost:5173/case-registration/case-summary",
+    );
   });
 });

@@ -15,7 +15,6 @@ export class CaseDetailsPage {
 
   async verifyPageElements() {
     await expect(this.page.locator("h1")).toHaveText("Case details");
-    await expect(this.page.locator("h1")).toHaveText("Case details");
     await expect(this.page.locator("legend").first()).toHaveText(
       "What is the URN?",
     );

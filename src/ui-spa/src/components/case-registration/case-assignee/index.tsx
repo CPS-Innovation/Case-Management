@@ -210,7 +210,7 @@ const CaseAssigneePage = () => {
     if (caseProsecutorRadio === "yes") {
       if (!inputProsecutorValue && !inputCaseworkerValue) {
         errors.caseProsecutorRadio = {
-          errorSummaryText: "Select a name",
+          errorSummaryText: "Select a prosecutor or caseworker name",
           inputErrorText: "Select a prosecutor or caseworker name",
           hasLink: true,
         };
@@ -222,8 +222,8 @@ const CaseAssigneePage = () => {
         ) === -1
       ) {
         errors.caseProsecutorText = {
-          errorSummaryText: "Select a name",
-          inputErrorText: "Select a prosecutor name",
+          errorSummaryText: "Select a valid prosecutor name",
+          inputErrorText: "Select a valid prosecutor name",
           hasLink: true,
         };
       }
@@ -235,8 +235,8 @@ const CaseAssigneePage = () => {
         ) === -1
       ) {
         errors.caseCaseworkerText = {
-          errorSummaryText: "Select a name",
-          inputErrorText: "Select a caseworker name",
+          errorSummaryText: "Select a valid caseworker name",
+          inputErrorText: "Select a valid caseworker name",
           hasLink: true,
         };
       }
@@ -255,7 +255,7 @@ const CaseAssigneePage = () => {
     if (caseInvestigatorRadio === "yes") {
       if (!caseInvestigatorLastNameText) {
         errors.caseInvestigatorLastNameText = {
-          errorSummaryText: "Enter a name",
+          errorSummaryText: "Enter the investigator's last name",
           inputErrorText: "Enter the investigator's last name",
           hasLink: true,
         };
