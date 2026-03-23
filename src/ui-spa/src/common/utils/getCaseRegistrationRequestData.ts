@@ -132,6 +132,7 @@ const getSuspectRequestData = (
       dateFrom: charge.offenceFromDate,
       dateTo: charge.offenceToDate ? charge.offenceToDate : null,
       victimIndexId: charge.victim ? getVictimIndex(charge.victim) : -1,
+      chargedWithAdult: charge.chargedWithAdultRadio === "yes",
     })),
   }));
 };

@@ -11,8 +11,8 @@ import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { isChargedWithAdultWarningActive } from "../../../common/utils/isChargedWithAdultWarningActive";
 import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
-import { offenderTypeShortCodes } from "../../../common/constants/offenderTypeShortCodes";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
 import pageStyles from "./index.module.scss";
@@ -88,18 +88,13 @@ const AddChargeDetailsPage = () => {
       : formatNameUtil(suspectFirstNameText, suspectLastNameText);
   }, [state, suspectIndex]);
 
-  const showAdultChargeWarning = useMemo(() => {
+  const showChargedWithAdultWarning = useMemo(() => {
     const {
       formData: { suspects },
     } = state;
-    if (
-      suspects[suspectIndex].suspectOffenderTypesRadio.shortCode ===
-        offenderTypeShortCodes.PROLIFIC_YOUTH_OFFENDER ||
-      suspects[suspectIndex].suspectOffenderTypesRadio.shortCode ===
-        offenderTypeShortCodes.YOUTH_OFFENDER
-    ) {
-      return true;
-    }
+    return isChargedWithAdultWarningActive(
+      suspects[suspectIndex].suspectOffenderTypesRadio.shortCode,
+    );
   }, [state, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -160,7 +155,7 @@ const AddChargeDetailsPage = () => {
       };
     }
 
-    if (showAdultChargeWarning && !chargedWithAdultRadio) {
+    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
       errors.chargedWithAdultRadio = {
         errorSummaryText: "Please select an option",
         inputErrorText: "Please select an option",
@@ -436,7 +431,7 @@ const AddChargeDetailsPage = () => {
               if (value) setFormValue("addVictimRadio", value);
             }}
           ></Radios>
-          {showAdultChargeWarning && (
+          {showChargedWithAdultWarning && (
             <Radios
               fieldset={{
                 legend: {
