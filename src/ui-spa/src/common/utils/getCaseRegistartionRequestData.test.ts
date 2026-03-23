@@ -502,6 +502,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceFromDate: "2026-03-02",
               offenceToDate: "2026-03-02",
               addVictimRadio: "yes",
+              chargedWithAdultRadio: "yes",
               victim: {
                 victimId: "123",
               },
@@ -522,6 +523,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceFromDate: "2026-03-02",
               offenceToDate: "",
               addVictimRadio: "no",
+              chargedWithAdultRadio: "no",
               victim: null,
             },
           ],
@@ -639,6 +641,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceDescription:
                 "Permit to be set trap etc - cause injury to wild bird",
               victimIndexId: 0,
+              chargedWithAdult: true,
             },
             {
               dateFrom: "2026-03-02",
@@ -648,6 +651,7 @@ describe("getCaseRegistrationRequestData", () => {
               offenceDescription:
                 "Permit to be set trap etc - cause injury to wild bird",
               victimIndexId: -1,
+              chargedWithAdult: false,
             },
           ],
           aliases: [
