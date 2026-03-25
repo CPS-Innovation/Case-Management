@@ -236,6 +236,7 @@ const SuspectDOBPage = () => {
               children: <span>For example, 27 3 2007</span>,
             }}
             id="suspect-DOB-date"
+            data-testid="suspect-DOB-date"
             items={[
               {
                 id: "suspect-DOB-day-text",

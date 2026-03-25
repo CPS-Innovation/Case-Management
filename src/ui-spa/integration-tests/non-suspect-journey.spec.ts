@@ -6,7 +6,7 @@ import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
 
-test.describe("Case Registration", () => {
+test.describe("Non suspect journey", () => {
   test("Should successfully complete non suspect journey", async ({ page }) => {
     await page.goto("http://localhost:5173");
     await expect(page).toHaveTitle(/Case Management Register a Case/);

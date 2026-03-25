@@ -351,6 +351,7 @@ const AddSuspectPage = () => {
                     />,
                     <Checkboxes
                       key="case-additional-details-checkboxes"
+                      data-testid="suspect-additional-details-checkboxes"
                       fieldset={{
                         legend: {
                           children: (
