@@ -8,9 +8,10 @@ import { SuspectGenderPage } from "./pages/suspectGenderPage";
 import { SuspectDisabilityPage } from "./pages/suspectDisabilityPage";
 import { SuspectReligionPage } from "./pages/suspectReligionPage";
 import { SuspectEthnicityPage } from "./pages/suspectEthnicityPage";
+import { SuspectAliasesPage } from "./pages/suspectAddAliases";
 import { SuspectASNPage } from "./pages/suspectASNPage";
 import { SuspectOffenderTypesPage } from "./pages/suspectOffenderTypesPage";
-import { version } from "react";
+import { SuspectAliasesSummaryPage } from "./pages/suspectAliasesSummary";
 
 test.describe("Suspect journey", () => {
   test("Should successfully complete suspect journey", async ({ page }) => {
@@ -64,7 +65,7 @@ test.describe("Suspect journey", () => {
     await addSuspectPage.selectAdditionalDetailsReligion();
     await addSuspectPage.selectAdditionalDetailsEthnicity();
     await addSuspectPage.selectAdditionalDetailsASN();
-    // await addSuspectPage.selectAdditionalDetailsAlias();
+    await addSuspectPage.selectAdditionalDetailsAlias();
     await addSuspectPage.selectAdditionalDetailsOffenderType();
     await addSuspectPage.saveAndContinue();
 
@@ -114,6 +115,26 @@ test.describe("Suspect journey", () => {
     await suspectEthnicityPage.errorValidations();
     await suspectEthnicityPage.selectEthnicityBlack();
     await suspectEthnicityPage.saveAndContinue();
+
+    const suspectAliasesPage = new SuspectAliasesPage(page);
+    await suspectAliasesPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-add-aliases",
+    );
+    await suspectAliasesPage.verifyPageElements();
+    await suspectAliasesPage.errorValidations();
+    await suspectAliasesPage.addFirstName("Harry");
+    await suspectAliasesPage.addLastName("Potter");
+    await suspectAliasesPage.saveAndContinue();
+
+    const suspectAliasesSummaryPage = new SuspectAliasesSummaryPage(page);
+    await suspectAliasesSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-aliases-summary",
+    );
+    await suspectAliasesSummaryPage.verifyPageElements();
+    await suspectAliasesSummaryPage.errorValidations();
+    await suspectAliasesSummaryPage.verifySuspectAliasesList(["POTTER, Harry"]);
+    await suspectAliasesSummaryPage.selectAddMoreAliasesNo();
+    await suspectAliasesSummaryPage.saveAndContinue();
 
     const suspectASNPage = new SuspectASNPage(page);
     await suspectASNPage.verifyUrl(
