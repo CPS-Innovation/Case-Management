@@ -93,7 +93,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               {suspect.addSuspectRadio === "person" && (
                 <>
                   <PersonIcon />
-                  <span>
+                  <span data-testid={`suspect-name-${index}`}>
                     {`${formatNameUtil(
                       suspect.suspectFirstNameText,
                       suspect.suspectLastNameText,
@@ -106,7 +106,9 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               {suspect.addSuspectRadio === "company" && (
                 <>
                   <CompanyIcon />
-                  <span>{suspect.suspectCompanyNameText}</span>
+                  <span data-testid={`suspect-name-${index}`}>
+                    {suspect.suspectCompanyNameText}
+                  </span>
                 </>
               )}
             </div>
@@ -180,12 +182,18 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
     } = state;
 
     return (
-      <dl>
+      <>
         {suspects.map(
           (suspect, index) =>
             suspect.addSuspectRadio === "person" && (
-              <div key={`${index}-${suspect.suspectLastNameText}`}>
-                <div className={styles.suspectRowWrapper}>
+              <div
+                key={`${index}-${suspect.suspectLastNameText}`}
+                data-testid={`suspect-key-${index}`}
+              >
+                <div
+                  className={styles.suspectRowWrapper}
+                  data-testid={`suspect-row-${index}`}
+                >
                   <SummaryList rows={suspectSummaryRow(suspect, index)} />
                 </div>
 
@@ -193,7 +201,10 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                   isCaseSummaryPage,
                   suspectDetailsSummaryListRows[index].length,
                 ) && (
-                  <div className={styles.suspectDetailsWrapper}>
+                  <div
+                    className={styles.suspectDetailsWrapper}
+                    data-testid={`suspect-details-${index}`}
+                  >
                     <dd>
                       <Details
                         summaryChildren={getDetailsTitle(
@@ -253,9 +264,14 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
         {suspects.map(
           (suspect, index) =>
             suspect.addSuspectRadio === "company" && (
-              <div key={`${index}-${suspect.suspectCompanyNameText}`}>
+              <div
+                key={`${index}-${suspect.suspectCompanyNameText}`}
+                data-testid={`suspect-key-${index}`}
+              >
                 <div className={styles.suspectRowWrapper}>
-                  <SummaryList rows={suspectSummaryRow(suspect, index)} />
+                  <div data-testid={`suspect-row-${index}`}>
+                    <SummaryList rows={suspectSummaryRow(suspect, index)} />
+                  </div>
                   {isCaseSummaryPage && (
                     <Details summaryChildren={"Charges"}>
                       <h3>Charges</h3>
@@ -285,7 +301,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
               </div>
             ),
         )}
-      </dl>
+      </>
     );
   };
 

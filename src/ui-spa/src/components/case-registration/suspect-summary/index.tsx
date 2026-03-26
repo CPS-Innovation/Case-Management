@@ -37,7 +37,7 @@ const SuspectSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#add-more-suspects-radio-yes",
-          "data-testid": "add-more-suspects-radio-yes",
+          "data-testid": "add-more-suspects-radio-link",
         };
       }
       return null;

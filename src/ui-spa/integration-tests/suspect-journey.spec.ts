@@ -12,6 +12,7 @@ import { SuspectAliasesPage } from "./pages/suspectAddAliases";
 import { SuspectASNPage } from "./pages/suspectASNPage";
 import { SuspectOffenderTypesPage } from "./pages/suspectOffenderTypesPage";
 import { SuspectAliasesSummaryPage } from "./pages/suspectAliasesSummary";
+import { SuspectSummaryPage } from "./pages/suspectSummaryPage";
 
 test.describe("Suspect journey", () => {
   test("Should successfully complete suspect journey", async ({ page }) => {
@@ -156,5 +157,125 @@ test.describe("Suspect journey", () => {
     await suspectOffenderTypesPage.selectOffenderTypePYO();
     await suspectOffenderTypesPage.addArrestDate("2024-01-01");
     await suspectOffenderTypesPage.saveAndContinue();
+
+    //second suspect
+    const suspectSummaryPage = new SuspectSummaryPage(page);
+    await suspectSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-summary",
+    );
+    await suspectSummaryPage.verifyPageElements("You have added 1 suspect");
+    await suspectSummaryPage.errorValidations();
+    await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
+    await suspectSummaryPage.verifySuspectSummaryDetails(0, [
+      { key: "Date of birth", value: "27/03/2007" },
+      { key: "Gender", value: "Male" },
+      { key: "Disability", value: "yes" },
+      { key: "Religion", value: "Christianity" },
+      { key: "Ethnicity", value: "Black" },
+      { key: "Alias", value: "POTTER, Harry" },
+      { key: "Arrest Summons Number", value: "123456" },
+      { key: "Type of offender", value: "Prolific youth offender (PYO)" },
+      { key: "Arrest date", value: "01 January 2024" },
+    ]);
+    // await suspectSummaryPage.removeSuspect(0);
+    await suspectSummaryPage.selectAddMoreSuspectYes();
+    await suspectSummaryPage.saveAndContinue();
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/add-suspect",
+    );
+
+    await addSuspectPage.verifyBasePageElements();
+    await addSuspectPage.addPersonSuspect();
+    await addSuspectPage.verifyAdditionalElements();
+    await addSuspectPage.addPersonSuspect();
+    await addSuspectPage.addSuspectFirstName("steve");
+    await addSuspectPage.addSuspectLastName("smith");
+    await addSuspectPage.selectAdditionalDetailsDOB();
+    await addSuspectPage.selectAdditionalDetailsGender();
+    await addSuspectPage.selectAdditionalDetailsDisability();
+    await addSuspectPage.selectAdditionalDetailsReligion();
+    await addSuspectPage.selectAdditionalDetailsEthnicity();
+    await addSuspectPage.selectAdditionalDetailsASN();
+    await addSuspectPage.selectAdditionalDetailsAlias();
+    await addSuspectPage.selectAdditionalDetailsOffenderType();
+    await addSuspectPage.saveAndContinue();
+
+    await suspectDOBPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-dob",
+    );
+    await suspectDOBPage.addDOBDay("15");
+    await suspectDOBPage.addDOBMonth("06");
+    await suspectDOBPage.addDOBYear("2007");
+    await suspectDOBPage.saveAndContinue();
+
+    await suspectGenderPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-gender",
+    );
+    await suspectGenderPage.selectGenderFemale();
+    await suspectGenderPage.saveAndContinue();
+
+    await suspectDisabilityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-disability",
+    );
+    await suspectDisabilityPage.selectDisabilityNo();
+    await suspectDisabilityPage.saveAndContinue();
+
+    await suspectReligionPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-religion",
+    );
+    await suspectReligionPage.selectReligionChristianity();
+    await suspectReligionPage.saveAndContinue();
+
+    await suspectEthnicityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-ethnicity",
+    );
+    await suspectEthnicityPage.selectEthnicityWhite();
+    await suspectEthnicityPage.saveAndContinue();
+
+    await suspectAliasesPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-add-aliases",
+    );
+    await suspectAliasesPage.addFirstName("Stev");
+    await suspectAliasesPage.addLastName("mark");
+    await suspectAliasesPage.saveAndContinue();
+
+    await suspectAliasesSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-aliases-summary",
+    );
+    await suspectAliasesSummaryPage.verifySuspectAliasesList(["MARK, Stev"]);
+    await suspectAliasesSummaryPage.selectAddMoreAliasesNo();
+    await suspectAliasesSummaryPage.saveAndContinue();
+
+    await suspectASNPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-asn",
+    );
+    await suspectASNPage.addASNText("1234");
+    await suspectASNPage.saveAndContinue();
+
+    await suspectOffenderTypesPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-offender",
+    );
+    await suspectOffenderTypesPage.selectOffenderTypePPO();
+    await suspectOffenderTypesPage.saveAndContinue();
+
+    await suspectSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-summary",
+    );
+    await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
+    await suspectSummaryPage.errorValidations();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "SMITH, Steve",
+    ]);
+    await suspectSummaryPage.verifySuspectSummaryDetails(1, [
+      { key: "Date of birth", value: "15/06/2007" },
+      { key: "Gender", value: "Female" },
+      { key: "Disability", value: "no" },
+      { key: "Religion", value: "Christianity" },
+      { key: "Ethnicity", value: "White" },
+      { key: "Alias", value: "MARK, Stev" },
+      { key: "Arrest Summons Number", value: "1234" },
+      { key: "Type of offender", value: "Prolific priority offender (PPO)" },
+    ]);
   });
 });
