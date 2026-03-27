@@ -30,7 +30,7 @@ export class SuspectDOBPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
@@ -39,15 +39,15 @@ export class SuspectDOBPage {
     );
     await this.page.getByTestId("suspect-DOB-day-text-link").click();
     await expect(this.page.locator("#suspect-DOB-day-text")).toBeFocused();
-    this.addDOBDay("32");
-    this.saveAndContinue();
+    await this.addDOBDay("32");
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
     await expect(this.page.getByTestId("suspect-DOB-day-text-link")).toHaveText(
       "Date of birth must be a valid date",
     );
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
@@ -56,8 +56,8 @@ export class SuspectDOBPage {
     );
     await this.page.getByTestId("suspect-DOB-day-text-link").click();
     await expect(this.page.locator("#suspect-DOB-day-text")).toBeFocused();
-    this.addDOBDay("3");
-    this.saveAndContinue();
+    await this.addDOBDay("3");
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
@@ -67,16 +67,16 @@ export class SuspectDOBPage {
     await this.page.getByTestId("suspect-DOB-month-text-link").click();
     await expect(this.page.locator("#suspect-DOB-month-text")).toBeFocused();
 
-    this.addDOBMonth("13");
-    this.saveAndContinue();
+    await this.addDOBMonth("13");
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-DOB-month-text-link"),
     ).toHaveText("Date of birth must be a valid date");
-    this.addDOBMonth("11");
-    this.saveAndContinue();
+    await this.addDOBMonth("11");
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
@@ -85,8 +85,8 @@ export class SuspectDOBPage {
     ).toHaveText("Date of birth must be a valid date");
     await this.page.getByTestId("suspect-DOB-year-text-link").click();
     await expect(this.page.locator("#suspect-DOB-year-text")).toBeFocused();
-    this.addDOBYear("20");
-    this.saveAndContinue();
+    await this.addDOBYear("20");
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();

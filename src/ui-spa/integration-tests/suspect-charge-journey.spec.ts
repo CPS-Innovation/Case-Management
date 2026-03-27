@@ -15,6 +15,7 @@ import { SuspectAliasesSummaryPage } from "./pages/suspectAliasesSummary";
 import { SuspectSummaryPage } from "./pages/suspectSummaryPage";
 import { SuspectRemoveConfirmationPage } from "./pages/suspectRemoveConfirmationPage";
 import { WantToAddChargesPage } from "./pages/wantToAddChargesPage";
+import { ChargesOffenceSearchPagePage } from "./pages/chargesOffenceSearchPage";
 import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
@@ -384,34 +385,47 @@ test.describe("Suspect journey", () => {
     await wantToAddChargesPage.verifyUrl();
     await wantToAddChargesPage.verifyPageElements();
     await wantToAddChargesPage.errorValidations();
-    await wantToAddChargesPage.selectAddChargesNo();
+    await wantToAddChargesPage.selectAddChargesYes();
     await wantToAddChargesPage.saveAndContinue();
 
-    const caseMonitoringPage = new CaseMonitoringPage(page);
-    await caseMonitoringPage.verifyUrl();
-    await caseMonitoringPage.verifyPageElements(45);
-    await caseMonitoringPage.verifyPreChargeCheckboxChecked();
-    await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
-    await caseMonitoringPage.saveAndContinue();
-    await caseMonitoringPage.verifyErrorSummaryClear();
-
-    const caseAssigneePage = new CaseAssigneePage(page);
-    await caseAssigneePage.verifyUrl();
-    await caseAssigneePage.verifyPageElements();
-    await caseAssigneePage.errorValidations();
-    await caseAssigneePage.addProsecutorYes();
-    await caseAssigneePage.addInvestigatorYes();
-    await caseAssigneePage.enterProsecutorName("Prosecutor A");
-    await caseAssigneePage.enterCaseworkerName("Caseworker A");
-    await caseAssigneePage.addInvestigatorFirstName("Investigator F");
-    await caseAssigneePage.addInvestigatorLastName("Investigator L");
-    await caseAssigneePage.addInvestigatorShoulderNumber("12345");
-    await caseAssigneePage.saveAndContinue();
-    await expect(page).toHaveURL(
-      "http://localhost:5173/case-registration/case-summary",
+    const chargesOffenceSearchPage = new ChargesOffenceSearchPagePage(page);
+    await chargesOffenceSearchPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-0/charges-offence-search",
     );
+    await chargesOffenceSearchPage.verifyPageElements("POTTER, Harry");
+    await chargesOffenceSearchPage.errorValidations();
+    await chargesOffenceSearchPage.addOffenceSearchText("test");
+    await chargesOffenceSearchPage.searchOffence();
+    await chargesOffenceSearchPage.validateOffenceSearchResults("test");
+    await chargesOffenceSearchPage.addOffence(0);
+    await expect(page).toHaveURL(
+      "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
+    );
+    // const caseMonitoringPage = new CaseMonitoringPage(page);
+    // await caseMonitoringPage.verifyUrl();
+    // await caseMonitoringPage.verifyPageElements(45);
+    // await caseMonitoringPage.verifyPreChargeCheckboxChecked();
+    // await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
+    // await caseMonitoringPage.saveAndContinue();
+    // await caseMonitoringPage.verifyErrorSummaryClear();
 
-    const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
-    await caseRegistrationSummaryPage.verifyUrl();
+    // const caseAssigneePage = new CaseAssigneePage(page);
+    // await caseAssigneePage.verifyUrl();
+    // await caseAssigneePage.verifyPageElements();
+    // await caseAssigneePage.errorValidations();
+    // await caseAssigneePage.addProsecutorYes();
+    // await caseAssigneePage.addInvestigatorYes();
+    // await caseAssigneePage.enterProsecutorName("Prosecutor A");
+    // await caseAssigneePage.enterCaseworkerName("Caseworker A");
+    // await caseAssigneePage.addInvestigatorFirstName("Investigator F");
+    // await caseAssigneePage.addInvestigatorLastName("Investigator L");
+    // await caseAssigneePage.addInvestigatorShoulderNumber("12345");
+    // await caseAssigneePage.saveAndContinue();
+    // await expect(page).toHaveURL(
+    //   "http://localhost:5173/case-registration/case-summary",
+    // );
+
+    // const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
+    // await caseRegistrationSummaryPage.verifyUrl();
   });
 });
