@@ -38,6 +38,35 @@ export class AddSuspectPage {
     ]);
   }
 
+  async verifySelectedAdditionalDetails(checkedValues: string[]) {
+    const selectedLabels = await this.page
+      .getByTestId("suspect-additional-details-checkboxes")
+      .locator(`input:checked + label`)
+      .allInnerTexts();
+    expect(selectedLabels).toEqual(checkedValues);
+  }
+
+  async verifyPersonSuspectSelected(firstName: string, lastName: string) {
+    await expect(
+      this.page.getByRole("radio", { name: "Person" }),
+    ).toBeChecked();
+    await expect(
+      this.page.getByRole("radio", { name: "Company" }),
+    ).not.toBeChecked();
+    await expect(this.page.getByLabel("Last name")).toHaveValue(lastName);
+    await expect(this.page.getByLabel("First name")).toHaveValue(firstName);
+  }
+
+  async verifyCompanySuspectSelected(companyName: string) {
+    await expect(
+      this.page.getByRole("radio", { name: "Company" }),
+    ).toBeChecked();
+    await expect(
+      this.page.getByRole("radio", { name: "Person" }),
+    ).not.toBeChecked();
+    await expect(this.page.getByLabel("Company name")).toHaveValue(companyName);
+  }
+
   async errorValidations() {
     this.saveAndContinue();
     await expect(
@@ -78,34 +107,68 @@ export class AddSuspectPage {
     await this.page.getByLabel("Company name").fill(name);
   }
 
-  async selectAdditionalDetailsDOB() {
-    await this.page.getByLabel("Date of birth").check();
+  async selectAdditionalDetailsDOB(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Date of birth").check();
+      return;
+    }
+    await this.page.getByLabel("Date of birth").uncheck();
   }
 
-  async selectAdditionalDetailsGender() {
-    await this.page.getByLabel("Gender").check();
-  }
-  async selectAdditionalDetailsDisability() {
-    await this.page.getByLabel("Disability").check();
-  }
-  async selectAdditionalDetailsReligion() {
-    await this.page.getByLabel("Religion").check();
+  async selectAdditionalDetailsGender(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Gender").check();
+      return;
+    }
+    await this.page.getByLabel("Gender").uncheck();
   }
 
-  async selectAdditionalDetailsEthnicity() {
-    await this.page.getByLabel("Ethnicity").check();
+  async selectAdditionalDetailsDisability(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Disability").check();
+      return;
+    }
+    await this.page.getByLabel("Disability").uncheck();
   }
 
-  async selectAdditionalDetailsAlias() {
-    await this.page.getByLabel("Alias details").check();
+  async selectAdditionalDetailsReligion(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Religion").check();
+      return;
+    }
+    await this.page.getByLabel("Religion").uncheck();
   }
 
-  async selectAdditionalDetailsASN() {
-    await this.page.getByLabel("Arrest Summons Number (ASN)").check();
+  async selectAdditionalDetailsEthnicity(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Ethnicity").check();
+      return;
+    }
+    await this.page.getByLabel("Ethnicity").uncheck();
   }
 
-  async selectAdditionalDetailsOffenderType() {
-    await this.page.getByLabel("Type of offender").check();
+  async selectAdditionalDetailsAlias(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Alias details").check();
+      return;
+    }
+    await this.page.getByLabel("Alias details").uncheck();
+  }
+
+  async selectAdditionalDetailsASN(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Arrest Summons Number (ASN)").check();
+      return;
+    }
+    await this.page.getByLabel("Arrest Summons Number (ASN)").uncheck();
+  }
+
+  async selectAdditionalDetailsOffenderType(check: boolean) {
+    if (check) {
+      await this.page.getByLabel("Type of offender").check();
+      return;
+    }
+    await this.page.getByLabel("Type of offender").uncheck();
   }
 
   async saveAndContinue() {

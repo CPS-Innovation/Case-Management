@@ -7,8 +7,10 @@ export class SuspectSummaryPage {
     this.page = page;
   }
 
-  async verifyUrl(url: string) {
-    await expect(this.page).toHaveURL(url);
+  async verifyUrl() {
+    await expect(this.page).toHaveURL(
+      "http://localhost:5173/case-registration/suspect-summary",
+    );
   }
 
   async verifyPageElements(h1Text: string) {
@@ -104,15 +106,20 @@ export class SuspectSummaryPage {
     );
   }
 
-  // async verifyNoSuspects() {
-  //   await expect(
-  //     this.page.getByTestId("suspect-aliases-summary-list"),
-  //   ).toHaveCount(0);
-  //   await expect(this.page.getByTestId("suspect-no-aliases")).toBeVisible();
-  //   await expect(this.page.getByTestId("suspect-no-aliases")).toHaveText(
-  //     "There are no aliases",
-  //   );
-  // }
+  async verifyNoSuspects() {
+    await expect(
+      this.page.getByTestId("suspect-aliases-summary-list"),
+    ).toHaveCount(0);
+    await expect(this.page.locator("h1")).toHaveText(
+      "You have added 0 suspect",
+    );
+    await expect(this.page.locator("legend").nth(0)).toHaveText(
+      "Do you need to add a suspect?",
+    );
+    await expect(this.page.locator("label").nth(0)).toHaveText("Yes");
+    await expect(this.page.locator("label").nth(1)).toHaveText("No");
+    this.verifySuspectSummaryRows([]);
+  }
 
   async removeSuspect(index: number) {
     const suspectRow = this.page.getByTestId(`suspect-row-${index}`);

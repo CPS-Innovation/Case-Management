@@ -13,6 +13,7 @@ import { SuspectASNPage } from "./pages/suspectASNPage";
 import { SuspectOffenderTypesPage } from "./pages/suspectOffenderTypesPage";
 import { SuspectAliasesSummaryPage } from "./pages/suspectAliasesSummary";
 import { SuspectSummaryPage } from "./pages/suspectSummaryPage";
+import { SuspectRemoveConfirmationPage } from "./pages/suspectRemoveConfirmationPage";
 
 test.describe("Suspect journey", () => {
   test("Should successfully complete suspect journey", async ({ page }) => {
@@ -60,14 +61,24 @@ test.describe("Suspect journey", () => {
     await addSuspectPage.addPersonSuspect();
     await addSuspectPage.addSuspectFirstName("harry");
     await addSuspectPage.addSuspectLastName("potter");
-    await addSuspectPage.selectAdditionalDetailsDOB();
-    await addSuspectPage.selectAdditionalDetailsGender();
-    await addSuspectPage.selectAdditionalDetailsDisability();
-    await addSuspectPage.selectAdditionalDetailsReligion();
-    await addSuspectPage.selectAdditionalDetailsEthnicity();
-    await addSuspectPage.selectAdditionalDetailsASN();
-    await addSuspectPage.selectAdditionalDetailsAlias();
-    await addSuspectPage.selectAdditionalDetailsOffenderType();
+    await addSuspectPage.selectAdditionalDetailsDOB(true);
+    await addSuspectPage.selectAdditionalDetailsGender(true);
+    await addSuspectPage.selectAdditionalDetailsDisability(true);
+    await addSuspectPage.selectAdditionalDetailsReligion(true);
+    await addSuspectPage.selectAdditionalDetailsEthnicity(true);
+    await addSuspectPage.selectAdditionalDetailsASN(true);
+    await addSuspectPage.selectAdditionalDetailsAlias(true);
+    await addSuspectPage.selectAdditionalDetailsOffenderType(true);
+    await addSuspectPage.verifySelectedAdditionalDetails([
+      "Date of birth",
+      "Gender",
+      "Disability",
+      "Religion",
+      "Ethnicity",
+      "Alias details",
+      "Arrest Summons Number (ASN)",
+      "Type of offender",
+    ]);
     await addSuspectPage.saveAndContinue();
 
     const suspectDOBPage = new SuspectDOBPage(page);
@@ -160,9 +171,7 @@ test.describe("Suspect journey", () => {
 
     //second suspect
     const suspectSummaryPage = new SuspectSummaryPage(page);
-    await suspectSummaryPage.verifyUrl(
-      "http://localhost:5173/case-registration/suspect-summary",
-    );
+    await suspectSummaryPage.verifyUrl();
     await suspectSummaryPage.verifyPageElements("You have added 1 suspect");
     await suspectSummaryPage.errorValidations();
     await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
@@ -177,7 +186,6 @@ test.describe("Suspect journey", () => {
       { key: "Type of offender", value: "Prolific youth offender (PYO)" },
       { key: "Arrest date", value: "01 January 2024" },
     ]);
-    // await suspectSummaryPage.removeSuspect(0);
     await suspectSummaryPage.selectAddMoreSuspectYes();
     await suspectSummaryPage.saveAndContinue();
     await addSuspectPage.verifyUrl(
@@ -190,14 +198,24 @@ test.describe("Suspect journey", () => {
     await addSuspectPage.addPersonSuspect();
     await addSuspectPage.addSuspectFirstName("steve");
     await addSuspectPage.addSuspectLastName("smith");
-    await addSuspectPage.selectAdditionalDetailsDOB();
-    await addSuspectPage.selectAdditionalDetailsGender();
-    await addSuspectPage.selectAdditionalDetailsDisability();
-    await addSuspectPage.selectAdditionalDetailsReligion();
-    await addSuspectPage.selectAdditionalDetailsEthnicity();
-    await addSuspectPage.selectAdditionalDetailsASN();
-    await addSuspectPage.selectAdditionalDetailsAlias();
-    await addSuspectPage.selectAdditionalDetailsOffenderType();
+    await addSuspectPage.selectAdditionalDetailsDOB(true);
+    await addSuspectPage.selectAdditionalDetailsGender(true);
+    await addSuspectPage.selectAdditionalDetailsDisability(true);
+    await addSuspectPage.selectAdditionalDetailsReligion(true);
+    await addSuspectPage.selectAdditionalDetailsEthnicity(true);
+    await addSuspectPage.selectAdditionalDetailsASN(true);
+    await addSuspectPage.selectAdditionalDetailsAlias(true);
+    await addSuspectPage.selectAdditionalDetailsOffenderType(true);
+    await addSuspectPage.verifySelectedAdditionalDetails([
+      "Date of birth",
+      "Gender",
+      "Disability",
+      "Religion",
+      "Ethnicity",
+      "Alias details",
+      "Arrest Summons Number (ASN)",
+      "Type of offender",
+    ]);
     await addSuspectPage.saveAndContinue();
 
     await suspectDOBPage.verifyUrl(
@@ -258,9 +276,7 @@ test.describe("Suspect journey", () => {
     await suspectOffenderTypesPage.selectOffenderTypePPO();
     await suspectOffenderTypesPage.saveAndContinue();
 
-    await suspectSummaryPage.verifyUrl(
-      "http://localhost:5173/case-registration/suspect-summary",
-    );
+    await suspectSummaryPage.verifyUrl();
     await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
     await suspectSummaryPage.errorValidations();
     await suspectSummaryPage.verifySuspectSummaryRows([
@@ -277,5 +293,81 @@ test.describe("Suspect journey", () => {
       { key: "Arrest Summons Number", value: "1234" },
       { key: "Type of offender", value: "Prolific priority offender (PPO)" },
     ]);
+    await suspectSummaryPage.changeSuspect(1);
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/add-suspect",
+    );
+    await addSuspectPage.verifyPersonSuspectSelected("steve", "smith");
+    await addSuspectPage.verifySelectedAdditionalDetails([
+      "Date of birth",
+      "Gender",
+      "Disability",
+      "Religion",
+      "Ethnicity",
+      "Alias details",
+      "Arrest Summons Number (ASN)",
+      "Type of offender",
+    ]);
+    await addSuspectPage.selectAdditionalDetailsDisability(false);
+    await addSuspectPage.selectAdditionalDetailsReligion(false);
+    await addSuspectPage.selectAdditionalDetailsEthnicity(false);
+    await addSuspectPage.selectAdditionalDetailsASN(false);
+    await addSuspectPage.selectAdditionalDetailsAlias(false);
+    await addSuspectPage.selectAdditionalDetailsOffenderType(false);
+    await addSuspectPage.verifySelectedAdditionalDetails([
+      "Date of birth",
+      "Gender",
+    ]);
+    await addSuspectPage.saveAndContinue();
+
+    await suspectDOBPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-dob",
+    );
+    await suspectDOBPage.addDOBDay("15");
+    await suspectDOBPage.addDOBMonth("06");
+    await suspectDOBPage.addDOBYear("2007");
+    await suspectDOBPage.saveAndContinue();
+
+    await suspectGenderPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-1/suspect-gender",
+    );
+    await suspectGenderPage.selectGenderFemale();
+    await suspectGenderPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
+    await suspectSummaryPage.errorValidations();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "SMITH, Steve",
+    ]);
+    await suspectSummaryPage.verifySuspectSummaryDetails(1, [
+      { key: "Date of birth", value: "15/06/2007" },
+      { key: "Gender", value: "Female" },
+    ]);
+    await suspectSummaryPage.removeSuspect(1);
+    const suspectRemoveConfirmationPage = new SuspectRemoveConfirmationPage(
+      page,
+    );
+    await suspectRemoveConfirmationPage.verifyUrl();
+    await suspectRemoveConfirmationPage.verifyPageElements("SMITH, Steve");
+    await suspectRemoveConfirmationPage.cancel();
+    await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "SMITH, Steve",
+    ]);
+    await suspectSummaryPage.removeSuspect(1);
+    await suspectRemoveConfirmationPage.verifyUrl();
+    await suspectRemoveConfirmationPage.verifyPageElements("SMITH, Steve");
+    await suspectRemoveConfirmationPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 1 suspect");
+    await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
+    await suspectSummaryPage.removeSuspect(0);
+    await suspectRemoveConfirmationPage.verifyUrl();
+    await suspectRemoveConfirmationPage.verifyPageElements("POTTER, Harry");
+    await suspectRemoveConfirmationPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyNoSuspects();
   });
 });
