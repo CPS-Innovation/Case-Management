@@ -16,6 +16,8 @@ import { SuspectSummaryPage } from "./pages/suspectSummaryPage";
 import { SuspectRemoveConfirmationPage } from "./pages/suspectRemoveConfirmationPage";
 import { WantToAddChargesPage } from "./pages/wantToAddChargesPage";
 import { ChargesOffenceSearchPagePage } from "./pages/chargesOffenceSearchPage";
+import { AddChargeDetailsPage } from "./pages/addChargeDetailsPage";
+import { AddChargeVictimPage } from "./pages/addChargeVictimPage";
 import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
@@ -398,9 +400,46 @@ test.describe("Suspect journey", () => {
     await chargesOffenceSearchPage.searchOffence();
     await chargesOffenceSearchPage.validateOffenceSearchResults("test");
     await chargesOffenceSearchPage.addOffence(0);
+
+    const addChargeDetailsPage = new AddChargeDetailsPage(page);
+    await addChargeDetailsPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
+    );
+    await addChargeDetailsPage.verifyPageElements(
+      "POTTER, Harry",
+      "WC81229 - Permit to be set trap etc - cause injury to wild bird",
+    );
+    await addChargeDetailsPage.errorValidations();
+    await addChargeDetailsPage.clickDateRange();
+    await addChargeDetailsPage.fillOffenceFromDate("2022-02-02");
+    await addChargeDetailsPage.fillOffenceToDate("2022-02-03");
+    await addChargeDetailsPage.selectAddVictimYes();
+    await addChargeDetailsPage.saveAndContinue();
+
+    // await expect(page).toHaveURL(
+    //   "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
+    // );
+
+    const addChargeVictimPage = new AddChargeVictimPage(page);
+    await addChargeVictimPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-victim",
+    );
+    await addChargeVictimPage.verifyPageElements(
+      "POTTER, Harry",
+      "WC81229 - Permit to be set trap etc - cause injury to wild bird",
+    );
+    await addChargeVictimPage.errorValidations();
+    await addChargeVictimPage.fillVictimFirstName("steve");
+    await addChargeVictimPage.fillVictimLastName("smith");
+    await addChargeVictimPage.selectVictimIsVulnerable(true);
+    await addChargeVictimPage.selectVictimIsIntimidated(true);
+    await addChargeVictimPage.selectVictimIsWitness(true);
+    await addChargeVictimPage.saveAndContinue();
+
     await expect(page).toHaveURL(
       "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
     );
+
     // const caseMonitoringPage = new CaseMonitoringPage(page);
     // await caseMonitoringPage.verifyUrl();
     // await caseMonitoringPage.verifyPageElements(45);

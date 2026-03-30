@@ -105,7 +105,7 @@ const AddChargeVictimPage = () => {
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
             href: "#victim-lastname-text",
-            "data-testid": "victim-last-name-link",
+            "data-testid": "victim-lastname-link",
           };
 
         default:
@@ -130,7 +130,7 @@ const AddChargeVictimPage = () => {
     if (victimsList.length === 0 || selectedVictimRadio === "new-victim") {
       if (!victimLastNameText) {
         errors.victimLastNameText = {
-          errorSummaryText: "Enter a name",
+          errorSummaryText: "Enter the victim's last name",
           inputErrorText: "Enter the victim's last name",
           hasLink: true,
         };
@@ -466,7 +466,7 @@ const AddChargeVictimPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"add-charge-victim-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -475,15 +475,13 @@ const AddChargeVictimPage = () => {
 
       <h1>Add a victim to this charge</h1>
       <div>
-        <div className={pageStyles.suspectName}>
-          <b>{suspectName}</b>
-        </div>
-        <div>
-          <b>
-            {suspectCharge.selectedOffence?.code} -{" "}
-            {suspectCharge.selectedOffence?.description}
-          </b>
-        </div>
+        <h2 className="govuk-heading-s govuk-!-margin-bottom-2">
+          {suspectName}
+        </h2>
+        <h2 className="govuk-heading-s govuk-!-margin-bottom-2">
+          {suspectCharge.selectedOffence?.code} -{" "}
+          {suspectCharge.selectedOffence?.description}
+        </h2>
       </div>
       <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
