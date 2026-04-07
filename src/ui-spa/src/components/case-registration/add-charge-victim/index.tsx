@@ -97,7 +97,7 @@ const AddChargeVictimPage = () => {
         case "selectedVictimRadio":
           return {
             children: formDataErrors[errorKey]?.errorSummaryText,
-            href: "#victim-radio-0",
+            href: "#add-victim-radio-0",
             "data-testid": "victim-radio-link",
           };
 
@@ -121,8 +121,8 @@ const AddChargeVictimPage = () => {
     const victimsList = state.formData.victimsList || [];
     if (victimsList.length > 0 && !selectedVictimRadio) {
       errors.selectedVictimRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select an option",
+        inputErrorText: "Select an option",
         hasLink: true,
       };
     }
@@ -221,46 +221,50 @@ const AddChargeVictimPage = () => {
     [victimDetails],
   );
 
-  const renderVictimAdditionalDetails = useCallback(() => {
-    const victimType = [
-      { name: "The victim is vulnerable", value: "Vulnerable" },
-      { name: "The victim has been intimidated", value: "Intimidated" },
-      { name: "The victim is a witness", value: "Witness" },
-    ] as { name: string; value: VictimAdditionalDetailsValue }[];
-    return (
-      <Checkboxes
-        fieldset={{
-          legend: {
-            children: (
-              <span className="govuk-!-font-weight-bold">
-                Victim details (optional)
-              </span>
+  const renderVictimAdditionalDetails = useCallback(
+    (victimKey: string) => {
+      const victimType = [
+        { name: "The victim is vulnerable", value: "Vulnerable" },
+        { name: "The victim has been intimidated", value: "Intimidated" },
+        { name: "The victim is a witness", value: "Witness" },
+      ] as { name: string; value: VictimAdditionalDetailsValue }[];
+      return (
+        <Checkboxes
+          data-testid="victim-additional-details-checkboxes"
+          fieldset={{
+            legend: {
+              children: (
+                <span className="govuk-!-font-weight-bold">
+                  Victim details (optional)
+                </span>
+              ),
+            },
+          }}
+          items={victimType.map((victimType, index) => ({
+            id: `case-victim-type-${victimKey}-${index}`,
+            children: victimType.name,
+            value: victimType.value,
+            "data-testid": `case-victim-type-${victimKey}-${index}`,
+            checked: victimDetails.victimAdditionalDetailsCheckboxes?.includes(
+              victimType.value,
             ),
-          },
-        }}
-        items={victimType.map((victimType, index) => ({
-          id: `case-victim-type-${index}`,
-          children: victimType.name,
-          value: victimType.value,
-          "data-testid": `case-victim-type-${index}`,
-          checked: victimDetails.victimAdditionalDetailsCheckboxes?.includes(
-            victimType.value,
-          ),
-        }))}
-        onChange={(event) => {
-          const { value } = event.target;
-          if (value)
-            setAdditionalDetailsCheckboxes(
-              value as VictimAdditionalDetailsValue,
-            );
-        }}
-      />
-    );
-  }, [victimDetails, setAdditionalDetailsCheckboxes]);
+          }))}
+          onChange={(event) => {
+            const { value } = event.target;
+            if (value)
+              setAdditionalDetailsCheckboxes(
+                value as VictimAdditionalDetailsValue,
+              );
+          }}
+        />
+      );
+    },
+    [victimDetails, setAdditionalDetailsCheckboxes],
+  );
 
   const renderNewVictimFields = useCallback(() => {
     return (
-      <>
+      <div data-testid="new-victim-fields">
         <Input
           key="victim-firstname-text"
           id="victim-firstname-text"
@@ -305,7 +309,7 @@ const AddChargeVictimPage = () => {
             setFormValue("victimLastNameText", value);
           }}
         />
-      </>
+      </div>
     );
   }, [victimDetails, formDataErrors, setFormValue]);
 
@@ -429,7 +433,7 @@ const AddChargeVictimPage = () => {
         ),
         value: victim.victimId,
         conditional: {
-          children: [renderVictimAdditionalDetails()],
+          children: [renderVictimAdditionalDetails(`victim-${index}`)],
         },
         "data-testid": `add-victim-radio-${index}`,
       };
@@ -442,7 +446,10 @@ const AddChargeVictimPage = () => {
         value: "new-victim",
         "data-testid": `add-victim-radio-add-new-victim`,
         conditional: {
-          children: [renderNewVictimFields(), renderVictimAdditionalDetails()],
+          children: [
+            renderNewVictimFields(),
+            renderVictimAdditionalDetails(`victim-new`),
+          ],
         },
       },
     ];
@@ -517,7 +524,7 @@ const AddChargeVictimPage = () => {
             {state.formData.victimsList.length === 0 && (
               <>
                 {renderNewVictimFields()}
-                <div>{renderVictimAdditionalDetails()}</div>
+                <div>{renderVictimAdditionalDetails("victim-new")}</div>
               </>
             )}
           </>

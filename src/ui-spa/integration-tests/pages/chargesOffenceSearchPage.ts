@@ -38,7 +38,11 @@ export class ChargesOffenceSearchPagePage {
     await expect(this.page.locator("#offence-search-text")).toBeFocused();
   }
 
-  async validateOffenceSearchResults(searchText: string) {
+  async validateOffenceSearchResults(
+    searchText: string,
+    suspectIndex: number,
+    chargeIndex: number,
+  ) {
     const offenceResultsWrapper = this.page.getByTestId(
       "offence-search-results-wrapper",
     );
@@ -90,7 +94,7 @@ export class ChargesOffenceSearchPagePage {
         .getByRole("link", { name: "Add" }),
     ).toHaveAttribute(
       "href",
-      `/case-registration/suspect-0/charge-0/add-charge-details`,
+      `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`,
     );
 
     await expect(
@@ -116,7 +120,7 @@ export class ChargesOffenceSearchPagePage {
         .getByRole("link", { name: "Add" }),
     ).toHaveAttribute(
       "href",
-      `/case-registration/suspect-0/charge-0/add-charge-details`,
+      `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`,
     );
 
     await expect(
@@ -140,7 +144,7 @@ export class ChargesOffenceSearchPagePage {
         .getByRole("link", { name: "Add" }),
     ).toHaveAttribute(
       "href",
-      `/case-registration/suspect-0/charge-0/add-charge-details`,
+      `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`,
     );
   }
 

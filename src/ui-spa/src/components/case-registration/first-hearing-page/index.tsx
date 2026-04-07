@@ -311,7 +311,7 @@ const FirstHearingPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"first-hearing-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

@@ -18,6 +18,9 @@ import { WantToAddChargesPage } from "./pages/wantToAddChargesPage";
 import { ChargesOffenceSearchPagePage } from "./pages/chargesOffenceSearchPage";
 import { AddChargeDetailsPage } from "./pages/addChargeDetailsPage";
 import { AddChargeVictimPage } from "./pages/addChargeVictimPage";
+import { ChargesSummaryPage } from "./pages/chargesSummaryPage";
+import { AddChargeSuspectPage } from "./pages/addChargeSuspectPage";
+import { FirstHearingDetailsPage } from "./pages/firstHearingDetailsPage";
 import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
@@ -398,7 +401,7 @@ test.describe("Suspect journey", () => {
     await chargesOffenceSearchPage.errorValidations();
     await chargesOffenceSearchPage.addOffenceSearchText("test");
     await chargesOffenceSearchPage.searchOffence();
-    await chargesOffenceSearchPage.validateOffenceSearchResults("test");
+    await chargesOffenceSearchPage.validateOffenceSearchResults("test", 0, 0);
     await chargesOffenceSearchPage.addOffence(0);
 
     const addChargeDetailsPage = new AddChargeDetailsPage(page);
@@ -428,7 +431,8 @@ test.describe("Suspect journey", () => {
       "POTTER, Harry",
       "WC81229 - Permit to be set trap etc - cause injury to wild bird",
     );
-    await addChargeVictimPage.errorValidations();
+    await addChargeVictimPage.verifyAddFirstVictimElements();
+    await addChargeVictimPage.errorValidationsNewVictims();
     await addChargeVictimPage.fillVictimFirstName("steve");
     await addChargeVictimPage.fillVictimLastName("smith");
     await addChargeVictimPage.selectVictimIsVulnerable(true);
@@ -436,35 +440,151 @@ test.describe("Suspect journey", () => {
     await addChargeVictimPage.selectVictimIsWitness(true);
     await addChargeVictimPage.saveAndContinue();
 
+    const chargesSummaryPage = new ChargesSummaryPage(page);
+    await chargesSummaryPage.verifyUrl();
+    await chargesSummaryPage.errorValidations();
+    await chargesSummaryPage.verifyChargesSummaryRow(
+      {
+        suspectName: "POTTER, Harry",
+        charges: [
+          {
+            offenceCode: "WC81229",
+            offenceDescription:
+              "Permit to be set trap etc - cause injury to wild bird",
+            chargeDetails: {
+              dateOfOffence: "02 February 2022 to 03 February 2022",
+              victim: {
+                name: "SMITH, Steve",
+                properties: "WitnessVulnerableIntimidated",
+              },
+            },
+          },
+        ],
+      },
+      0,
+    );
+    await chargesSummaryPage.selectAddMoreChargesYes();
+    await chargesSummaryPage.saveAndContinue();
+
+    const addChargeSuspectPage = new AddChargeSuspectPage(page);
+    await addChargeSuspectPage.verifyUrl();
+    await addChargeSuspectPage.verifyPageElements(["POTTER, Harry"]);
+    await addChargeSuspectPage.errorValidations();
+    await addChargeSuspectPage.selectSuspectByName("POTTER, Harry");
+    await addChargeSuspectPage.saveAndContinue();
+
+    await chargesOffenceSearchPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-1/charges-offence-search",
+    );
+    await chargesOffenceSearchPage.verifyPageElements("POTTER, Harry");
+    await chargesOffenceSearchPage.errorValidations();
+    await chargesOffenceSearchPage.addOffenceSearchText("test");
+    await chargesOffenceSearchPage.searchOffence();
+    await chargesOffenceSearchPage.validateOffenceSearchResults("test", 0, 1);
+    await chargesOffenceSearchPage.addOffence(1);
+
+    await addChargeDetailsPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-1/add-charge-details",
+    );
+    await addChargeDetailsPage.verifyPageElements(
+      "POTTER, Harry",
+      "PB92005 - Attempt to injure a badger",
+    );
+    await addChargeDetailsPage.errorValidations();
+    await addChargeDetailsPage.clickDateRange();
+    await addChargeDetailsPage.fillOffenceFromDate("2022-02-02");
+    await addChargeDetailsPage.fillOffenceToDate("2022-02-03");
+    await addChargeDetailsPage.selectAddVictimYes();
+    await addChargeDetailsPage.saveAndContinue();
+    await addChargeVictimPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/charge-1/add-charge-victim",
+    );
+    await addChargeVictimPage.verifyPageElements(
+      "POTTER, Harry",
+      "PB92005 - Attempt to injure a badger",
+    );
+    await addChargeVictimPage.errorValidationsSelectVictims();
+    await addChargeVictimPage.verifyAddMoreVictimElements(["SMITH, Steve"]);
+
+    await addChargeVictimPage.selectVictimByName("Add new victim");
+    await addChargeVictimPage.fillVictimFirstName("mark");
+    await addChargeVictimPage.fillVictimLastName("smith");
+    await addChargeVictimPage.selectVictimIsVulnerable(true);
+    await addChargeVictimPage.selectVictimIsIntimidated(true);
+    await addChargeVictimPage.selectVictimIsWitness(true);
+    await addChargeVictimPage.saveAndContinue();
+
+    await chargesSummaryPage.verifyUrl();
+    await chargesSummaryPage.errorValidations();
+    await chargesSummaryPage.verifyChargesSummaryRow(
+      {
+        suspectName: "POTTER, Harry",
+        charges: [
+          {
+            offenceCode: "WC81229",
+            offenceDescription:
+              "Permit to be set trap etc - cause injury to wild bird",
+            chargeDetails: {
+              dateOfOffence: "02 February 2022 to 03 February 2022",
+              victim: {
+                name: "SMITH, Steve",
+                properties: "WitnessVulnerableIntimidated",
+              },
+            },
+          },
+          {
+            offenceCode: "PB92005",
+            offenceDescription: "Attempt to injure a badger",
+            chargeDetails: {
+              dateOfOffence: "02 February 2022 to 03 February 2022",
+              victim: {
+                name: "SMITH, Mark",
+                properties: "WitnessVulnerableIntimidated",
+              },
+            },
+          },
+        ],
+      },
+      0,
+    );
+    await chargesSummaryPage.selectAddMoreChargesNo();
+    await chargesSummaryPage.saveAndContinue();
+
+    const firstHearingDetailsPage = new FirstHearingDetailsPage(page);
+    await firstHearingDetailsPage.verifyUrl();
+
+    await firstHearingDetailsPage.errorValidations();
+    await firstHearingDetailsPage.verifyPageElements();
+    await firstHearingDetailsPage.selectAddFirstHearingDetailsYes();
+    await firstHearingDetailsPage.enterFirstHearingCourtLocation("Court A");
+    await firstHearingDetailsPage.addFirstHearingDate("2022-02-02");
+    await firstHearingDetailsPage.saveAndContinue();
+
+    const caseMonitoringPage = new CaseMonitoringPage(page);
+    await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.verifyPageElements(45);
+    await caseMonitoringPage.verifyPreChargeCheckboxChecked();
+    await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
+    await caseMonitoringPage.saveAndContinue();
+    await caseMonitoringPage.verifyErrorSummaryClear();
+
+    const caseAssigneePage = new CaseAssigneePage(page);
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyPageElements();
+    await caseAssigneePage.errorValidations();
+    await caseAssigneePage.addProsecutorYes();
+    await caseAssigneePage.addInvestigatorYes();
+    await caseAssigneePage.enterProsecutorName("Prosecutor A");
+    await caseAssigneePage.enterCaseworkerName("Caseworker A");
+    await caseAssigneePage.addInvestigatorFirstName("Investigator F");
+    await caseAssigneePage.addInvestigatorLastName("Investigator L");
+    await caseAssigneePage.addInvestigatorShoulderNumber("12345");
+    await caseAssigneePage.saveAndContinue();
     await expect(page).toHaveURL(
-      "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
+      "http://localhost:5173/case-registration/case-summary",
     );
 
-    // const caseMonitoringPage = new CaseMonitoringPage(page);
-    // await caseMonitoringPage.verifyUrl();
-    // await caseMonitoringPage.verifyPageElements(45);
-    // await caseMonitoringPage.verifyPreChargeCheckboxChecked();
-    // await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
-    // await caseMonitoringPage.saveAndContinue();
-    // await caseMonitoringPage.verifyErrorSummaryClear();
-
-    // const caseAssigneePage = new CaseAssigneePage(page);
-    // await caseAssigneePage.verifyUrl();
-    // await caseAssigneePage.verifyPageElements();
-    // await caseAssigneePage.errorValidations();
-    // await caseAssigneePage.addProsecutorYes();
-    // await caseAssigneePage.addInvestigatorYes();
-    // await caseAssigneePage.enterProsecutorName("Prosecutor A");
-    // await caseAssigneePage.enterCaseworkerName("Caseworker A");
-    // await caseAssigneePage.addInvestigatorFirstName("Investigator F");
-    // await caseAssigneePage.addInvestigatorLastName("Investigator L");
-    // await caseAssigneePage.addInvestigatorShoulderNumber("12345");
-    // await caseAssigneePage.saveAndContinue();
-    // await expect(page).toHaveURL(
-    //   "http://localhost:5173/case-registration/case-summary",
-    // );
-
-    // const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
-    // await caseRegistrationSummaryPage.verifyUrl();
+    const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
+    await caseRegistrationSummaryPage.verifyUrl();
   });
 });

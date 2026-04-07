@@ -64,13 +64,14 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
     const suspectChargesList = getChargesSummaryList(state.formData.suspects);
     return (
       <div>
-        {suspectChargesList.map((suspectCharge) => (
+        {suspectChargesList.map((suspectCharge, index) => (
           <div
             key={
               suspectCharge.suspectLastNameText
                 ? `${suspectCharge.suspectId}-${suspectCharge.suspectLastNameText}`
                 : `${suspectCharge.suspectId}-${suspectCharge.suspectCompanyNameText}`
             }
+            data-testid={`charges-summary-suspect-${index}`}
           >
             {suspectCharge.suspectLastNameText ? (
               <h2 className="govuk-!-margin-top-8">
@@ -83,12 +84,14 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
             ) : (
               <h2 className="govuk-!-margin-top-8">{`Charges for ${suspectCharge.suspectCompanyNameText}`}</h2>
             )}
-            {suspectCharge.charges.map((charge) => (
+            {suspectCharge.charges.map((charge, index) => (
               <div
                 key={`${charge.selectedOffence.code}-${charge.chargeId}`}
                 className={pageStyles.chargeWrapper}
+                data-testid={`charge-${index}`}
               >
                 <SummaryList
+                  data-testid={`charge-${index}-data`}
                   rows={chargesSummaryRow(
                     charge,
                     charge.chargeId,
@@ -96,8 +99,12 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                   )}
                 />
                 <div>
-                  <Details summaryChildren={"View charge details"}>
+                  <Details
+                    summaryChildren={"View charge details"}
+                    data-testid={`charge-${index}-details-button`}
+                  >
                     <SummaryList
+                      data-testid={`charge-${index}-details`}
                       rows={getChargesSummaryListRows(
                         charge,
                         state.formData.victimsList,
