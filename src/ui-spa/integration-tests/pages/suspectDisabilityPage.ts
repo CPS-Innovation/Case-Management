@@ -20,7 +20,7 @@ export class SuspectDisabilityPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-disability-error-summary"),
     ).toBeVisible();

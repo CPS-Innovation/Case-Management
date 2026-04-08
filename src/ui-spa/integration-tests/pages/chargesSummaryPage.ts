@@ -24,7 +24,7 @@ export class ChargesSummaryPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("charges-summary-error-summary"),
     ).toBeVisible();

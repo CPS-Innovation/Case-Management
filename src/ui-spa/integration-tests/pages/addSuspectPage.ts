@@ -68,7 +68,7 @@ export class AddSuspectPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
@@ -77,8 +77,8 @@ export class AddSuspectPage {
     );
     await this.page.getByTestId("add-suspect-radio-link").click();
     await expect(this.page.getByTestId("add-suspect-radio-yes")).toBeFocused();
-    this.addPersonSuspect();
-    this.saveAndContinue();
+    await this.addPersonSuspect();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();

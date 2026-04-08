@@ -26,7 +26,7 @@ export class SuspectAliasesPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-aliases-error-summary"),
     ).toBeVisible();

@@ -75,7 +75,7 @@ export class SuspectSummaryPage {
     suspectIndex: number,
     values: { key: string; value: string | string[] }[],
   ) {
-    expect(
+    await expect(
       this.page
         .getByTestId(`suspect-details-${suspectIndex}`)
         .locator("summary"),
@@ -118,7 +118,7 @@ export class SuspectSummaryPage {
     );
     await expect(this.page.locator("label").nth(0)).toHaveText("Yes");
     await expect(this.page.locator("label").nth(1)).toHaveText("No");
-    this.verifySuspectSummaryRows([]);
+    await this.verifySuspectSummaryRows([]);
   }
 
   async removeSuspect(index: number) {

@@ -52,7 +52,7 @@ export class SuspectOffenderTypesPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-offender-types-error-summary"),
     ).toBeVisible();

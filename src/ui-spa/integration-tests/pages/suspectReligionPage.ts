@@ -21,7 +21,7 @@ export class SuspectReligionPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-religion-error-summary"),
     ).toBeVisible();

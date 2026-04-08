@@ -23,7 +23,7 @@ export class SuspectAliasesSummaryPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-aliases-summary-error-summary"),
     ).toBeVisible();

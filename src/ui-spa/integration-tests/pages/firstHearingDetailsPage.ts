@@ -30,7 +30,7 @@ export class FirstHearingDetailsPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("first-hearing-error-summary"),
     ).toBeVisible();

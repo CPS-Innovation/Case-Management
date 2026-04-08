@@ -20,7 +20,7 @@ export class SuspectGenderPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-gender-error-summary"),
     ).toBeVisible();

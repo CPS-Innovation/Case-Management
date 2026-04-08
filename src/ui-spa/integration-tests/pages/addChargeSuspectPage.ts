@@ -28,7 +28,7 @@ export class AddChargeSuspectPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("add-charge-suspect-error-summary"),
     ).toBeVisible();

@@ -557,13 +557,13 @@ test.describe("Suspect journey", () => {
     await firstHearingDetailsPage.verifyPageElements();
     await firstHearingDetailsPage.selectAddFirstHearingDetailsYes();
     await firstHearingDetailsPage.enterFirstHearingCourtLocation("Court A");
-    await firstHearingDetailsPage.addFirstHearingDate("2022-02-02");
+    await firstHearingDetailsPage.addFirstHearingDate("2022-02-04");
     await firstHearingDetailsPage.saveAndContinue();
 
     const caseMonitoringPage = new CaseMonitoringPage(page);
     await caseMonitoringPage.verifyUrl();
     await caseMonitoringPage.verifyPageElements(45);
-    await caseMonitoringPage.verifyPreChargeCheckboxChecked();
+    await caseMonitoringPage.verifyPreChargeCheckboxNotChecked();
     await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
     await caseMonitoringPage.saveAndContinue();
     await caseMonitoringPage.verifyErrorSummaryClear();

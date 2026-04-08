@@ -22,7 +22,7 @@ export class WantToAddChargesPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("want-to-add-charges-error-summary"),
     ).toBeVisible();

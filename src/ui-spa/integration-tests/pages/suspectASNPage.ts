@@ -18,7 +18,7 @@ export class SuspectASNPage {
   }
 
   async errorValidations() {
-    this.saveAndContinue();
+    await this.saveAndContinue();
     await expect(
       this.page.getByTestId("suspect-asn-error-summary"),
     ).toBeVisible();
