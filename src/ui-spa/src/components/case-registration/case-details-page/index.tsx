@@ -213,11 +213,9 @@ const CaseDetailsPage = () => {
     }));
   };
 
-  const validateFormData = (
-    registeringUnitInputValue: string,
-    witnessCareUnitInputValue: string,
-  ) => {
+  const urnPartsMinimumLengthValidation = () => {
     const errors: FormDataErrors = {};
+
     const {
       urnPoliceForceText,
       urnPoliceUnitText,
@@ -269,6 +267,51 @@ const CaseDetailsPage = () => {
         ],
       };
     }
+    if (errors.urnErrorText) return errors;
+
+    if (urnPoliceForceText && urnPoliceForceText.length < 2) {
+      errors.urnErrorText = {
+        errorSummaryText: "Part 1 of the URN must consist of 2 characters",
+        inputErrorText: "Enter a valid URN",
+        hasLink: true,
+        errorIds: ["urn-police-force-text"],
+      };
+      return errors;
+    }
+    if (urnPoliceUnitText && urnPoliceUnitText.length < 2) {
+      errors.urnErrorText = {
+        errorSummaryText: "Part 2 of the URN must consist of 2 characters",
+        inputErrorText: "Enter a valid URN",
+        hasLink: true,
+        errorIds: ["urn-police-unit-text"],
+      };
+      return errors;
+    }
+    if (urnUniqueReferenceText && urnUniqueReferenceText.length < 5) {
+      errors.urnErrorText = {
+        errorSummaryText: "Part 3 of the URN must consist of 5 characters",
+        inputErrorText: "Enter a valid URN",
+        hasLink: true,
+        errorIds: ["urn-unique-reference-text"],
+      };
+      return errors;
+    }
+    if (urnYearReferenceText && urnYearReferenceText.length < 2) {
+      errors.urnErrorText = {
+        errorSummaryText: "Part 4 of the URN must consist of 2 characters",
+        inputErrorText: "Enter a valid URN",
+        hasLink: true,
+        errorIds: ["urn-year-reference-text"],
+      };
+    }
+    return errors;
+  };
+  const validateFormData = (
+    registeringUnitInputValue: string,
+    witnessCareUnitInputValue: string,
+  ) => {
+    const errors: FormDataErrors = {};
+
     if (!isAreaSensitive) {
       if (!registeringUnitInputValue) {
         errors.registeringUnitErrorText = {
@@ -309,9 +352,13 @@ const CaseDetailsPage = () => {
       }
     }
 
-    const isValid = !Object.entries(errors).filter(([, value]) => value).length;
+    const urnPartErrors = urnPartsMinimumLengthValidation();
+    const combinedErrors = { ...errors, ...urnPartErrors };
 
-    setFormDataErrors(errors);
+    const isValid = !Object.entries(combinedErrors).filter(([, value]) => value)
+      .length;
+
+    setFormDataErrors(combinedErrors);
     return isValid;
   };
 

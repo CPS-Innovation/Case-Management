@@ -30,6 +30,16 @@ export class SuspectRemoveConfirmationPage {
       this.page.getByRole("link", { name: "cancel" }),
     ).toHaveAttribute("href", "/case-registration/suspect-summary");
   }
+  async verifyBackLink(url) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
+      "href",
+      url,
+    );
+  }
+  async backLinkClick() {
+    await this.page.getByRole("link", { name: "Back" }).click();
+  }
 
   async saveAndContinue() {
     await this.page.getByRole("button", { name: "Save and continue" }).click();

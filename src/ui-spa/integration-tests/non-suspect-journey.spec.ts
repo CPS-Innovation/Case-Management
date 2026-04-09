@@ -21,6 +21,11 @@ test.describe("Non suspect journey", () => {
 
     const caseAreasPage = new CaseAreasPage(page);
     await caseAreasPage.verifyUrl();
+    await caseAreasPage.verifyBackLink("/case-registration");
+    await caseAreasPage.backLinkClick();
+    await caseRegistrationHomePage.verifyUrl();
+    await caseRegistrationHomePage.saveAndContinue();
+    await caseAreasPage.verifyUrl();
     await caseAreasPage.verifyPageElements();
     await caseAreasPage.errorValidations();
     await caseAreasPage.enterAreaOrDivision("CAMBRIDGESHIRE");
@@ -28,6 +33,11 @@ test.describe("Non suspect journey", () => {
     await caseAreasPage.verifyErrorSummaryClear();
 
     const caseDetailsPage = new CaseDetailsPage(page);
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.verifyBackLink("/case-registration/areas");
+    await caseDetailsPage.backLinkClick();
+    await caseAreasPage.verifyUrl();
+    await caseAreasPage.saveAndContinue();
     await caseDetailsPage.verifyUrl();
     await caseDetailsPage.verifyPageElements();
     await caseDetailsPage.errorValidations();
@@ -44,6 +54,11 @@ test.describe("Non suspect journey", () => {
 
     const caseMonitoringPage = new CaseMonitoringPage(page);
     await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.verifyBackLink("/case-registration/case-details");
+    await caseMonitoringPage.backLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.saveAndContinue();
+    await caseMonitoringPage.verifyUrl();
     await caseMonitoringPage.verifyPageElements(45);
     await caseMonitoringPage.verifyPreChargeCheckboxChecked();
     await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
@@ -51,6 +66,13 @@ test.describe("Non suspect journey", () => {
     await caseMonitoringPage.verifyErrorSummaryClear();
 
     const caseAssigneePage = new CaseAssigneePage(page);
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink(
+      "/case-registration/case-monitoring-codes",
+    );
+    await caseAssigneePage.backLinkClick();
+    await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.saveAndContinue();
     await caseAssigneePage.verifyUrl();
     await caseAssigneePage.verifyPageElements();
     await caseAssigneePage.errorValidations();
@@ -68,6 +90,13 @@ test.describe("Non suspect journey", () => {
     );
 
     const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
+    await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifyBackLink(
+      "/case-registration/case-assignee",
+    );
+    await caseRegistrationSummaryPage.backLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.saveAndContinue();
     await caseRegistrationSummaryPage.verifyUrl();
     await caseRegistrationSummaryPage.verifyPageElements();
     await caseRegistrationSummaryPage.verifyCaseDetailsElements({

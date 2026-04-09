@@ -10,7 +10,16 @@ export class ChargesOffenceSearchPagePage {
   async verifyUrl(url: string) {
     await expect(this.page).toHaveURL(url);
   }
-
+  async verifyBackLink(url) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
+      "href",
+      url,
+    );
+  }
+  async backLinkClick() {
+    await this.page.getByRole("link", { name: "Back" }).click();
+  }
   async verifyPageElements(suspectName: string) {
     await expect(this.page.locator("h1")).toHaveText(
       `Add a charge for ${suspectName}`,

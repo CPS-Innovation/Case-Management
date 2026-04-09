@@ -13,6 +13,17 @@ export class CaseRegistrationSummaryPage {
     await expect(this.page).toHaveURL(this.route);
   }
 
+  async verifyBackLink(url) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
+      "href",
+      url,
+    );
+  }
+  async backLinkClick() {
+    await this.page.getByRole("link", { name: "Back" }).click();
+  }
+
   async verifyPageElements() {
     await expect(this.page.locator("h1")).toHaveText(
       "Check your answers before creating the case",

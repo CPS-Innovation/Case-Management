@@ -58,6 +58,16 @@ export class CaseAreasPage {
     await this.page.locator("#area-or-division-text").fill(name);
     await this.page.keyboard.press("Escape");
   }
+  async verifyBackLink(url) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
+      "href",
+      url,
+    );
+  }
+  async backLinkClick() {
+    await this.page.getByRole("link", { name: "Back" }).click();
+  }
 
   async saveAndContinue() {
     await this.page.getByRole("button", { name: "Save and continue" }).click();
