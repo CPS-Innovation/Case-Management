@@ -413,5 +413,25 @@ test.describe("Suspect journey", () => {
 
     const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
     await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+      area: "CAMBRIDGESHIRE",
+      urn: "122112345/26",
+      registeringUnit: "NORTHERN CJU (Peterborough)",
+      wcu: "Cambridgeshire Non Operational WCU",
+      operationName: "thunderstruck",
+    });
+    await caseRegistrationSummaryPage.verifyComplexityAndMonitoringCodesElements(
+      {
+        complexity: "Basic",
+        monitoringCodes: ["Asset Recovery", "Pre-Charge Decision"],
+      },
+    );
+    await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+      prosecutor: "Prosecutor A",
+      caseworker: "Caseworker A",
+      investigator: "InvestigatorL, InvestigatorF",
+      shoulderNumber: "12345",
+      policeUnit: "Not entered",
+    });
   });
 });

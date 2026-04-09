@@ -27,8 +27,15 @@ export class CaseRegistrationSummaryPage {
     wcu: string;
     operationName: string;
   }) {
-    await expect(this.page.locator("h2").nth(0)).toHaveText("Case details");
-    const caseDetailsDescriptionList = this.page.locator("dl").nth(0);
+    const caseDetailWrapperElement = this.page.getByTestId(
+      "case-details-summary",
+    );
+    await expect(caseDetailWrapperElement.locator("h2").nth(0)).toHaveText(
+      "Case details",
+    );
+    const caseDetailsDescriptionList = caseDetailWrapperElement
+      .locator("dl")
+      .nth(0);
     const rows = caseDetailsDescriptionList.locator(".govuk-summary-list__row");
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText("Area");
     await expect(rows.nth(0).locator("dd").nth(0)).toHaveText(values.area);
@@ -98,8 +105,12 @@ export class CaseRegistrationSummaryPage {
   }
 
   async verifyNoSuspectElements() {
-    await expect(this.page.locator("h2").nth(1)).toHaveText("Suspect");
-    const suspectDetailsDescriptionList = this.page.locator("dl").nth(1);
+    const caseSuspectWrapperElement = this.page.getByTestId(
+      "case-suspect-summary",
+    );
+    await expect(caseSuspectWrapperElement.locator("h2")).toHaveText("Suspect");
+    const suspectDetailsDescriptionList =
+      caseSuspectWrapperElement.locator("dl");
     const rows = suspectDetailsDescriptionList.locator(
       ".govuk-summary-list__row",
     );
@@ -120,10 +131,14 @@ export class CaseRegistrationSummaryPage {
     complexity: string;
     monitoringCodes: string[];
   }) {
-    await expect(this.page.locator("h2").nth(2)).toHaveText(
+    const caseComplexityWrapperElement = this.page.getByTestId(
+      "case-complexity-and-monitoring-codes-summary",
+    );
+    await expect(caseComplexityWrapperElement.locator("h2")).toHaveText(
       "Case complexity and monitoring codes",
     );
-    const suspectDetailsDescriptionList = this.page.locator("dl").nth(2);
+    const suspectDetailsDescriptionList =
+      caseComplexityWrapperElement.locator("dl");
     const rows = suspectDetailsDescriptionList.locator(
       ".govuk-summary-list__row",
     );
@@ -170,10 +185,13 @@ export class CaseRegistrationSummaryPage {
     shoulderNumber: string;
     policeUnit: string;
   }) {
-    await expect(this.page.locator("h2").nth(3)).toHaveText(
+    const caseAssigneeWrapperElement = this.page.getByTestId(
+      "case-assignee-summary",
+    );
+    await expect(caseAssigneeWrapperElement.locator("h2")).toHaveText(
       "Working on the case",
     );
-    const caseDetailsDescriptionList = this.page.locator("dl").nth(3);
+    const caseDetailsDescriptionList = caseAssigneeWrapperElement.locator("dl");
     const rows = caseDetailsDescriptionList.locator(".govuk-summary-list__row");
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText("Prosecutor");
     await expect(rows.nth(0).locator("dd").nth(0)).toHaveText(
@@ -250,6 +268,177 @@ export class CaseRegistrationSummaryPage {
     );
   }
 
+  async verifyFirstHearingElements(values: {
+    courtLocation: string;
+    firstHearingDate: string;
+  }) {
+    const caseFirstHearingWrapperElement = this.page.getByTestId(
+      "case-first-hearing-summary",
+    );
+    await expect(caseFirstHearingWrapperElement.locator("h2")).toHaveText(
+      "First hearing details",
+    );
+    const suspectDetailsDescriptionList =
+      caseFirstHearingWrapperElement.locator("dl");
+    const rows = suspectDetailsDescriptionList.locator(
+      ".govuk-summary-list__row",
+    );
+    await expect(rows.nth(0).locator("dt").nth(0)).toHaveText(
+      "First hearing court location",
+    );
+    await expect(rows.nth(0).locator("dd").nth(0)).toHaveText(
+      values.courtLocation,
+    );
+    const courtLocationChangeLink = rows
+      .nth(0)
+      .locator("dd")
+      .nth(1)
+      .getByRole("link", { name: "Change" });
+    await expect(courtLocationChangeLink).toHaveAttribute(
+      "href",
+      "/case-registration/first-hearing",
+    );
+    await expect(rows.nth(1).locator("dt").nth(0)).toHaveText(
+      "First hearing date",
+    );
+    await expect(rows.nth(1).locator("dd").nth(0)).toHaveText(
+      values.firstHearingDate,
+    );
+    const firstHearingDateLink = rows
+      .nth(1)
+      .locator("dd")
+      .nth(1)
+      .getByRole("link", { name: "Change" });
+    await expect(firstHearingDateLink).toHaveAttribute(
+      "href",
+      "/case-registration/first-hearing",
+    );
+  }
+
+  async verifySuspectSummaryDetails(
+    suspectIndex: number,
+    values: { key: string; value: string | string[] }[],
+  ) {
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .locator("summary"),
+    ).toHaveText("Details and charges");
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .locator("h3")
+        .nth(0),
+    ).toHaveText("Suspect details");
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
+    await Promise.all(
+      values.map(async (value, index) => {
+        await expect(
+          this.page
+            .getByTestId(`suspect-details-${suspectIndex}`)
+            .locator(".govuk-summary-list__row")
+            .nth(index)
+            .locator("dt")
+            .nth(0),
+        ).toHaveText(value.key);
+        await expect(
+          this.page
+            .getByTestId(`suspect-details-${suspectIndex}`)
+            .locator(".govuk-summary-list__row")
+            .nth(index)
+            .locator("dd")
+            .nth(0),
+        ).toHaveText(value.value);
+      }),
+    );
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
+  }
+
+  async verifyChargesSummaryDetails(
+    suspectIndex: number,
+    values: { key: string; value: string | string[] }[],
+  ) {
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .locator("summary"),
+    ).toHaveText("Details and charges");
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .locator("h3")
+        .nth(1),
+    ).toHaveText("Charges");
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
+    await Promise.all(
+      values.map(async (value, index) => {
+        await expect(
+          this.page
+            .getByTestId(`suspect-details-${suspectIndex}`)
+            .getByTestId(`suspect-charges`)
+            .locator(".govuk-summary-list__row")
+            .nth(index)
+            .locator("dt")
+            .nth(0),
+        ).toHaveText(value.key);
+        await expect(
+          this.page
+            .getByTestId(`suspect-details-${suspectIndex}`)
+            .getByTestId(`suspect-charges`)
+            .locator(".govuk-summary-list__row")
+            .nth(index)
+            .locator("dd")
+            .nth(0),
+        ).toHaveText(value.value);
+      }),
+    );
+  }
+
+  async verifyAddNewChargeDetails(
+    suspectIndex: number,
+    data: { key: string; action: string; link: string },
+  ) {
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .locator("summary"),
+    ).toHaveText("Details and charges");
+
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
+
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .getByTestId(`add-new-charge`)
+        .locator(".govuk-summary-list__row")
+        .nth(0)
+        .locator("dt")
+        .nth(0),
+    ).toHaveText(data.key);
+
+    const addChargeLink = this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .getByTestId(`add-new-charge`)
+      .locator(".govuk-summary-list__row")
+      .nth(0)
+      .locator("dd")
+      .nth(1)
+      .locator("a");
+    await expect(addChargeLink).toHaveText(data.action);
+    await expect(addChargeLink).toHaveAttribute("href", data.link);
+  }
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");

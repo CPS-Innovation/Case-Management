@@ -586,5 +586,84 @@ test.describe("Suspect journey", () => {
 
     const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
     await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+      area: "CAMBRIDGESHIRE",
+      urn: "122112345/26",
+      registeringUnit: "NORTHERN CJU (Peterborough)",
+      wcu: "Cambridgeshire Non Operational WCU",
+      operationName: "thunderstruck",
+    });
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(0, [
+      {
+        key: "Date of birth",
+        value: "27/03/2007",
+      },
+      {
+        key: "Gender",
+        value: "Male",
+      },
+      {
+        key: "Disability",
+        value: "yes",
+      },
+      {
+        key: "Religion",
+        value: "Christianity",
+      },
+      {
+        key: "Ethnicity",
+        value: "Black",
+      },
+      {
+        key: "Alias",
+        value: "POTTER, Harry",
+      },
+      {
+        key: "Arrest Summons Number",
+        value: "123456",
+      },
+      {
+        key: "Type of offender",
+        value: "Prolific youth offender (PYO)",
+      },
+      {
+        key: "Arrest date",
+        value: "01 January 2024",
+      },
+    ]);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(0, [
+      {
+        key: "WC81229",
+        value: "Permit to be set trap etc - cause injury to wild bird",
+      },
+      { key: "Date of offence", value: "02 February 2022 to 03 February 2022" },
+      { key: "Victim", value: "SMITH, SteveWitnessVulnerableIntimidated" },
+      { key: "PB92005", value: "Attempt to injure a badger" },
+      { key: "Date of offence", value: "02 February 2022 to 03 February 2022" },
+      { key: "Victim", value: "SMITH, MarkWitnessVulnerableIntimidated" },
+    ]);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(0, {
+      key: "Add another charge",
+      action: "Add Charge",
+      link: "/case-registration/suspect-0/charge-2/charges-offence-search",
+    });
+    await caseRegistrationSummaryPage.verifyFirstHearingElements({
+      courtLocation: "Court A",
+      firstHearingDate: "04 February 2022",
+    });
+
+    await caseRegistrationSummaryPage.verifyComplexityAndMonitoringCodesElements(
+      {
+        complexity: "Basic",
+        monitoringCodes: ["Asset Recovery"],
+      },
+    );
+    await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+      prosecutor: "Prosecutor A",
+      caseworker: "Caseworker A",
+      investigator: "InvestigatorL, InvestigatorF",
+      shoulderNumber: "12345",
+      policeUnit: "Not entered",
+    });
   });
 });

@@ -207,25 +207,35 @@ const CaseSummaryPage = () => {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h2>Case details</h2>
-        <SummaryList rows={caseDetailsSummaryListRows} />
-        <h2>Suspect</h2>
-        {!state.formData.suspects.length && (
-          <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
-        )}
-        {!!state.formData.suspects.length && (
-          <SuspectSummary isCaseSummaryPage={true} />
-        )}
-        {!!chargesCount && (
-          <>
-            <h2>First hearing details</h2>
-            <SummaryList rows={caseFirstHearingSummaryListRows} />
-          </>
-        )}
-        <h2>Case complexity and monitoring codes</h2>
-        <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
-        <h2>Working on the case</h2>
-        <SummaryList rows={whoseWorkingOnTheCaseSummaryListRows} />
+        <div data-testid="case-details-summary">
+          <h2>Case details</h2>
+          <SummaryList rows={caseDetailsSummaryListRows} />
+        </div>
+        <div data-testid="case-suspect-summary">
+          <h2>Suspect</h2>
+          {!state.formData.suspects.length && (
+            <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
+          )}
+          {!!state.formData.suspects.length && (
+            <SuspectSummary isCaseSummaryPage={true} />
+          )}
+        </div>
+        <div data-testid="case-first-hearing-summary">
+          {!!chargesCount && (
+            <>
+              <h2>First hearing details</h2>
+              <SummaryList rows={caseFirstHearingSummaryListRows} />
+            </>
+          )}
+        </div>
+        <div data-testid="case-complexity-and-monitoring-codes-summary">
+          <h2>Case complexity and monitoring codes</h2>
+          <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
+        </div>
+        <div data-testid="case-assignee-summary">
+          <h2>Working on the case</h2>
+          <SummaryList rows={whoseWorkingOnTheCaseSummaryListRows} />
+        </div>
         <Button
           type="submit"
           onClick={() => handleSubmit}

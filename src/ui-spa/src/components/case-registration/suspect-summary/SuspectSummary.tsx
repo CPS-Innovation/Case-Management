@@ -50,9 +50,9 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
         actions: {
           items: [
             {
-              children: <span> Add Charge</span>,
+              children: <span>Add Charge</span>,
               to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
-              visuallyHiddenText: "Add new charge",
+              // visuallyHiddenText: "Add new charge",
               onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
                 handleAddChargeClick(
                   event,
@@ -205,29 +205,29 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                     className={styles.suspectDetailsWrapper}
                     data-testid={`suspect-details-${index}`}
                   >
-                    <dd>
-                      <Details
-                        summaryChildren={getDetailsTitle(
-                          isCaseSummaryPage,
-                          suspectDetailsSummaryListRows[index].length,
-                        )}
-                      >
-                        {suspectDetailsSummaryListRows[index].length > 0 && (
-                          <>
-                            {" "}
-                            {isCaseSummaryPage && (
-                              <h3 className="govuk-heading-m">
-                                {" "}
-                                Suspect details
-                              </h3>
-                            )}
-                            <SummaryList
-                              rows={suspectDetailsSummaryListRows[index]}
-                            />
-                          </>
-                        )}
-                        {isCaseSummaryPage && (
-                          <>
+                    <Details
+                      summaryChildren={getDetailsTitle(
+                        isCaseSummaryPage,
+                        suspectDetailsSummaryListRows[index].length,
+                      )}
+                    >
+                      {suspectDetailsSummaryListRows[index].length > 0 && (
+                        <>
+                          {" "}
+                          {isCaseSummaryPage && (
+                            <h3 className="govuk-heading-m">
+                              {" "}
+                              Suspect details
+                            </h3>
+                          )}
+                          <SummaryList
+                            rows={suspectDetailsSummaryListRows[index]}
+                          />
+                        </>
+                      )}
+                      {isCaseSummaryPage && (
+                        <>
+                          <div data-testid={`suspect-charges`}>
                             <h3>Charges</h3>
                             {suspect.charges.map((charge) => (
                               <div
@@ -244,18 +244,21 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                 />
                               </div>
                             ))}
-                            <div className={styles.addNewChargeSummary}>
-                              <SummaryList
-                                rows={addNewChargeRow(
-                                  index,
-                                  suspect.charges.length,
-                                )}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </Details>
-                    </dd>
+                          </div>
+                          <div
+                            className={styles.addNewChargeSummary}
+                            data-testid={`add-new-charge`}
+                          >
+                            <SummaryList
+                              rows={addNewChargeRow(
+                                index,
+                                suspect.charges.length,
+                              )}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </Details>
                   </div>
                 )}
               </div>
@@ -273,29 +276,39 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                     <SummaryList rows={suspectSummaryRow(suspect, index)} />
                   </div>
                   {isCaseSummaryPage && (
-                    <Details summaryChildren={"Charges"}>
-                      <h3>Charges</h3>
-                      {suspect.charges.map((charge) => (
+                    <div data-testid={`suspect-details-${index}`}>
+                      <Details summaryChildren={"Charges"}>
+                        <div data-testid={`suspect-charges`}>
+                          <h3>Charges</h3>
+                          {suspect.charges.map((charge) => (
+                            <div
+                              key={`${charge.selectedOffence.code}-${charge.chargeId}`}
+                            >
+                              <SummaryList
+                                rows={getChargesSummaryListRows(
+                                  charge,
+                                  state.formData.victimsList,
+                                  isCaseSummaryPage,
+                                  suspect.suspectId,
+                                  charge.chargeId,
+                                )}
+                              />
+                            </div>
+                          ))}
+                        </div>
                         <div
-                          key={`${charge.selectedOffence.code}-${charge.chargeId}`}
+                          className={styles.addNewChargeSummary}
+                          data-testid={`add-new-charge`}
                         >
                           <SummaryList
-                            rows={getChargesSummaryListRows(
-                              charge,
-                              state.formData.victimsList,
-                              isCaseSummaryPage,
-                              suspect.suspectId,
-                              charge.chargeId,
+                            rows={addNewChargeRow(
+                              index,
+                              suspect.charges.length,
                             )}
                           />
                         </div>
-                      ))}
-                      <div className={styles.addNewChargeSummary}>
-                        <SummaryList
-                          rows={addNewChargeRow(index, suspect.charges.length)}
-                        />
-                      </div>
-                    </Details>
+                      </Details>
+                    </div>
                   )}
                 </div>
               </div>
