@@ -34,6 +34,11 @@ test.describe("Suspect journey", () => {
 
     const caseAreasPage = new CaseAreasPage(page);
     await caseAreasPage.verifyUrl();
+    await caseAreasPage.verifyBackLink("/case-registration");
+    await caseAreasPage.backLinkClick();
+    await caseRegistrationHomePage.verifyUrl();
+    await caseRegistrationHomePage.saveAndContinue();
+    await caseAreasPage.verifyUrl();
     await caseAreasPage.verifyPageElements();
     await caseAreasPage.errorValidations();
     await caseAreasPage.enterAreaOrDivision("CAMBRIDGESHIRE");
@@ -41,6 +46,11 @@ test.describe("Suspect journey", () => {
     await caseAreasPage.verifyErrorSummaryClear();
 
     const caseDetailsPage = new CaseDetailsPage(page);
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.verifyBackLink("/case-registration/areas");
+    await caseDetailsPage.backLinkClick();
+    await caseAreasPage.verifyUrl();
+    await caseAreasPage.saveAndContinue();
     await caseDetailsPage.verifyUrl();
     await caseDetailsPage.verifyPageElements();
     await caseDetailsPage.errorValidations();
@@ -56,6 +66,13 @@ test.describe("Suspect journey", () => {
     await caseDetailsPage.verifyErrorSummaryClear();
 
     const addSuspectPage = new AddSuspectPage(page);
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/add-suspect",
+    );
+    await addSuspectPage.verifyBackLink("/case-registration/case-details");
+    await addSuspectPage.backLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.saveAndContinue();
     await addSuspectPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/add-suspect",
     );
@@ -89,6 +106,17 @@ test.describe("Suspect journey", () => {
     await suspectDOBPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-dob",
     );
+    await suspectDOBPage.verifyBackLink(
+      "/case-registration/suspect-0/add-suspect",
+    );
+    await suspectDOBPage.backLinkClick();
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/add-suspect",
+    );
+    await addSuspectPage.saveAndContinue();
+    await suspectDOBPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-dob",
+    );
     await suspectDOBPage.verifyPageElements();
     await suspectDOBPage.errorValidations();
     await suspectDOBPage.addDOBDay("27");
@@ -97,6 +125,17 @@ test.describe("Suspect journey", () => {
     await suspectDOBPage.saveAndContinue();
 
     const suspectGenderPage = new SuspectGenderPage(page);
+    await suspectGenderPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-gender",
+    );
+    await suspectGenderPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-dob",
+    );
+    await suspectGenderPage.backLinkClick();
+    await suspectDOBPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-dob",
+    );
+    await suspectDOBPage.saveAndContinue();
     await suspectGenderPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-gender",
     );
@@ -109,12 +148,34 @@ test.describe("Suspect journey", () => {
     await suspectDisabilityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-disability",
     );
+    await suspectDisabilityPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-gender",
+    );
+    await suspectDisabilityPage.backLinkClick();
+    await suspectGenderPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-gender",
+    );
+    await suspectGenderPage.saveAndContinue();
+    await suspectDisabilityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-disability",
+    );
     await suspectDisabilityPage.verifyPageElements();
     await suspectDisabilityPage.errorValidations();
     await suspectDisabilityPage.selectDisabilityYes();
     await suspectDisabilityPage.saveAndContinue();
 
     const suspectReligionPage = new SuspectReligionPage(page);
+    await suspectReligionPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-religion",
+    );
+    await suspectReligionPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-disability",
+    );
+    await suspectReligionPage.backLinkClick();
+    await suspectDisabilityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-disability",
+    );
+    await suspectDisabilityPage.saveAndContinue();
     await suspectReligionPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-religion",
     );
@@ -127,12 +188,34 @@ test.describe("Suspect journey", () => {
     await suspectEthnicityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-ethnicity",
     );
+    await suspectEthnicityPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-religion",
+    );
+    await suspectEthnicityPage.backLinkClick();
+    await suspectReligionPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-religion",
+    );
+    await suspectReligionPage.saveAndContinue();
+    await suspectEthnicityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-ethnicity",
+    );
     await suspectEthnicityPage.verifyPageElements();
     await suspectEthnicityPage.errorValidations();
     await suspectEthnicityPage.selectEthnicityBlack();
     await suspectEthnicityPage.saveAndContinue();
 
     const suspectAliasesPage = new SuspectAliasesPage(page);
+    await suspectAliasesPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-add-aliases",
+    );
+    await suspectAliasesPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-ethnicity",
+    );
+    await suspectAliasesPage.backLinkClick();
+    await suspectEthnicityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-ethnicity",
+    );
+    await suspectEthnicityPage.saveAndContinue();
     await suspectAliasesPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-add-aliases",
     );
@@ -146,6 +229,17 @@ test.describe("Suspect journey", () => {
     await suspectAliasesSummaryPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-aliases-summary",
     );
+    await suspectAliasesSummaryPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-ethnicity",
+    );
+    await suspectAliasesSummaryPage.backLinkClick();
+    await suspectEthnicityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-ethnicity",
+    );
+    await suspectEthnicityPage.saveAndContinue();
+    await suspectAliasesSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-aliases-summary",
+    );
     await suspectAliasesSummaryPage.verifyPageElements();
     await suspectAliasesSummaryPage.errorValidations();
     await suspectAliasesSummaryPage.verifySuspectAliasesList(["POTTER, Harry"]);
@@ -153,6 +247,18 @@ test.describe("Suspect journey", () => {
     await suspectAliasesSummaryPage.saveAndContinue();
 
     const suspectASNPage = new SuspectASNPage(page);
+    await suspectASNPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-asn",
+    );
+    await suspectASNPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-aliases-summary",
+    );
+    await suspectASNPage.backLinkClick();
+    await suspectAliasesSummaryPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-aliases-summary",
+    );
+    await suspectAliasesSummaryPage.selectAddMoreAliasesNo();
+    await suspectAliasesSummaryPage.saveAndContinue();
     await suspectASNPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-asn",
     );
@@ -165,6 +271,17 @@ test.describe("Suspect journey", () => {
     await suspectOffenderTypesPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-offender",
     );
+    await suspectOffenderTypesPage.verifyBackLink(
+      "/case-registration/suspect-0/suspect-asn",
+    );
+    await suspectOffenderTypesPage.backLinkClick();
+    await suspectASNPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-asn",
+    );
+    await suspectASNPage.saveAndContinue();
+    await suspectOffenderTypesPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-0/suspect-offender",
+    );
     await suspectOffenderTypesPage.verifyBasePageElements();
     await suspectOffenderTypesPage.errorValidations();
     await suspectOffenderTypesPage.verifyPYOElements();
@@ -173,8 +290,12 @@ test.describe("Suspect journey", () => {
     await suspectOffenderTypesPage.addArrestDate("2024-01-01");
     await suspectOffenderTypesPage.saveAndContinue();
 
-    //second suspect
     const suspectSummaryPage = new SuspectSummaryPage(page);
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyBackLink("/case-registration/case-details");
+    await suspectSummaryPage.backLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.saveAndContinue();
     await suspectSummaryPage.verifyUrl();
     await suspectSummaryPage.verifyPageElements("You have added 1 suspect");
     await suspectSummaryPage.errorValidations();
@@ -196,6 +317,7 @@ test.describe("Suspect journey", () => {
       "http://localhost:5173/case-registration/suspect-1/add-suspect",
     );
 
+    await addSuspectPage.verifyBackLink("/case-registration/suspect-summary");
     await addSuspectPage.verifyBasePageElements();
     await addSuspectPage.addPersonSuspect();
     await addSuspectPage.verifyAdditionalElements();
@@ -225,6 +347,9 @@ test.describe("Suspect journey", () => {
     await suspectDOBPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-dob",
     );
+    await suspectDOBPage.verifyBackLink(
+      "/case-registration/suspect-1/add-suspect",
+    );
     await suspectDOBPage.addDOBDay("15");
     await suspectDOBPage.addDOBMonth("06");
     await suspectDOBPage.addDOBYear("2007");
@@ -233,11 +358,17 @@ test.describe("Suspect journey", () => {
     await suspectGenderPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-gender",
     );
+    await suspectGenderPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-dob",
+    );
     await suspectGenderPage.selectGenderFemale();
     await suspectGenderPage.saveAndContinue();
 
     await suspectDisabilityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-disability",
+    );
+    await suspectDisabilityPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-gender",
     );
     await suspectDisabilityPage.selectDisabilityNo();
     await suspectDisabilityPage.saveAndContinue();
@@ -245,17 +376,26 @@ test.describe("Suspect journey", () => {
     await suspectReligionPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-religion",
     );
+    await suspectReligionPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-disability",
+    );
     await suspectReligionPage.selectReligionChristianity();
     await suspectReligionPage.saveAndContinue();
 
     await suspectEthnicityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-ethnicity",
     );
+    await suspectEthnicityPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-religion",
+    );
     await suspectEthnicityPage.selectEthnicityWhite();
     await suspectEthnicityPage.saveAndContinue();
 
     await suspectAliasesPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-add-aliases",
+    );
+    await suspectAliasesPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-ethnicity",
     );
     await suspectAliasesPage.addFirstName("Stev");
     await suspectAliasesPage.addLastName("mark");
@@ -264,6 +404,9 @@ test.describe("Suspect journey", () => {
     await suspectAliasesSummaryPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-aliases-summary",
     );
+    await suspectAliasesSummaryPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-ethnicity",
+    );
     await suspectAliasesSummaryPage.verifySuspectAliasesList(["MARK, Stev"]);
     await suspectAliasesSummaryPage.selectAddMoreAliasesNo();
     await suspectAliasesSummaryPage.saveAndContinue();
@@ -271,16 +414,23 @@ test.describe("Suspect journey", () => {
     await suspectASNPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-asn",
     );
+    await suspectASNPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-aliases-summary",
+    );
     await suspectASNPage.addASNText("1234");
     await suspectASNPage.saveAndContinue();
 
     await suspectOffenderTypesPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-1/suspect-offender",
     );
+    await suspectOffenderTypesPage.verifyBackLink(
+      "/case-registration/suspect-1/suspect-asn",
+    );
     await suspectOffenderTypesPage.selectOffenderTypePPO();
     await suspectOffenderTypesPage.saveAndContinue();
 
     await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyBackLink("/case-registration/case-details");
     await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
     await suspectSummaryPage.errorValidations();
     await suspectSummaryPage.verifySuspectSummaryRows([
@@ -369,18 +519,16 @@ test.describe("Suspect journey", () => {
     await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
     await suspectSummaryPage.selectAddMoreSuspectNo();
     await suspectSummaryPage.saveAndContinue();
-    // await expect(page).toHaveURL(
-    //   "http://localhost:5173/case-registration/suspect-summary",
-    // );
-
-    // await suspectSummaryPage.removeSuspect(0);
-    // await suspectRemoveConfirmationPage.verifyUrl();
-    // await suspectRemoveConfirmationPage.verifyPageElements("POTTER, Harry");
-    // await suspectRemoveConfirmationPage.saveAndContinue();
-    // await suspectSummaryPage.verifyUrl();
-    // await suspectSummaryPage.verifyNoSuspects();
 
     const wantToAddChargesPage = new WantToAddChargesPage(page);
+    await wantToAddChargesPage.verifyUrl();
+    await wantToAddChargesPage.verifyBackLink(
+      "/case-registration/suspect-summary",
+    );
+    await wantToAddChargesPage.backLinkClick();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.selectAddMoreSuspectNo();
+    await suspectSummaryPage.saveAndContinue();
     await wantToAddChargesPage.verifyUrl();
     await wantToAddChargesPage.verifyPageElements();
     await wantToAddChargesPage.errorValidations();
@@ -389,6 +537,13 @@ test.describe("Suspect journey", () => {
 
     const caseMonitoringPage = new CaseMonitoringPage(page);
     await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.verifyBackLink(
+      "/case-registration/want-to-add-charges",
+    );
+    await caseMonitoringPage.backLinkClick();
+    await wantToAddChargesPage.verifyUrl();
+    await wantToAddChargesPage.saveAndContinue();
+    await caseMonitoringPage.verifyUrl();
     await caseMonitoringPage.verifyPageElements(45);
     await caseMonitoringPage.verifyPreChargeCheckboxChecked();
     await caseMonitoringPage.selectMonitoringCode("Asset Recovery");
@@ -396,6 +551,13 @@ test.describe("Suspect journey", () => {
     await caseMonitoringPage.verifyErrorSummaryClear();
 
     const caseAssigneePage = new CaseAssigneePage(page);
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink(
+      "/case-registration/case-monitoring-codes",
+    );
+    await caseAssigneePage.backLinkClick();
+    await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.saveAndContinue();
     await caseAssigneePage.verifyUrl();
     await caseAssigneePage.verifyPageElements();
     await caseAssigneePage.errorValidations();
@@ -412,6 +574,13 @@ test.describe("Suspect journey", () => {
     );
 
     const caseRegistrationSummaryPage = new CaseRegistrationSummaryPage(page);
+    await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifyBackLink(
+      "/case-registration/case-assignee",
+    );
+    await caseRegistrationSummaryPage.backLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.saveAndContinue();
     await caseRegistrationSummaryPage.verifyUrl();
     await caseRegistrationSummaryPage.verifyCaseDetailsElements({
       area: "CAMBRIDGESHIRE",
