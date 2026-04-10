@@ -148,8 +148,8 @@ const FirstHearingPage = () => {
         ) === -1
       ) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Select the court location",
-          inputErrorText: "Select the court location",
+          errorSummaryText: "Select a valid court location",
+          inputErrorText: "Select a valid court location",
           hasLink: true,
         };
       }

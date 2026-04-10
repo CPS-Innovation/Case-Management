@@ -45,7 +45,7 @@ export class CaseAreasPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("area-or-division-text-link"),
-    ).toHaveText("Select a valid case area");
+    ).toHaveText("Select a valid division or area");
   }
 
   async verifyErrorSummaryClear() {

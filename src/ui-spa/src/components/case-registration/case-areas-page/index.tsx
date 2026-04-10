@@ -103,7 +103,7 @@ const CaseAreasPage = () => {
       areas.findIndex((area) => area.description === inputAreaValue) === -1
     ) {
       errors.areaOrDivisionText = {
-        errorSummaryText: "Select a valid case area",
+        errorSummaryText: "Select a valid division or area",
         hasLink: true,
       };
     }

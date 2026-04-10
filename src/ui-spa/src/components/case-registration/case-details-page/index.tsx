@@ -271,7 +271,7 @@ const CaseDetailsPage = () => {
 
     if (urnPoliceForceText && urnPoliceForceText.length < 2) {
       errors.urnErrorText = {
-        errorSummaryText: "Part 1 of the URN must consist of 2 characters",
+        errorSummaryText: "Part 1 of the URN must be of 2 characters",
         inputErrorText: "Enter a valid URN",
         hasLink: true,
         errorIds: ["urn-police-force-text"],
@@ -280,7 +280,7 @@ const CaseDetailsPage = () => {
     }
     if (urnPoliceUnitText && urnPoliceUnitText.length < 2) {
       errors.urnErrorText = {
-        errorSummaryText: "Part 2 of the URN must consist of 2 characters",
+        errorSummaryText: "Part 2 of the URN must be of 2 characters",
         inputErrorText: "Enter a valid URN",
         hasLink: true,
         errorIds: ["urn-police-unit-text"],
@@ -289,7 +289,7 @@ const CaseDetailsPage = () => {
     }
     if (urnUniqueReferenceText && urnUniqueReferenceText.length < 5) {
       errors.urnErrorText = {
-        errorSummaryText: "Part 3 of the URN must consist of 5 characters",
+        errorSummaryText: "Part 3 of the URN must be of 5 characters",
         inputErrorText: "Enter a valid URN",
         hasLink: true,
         errorIds: ["urn-unique-reference-text"],
@@ -298,7 +298,7 @@ const CaseDetailsPage = () => {
     }
     if (urnYearReferenceText && urnYearReferenceText.length < 2) {
       errors.urnErrorText = {
-        errorSummaryText: "Part 4 of the URN must consist of 2 characters",
+        errorSummaryText: "Part 4 of the URN must be of 2 characters",
         inputErrorText: "Enter a valid URN",
         hasLink: true,
         errorIds: ["urn-year-reference-text"],
