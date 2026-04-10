@@ -58,7 +58,7 @@ export class SuspectOffenderTypesPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-offender-radio-link"),
-    ).toHaveText("Select an offender type");
+    ).toHaveText("Select the type of offender");
     await this.page.getByTestId("suspect-offender-radio-link").click();
     await expect(this.page.locator("#suspect-offender-radio-0")).toBeFocused();
   }

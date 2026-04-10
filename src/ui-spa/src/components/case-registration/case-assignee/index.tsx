@@ -209,7 +209,7 @@ const CaseAssigneePage = () => {
 
     if (caseProsecutorRadio === "yes") {
       if (!inputProsecutorValue && !inputCaseworkerValue) {
-        errors.caseProsecutorRadio = {
+        errors.caseProsecutorText = {
           errorSummaryText: "Select a prosecutor or caseworker name",
           inputErrorText: "Select a prosecutor or caseworker name",
           hasLink: true,

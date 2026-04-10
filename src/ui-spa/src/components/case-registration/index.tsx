@@ -156,7 +156,7 @@ const CaseRegistrationPage = () => {
 
     if (operationNameRadio == "yes" && !operationNameText) {
       errors.operationNameText = {
-        errorSummaryText: "You need to enter an operation name",
+        errorSummaryText: "Enter an operation name",
         inputErrorText: "Enter an operation name",
         hasLink: true,
       };

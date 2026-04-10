@@ -46,7 +46,7 @@ export class FirstHearingDetailsPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("first-hearing-court-location-text-link"),
-    ).toHaveText("Select a location");
+    ).toHaveText("Select the court location");
     await this.page
       .getByTestId("first-hearing-court-location-text-link")
       .click();
@@ -55,7 +55,7 @@ export class FirstHearingDetailsPage {
     ).toBeFocused();
     await expect(
       this.page.getByTestId("first-hearing-date-text-link"),
-    ).toHaveText("Enter the date");
+    ).toHaveText("Enter the date of first hearing");
     await this.page.getByTestId("first-hearing-date-text-link").click();
     await expect(this.page.locator("#first-hearing-date-text")).toBeFocused();
     await this.selectAddFirstHearingDetailsYes();

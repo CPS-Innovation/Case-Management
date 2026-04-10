@@ -89,6 +89,17 @@ const SuspectDOBPage = () => {
       suspectDOBMonthText = "",
       suspectDOBYearText = "",
     } = formData;
+
+    if (!suspectDOBDayText && !suspectDOBMonthText && !suspectDOBYearText) {
+      setFormDataErrors({
+        suspectDOBDateError: {
+          inputErrorFields: ["day", "month", "year"].filter(Boolean),
+          errorSummaryText: "Enter the date of birth",
+        },
+      });
+      return false;
+    }
+
     const result = validateDate(
       +suspectDOBDayText,
       +suspectDOBMonthText,

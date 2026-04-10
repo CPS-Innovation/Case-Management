@@ -124,8 +124,8 @@ const AddChargeDetailsPage = () => {
 
     if (!addVictimRadio) {
       errors.addVictimRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
+        errorSummaryText: "Select whether there is a victim",
+        inputErrorText: "Select whether there is a victim",
         hasLink: true,
       };
     }
@@ -188,17 +188,15 @@ const AddChargeDetailsPage = () => {
     }
     if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
       errors.offenceFromDate = {
-        errorSummaryText: "Offence start date must be today or in the past",
-        inputErrorText:
-          "Enter an offence start date that is today or in the past",
+        errorSummaryText: "Enter an offence date that is today or in the past",
+        inputErrorText: "Enter an offence date that is today or in the past",
         hasLink: true,
       };
     }
     if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
       errors.offenceToDate = {
-        errorSummaryText: "Offence end date must be today or in the past",
-        inputErrorText:
-          "Enter an offence end date that is today or in the past",
+        errorSummaryText: "Enter an offence date that is today or in the past",
+        inputErrorText: "Enter an offence date that is today or in the past",
         hasLink: true,
       };
     }

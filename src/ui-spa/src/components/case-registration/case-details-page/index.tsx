@@ -353,7 +353,7 @@ const CaseDetailsPage = () => {
     }
 
     const urnPartErrors = urnPartsMinimumLengthValidation();
-    const combinedErrors = { ...errors, ...urnPartErrors };
+    const combinedErrors = { ...urnPartErrors, ...errors };
 
     const isValid = !Object.entries(combinedErrors).filter(([, value]) => value)
       .length;

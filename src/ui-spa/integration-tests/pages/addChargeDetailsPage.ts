@@ -64,7 +64,7 @@ export class AddChargeDetailsPage {
       this.page.getByTestId("offence-from-date-text-link"),
     ).toHaveText("Select an offence from date");
     await expect(this.page.getByTestId("add-victim-radio-link")).toHaveText(
-      "Please select an option",
+      "Select whether there is a victim",
     );
     await this.page.getByTestId("offence-from-date-text-link").click();
     await expect(this.page.locator("#offence-from-date-text")).toBeFocused();

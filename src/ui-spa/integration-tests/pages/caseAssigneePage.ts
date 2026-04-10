@@ -55,9 +55,9 @@ export class CaseAssigneePage {
     ).toBeFocused();
     await this.addProsecutorYes();
     await this.saveAndContinue();
-    await expect(
-      this.page.getByTestId("case-prosecutor-radio-link"),
-    ).toHaveText("Select a prosecutor or caseworker name");
+    await expect(this.page.getByTestId("case-prosecutor-text-link")).toHaveText(
+      "Select a prosecutor or caseworker name",
+    );
     await this.enterProsecutorName("Jo");
     await this.enterCaseworkerName("Jo");
     await this.saveAndContinue();

@@ -64,7 +64,7 @@ export class CaseRegistrationHomePage {
       this.page.getByTestId("operation-name-text-link"),
     ).toBeVisible();
     await expect(this.page.getByTestId("operation-name-text-link")).toHaveText(
-      "You need to enter an operation name",
+      "Enter an operation name",
     );
     await expect(
       this.page.getByTestId("suspect-details-radio-link"),

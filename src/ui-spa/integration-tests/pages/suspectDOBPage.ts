@@ -35,7 +35,7 @@ export class SuspectDOBPage {
       this.page.getByTestId("add-suspect-error-summary"),
     ).toBeVisible();
     await expect(this.page.getByTestId("suspect-DOB-day-text-link")).toHaveText(
-      "Date of birth must be a valid date",
+      "Enter the date of birth",
     );
     await this.page.getByTestId("suspect-DOB-day-text-link").click();
     await expect(this.page.locator("#suspect-DOB-day-text")).toBeFocused();
