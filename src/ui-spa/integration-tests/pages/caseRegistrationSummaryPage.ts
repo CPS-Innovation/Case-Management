@@ -450,6 +450,60 @@ export class CaseRegistrationSummaryPage {
     await expect(addChargeLink).toHaveText(data.action);
     await expect(addChargeLink).toHaveAttribute("href", data.link);
   }
+
+  async changeAreaLinkClick() {
+    await this.page.getByTestId("change-area-link").click();
+  }
+  async changeUrnLinkClick() {
+    await this.page.getByTestId("change-urn-link").click();
+  }
+  async changeRegisteringUnitLinkClick() {
+    await this.page.getByTestId("change-registering-unit-link").click();
+  }
+  async changeWcuLinkClick() {
+    await this.page.getByTestId("change-wcu-link").click();
+  }
+  async changeOperationNameLinkClick() {
+    await this.page.getByTestId("change-operation-name-link").click();
+  }
+  async changeCourtLocationLinkClick() {
+    await this.page.getByTestId("change-court-location-link").click();
+  }
+  async changeFirstHearingDateLinkClick() {
+    await this.page.getByTestId("change-first-hearing-date-link").click();
+  }
+  async changeFirstHearingLinkClick() {
+    await this.page.getByTestId("change-first-hearing-link").click();
+  }
+  async addSuspectLinkClick() {
+    await this.page.getByTestId("add-suspect-link").click();
+  }
+  async changeCaseComplexityLinkClick() {
+    await this.page.getByTestId("change-case-complexity-link").click();
+  }
+  async changeMonitoringCodesLinkClick() {
+    await this.page.getByTestId("change-monitoring-codes-link").click();
+  }
+  async changeCaseInvestigatorLinkClick() {
+    await this.page.getByTestId("change-case-investigator-link").click();
+  }
+  async changeShoulderNumberLinkClick() {
+    await this.page.getByTestId("change-shoulder-number-link").click();
+  }
+  async changePoliceUnitLinkClick() {
+    await this.page.getByTestId("change-police-unit-link").click();
+  }
+  async changePoliceOfficerOrInvestigatorLinkClick() {
+    await this.page
+      .getByTestId("change-police-officer-or-investigator-link")
+      .click();
+  }
+  async changeProsecutorLinkClick() {
+    await this.page.getByTestId("change-prosecutor-link").click();
+  }
+  async changeCaseworkerLinkClick() {
+    await this.page.getByTestId("change-caseworker-link").click();
+  }
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");

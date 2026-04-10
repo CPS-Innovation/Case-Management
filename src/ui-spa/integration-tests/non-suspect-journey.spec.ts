@@ -5,6 +5,7 @@ import { CaseDetailsPage } from "./pages/caseDetailsPage";
 import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
+import { CaseComplexityPage } from "./pages/caseComplexityPage";
 
 test.describe("Non suspect journey", () => {
   test("Should successfully complete non suspect journey", async ({ page }) => {
@@ -80,7 +81,6 @@ test.describe("Non suspect journey", () => {
     await caseAssigneePage.addInvestigatorYes();
     await caseAssigneePage.enterProsecutorName("Prosecutor A");
     await caseAssigneePage.enterCaseworkerName("Caseworker A");
-    // await caseAssigneePage.addInvestigatorTitle("Police Constable");
     await caseAssigneePage.addInvestigatorFirstName("Investigator F");
     await caseAssigneePage.addInvestigatorLastName("Investigator L");
     await caseAssigneePage.addInvestigatorShoulderNumber("12345");
@@ -119,6 +119,79 @@ test.describe("Non suspect journey", () => {
       shoulderNumber: "12345",
       policeUnit: "Not entered",
     });
+
+    await caseRegistrationSummaryPage.changeOperationNameLinkClick();
+    await caseRegistrationHomePage.verifyUrl();
+    await caseRegistrationHomePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeAreaLinkClick();
+    await caseAreasPage.verifyUrl();
+    await caseAreasPage.verifyBackLink("/case-registration/case-summary");
+    await caseAreasPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeUrnLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+    await caseDetailsPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeRegisteringUnitLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+    await caseDetailsPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeWcuLinkClick();
+    await caseDetailsPage.verifyUrl();
+    await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+    await caseDetailsPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeMonitoringCodesLinkClick();
+    await caseMonitoringPage.verifyUrl();
+    await caseMonitoringPage.verifyBackLink("/case-registration/case-summary");
+    await caseMonitoringPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    const caseComplexityPage = new CaseComplexityPage(page);
+    await caseRegistrationSummaryPage.changeCaseComplexityLinkClick();
+    await caseComplexityPage.verifyUrl();
+    await caseComplexityPage.verifyBackLink("/case-registration/case-summary");
+    await caseComplexityPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeCaseInvestigatorLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink("/case-registration/case-summary");
+    await caseAssigneePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeShoulderNumberLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink("/case-registration/case-summary");
+    await caseAssigneePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changePoliceUnitLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink("/case-registration/case-summary");
+    await caseAssigneePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeProsecutorLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink("/case-registration/case-summary");
+    await caseAssigneePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
+    await caseRegistrationSummaryPage.changeCaseworkerLinkClick();
+    await caseAssigneePage.verifyUrl();
+    await caseAssigneePage.verifyBackLink("/case-registration/case-summary");
+    await caseAssigneePage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+
     await caseRegistrationSummaryPage.clickCreateCaseButton();
   });
 });
