@@ -31,6 +31,9 @@ export class SuspectASNPage {
   async addASNText(value: string) {
     await this.page.locator("#suspect-asn-text").fill(value);
   }
+  async verifyASNText(value: string) {
+    await expect(this.page.locator("#suspect-asn-text")).toHaveValue(value);
+  }
   async verifyBackLink(url) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(

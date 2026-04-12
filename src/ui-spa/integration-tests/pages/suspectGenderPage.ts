@@ -11,9 +11,9 @@ export class SuspectGenderPage {
     await expect(this.page).toHaveURL(url);
   }
 
-  async verifyPageElements() {
+  async verifyPageElements(name: string) {
     await expect(this.page.locator("h1")).toHaveText(
-      "What is POTTER, Harry's gender?",
+      `What is ${name}'s gender?`,
     );
     await expect(this.page.locator("label").nth(0)).toHaveText("Male");
     await expect(this.page.locator("label").nth(1)).toHaveText("Female");

@@ -189,13 +189,16 @@ export class CaseRegistrationSummaryPage {
     );
   }
 
-  async verifyWorkingOnTheCaseElements(values: {
-    prosecutor: string;
-    caseworker: string;
-    investigator: string;
-    shoulderNumber: string;
-    policeUnit: string;
-  }) {
+  async verifyWorkingOnTheCaseElements(
+    values: {
+      prosecutor: string;
+      caseworker: string;
+      investigator: string;
+      shoulderNumber: string;
+      policeUnit: string;
+    },
+    investigatorDetailsEntered: boolean = true,
+  ) {
     const caseAssigneeWrapperElement = this.page.getByTestId(
       "case-assignee-summary",
     );
@@ -238,45 +241,47 @@ export class CaseRegistrationSummaryPage {
     await expect(rows.nth(2).locator("dd").nth(0)).toHaveText(
       values.investigator,
     );
-    const investigatorChangeLink = rows
-      .nth(2)
-      .locator("dd")
-      .nth(1)
-      .getByRole("link", { name: "Change" });
-    await expect(investigatorChangeLink).toHaveAttribute(
-      "href",
-      "/case-registration/case-assignee",
-    );
+    if (investigatorDetailsEntered) {
+      const investigatorChangeLink = rows
+        .nth(2)
+        .locator("dd")
+        .nth(1)
+        .getByRole("link", { name: "Change" });
+      await expect(investigatorChangeLink).toHaveAttribute(
+        "href",
+        "/case-registration/case-assignee",
+      );
 
-    await expect(rows.nth(3).locator("dt").nth(0)).toHaveText(
-      "Shoulder number",
-    );
-    await expect(rows.nth(3).locator("dd").nth(0)).toHaveText(
-      values.shoulderNumber,
-    );
-    const shoulderNumberChangeLink = rows
-      .nth(3)
-      .locator("dd")
-      .nth(1)
-      .getByRole("link", { name: "Change" });
-    await expect(shoulderNumberChangeLink).toHaveAttribute(
-      "href",
-      "/case-registration/case-assignee",
-    );
+      await expect(rows.nth(3).locator("dt").nth(0)).toHaveText(
+        "Shoulder number",
+      );
+      await expect(rows.nth(3).locator("dd").nth(0)).toHaveText(
+        values.shoulderNumber,
+      );
+      const shoulderNumberChangeLink = rows
+        .nth(3)
+        .locator("dd")
+        .nth(1)
+        .getByRole("link", { name: "Change" });
+      await expect(shoulderNumberChangeLink).toHaveAttribute(
+        "href",
+        "/case-registration/case-assignee",
+      );
 
-    await expect(rows.nth(4).locator("dt").nth(0)).toHaveText("Police unit");
-    await expect(rows.nth(4).locator("dd").nth(0)).toHaveText(
-      values.policeUnit,
-    );
-    const policeUnitChangeLink = rows
-      .nth(4)
-      .locator("dd")
-      .nth(1)
-      .getByRole("link", { name: "Change" });
-    await expect(policeUnitChangeLink).toHaveAttribute(
-      "href",
-      "/case-registration/case-assignee",
-    );
+      await expect(rows.nth(4).locator("dt").nth(0)).toHaveText("Police unit");
+      await expect(rows.nth(4).locator("dd").nth(0)).toHaveText(
+        values.policeUnit,
+      );
+      const policeUnitChangeLink = rows
+        .nth(4)
+        .locator("dd")
+        .nth(1)
+        .getByRole("link", { name: "Change" });
+      await expect(policeUnitChangeLink).toHaveAttribute(
+        "href",
+        "/case-registration/case-assignee",
+      );
+    }
   }
 
   async verifyFirstHearingElements(values: {

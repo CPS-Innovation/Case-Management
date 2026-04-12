@@ -106,7 +106,7 @@ test.describe("Suspect journey", () => {
     await suspectGenderPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-gender",
     );
-    await suspectGenderPage.verifyPageElements();
+    await suspectGenderPage.verifyPageElements("POTTER, Harry");
     await suspectGenderPage.errorValidations();
     await suspectGenderPage.selectGenderMale();
     await suspectGenderPage.saveAndContinue();
@@ -388,7 +388,9 @@ test.describe("Suspect journey", () => {
 
     const wantToAddChargesPage = new WantToAddChargesPage(page);
     await wantToAddChargesPage.verifyUrl();
-    await wantToAddChargesPage.verifyPageElements();
+    await wantToAddChargesPage.verifyPageElements(
+      "Do you want to add charges for the suspect?",
+    );
     await wantToAddChargesPage.errorValidations();
     await wantToAddChargesPage.selectAddChargesYes();
     await wantToAddChargesPage.saveAndContinue();
