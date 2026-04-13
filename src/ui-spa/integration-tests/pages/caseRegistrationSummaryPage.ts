@@ -607,6 +607,18 @@ export class CaseRegistrationSummaryPage {
       .click();
   }
 
+  async addSuspectCharge(index: number) {
+    await this.page
+      .getByTestId(`suspect-details-${index}`)
+      .locator("summary")
+      .click();
+
+    await this.page
+      .getByTestId(`suspect-details-${index}`)
+      .getByRole("link", { name: "Add Charge" })
+      .click();
+  }
+
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");
