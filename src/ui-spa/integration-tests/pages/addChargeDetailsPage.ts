@@ -96,27 +96,29 @@ export class AddChargeDetailsPage {
     );
     await this.page.getByTestId("offence-to-date-text-link").click();
     await expect(this.page.locator("#offence-to-date-text")).toBeFocused();
-    await this.fillOffenceFromDate("2022-02-02");
-    await this.fillOffenceToDate("2022-02-01");
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 5);
+    const formattedFutureDate = futureDate.toISOString().split("T")[0];
+    await this.fillOffenceFromDate(formattedFutureDate);
+    await this.fillOffenceToDate(formattedFutureDate);
     await this.saveAndContinue();
     await expect(
       this.page.getByTestId("offence-from-date-text-link"),
-    ).toHaveText("Enter a start date that is the same or before the end date.");
+    ).toHaveText("Enter an offence date that is today or in the past");
     await this.page.getByTestId("offence-from-date-text-link").click();
     await expect(this.page.locator("#offence-from-date-text")).toBeFocused();
-    await expect(
-      this.page.getByTestId("offence-to-date-text-link"),
-    ).not.toBeVisible();
-    await this.fillOffenceToDate("2022-02-03");
-
+    await expect(this.page.getByTestId("offence-to-date-text-link")).toHaveText(
+      "Enter an offence date that is today or in the past",
+    );
+    await this.page.getByTestId("offence-to-date-text-link").click();
+    await expect(this.page.locator("#offence-to-date-text")).toBeFocused();
+    await this.fillOffenceFromDate("2022-02-03");
+    await this.fillOffenceToDate("2022-02-01");
     await this.saveAndContinue();
     await expect(
-      this.page.getByTestId("offence-from-date-text-link"),
-    ).not.toBeVisible();
-    await expect(
       this.page.getByTestId("offence-to-date-text-link"),
     ).not.toBeVisible();
-    await this.fillOffenceToDate("2022-02-01");
     await this.saveAndContinue();
     await expect(
       this.page.getByTestId("offence-from-date-text-link"),
