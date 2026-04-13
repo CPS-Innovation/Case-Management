@@ -11,6 +11,7 @@ import DateInputNative from "../../common/DateInputNative";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
 import { type GeneralRadioValue } from "../../../common/reducers/caseRegistrationReducer";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
+import { isChargedWithAdultWarningActive } from "../../../common/utils/isChargedWithAdultWarningActive";
 import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "../index.module.scss";
@@ -26,6 +27,7 @@ const AddChargeDetailsPage = () => {
     addVictimRadio?: ErrorText;
     offenceFromDate?: ErrorText;
     offenceToDate?: ErrorText;
+    chargedWithAdultRadio?: ErrorText;
   };
   const errorSummaryRef = useRef<HTMLInputElement>(null);
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -60,10 +62,12 @@ const AddChargeDetailsPage = () => {
     offenceFromDate: string;
     offenceToDate: string;
     addVictimRadio: GeneralRadioValue;
+    chargedWithAdultRadio: GeneralRadioValue;
   }>({
     offenceFromDate: suspectCharge?.offenceFromDate || "",
     offenceToDate: suspectCharge?.offenceToDate || "",
     addVictimRadio: suspectCharge?.addVictimRadio || "",
+    chargedWithAdultRadio: suspectCharge?.chargedWithAdultRadio || "",
   });
 
   const [showDateRange, setShowDateRange] = useState(
@@ -82,6 +86,15 @@ const AddChargeDetailsPage = () => {
     return suspectCompanyNameText
       ? suspectCompanyNameText
       : formatNameUtil(suspectFirstNameText, suspectLastNameText);
+  }, [state, suspectIndex]);
+
+  const showChargedWithAdultWarning = useMemo(() => {
+    const {
+      formData: { suspects },
+    } = state;
+    return isChargedWithAdultWarningActive(
+      suspects[suspectIndex].suspectOffenderTypesRadio.shortCode,
+    );
   }, [state, suspectIndex]);
 
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
@@ -110,6 +123,13 @@ const AddChargeDetailsPage = () => {
             "data-testid": "offence-to-date-text-link",
           };
 
+        case "chargedWithAdultRadio":
+          return {
+            children: formDataErrors[errorKey]?.errorSummaryText,
+            href: "#charged-with-adult-radio-yes",
+            "data-testid": "charged-with-adult-radio-link",
+          };
+
         default:
           return null;
       }
@@ -120,12 +140,25 @@ const AddChargeDetailsPage = () => {
   const validateFormData = () => {
     const errors: FormDataErrors = {};
     const { firstHearingDateText } = state.formData;
-    const { addVictimRadio, offenceFromDate, offenceToDate } = formData;
+    const {
+      addVictimRadio,
+      offenceFromDate,
+      offenceToDate,
+      chargedWithAdultRadio,
+    } = formData;
 
     if (!addVictimRadio) {
       errors.addVictimRadio = {
         errorSummaryText: "Select whether there is a victim",
         inputErrorText: "Select whether there is a victim",
+        hasLink: true,
+      };
+    }
+
+    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
+      errors.chargedWithAdultRadio = {
+        errorSummaryText: "Please select an option",
+        inputErrorText: "Please select an option",
         hasLink: true,
       };
     }
@@ -225,7 +258,11 @@ const AddChargeDetailsPage = () => {
   }, [errorList]);
 
   const setFormValue = (
-    fieldName: "addVictimRadio" | "offenceFromDate" | "offenceToDate",
+    fieldName:
+      | "addVictimRadio"
+      | "offenceFromDate"
+      | "offenceToDate"
+      | "chargedWithAdultRadio",
     value: string,
   ) => {
     setFormData((prevState) => ({
@@ -395,6 +432,45 @@ const AddChargeDetailsPage = () => {
               if (value) setFormValue("addVictimRadio", value);
             }}
           ></Radios>
+          {showChargedWithAdultWarning && (
+            <Radios
+              fieldset={{
+                legend: {
+                  children: (
+                    <span className="govuk-!-font-weight-bold">
+                      {`Is ${suspectName} charged with an adult?`}
+                    </span>
+                  ),
+                },
+              }}
+              errorMessage={
+                formDataErrors["chargedWithAdultRadio"]
+                  ? {
+                      children:
+                        formDataErrors["chargedWithAdultRadio"].inputErrorText,
+                    }
+                  : undefined
+              }
+              items={[
+                {
+                  id: "charged-with-adult-radio-yes",
+                  children: "Yes",
+                  value: "yes",
+                  "data-testid": "charged-with-adult-radio-yes",
+                },
+                {
+                  id: "charged-with-adult-radio-no",
+                  children: "No",
+                  value: "no",
+                  "data-testid": "charged-with-adult-radio-no",
+                },
+              ]}
+              value={formData.chargedWithAdultRadio || ""}
+              onChange={(value) => {
+                if (value) setFormValue("chargedWithAdultRadio", value);
+              }}
+            ></Radios>
+          )}
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
           Save and continue

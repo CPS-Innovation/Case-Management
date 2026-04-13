@@ -236,6 +236,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                     isCaseSummaryPage,
                                     suspect.suspectId,
                                     charge.chargeId,
+                                    state.formData.suspects,
                                   )}
                                 />
                               </div>
@@ -287,6 +288,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                   isCaseSummaryPage,
                                   suspect.suspectId,
                                   charge.chargeId,
+                                  state.formData.suspects,
                                 )}
                               />
                             </div>

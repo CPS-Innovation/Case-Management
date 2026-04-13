@@ -7,7 +7,7 @@ import CaseComplexityPage from "./case-registration/case-complexity-page";
 import CaseMonitoringCodesPage from "./case-registration/case-monitoring-codes";
 import CaseAssigneePage from "./case-registration/case-assignee";
 import CaseSummaryPage from "./case-registration/case-summary-page";
-import CaseRegistrationConfirmationPage from "./case-registration/case-registartion-confirmation";
+import CaseRegistrationConfirmationPage from "./case-registration/case-registration-confirmation";
 import AddSuspectPage from "./case-registration/add-suspect";
 import SuspectDOBPage from "./case-registration/suspect-dob";
 import SuspectGenderPage from "./case-registration/suspect-gender";

@@ -111,6 +111,7 @@ const ChargesSummary: React.FC<ChargesSummaryProps> = ({
                         isCaseSummaryPage,
                         suspectCharge.suspectId,
                         charge.chargeId,
+                        state.formData.suspects,
                       )}
                     />
                   </Details>

@@ -475,6 +475,7 @@ describe("caseRegistrationReducer", () => {
     );
     expect(state.formData.suspects[0].charges[0]).toEqual({
       chargeId: "test-uuid",
+      chargedWithAdultRadio: "",
       offenceSearchText: "New Offence",
       selectedOffence: {
         code: "ABC",
@@ -768,6 +769,167 @@ describe("caseRegistrationReducer", () => {
       },
     };
 
+    expect(state).toEqual(expectedResult);
+  });
+  it("RESET_SUSPECT_FIELD should reset chargedWithAdultRadio property for the suspect charges, if the user updates the additional details checkboxes property and omits 'Type of offender'", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          suspectState,
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectId: "suspect-2",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "yes",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "no",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_SUSPECT_FIELD",
+      payload: {
+        index: 1,
+      },
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...modifiedState.formData.suspects[0],
+            suspectId: "suspect-1",
+          },
+          {
+            ...suspectInitialState,
+            addSuspectRadio: "person",
+            suspectFirstNameText: "aa",
+            suspectLastNameText: "bb",
+            suspectAdditionalDetailsCheckboxes: ["Disability", "Gender"],
+            suspectGenderRadio: { shortCode: "M", description: "male" },
+            suspectDisabilityRadio: "no",
+            suspectId: "suspect-2",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(expectedResult);
+  });
+  it("RESET_SUSPECT_FIELD should not reset chargedWithAdultRadio property for the suspect charges, if the user updates the additional details checkboxes property and has selected 'Type of offender'", () => {
+    const suspectState: SuspectFormData = {
+      ...sampleSuspectState,
+      addSuspectRadio: "person",
+    };
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          suspectState,
+          {
+            ...suspectState,
+            suspectAdditionalDetailsCheckboxes: [
+              "Disability",
+              "Gender",
+              "Type of offender",
+            ],
+            suspectId: "suspect-2",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "yes",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "no",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_SUSPECT_FIELD",
+      payload: {
+        index: 1,
+      },
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...modifiedState.formData.suspects[0],
+            suspectId: "suspect-1",
+          },
+          {
+            ...suspectInitialState,
+            addSuspectRadio: "person",
+            suspectFirstNameText: "aa",
+            suspectLastNameText: "bb",
+            suspectAdditionalDetailsCheckboxes: [
+              "Disability",
+              "Gender",
+              "Type of offender",
+            ],
+            suspectGenderRadio: { shortCode: "M", description: "male" },
+            suspectDisabilityRadio: "no",
+            suspectId: "suspect-2",
+            suspectOffenderTypesRadio: {
+              shortCode: "yo",
+              display: "youth offender",
+              arrestDate: "15/12/2024",
+            },
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "yes",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "no",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
     expect(state).toEqual(expectedResult);
   });
 
@@ -1325,6 +1487,95 @@ describe("caseRegistrationReducer", () => {
     };
     const state = caseRegistrationReducer(modifiedState, action);
     expect(state).toEqual(expectedResult);
+  });
+
+  it("RESET_CHARGE_WITH_ADULT should reset chargedWithAdult field for the given suspect", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "yes",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "no",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_CHARGE_WITH_ADULT",
+      payload: { suspectIndex: 0 },
+    };
+    const expectedResult = {
+      ...modifiedState,
+      formData: {
+        ...modifiedState.formData,
+        suspects: [
+          {
+            ...modifiedState.formData.suspects[0],
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(expectedResult);
+  });
+  it("RESET_CHARGE_WITH_ADULT should return the current state if there is no suspect found based on the suspectIndex", () => {
+    const modifiedState: CaseRegistrationState = {
+      ...initialState,
+      formData: {
+        ...initialState.formData,
+        suspects: [
+          {
+            ...suspectInitialState,
+            suspectId: "suspect-1",
+            charges: [
+              {
+                ...chargeInitialState,
+                chargeId: "charge-1",
+                chargedWithAdultRadio: "yes",
+              },
+              {
+                ...chargeInitialState,
+                chargeId: "charge-2",
+                chargedWithAdultRadio: "no",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const action: CaseRegistrationActions = {
+      type: "RESET_CHARGE_WITH_ADULT",
+      payload: { suspectIndex: 1 },
+    };
+
+    const state = caseRegistrationReducer(modifiedState, action);
+    expect(state).toEqual(modifiedState);
   });
 });
 describe("getResetFieldValues", () => {
