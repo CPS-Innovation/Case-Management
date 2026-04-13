@@ -147,26 +147,10 @@ const AddChargeDetailsPage = () => {
       chargedWithAdultRadio,
     } = formData;
 
-    if (!addVictimRadio) {
-      errors.addVictimRadio = {
-        errorSummaryText: "Select whether there is a victim",
-        inputErrorText: "Select whether there is a victim",
-        hasLink: true,
-      };
-    }
-
-    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
-      errors.chargedWithAdultRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-
     if (!offenceFromDate) {
       errors.offenceFromDate = {
         errorSummaryText: "Select an offence from date",
-        inputErrorText: "Select a date",
+        inputErrorText: "Select an offence from date",
         hasLink: true,
       };
     }
@@ -174,7 +158,7 @@ const AddChargeDetailsPage = () => {
     if (showDateRange && !offenceToDate) {
       errors.offenceToDate = {
         errorSummaryText: "Select an offence to date",
-        inputErrorText: "Select a date",
+        inputErrorText: "Select an offence to date",
         hasLink: true,
       };
     }
@@ -185,7 +169,8 @@ const AddChargeDetailsPage = () => {
       !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
     ) {
       errors.offenceFromDate = {
-        errorSummaryText: "Start date must be the same or before the end date.",
+        errorSummaryText:
+          "Enter a start date that is the same or before the end date.",
         inputErrorText:
           "Enter a start date that is the same or before the end date.",
         hasLink: true,
@@ -230,6 +215,22 @@ const AddChargeDetailsPage = () => {
       errors.offenceToDate = {
         errorSummaryText: "Enter an offence date that is today or in the past",
         inputErrorText: "Enter an offence date that is today or in the past",
+        hasLink: true,
+      };
+    }
+
+    if (!addVictimRadio) {
+      errors.addVictimRadio = {
+        errorSummaryText: "Select whether there is a victim",
+        inputErrorText: "Select whether there is a victim",
+        hasLink: true,
+      };
+    }
+
+    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
+      errors.chargedWithAdultRadio = {
+        errorSummaryText: "Select whether suspect is charged with an adult",
+        inputErrorText: "Select whether suspect is charged with an adult",
         hasLink: true,
       };
     }
@@ -397,6 +398,7 @@ const AddChargeDetailsPage = () => {
             </Button>
           </div>
           <Radios
+            data-testid="add-victim-radio"
             fieldset={{
               legend: {
                 children: (
@@ -434,6 +436,7 @@ const AddChargeDetailsPage = () => {
           ></Radios>
           {showChargedWithAdultWarning && (
             <Radios
+              data-testid="charged-with-adult-radio"
               fieldset={{
                 legend: {
                   children: (

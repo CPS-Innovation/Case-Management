@@ -11,7 +11,11 @@ export class AddChargeDetailsPage {
     await expect(this.page).toHaveURL(url);
   }
 
-  async verifyPageElements(name: string, charge: string) {
+  async verifyPageElements(
+    name: string,
+    charge: string,
+    isYouthOffender: boolean = false,
+  ) {
     await expect(this.page.locator("h1")).toHaveText("Add charges");
     await expect(this.page.locator("h2").nth(0)).toHaveText(name);
     await expect(this.page.locator("h2").nth(1)).toHaveText(charge);
@@ -48,14 +52,29 @@ export class AddChargeDetailsPage {
     await expect(
       this.page.getByRole("button", { name: "Single date" }),
     ).not.toBeVisible();
-    await expect(this.page.locator("fieldset legend")).toHaveText(
+    await expect(this.page.locator("fieldset legend").nth(0)).toHaveText(
       "Is there a victim?",
     );
-    await expect(this.page.getByLabel("Yes")).toBeVisible();
-    await expect(this.page.getByLabel("No")).toBeVisible();
+    await expect(
+      this.page.getByTestId("add-victim-radio").getByLabel("Yes"),
+    ).toBeVisible();
+    await expect(
+      this.page.getByTestId("add-victim-radio").getByLabel("No"),
+    ).toBeVisible();
+    if (isYouthOffender) {
+      await expect(this.page.locator("fieldset legend").nth(1)).toHaveText(
+        `Is ${name} charged with an adult?`,
+      );
+      await expect(
+        this.page.getByTestId("charged-with-adult-radio").getByLabel("Yes"),
+      ).toBeVisible();
+      await expect(
+        this.page.getByTestId("charged-with-adult-radio").getByLabel("No"),
+      ).toBeVisible();
+    }
   }
 
-  async errorValidations() {
+  async errorValidations(isYouthOffender: boolean = false) {
     await this.saveAndContinue();
     await expect(
       this.page.getByTestId("charges-details-error-summary"),
@@ -82,7 +101,7 @@ export class AddChargeDetailsPage {
     await this.saveAndContinue();
     await expect(
       this.page.getByTestId("offence-from-date-text-link"),
-    ).toHaveText("Start date must be the same or before the end date.");
+    ).toHaveText("Enter a start date that is the same or before the end date.");
     await this.page.getByTestId("offence-from-date-text-link").click();
     await expect(this.page.locator("#offence-from-date-text")).toBeFocused();
     await expect(
@@ -101,7 +120,7 @@ export class AddChargeDetailsPage {
     await this.saveAndContinue();
     await expect(
       this.page.getByTestId("offence-from-date-text-link"),
-    ).toHaveText("Start date must be the same or before the end date.");
+    ).toHaveText("Enter a start date that is the same or before the end date.");
     await this.clickSingleDate();
     await this.saveAndContinue();
     await expect(
@@ -110,6 +129,16 @@ export class AddChargeDetailsPage {
     await expect(
       this.page.getByTestId("offence-to-date-text-link"),
     ).not.toBeVisible();
+
+    if (isYouthOffender) {
+      await expect(
+        this.page.getByTestId("charged-with-adult-radio-link"),
+      ).toHaveText("Select whether suspect is charged with an adult");
+      await this.page.getByTestId("charged-with-adult-radio-link").click();
+      await expect(
+        this.page.locator("#charged-with-adult-radio-yes"),
+      ).toBeFocused();
+    }
   }
   async clickDateRange() {
     await this.page.getByRole("button", { name: "Date range" }).click();
@@ -124,10 +153,22 @@ export class AddChargeDetailsPage {
     await this.page.locator("#offence-to-date-text").fill(date);
   }
   async selectAddVictimYes() {
-    await this.page.getByLabel(/^Yes$/).check();
+    await this.page.getByTestId("add-victim-radio").getByLabel(/^Yes$/).check();
   }
   async selectAddVictimNo() {
-    await this.page.getByLabel(/^No$/).check();
+    await this.page.getByTestId("add-victim-radio").getByLabel(/^No$/).check();
+  }
+  async selectChargedWithAdultYes() {
+    await this.page
+      .getByTestId("charged-with-adult-radio")
+      .getByLabel(/^Yes$/)
+      .check();
+  }
+  async selectChargedWithAdultNo() {
+    await this.page
+      .getByTestId("charged-with-adult-radio")
+      .getByLabel(/^No$/)
+      .check();
   }
   async verifyBackLink(url) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();

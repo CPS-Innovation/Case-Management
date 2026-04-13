@@ -410,17 +410,15 @@ test("Should successfully complete suspect journey", async ({ page }) => {
   await addChargeDetailsPage.verifyPageElements(
     "POTTER, Harry",
     "WC81229 - Permit to be set trap etc - cause injury to wild bird",
+    true,
   );
-  await addChargeDetailsPage.errorValidations();
+  await addChargeDetailsPage.errorValidations(true);
   await addChargeDetailsPage.clickDateRange();
   await addChargeDetailsPage.fillOffenceFromDate("2022-02-02");
   await addChargeDetailsPage.fillOffenceToDate("2022-02-03");
   await addChargeDetailsPage.selectAddVictimYes();
+  await addChargeDetailsPage.selectChargedWithAdultYes();
   await addChargeDetailsPage.saveAndContinue();
-
-  // await expect(page).toHaveURL(
-  //   "http://localhost:5173/case-registration/suspect-0/charge-0/add-charge-details",
-  // );
 
   const addChargeVictimPage = new AddChargeVictimPage(page);
   await addChargeVictimPage.verifyUrl(
@@ -488,12 +486,14 @@ test("Should successfully complete suspect journey", async ({ page }) => {
   await addChargeDetailsPage.verifyPageElements(
     "POTTER, Harry",
     "PB92005 - Attempt to injure a badger",
+    true,
   );
-  await addChargeDetailsPage.errorValidations();
+  await addChargeDetailsPage.errorValidations(true);
   await addChargeDetailsPage.clickDateRange();
   await addChargeDetailsPage.fillOffenceFromDate("2022-02-02");
   await addChargeDetailsPage.fillOffenceToDate("2022-02-03");
   await addChargeDetailsPage.selectAddVictimYes();
+  await addChargeDetailsPage.selectChargedWithAdultNo();
   await addChargeDetailsPage.saveAndContinue();
   await addChargeVictimPage.verifyUrl(
     "http://localhost:5173/case-registration/suspect-0/charge-1/add-charge-victim",
@@ -637,9 +637,11 @@ test("Should successfully complete suspect journey", async ({ page }) => {
     },
     { key: "Date of offence", value: "02 February 2022 to 03 February 2022" },
     { key: "Victim", value: "SMITH, SteveWitnessVulnerableIntimidated" },
+    { key: "Charged with an adult", value: "Yes" },
     { key: "PB92005", value: "Attempt to injure a badger" },
     { key: "Date of offence", value: "02 February 2022 to 03 February 2022" },
     { key: "Victim", value: "SMITH, MarkWitnessVulnerableIntimidated" },
+    { key: "Charged with an adult", value: "No" },
   ]);
   await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
     0,
