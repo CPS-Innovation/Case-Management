@@ -115,7 +115,7 @@ test.describe("Suspect journey", () => {
     await suspectDisabilityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-disability",
     );
-    await suspectDisabilityPage.verifyPageElements();
+    await suspectDisabilityPage.verifyPageElements("POTTER, Harry");
     await suspectDisabilityPage.errorValidations();
     await suspectDisabilityPage.selectDisabilityYes();
     await suspectDisabilityPage.saveAndContinue();
@@ -644,11 +644,12 @@ test.describe("Suspect journey", () => {
       { key: "Date of offence", value: "02 February 2022 to 03 February 2022" },
       { key: "Victim", value: "SMITH, MarkWitnessVulnerableIntimidated" },
     ]);
-    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(0, {
-      key: "Add another charge",
-      action: "Add Charge",
-      link: "/case-registration/suspect-0/charge-2/charges-offence-search",
-    });
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      0,
+      "/case-registration/suspect-0/charge-2/charges-offence-search",
+      "person",
+      true,
+    );
     await caseRegistrationSummaryPage.verifyFirstHearingElements({
       courtLocation: "Court A",
       firstHearingDate: "04 February 2022",

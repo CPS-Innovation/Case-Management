@@ -212,22 +212,18 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                       )}
                     >
                       {suspectDetailsSummaryListRows[index].length > 0 && (
-                        <>
-                          {" "}
+                        <div data-testid={"suspect-additional-details"}>
                           {isCaseSummaryPage && (
-                            <h3 className="govuk-heading-m">
-                              {" "}
-                              Suspect details
-                            </h3>
+                            <h3 className="govuk-heading-m">Suspect details</h3>
                           )}
                           <SummaryList
                             rows={suspectDetailsSummaryListRows[index]}
                           />
-                        </>
+                        </div>
                       )}
                       {isCaseSummaryPage && (
                         <>
-                          <div data-testid={`suspect-charges`}>
+                          <div data-testid={"suspect-charges"}>
                             <h3>Charges</h3>
                             {suspect.charges.map((charge) => (
                               <div
@@ -247,7 +243,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                           </div>
                           <div
                             className={styles.addNewChargeSummary}
-                            data-testid={`add-new-charge`}
+                            data-testid={"add-new-charge"}
                           >
                             <SummaryList
                               rows={addNewChargeRow(
@@ -298,7 +294,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                         </div>
                         <div
                           className={styles.addNewChargeSummary}
-                          data-testid={`add-new-charge`}
+                          data-testid={"add-new-charge"}
                         >
                           <SummaryList
                             rows={addNewChargeRow(

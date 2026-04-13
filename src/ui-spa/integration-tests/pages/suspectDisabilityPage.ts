@@ -11,9 +11,9 @@ export class SuspectDisabilityPage {
     await expect(this.page).toHaveURL(url);
   }
 
-  async verifyPageElements() {
+  async verifyPageElements(name: string) {
     await expect(this.page.locator("h1")).toHaveText(
-      "Does POTTER, Harry have a disability?",
+      `Does ${name} have a disability?`,
     );
     await expect(this.page.locator("label").nth(0)).toHaveText("Yes");
     await expect(this.page.locator("label").nth(1)).toHaveText("No");

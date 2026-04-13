@@ -13,7 +13,13 @@ export class SuspectRemoveConfirmationPage {
     );
   }
 
-  async verifyPageElements(suspectName: string) {
+  async verifyPageElements(
+    suspectName: string,
+    fromCaseSummaryPage: boolean = false,
+  ) {
+    const cancelLinkHref = fromCaseSummaryPage
+      ? "/case-registration/case-summary"
+      : "/case-registration/suspect-summary";
     await expect(this.page.locator("h1")).toHaveText(
       `Are you sure you want to remove ${suspectName}?`,
     );
@@ -28,7 +34,7 @@ export class SuspectRemoveConfirmationPage {
     ).toBeVisible();
     await expect(
       this.page.getByRole("link", { name: "cancel" }),
-    ).toHaveAttribute("href", "/case-registration/suspect-summary");
+    ).toHaveAttribute("href", cancelLinkHref);
   }
   async verifyBackLink(url) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();

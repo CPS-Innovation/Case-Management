@@ -331,21 +331,66 @@ export class CaseRegistrationSummaryPage {
     );
   }
 
+  async verifySuspectSummaryRows(values: string[]) {
+    const suspectList = this.page.locator('div[data-testid^="suspect-key-"]');
+
+    expect(suspectList).toHaveCount(values.length);
+    await Promise.all(
+      values.map(async (value, index) => {
+        await expect(
+          this.page
+            .getByTestId(`suspect-row-${index}`)
+            .getByTestId(`suspect-name-${index}`),
+        ).toHaveText(value);
+        await expect(
+          this.page
+            .getByTestId(`suspect-row-${index}`)
+            .locator("dd")
+            .nth(1)
+            .getByRole("link", { name: "Change" }),
+        ).toHaveAttribute(
+          "href",
+          `/case-registration/suspect-${index}/add-suspect`,
+        );
+        await expect(
+          this.page
+            .getByTestId(`suspect-row-${index}`)
+            .locator("dd")
+            .nth(1)
+            .getByRole("link", { name: "Remove" }),
+        ).toHaveAttribute(
+          "href",
+          "/case-registration/suspect-remove-confirmation",
+        );
+      }),
+    );
+  }
+
   async verifySuspectSummaryDetails(
     suspectIndex: number,
     values: { key: string; value: string | string[] }[],
+    suspectType: "person" | "company" = "person",
   ) {
+    const summaryText =
+      suspectType === "person" ? "Details and charges" : "Charges";
     await expect(
       this.page
         .getByTestId(`suspect-details-${suspectIndex}`)
         .locator("summary"),
-    ).toHaveText("Details and charges");
-    await expect(
-      this.page
-        .getByTestId(`suspect-details-${suspectIndex}`)
-        .locator("h3")
-        .nth(0),
-    ).toHaveText("Suspect details");
+    ).toHaveText(summaryText);
+
+    const suspectAdditionDetails = this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .getByTestId(`suspect-additional-details`);
+
+    if (!values.length) {
+      await expect(suspectAdditionDetails).not.toBeVisible();
+      return;
+    }
+
+    await expect(suspectAdditionDetails.locator("h3").nth(0)).toHaveText(
+      "Suspect details",
+    );
     await this.page
       .getByTestId(`suspect-details-${suspectIndex}`)
       .locator("summary")
@@ -353,16 +398,14 @@ export class CaseRegistrationSummaryPage {
     await Promise.all(
       values.map(async (value, index) => {
         await expect(
-          this.page
-            .getByTestId(`suspect-details-${suspectIndex}`)
+          suspectAdditionDetails
             .locator(".govuk-summary-list__row")
             .nth(index)
             .locator("dt")
             .nth(0),
         ).toHaveText(value.key);
         await expect(
-          this.page
-            .getByTestId(`suspect-details-${suspectIndex}`)
+          suspectAdditionDetails
             .locator(".govuk-summary-list__row")
             .nth(index)
             .locator("dd")
@@ -379,18 +422,28 @@ export class CaseRegistrationSummaryPage {
   async verifyChargesSummaryDetails(
     suspectIndex: number,
     values: { key: string; value: string | string[] }[],
+    suspectType: "person" | "company" = "person",
   ) {
+    const summaryText =
+      suspectType === "person" ? "Details and charges" : "Charges";
     await expect(
       this.page
         .getByTestId(`suspect-details-${suspectIndex}`)
         .locator("summary"),
-    ).toHaveText("Details and charges");
-    await expect(
-      this.page
-        .getByTestId(`suspect-details-${suspectIndex}`)
-        .locator("h3")
-        .nth(1),
-    ).toHaveText("Charges");
+    ).toHaveText(summaryText);
+
+    const suspectChargesDetails = this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .getByTestId(`suspect-charges`);
+
+    if (!values.length) {
+      await expect(suspectChargesDetails).not.toBeVisible();
+      return;
+    }
+
+    await expect(suspectChargesDetails.locator("h3").nth(0)).toHaveText(
+      "Charges",
+    );
     await this.page
       .getByTestId(`suspect-details-${suspectIndex}`)
       .locator("summary")
@@ -398,18 +451,14 @@ export class CaseRegistrationSummaryPage {
     await Promise.all(
       values.map(async (value, index) => {
         await expect(
-          this.page
-            .getByTestId(`suspect-details-${suspectIndex}`)
-            .getByTestId(`suspect-charges`)
+          suspectChargesDetails
             .locator(".govuk-summary-list__row")
             .nth(index)
             .locator("dt")
             .nth(0),
         ).toHaveText(value.key);
         await expect(
-          this.page
-            .getByTestId(`suspect-details-${suspectIndex}`)
-            .getByTestId(`suspect-charges`)
+          suspectChargesDetails
             .locator(".govuk-summary-list__row")
             .nth(index)
             .locator("dd")
@@ -417,43 +466,72 @@ export class CaseRegistrationSummaryPage {
         ).toHaveText(value.value);
       }),
     );
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
   }
 
   async verifyAddNewChargeDetails(
     suspectIndex: number,
-    data: { key: string; action: string; link: string },
+    link: string,
+    suspectType: "person" | "company" = "person",
+    hasCharges: boolean = true,
   ) {
+    const summaryText =
+      suspectType === "person" ? "Details and charges" : "Charges";
     await expect(
       this.page
         .getByTestId(`suspect-details-${suspectIndex}`)
         .locator("summary"),
-    ).toHaveText("Details and charges");
+    ).toHaveText(summaryText);
 
     await this.page
       .getByTestId(`suspect-details-${suspectIndex}`)
       .locator("summary")
       .click();
-
-    await expect(
-      this.page
-        .getByTestId(`suspect-details-${suspectIndex}`)
-        .getByTestId(`add-new-charge`)
-        .locator(".govuk-summary-list__row")
-        .nth(0)
-        .locator("dt")
-        .nth(0),
-    ).toHaveText(data.key);
-
-    const addChargeLink = this.page
+    const suspectAddNewCharge = this.page
       .getByTestId(`suspect-details-${suspectIndex}`)
-      .getByTestId(`add-new-charge`)
+      .getByTestId(`add-new-charge`);
+
+    await expect(suspectAddNewCharge).toBeVisible();
+    if (hasCharges) {
+      await expect(
+        suspectAddNewCharge
+          .locator(".govuk-summary-list__row")
+          .nth(0)
+          .locator("dt")
+          .nth(0),
+      ).toHaveText("Add another charge");
+    } else {
+      await expect(
+        suspectAddNewCharge
+          .locator(".govuk-summary-list__row")
+          .nth(0)
+          .locator("dt")
+          .nth(0),
+      ).toHaveText("Charges");
+      await expect(
+        suspectAddNewCharge
+          .locator(".govuk-summary-list__row")
+          .nth(0)
+          .locator("dd")
+          .nth(0),
+      ).toHaveText("No charges added");
+    }
+
+    const addChargeLink = suspectAddNewCharge
       .locator(".govuk-summary-list__row")
       .nth(0)
       .locator("dd")
       .nth(1)
       .locator("a");
-    await expect(addChargeLink).toHaveText(data.action);
-    await expect(addChargeLink).toHaveAttribute("href", data.link);
+    await expect(addChargeLink).toHaveText("Add Charge");
+    await expect(addChargeLink).toHaveAttribute("href", link);
+    await this.page
+      .getByTestId(`suspect-details-${suspectIndex}`)
+      .locator("summary")
+      .click();
   }
 
   async changeAreaLinkClick() {
@@ -509,6 +587,26 @@ export class CaseRegistrationSummaryPage {
   async changeCaseworkerLinkClick() {
     await this.page.getByTestId("change-caseworker-link").click();
   }
+
+  async removeSuspect(index: number) {
+    const suspectRow = this.page.getByTestId(`suspect-row-${index}`);
+
+    await suspectRow
+      .locator("dd")
+      .nth(1)
+      .getByRole("link", { name: "Remove" })
+      .click();
+  }
+  async changeSuspect(index: number) {
+    const suspectRow = this.page.getByTestId(`suspect-row-${index}`);
+
+    await suspectRow
+      .locator("dd")
+      .nth(1)
+      .getByRole("link", { name: "Change" })
+      .click();
+  }
+
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");

@@ -118,6 +118,11 @@ const SuspectSummaryPage = () => {
       });
       navigate("/case-registration/case-summary");
       return;
+    } else if (state.formData.navigation.fromSuspectSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromSuspectSummaryPage: false },
+      });
     }
 
     if (chargesCount > 0) {

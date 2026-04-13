@@ -126,7 +126,6 @@ test.describe("Suspect journey", () => {
     await addSuspectPage.addCompanySuspect();
     await addSuspectPage.addSuspectCompanyName("Wizard Wheezes");
     await addSuspectPage.saveAndContinue();
-    await addSuspectPage.saveAndContinue();
     await suspectSummaryPage.verifyUrl();
     await suspectSummaryPage.verifyPageElements("You have added 2 suspects");
     await suspectSummaryPage.verifySuspectSummaryRows([
@@ -252,6 +251,55 @@ test.describe("Suspect journey", () => {
     await suspectSummaryPage.verifySuspectSummaryDetails(1, [
       { key: "Arrest Summons Number", value: "1234567" },
     ]);
+    await suspectSummaryPage.selectAddMoreSuspectYes();
+    await suspectSummaryPage.saveAndContinue();
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-2/add-suspect",
+    );
+    await addSuspectPage.addCompanySuspect();
+    await addSuspectPage.addSuspectCompanyName("ABC Limited");
+    await addSuspectPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 3 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+    ]);
+    await suspectSummaryPage.selectAddMoreSuspectYes();
+    await suspectSummaryPage.saveAndContinue();
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-3/add-suspect",
+    );
+    await addSuspectPage.addPersonSuspect();
+    await addSuspectPage.addSuspectFirstName("brian");
+    await addSuspectPage.addSuspectLastName("adams");
+    await addSuspectPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 4 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+      "ADAMS, Brian",
+    ]);
+    await suspectSummaryPage.selectAddMoreSuspectYes();
+    await suspectSummaryPage.saveAndContinue();
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-4/add-suspect",
+    );
+    await addSuspectPage.addCompanySuspect();
+    await addSuspectPage.addSuspectCompanyName("Data Limited");
+    await addSuspectPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 5 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
     await suspectSummaryPage.selectAddMoreSuspectNo();
     await suspectSummaryPage.saveAndContinue();
 
@@ -334,6 +382,244 @@ test.describe("Suspect journey", () => {
       },
       false,
     );
+
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(0, []);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(0, []);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      0,
+      "/case-registration/suspect-0/charge-0/charges-offence-search",
+      "person",
+      false,
+    );
+
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(1, [
+      {
+        key: "Arrest Summons Number",
+        value: "1234567",
+      },
+    ]);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(1, []);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      1,
+      "/case-registration/suspect-1/charge-0/charges-offence-search",
+      "person",
+      false,
+    );
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(
+      2,
+      [],
+      "company",
+    );
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(
+      2,
+      [],
+      "company",
+    );
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      2,
+      "/case-registration/suspect-2/charge-0/charges-offence-search",
+      "company",
+      false,
+    );
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(3, []);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(3, []);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      3,
+      "/case-registration/suspect-3/charge-0/charges-offence-search",
+      "person",
+      false,
+    );
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(
+      4,
+      [],
+      "company",
+    );
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(
+      4,
+      [],
+      "company",
+    );
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      4,
+      "/case-registration/suspect-4/charge-0/charges-offence-search",
+      "company",
+      false,
+    );
+
+    await caseRegistrationSummaryPage.changeSuspect(3);
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-3/add-suspect",
+    );
+    await addSuspectPage.verifyBackLink("/case-registration/case-summary");
+    await addSuspectPage.verifyPersonSuspectSelected("brian", "adams");
+    await addSuspectPage.verifySelectedAdditionalDetails([]);
+    await addSuspectPage.selectAdditionalDetailsDisability(true);
+    await addSuspectPage.verifySelectedAdditionalDetails(["Disability"]);
+    await addSuspectPage.saveAndContinue();
+    const suspectDisabilityPage = new SuspectDisabilityPage(page);
+    await suspectDisabilityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-3/suspect-disability",
+    );
+    await suspectDisabilityPage.verifyBackLink(
+      "/case-registration/suspect-3/add-suspect",
+    );
+    await suspectDisabilityPage.verifyPageElements("ADAMS, Brian");
+    await suspectDisabilityPage.errorValidations();
+    await suspectDisabilityPage.selectDisabilityYes();
+    await suspectDisabilityPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 5 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await suspectSummaryPage.verifySuspectSummaryDetails(3, [
+      { key: "Disability", value: "yes" },
+    ]);
+    await suspectSummaryPage.selectAddMoreSuspectNo();
+    await suspectSummaryPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABC Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(3, [
+      {
+        key: "Disability",
+        value: "yes",
+      },
+    ]);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(3, []);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      3,
+      "/case-registration/suspect-3/charge-0/charges-offence-search",
+      "person",
+      false,
+    );
+    await caseRegistrationSummaryPage.changeSuspect(2);
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-2/add-suspect",
+    );
+    await addSuspectPage.verifyCompanySuspectSelected("ABC Limited");
+    await addSuspectPage.verifyBackLink("/case-registration/case-summary");
+    await addSuspectPage.verifyCompanySuspectSelected("ABC Limited");
+    await addSuspectPage.addSuspectCompanyName("ABCDE Limited");
+    await addSuspectPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABCDE Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await suspectSummaryPage.selectAddMoreSuspectNo();
+    await suspectSummaryPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABCDE Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+
+    await caseRegistrationSummaryPage.removeSuspect(2);
+    await suspectRemoveConfirmationPage.verifyUrl();
+    await suspectRemoveConfirmationPage.verifyPageElements(
+      "ABCDE Limited",
+      true,
+    );
+    await suspectRemoveConfirmationPage.verifyBackLink(
+      "/case-registration/case-summary",
+    );
+    await suspectRemoveConfirmationPage.cancel();
+    await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ABCDE Limited",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await caseRegistrationSummaryPage.removeSuspect(2);
+    await suspectRemoveConfirmationPage.verifyUrl();
+    await suspectRemoveConfirmationPage.verifyPageElements(
+      "ABCDE Limited",
+      true,
+    );
+    await suspectRemoveConfirmationPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+    await caseRegistrationSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await caseRegistrationSummaryPage.changeSuspect(2);
+    await addSuspectPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-2/add-suspect",
+    );
+    await addSuspectPage.verifyBackLink("/case-registration/case-summary");
+    await addSuspectPage.verifyPersonSuspectSelected("brian", "adams");
+    await addSuspectPage.verifySelectedAdditionalDetails(["Disability"]);
+    await addSuspectPage.saveAndContinue();
+    await suspectDisabilityPage.verifyUrl(
+      "http://localhost:5173/case-registration/suspect-2/suspect-disability",
+    );
+    await suspectDisabilityPage.verifyBackLink(
+      "/case-registration/suspect-2/add-suspect",
+    );
+    await suspectDisabilityPage.verifyPageElements("ADAMS, Brian");
+    await suspectDisabilityPage.selectDisabilityNo();
+    await suspectDisabilityPage.saveAndContinue();
+    await suspectSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifyPageElements("You have added 4 suspects");
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await suspectSummaryPage.verifySuspectSummaryDetails(2, [
+      { key: "Disability", value: "no" },
+    ]);
+    await suspectSummaryPage.selectAddMoreSuspectNo();
+    await suspectSummaryPage.saveAndContinue();
+    await caseRegistrationSummaryPage.verifyUrl();
+    await suspectSummaryPage.verifySuspectSummaryRows([
+      "POTTER, Harry",
+      "STEVE, Martin",
+      "ADAMS, Brian",
+      "Data Limited",
+    ]);
+    await caseRegistrationSummaryPage.verifySuspectSummaryDetails(2, [
+      {
+        key: "Disability",
+        value: "no",
+      },
+    ]);
+    await caseRegistrationSummaryPage.verifyChargesSummaryDetails(2, []);
+    await caseRegistrationSummaryPage.verifyAddNewChargeDetails(
+      2,
+      "/case-registration/suspect-2/charge-0/charges-offence-search",
+      "person",
+      false,
+    );
+
     // await addSuspectPage.addPersonSuspect();
     // await addSuspectPage.addSuspectFirstName("harry");
     // await addSuspectPage.addSuspectLastName("potter");

@@ -159,7 +159,7 @@ test.describe("Suspect journey", () => {
     await suspectDisabilityPage.verifyUrl(
       "http://localhost:5173/case-registration/suspect-0/suspect-disability",
     );
-    await suspectDisabilityPage.verifyPageElements();
+    await suspectDisabilityPage.verifyPageElements("POTTER, Harry");
     await suspectDisabilityPage.errorValidations();
     await suspectDisabilityPage.selectDisabilityYes();
     await suspectDisabilityPage.saveAndContinue();
