@@ -24,6 +24,8 @@ import { FirstHearingDetailsPage } from "./pages/firstHearingDetailsPage";
 import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
+import { ChangeAreaConfirmationPage } from "./pages/changeAreaConfirmation";
+import { ChangeRegisteringUnitConfirmationPage } from "./pages/changeRegisteringUnitConfirmation";
 
 test("Should successfully complete suspect journey", async ({ page }) => {
   await page.goto("http://localhost:5173");
@@ -372,16 +374,6 @@ test("Should successfully complete suspect journey", async ({ page }) => {
   await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
   await suspectSummaryPage.selectAddMoreSuspectNo();
   await suspectSummaryPage.saveAndContinue();
-  // await expect(page).toHaveURL(
-  //   "http://localhost:5173/case-registration/suspect-summary",
-  // );
-
-  // await suspectSummaryPage.removeSuspect(0);
-  // await suspectRemoveConfirmationPage.verifyUrl();
-  // await suspectRemoveConfirmationPage.verifyPageElements("POTTER, Harry");
-  // await suspectRemoveConfirmationPage.saveAndContinue();
-  // await suspectSummaryPage.verifyUrl();
-  // await suspectSummaryPage.verifyNoSuspects();
 
   const wantToAddChargesPage = new WantToAddChargesPage(page);
   await wantToAddChargesPage.verifyUrl();
@@ -551,7 +543,6 @@ test("Should successfully complete suspect journey", async ({ page }) => {
 
   const firstHearingDetailsPage = new FirstHearingDetailsPage(page);
   await firstHearingDetailsPage.verifyUrl();
-
   await firstHearingDetailsPage.errorValidations();
   await firstHearingDetailsPage.verifyPageElements();
   await firstHearingDetailsPage.selectAddFirstHearingDetailsYes();
@@ -663,6 +654,127 @@ test("Should successfully complete suspect journey", async ({ page }) => {
     caseworker: "Caseworker A",
     investigator: "InvestigatorL, InvestigatorF",
     shoulderNumber: "12345",
+    policeUnit: "Not entered",
+  });
+  await caseRegistrationSummaryPage.changeAreaLinkClick();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyBackLink("/case-registration/case-summary");
+  await caseAreasPage.enterAreaOrDivision("Cheshire");
+  await caseAreasPage.saveAndContinue();
+  const changeAreaConfirmationPage = new ChangeAreaConfirmationPage(page);
+  await changeAreaConfirmationPage.verifyUrl();
+  await changeAreaConfirmationPage.verifyPageElements(true);
+  await changeAreaConfirmationPage.verifyBackLink("/case-registration/areas");
+  await changeAreaConfirmationPage.backLinkClick();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyBackLink("/case-registration/case-summary");
+  await caseAreasPage.enterAreaOrDivision("Cheshire");
+  await caseAreasPage.saveAndContinue();
+  await changeAreaConfirmationPage.verifyUrl();
+  await changeAreaConfirmationPage.saveAndContinue();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyNoBackLink();
+  await caseDetailsPage.enterRegisteringUnit("Chester MCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+
+  await firstHearingDetailsPage.verifyUrl();
+  await firstHearingDetailsPage.verifyNoBackLink();
+  await firstHearingDetailsPage.verifyPageElements();
+  await firstHearingDetailsPage.selectAddFirstHearingDetailsYes();
+  await firstHearingDetailsPage.enterFirstHearingCourtLocation("Court B");
+  await firstHearingDetailsPage.addFirstHearingDate("2022-02-05");
+  await firstHearingDetailsPage.saveAndContinue();
+
+  await caseAssigneePage.verifyUrl();
+  await caseAssigneePage.verifyNoBackLink();
+  await caseAssigneePage.verifyPageElements();
+  await caseAssigneePage.addProsecutorYes();
+  await caseAssigneePage.addInvestigatorYes();
+  await caseAssigneePage.enterProsecutorName("Prosecutor B");
+  await caseAssigneePage.enterCaseworkerName("Caseworker B");
+  await caseAssigneePage.addInvestigatorFirstName("Investigator A");
+  await caseAssigneePage.addInvestigatorLastName("Investigator B");
+  await caseAssigneePage.addInvestigatorShoulderNumber("123456");
+  await caseAssigneePage.saveAndContinue();
+  await caseRegistrationSummaryPage.verifyUrl();
+  await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+    area: "Cheshire",
+    urn: "122112345/26",
+    registeringUnit: "Chester MCU",
+    wcu: "Chester Business WCU",
+    operationName: "thunderstruck",
+  });
+  await caseRegistrationSummaryPage.verifyFirstHearingElements({
+    courtLocation: "Court B",
+    firstHearingDate: "05 February 2022",
+  });
+  await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+    prosecutor: "Prosecutor B",
+    caseworker: "Caseworker B",
+    investigator: "InvestigatorB, InvestigatorA",
+    shoulderNumber: "123456",
+    policeUnit: "Not entered",
+  });
+
+  await caseRegistrationSummaryPage.changeRegisteringUnitLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+  await caseDetailsPage.enterRegisteringUnit("Warrington CCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+  const changeRegisteringUnitConfirmationPage =
+    new ChangeRegisteringUnitConfirmationPage(page);
+  await changeRegisteringUnitConfirmationPage.verifyUrl();
+  await changeRegisteringUnitConfirmationPage.verifyPageElements(true);
+  await changeRegisteringUnitConfirmationPage.verifyBackLink(
+    "/case-registration/case-details",
+  );
+  await changeRegisteringUnitConfirmationPage.backLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+  await caseDetailsPage.enterRegisteringUnit("Warrington CCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+  await changeRegisteringUnitConfirmationPage.verifyUrl();
+  await changeRegisteringUnitConfirmationPage.saveAndContinue();
+
+  await firstHearingDetailsPage.verifyUrl();
+  await firstHearingDetailsPage.verifyNoBackLink();
+  await firstHearingDetailsPage.verifyPageElements();
+  await firstHearingDetailsPage.selectAddFirstHearingDetailsYes();
+  await firstHearingDetailsPage.enterFirstHearingCourtLocation("Court A");
+  await firstHearingDetailsPage.addFirstHearingDate("2022-02-06");
+  await firstHearingDetailsPage.saveAndContinue();
+
+  await caseAssigneePage.verifyUrl();
+  await caseAssigneePage.verifyNoBackLink();
+  await caseAssigneePage.verifyPageElements();
+  await caseAssigneePage.addProsecutorYes();
+  await caseAssigneePage.addInvestigatorYes();
+  await caseAssigneePage.enterProsecutorName("Prosecutor A");
+  await caseAssigneePage.enterCaseworkerName("Caseworker A");
+  await caseAssigneePage.addInvestigatorFirstName("Investigator A");
+  await caseAssigneePage.addInvestigatorLastName("Investigator B");
+  await caseAssigneePage.addInvestigatorShoulderNumber("1234567");
+  await caseAssigneePage.saveAndContinue();
+  await caseRegistrationSummaryPage.verifyUrl();
+  await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+    area: "Cheshire",
+    urn: "122112345/26",
+    registeringUnit: "Warrington CCU",
+    wcu: "Chester Business WCU",
+    operationName: "thunderstruck",
+  });
+  await caseRegistrationSummaryPage.verifyFirstHearingElements({
+    courtLocation: "Court A",
+    firstHearingDate: "06 February 2022",
+  });
+  await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+    prosecutor: "Prosecutor A",
+    caseworker: "Caseworker A",
+    investigator: "InvestigatorB, InvestigatorA",
+    shoulderNumber: "1234567",
     policeUnit: "Not entered",
   });
 });

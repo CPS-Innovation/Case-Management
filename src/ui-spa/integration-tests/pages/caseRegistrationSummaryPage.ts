@@ -61,7 +61,7 @@ export class CaseRegistrationSummaryPage {
     );
 
     await expect(rows.nth(1).locator("dt").nth(0)).toHaveText("URN");
-    await expect(rows.nth(1).locator("dd").nth(0)).toHaveText("122112345/26");
+    await expect(rows.nth(1).locator("dd").nth(0)).toHaveText(values.urn);
     const urnChangeLink = rows
       .nth(1)
       .locator("dd")
@@ -76,7 +76,7 @@ export class CaseRegistrationSummaryPage {
       "Registering unit",
     );
     await expect(rows.nth(2).locator("dd").nth(0)).toHaveText(
-      "NORTHERN CJU (Peterborough)",
+      values.registeringUnit,
     );
     const registeringUnitChangeLink = rows
       .nth(2)
@@ -89,9 +89,7 @@ export class CaseRegistrationSummaryPage {
     );
 
     await expect(rows.nth(3).locator("dt").nth(0)).toHaveText("WCU");
-    await expect(rows.nth(3).locator("dd").nth(0)).toHaveText(
-      "Cambridgeshire Non Operational WCU",
-    );
+    await expect(rows.nth(3).locator("dd").nth(0)).toHaveText(values.wcu);
     const wcuChangeLink = rows
       .nth(3)
       .locator("dd")
@@ -103,7 +101,9 @@ export class CaseRegistrationSummaryPage {
     );
 
     await expect(rows.nth(4).locator("dt").nth(0)).toHaveText("Operation name");
-    await expect(rows.nth(4).locator("dd").nth(0)).toHaveText("thunderstruck");
+    await expect(rows.nth(4).locator("dd").nth(0)).toHaveText(
+      values.operationName,
+    );
     const operationNameChangeLink = rows
       .nth(4)
       .locator("dd")

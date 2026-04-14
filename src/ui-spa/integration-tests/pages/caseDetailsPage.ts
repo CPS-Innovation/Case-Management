@@ -145,6 +145,11 @@ export class CaseDetailsPage {
       url,
     );
   }
+  async verifyNoBackLink() {
+    await expect(
+      this.page.getByRole("link", { name: "Back" }),
+    ).not.toBeVisible();
+  }
   async backLinkClick() {
     await this.page.getByRole("link", { name: "Back" }).click();
   }

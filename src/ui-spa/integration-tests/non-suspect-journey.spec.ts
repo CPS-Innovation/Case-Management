@@ -6,6 +6,8 @@ import { CaseMonitoringPage } from "./pages/caseMonitoringPage";
 import { CaseAssigneePage } from "./pages/caseAssigneePage";
 import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage";
 import { CaseComplexityPage } from "./pages/caseComplexityPage";
+import { ChangeAreaConfirmationPage } from "./pages/changeAreaConfirmation";
+import { ChangeRegisteringUnitConfirmationPage } from "./pages/changeRegisteringUnitConfirmation";
 
 test("Should successfully complete non suspect journey", async ({ page }) => {
   await page.goto("http://localhost:5173");
@@ -189,5 +191,99 @@ test("Should successfully complete non suspect journey", async ({ page }) => {
   await caseAssigneePage.saveAndContinue();
   await caseRegistrationSummaryPage.verifyUrl();
 
-  await caseRegistrationSummaryPage.clickCreateCaseButton();
+  await caseRegistrationSummaryPage.changeAreaLinkClick();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyBackLink("/case-registration/case-summary");
+  await caseAreasPage.enterAreaOrDivision("Cheshire");
+  await caseAreasPage.saveAndContinue();
+  const changeAreaConfirmationPage = new ChangeAreaConfirmationPage(page);
+  await changeAreaConfirmationPage.verifyUrl();
+  await changeAreaConfirmationPage.verifyPageElements(false);
+  await changeAreaConfirmationPage.verifyBackLink("/case-registration/areas");
+  await changeAreaConfirmationPage.backLinkClick();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyBackLink("/case-registration/case-summary");
+  await caseAreasPage.enterAreaOrDivision("Cheshire");
+  await caseAreasPage.saveAndContinue();
+  await changeAreaConfirmationPage.verifyUrl();
+  await changeAreaConfirmationPage.saveAndContinue();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyNoBackLink();
+  await caseDetailsPage.enterRegisteringUnit("Chester MCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+  await caseAssigneePage.verifyUrl();
+  await caseAssigneePage.verifyNoBackLink();
+  await caseAssigneePage.verifyPageElements();
+  await caseAssigneePage.addProsecutorYes();
+  await caseAssigneePage.addInvestigatorYes();
+  await caseAssigneePage.enterProsecutorName("Prosecutor B");
+  await caseAssigneePage.enterCaseworkerName("Caseworker B");
+  await caseAssigneePage.addInvestigatorFirstName("Investigator A");
+  await caseAssigneePage.addInvestigatorLastName("Investigator B");
+  await caseAssigneePage.addInvestigatorShoulderNumber("123456");
+  await caseAssigneePage.saveAndContinue();
+  await caseRegistrationSummaryPage.verifyUrl();
+  await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+    area: "Cheshire",
+    urn: "122112345/26",
+    registeringUnit: "Chester MCU",
+    wcu: "Chester Business WCU",
+    operationName: "thunderstruck",
+  });
+  await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+    prosecutor: "Prosecutor B",
+    caseworker: "Caseworker B",
+    investigator: "InvestigatorB, InvestigatorA",
+    shoulderNumber: "123456",
+    policeUnit: "Not entered",
+  });
+
+  await caseRegistrationSummaryPage.changeRegisteringUnitLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+  await caseDetailsPage.enterRegisteringUnit("Warrington CCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+  const changeRegisteringUnitConfirmationPage =
+    new ChangeRegisteringUnitConfirmationPage(page);
+  await changeRegisteringUnitConfirmationPage.verifyUrl();
+  await changeRegisteringUnitConfirmationPage.verifyPageElements(false);
+  await changeRegisteringUnitConfirmationPage.verifyBackLink(
+    "/case-registration/case-details",
+  );
+  await changeRegisteringUnitConfirmationPage.backLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyBackLink("/case-registration/case-summary");
+  await caseDetailsPage.enterRegisteringUnit("Warrington CCU");
+  await caseDetailsPage.enterWitnessCareUnit("Chester Business WCU");
+  await caseDetailsPage.saveAndContinue();
+  await changeRegisteringUnitConfirmationPage.verifyUrl();
+  await changeRegisteringUnitConfirmationPage.saveAndContinue();
+  await caseAssigneePage.verifyUrl();
+  await caseAssigneePage.verifyNoBackLink();
+  await caseAssigneePage.verifyPageElements();
+  await caseAssigneePage.addProsecutorYes();
+  await caseAssigneePage.addInvestigatorYes();
+  await caseAssigneePage.enterProsecutorName("Prosecutor A");
+  await caseAssigneePage.enterCaseworkerName("Caseworker A");
+  await caseAssigneePage.addInvestigatorFirstName("Investigator A");
+  await caseAssigneePage.addInvestigatorLastName("Investigator B");
+  await caseAssigneePage.addInvestigatorShoulderNumber("1234567");
+  await caseAssigneePage.saveAndContinue();
+  await caseRegistrationSummaryPage.verifyUrl();
+  await caseRegistrationSummaryPage.verifyCaseDetailsElements({
+    area: "Cheshire",
+    urn: "122112345/26",
+    registeringUnit: "Warrington CCU",
+    wcu: "Chester Business WCU",
+    operationName: "thunderstruck",
+  });
+  await caseRegistrationSummaryPage.verifyWorkingOnTheCaseElements({
+    prosecutor: "Prosecutor A",
+    caseworker: "Caseworker A",
+    investigator: "InvestigatorB, InvestigatorA",
+    shoulderNumber: "1234567",
+    policeUnit: "Not entered",
+  });
 });
