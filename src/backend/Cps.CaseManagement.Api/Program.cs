@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Cps.CaseManagement.Api.Extensions;
 using Cps.CaseManagement.Api.Helpers;
 using Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.Api.Middleware;
@@ -52,11 +51,6 @@ var host = new HostBuilder()
             minLevel = LogLevel.Information;
         }
         logging.SetMinimumLevel(minLevel);
-    })
-    .ConfigureAppConfiguration((context, config) =>
-    {
-        // ✅ Configure Azure Key Vault if KeyVaultUri is provided
-        config.AddKeyVaultIfConfigured(config.Build(), logger);
     })
     .ConfigureServices((context, services) =>
     {

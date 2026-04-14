@@ -3,7 +3,6 @@ parameters:
   type: string
 
 variables:
-- group: cmrc-backend-secrets-${{ parameters.environment }}
 - group: cmrc-backend-config-${{ parameters.environment }}
 - name: resourceGroupName
   value: 'rg-cmrc-${{ parameters.environment }}' 
