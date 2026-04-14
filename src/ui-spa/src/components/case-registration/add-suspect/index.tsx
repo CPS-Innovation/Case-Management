@@ -168,10 +168,6 @@ const AddSuspectPage = () => {
   }, [errorList]);
 
   const previousRoute = useMemo(() => {
-    console.log(
-      "Navigation state in AddSuspectPage:",
-      state.formData.navigation,
-    );
     if (
       state.formData.navigation.fromCaseSummaryPage &&
       !state.formData.navigation.fromSuspectSummaryPage

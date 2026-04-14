@@ -520,14 +520,12 @@ export class CaseRegistrationSummaryPage {
       ).toHaveText("No charges added");
     }
 
-    const addChargeLink = suspectAddNewCharge
-      .locator(".govuk-summary-list__row")
-      .nth(0)
-      .locator("dd")
-      .nth(1)
-      .locator("a");
-    await expect(addChargeLink).toHaveText("Add Charge");
-    await expect(addChargeLink).toHaveAttribute("href", link);
+    await expect(
+      this.page
+        .getByTestId(`suspect-details-${suspectIndex}`)
+        .getByRole("link", { name: "Add Charge" }),
+    ).toHaveAttribute("href", link);
+
     await this.page
       .getByTestId(`suspect-details-${suspectIndex}`)
       .locator("summary")
@@ -622,6 +620,5 @@ export class CaseRegistrationSummaryPage {
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");
-    // await createCaseButton.click();
   }
 }

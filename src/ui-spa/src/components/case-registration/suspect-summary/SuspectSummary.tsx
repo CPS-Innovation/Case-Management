@@ -52,7 +52,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
             {
               children: <span>Add Charge</span>,
               to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
-              // visuallyHiddenText: "Add new charge",
+              visuallyHiddenText: "Add new charge",
               onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
                 handleAddChargeClick(
                   event,
