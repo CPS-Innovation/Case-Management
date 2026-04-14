@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class SuspectASNPage {
   private readonly page: Page;
@@ -34,7 +34,7 @@ export class SuspectASNPage {
   async verifyASNText(value: string) {
     await expect(this.page.locator("#suspect-asn-text")).toHaveValue(value);
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

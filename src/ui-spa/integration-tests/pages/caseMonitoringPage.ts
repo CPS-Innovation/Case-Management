@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class CaseMonitoringPage {
   private readonly route =
@@ -48,7 +48,7 @@ export class CaseMonitoringPage {
       this.page.getByTestId("monitoring-codes-error-summary"),
     ).not.toBeVisible();
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

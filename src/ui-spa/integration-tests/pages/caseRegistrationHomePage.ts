@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class CaseRegistrationHomePage {
   private readonly route = "http://localhost:5173/case-registration";

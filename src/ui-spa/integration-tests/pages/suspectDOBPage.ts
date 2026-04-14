@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class SuspectDOBPage {
   private readonly page: Page;
@@ -104,7 +104,7 @@ export class SuspectDOBPage {
   async addDOBYear(year: string) {
     await this.page.getByLabel("Year").fill(year);
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

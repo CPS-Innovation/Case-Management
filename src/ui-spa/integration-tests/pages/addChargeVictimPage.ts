@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class AddChargeVictimPage {
   private readonly page: Page;
@@ -171,7 +171,7 @@ export class AddChargeVictimPage {
   async unSelectVictimByName(name: string) {
     await this.page.getByLabel(name).uncheck();
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

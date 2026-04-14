@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class ChangeRegisteringUnitConfirmationPage {
   private readonly page: Page;
@@ -52,7 +52,7 @@ export class ChangeRegisteringUnitConfirmationPage {
       this.page.getByRole("link", { name: "cancel" }),
     ).toHaveAttribute("href", "/case-registration/case-details");
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

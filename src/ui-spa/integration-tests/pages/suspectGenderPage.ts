@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class SuspectGenderPage {
   private readonly page: Page;
@@ -36,7 +36,7 @@ export class SuspectGenderPage {
   async selectGenderFemale() {
     await this.page.getByLabel(/^Female$/).check();
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",

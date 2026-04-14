@@ -1,4 +1,4 @@
-import { Page, expect } from "@playwright/test";
+import { type Page, expect } from "@playwright/test";
 
 export class CaseAreasPage {
   private readonly route = "http://localhost:5173/case-registration/areas";
@@ -58,7 +58,7 @@ export class CaseAreasPage {
     await this.page.locator("#area-or-division-text").fill(name);
     await this.page.keyboard.press("Escape");
   }
-  async verifyBackLink(url) {
+  async verifyBackLink(url: string) {
     await expect(this.page.getByRole("link", { name: "Back" })).toBeVisible();
     await expect(this.page.getByRole("link", { name: "Back" })).toHaveAttribute(
       "href",
