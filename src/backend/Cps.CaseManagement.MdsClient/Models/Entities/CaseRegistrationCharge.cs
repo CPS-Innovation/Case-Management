@@ -33,4 +33,7 @@ public class CaseRegistrationCharge
 
     [JsonPropertyName("modeOfTrial")]
     public string ModeOfTrial { get; set; } = string.Empty;
+
+    [JsonPropertyName("chargedWithAdult")]
+    public bool ChargedWithAdult { get; set; }
 }

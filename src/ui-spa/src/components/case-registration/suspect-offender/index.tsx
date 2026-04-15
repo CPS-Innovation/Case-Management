@@ -18,6 +18,7 @@ import {
   getPreviousSuspectJourneyRoute,
 } from "../../../common/utils/getSuspectJourneyRoutes";
 import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
+import { isChargedWithAdultWarningActive } from "../../../common/utils/isChargedWithAdultWarningActive";
 import styles from "../index.module.scss";
 
 const SuspectOffenderPage = () => {
@@ -248,6 +249,19 @@ const SuspectOffenderPage = () => {
         data: formData,
       },
     });
+
+    if (
+      !isChargedWithAdultWarningActive(
+        formData.suspectOffenderTypesRadio.shortCode,
+      )
+    ) {
+      dispatch({
+        type: "RESET_CHARGE_WITH_ADULT",
+        payload: {
+          suspectIndex,
+        },
+      });
+    }
 
     const nextRoute = getNextSuspectJourneyRoute(
       "suspect-offender",

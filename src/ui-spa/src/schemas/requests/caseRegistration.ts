@@ -65,6 +65,7 @@ export const caseRegistrationRequestDataSchema = z.object({
           dateTo: z.string().nullable(),
           victimIndexId: z.number().default(-1),
           modeOfTrial: z.string(),
+          chargedWithAdult: z.boolean().default(false),
         }),
       ),
     }),

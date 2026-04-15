@@ -98,6 +98,7 @@ export type ChargesFormData = {
   offenceFromDate: string;
   offenceToDate: string;
   addVictimRadio: GeneralRadioValue;
+  chargedWithAdultRadio: GeneralRadioValue;
   victim: { victimId: string } | null;
 };
 export type SuspectFieldNames = keyof SuspectFormData;
@@ -198,6 +199,7 @@ export const chargeInitialState: ChargesFormData = {
   offenceFromDate: "",
   offenceToDate: "",
   addVictimRadio: "",
+  chargedWithAdultRadio: "",
   victim: null,
 };
 
@@ -333,6 +335,7 @@ export type CaseRegistrationActions =
           offenceFromDate?: string;
           offenceToDate?: string;
           addVictimRadio?: GeneralRadioValue;
+          chargedWithAdultRadio?: GeneralRadioValue;
           victim?: { victimId: string } | null;
         };
       };
@@ -450,6 +453,12 @@ export type CaseRegistrationActions =
       };
     }
   | {
+      type: "RESET_CHARGE_WITH_ADULT";
+      payload: {
+        suspectIndex: number;
+      };
+    }
+  | {
       type: "SET_NAVIGATION_DATA";
       payload: {
         fromCaseSummaryPage?: boolean;
@@ -550,18 +559,62 @@ export const caseRegistrationReducer = (
         state,
         action.payload.index,
       );
+      let resetChargeAsAdult = false;
+
+      if (suspectResetValues.suspectOffenderTypesRadio) {
+        resetChargeAsAdult = true;
+      }
+
       return {
         ...state,
         formData: {
           ...state.formData,
           suspects: state.formData.suspects.map((suspect, i) =>
             i === action.payload.index
-              ? { ...suspect, ...suspectResetValues }
+              ? {
+                  ...suspect,
+                  ...suspectResetValues,
+                  charges: resetChargeAsAdult
+                    ? [
+                        ...suspect.charges.map((charge) => ({
+                          ...charge,
+                          chargedWithAdultRadio: "" as const,
+                        })),
+                      ]
+                    : suspect.charges,
+                }
               : suspect,
           ),
         },
       };
     }
+
+    case "RESET_CHARGE_WITH_ADULT": {
+      const { suspectIndex } = action.payload;
+      if (suspectIndex >= state.formData.suspects.length) {
+        return state;
+      }
+
+      const suspects = state.formData.suspects;
+      const suspect = suspects[suspectIndex];
+      const updatedCharges = suspect.charges.map((charge) => ({
+        ...charge,
+        chargedWithAdultRadio: "" as const,
+      }));
+
+      suspects[suspectIndex] = {
+        ...suspect,
+        charges: updatedCharges,
+      };
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          suspects,
+        },
+      };
+    }
+
     case "REMOVE_SUSPECT": {
       const { suspectId } = action.payload;
       const suspects = state.formData.suspects.filter(
