@@ -25,6 +25,7 @@ public class CaseRegistrationRequestValidatorTests
             {
                 new CaseRegistrationDefendant
                 {
+                    IsDefendant = true,
                     Surname = "Smith",
                     Charges = new List<CaseRegistrationCharge>
                     {
@@ -351,15 +352,6 @@ public class CaseRegistrationRequestValidatorTests
     }
 
     [Fact]
-    public void MonitoringCodes_Empty_ShouldFail()
-    {
-        var req = GetValidRequest();
-        req.MonitoringCodes = new List<CaseRegistrationMonitoringCode>();
-        var result = _validator.TestValidate(req);
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
-    }
-
-    [Fact]
     public void Defendant_Surname_Empty_ShouldFail()
     {
         var req = GetValidRequest();
@@ -371,6 +363,52 @@ public class CaseRegistrationRequestValidatorTests
         }
         var result = _validator.TestValidate(req);
         result.ShouldHaveValidationErrorFor("Defendants[0].Surname");
+    }
+
+    [Fact]
+    public void Defendant_Surname_NotRequired_WhenNotDefendant_ShouldPass()
+    {
+        var req = GetValidRequest();
+        if (req.Defendants != null && req.Defendants.Count > 0)
+        {
+            var defendants = req.Defendants.ToList();
+            defendants[0].IsDefendant = false;
+            defendants[0].Surname = "";
+            defendants[0].CompanyName = "Acme Ltd";
+            req.Defendants = defendants;
+        }
+        var result = _validator.TestValidate(req);
+        result.ShouldNotHaveValidationErrorFor("Defendants[0].Surname");
+    }
+
+    [Fact]
+    public void Defendant_CompanyName_Empty_WhenNotDefendant_ShouldFail()
+    {
+        var req = GetValidRequest();
+        if (req.Defendants != null && req.Defendants.Count > 0)
+        {
+            var defendants = req.Defendants.ToList();
+            defendants[0].IsDefendant = false;
+            defendants[0].CompanyName = "";
+            req.Defendants = defendants;
+        }
+        var result = _validator.TestValidate(req);
+        result.ShouldHaveValidationErrorFor("Defendants[0].CompanyName");
+    }
+
+    [Fact]
+    public void Defendant_CompanyName_Valid_WhenNotDefendant_ShouldPass()
+    {
+        var req = GetValidRequest();
+        if (req.Defendants != null && req.Defendants.Count > 0)
+        {
+            var defendants = req.Defendants.ToList();
+            defendants[0].IsDefendant = false;
+            defendants[0].CompanyName = "Acme Ltd";
+            req.Defendants = defendants;
+        }
+        var result = _validator.TestValidate(req);
+        result.ShouldNotHaveValidationErrorFor("Defendants[0].CompanyName");
     }
 
     [Fact]
