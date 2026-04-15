@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useMemo, useContext } from "react";
 import { Button, BackLink } from "../../govuk";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { CaseRegistrationFormContext } from "../../../common/providers/CaseRegistrationProvider";
@@ -14,12 +14,19 @@ const SuspectRemoveConfirmationPage = () => {
   const {
     formData: { suspects },
   } = state;
-  const selectedSuspect = suspects.find(
-    (suspect) => suspect.suspectId === suspectId,
+  const selectedSuspect = useMemo(
+    () => suspects.find((suspect) => suspect.suspectId === suspectId),
+    [suspects, suspectId],
   );
 
-  const { suspectFirstNameText = "", suspectLastNameText = "" } =
-    selectedSuspect ?? {};
+  const suspectName = useMemo(() => {
+    if (selectedSuspect?.addSuspectRadio === "person") {
+      const suspectFirstNameText = selectedSuspect?.suspectFirstNameText || "";
+      const suspectLastNameText = selectedSuspect?.suspectLastNameText || "";
+      return formatNameUtil(suspectFirstNameText, suspectLastNameText);
+    }
+    return selectedSuspect?.suspectCompanyNameText;
+  }, [selectedSuspect]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -37,9 +44,7 @@ const SuspectRemoveConfirmationPage = () => {
       <BackLink to={backRoute}>Back</BackLink>
 
       <form onSubmit={handleSubmit}>
-        <h1>
-          {`Are you sure you want to remove ${formatNameUtil(suspectFirstNameText, suspectLastNameText)}?`}
-        </h1>
+        <h1>{`Are you sure you want to remove ${suspectName}?`}</h1>
         <div>
           <p>
             This will permanently remove all the details you&apos;ve entered

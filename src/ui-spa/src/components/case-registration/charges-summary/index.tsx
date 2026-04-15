@@ -37,7 +37,7 @@ const SuspectSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#add-more-charges-radio-yes",
-          "data-testid": "add-more-charges-radio-yes",
+          "data-testid": "add-more-charges-radio-link",
         };
       }
       return null;
@@ -151,7 +151,7 @@ const SuspectSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"charges-summary-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -159,9 +159,14 @@ const SuspectSummaryPage = () => {
       )}
       <form onSubmit={handleSubmit}>
         <h1>{getTitle()}</h1>
-        <div className={pageStyles.chargesSummaryWrapper}>
-          <ChargesSummary />
-        </div>
+        {chargesCount > 0 && (
+          <div
+            className={pageStyles.chargesSummaryWrapper}
+            data-testid="charges-summary"
+          >
+            <ChargesSummary />
+          </div>
+        )}
 
         <div className={styles.inputWrapper}>
           <Radios

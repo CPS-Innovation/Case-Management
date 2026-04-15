@@ -122,7 +122,7 @@ const ChargesOffenceSearch = () => {
 
     if (!searchText) {
       errors.offenceSearchText = {
-        errorSummaryText: "Enter an offence",
+        errorSummaryText: "Enter an offence to search for",
         inputErrorText: "Enter an offence to search for",
       };
       isValid = false;
@@ -297,7 +297,7 @@ const ChargesOffenceSearch = () => {
             className={styles.errorSummaryWrapper}
           >
             <ErrorSummary
-              data-testid={"search-error-summary"}
+              data-testid={"offence-search-error-summary"}
               errorList={errorList}
               titleChildren="There is a problem"
             />
@@ -348,11 +348,11 @@ const ChargesOffenceSearch = () => {
           </div>
           <div>
             {!isFetching && searchResults && (
-              <div>
-                <span className={pageStyles.resultsCount}>
+              <div data-testid="offence-search-results-wrapper">
+                <p className={pageStyles.resultsCount}>
                   {searchResults?.total} results for{" "}
                   <strong>{currentOffenceSearchText}</strong>
-                </span>
+                </p>
 
                 <hr className={pageStyles.resultsDivider} />
                 <div className={pageStyles.resultsPerPageSelectWrapper}>

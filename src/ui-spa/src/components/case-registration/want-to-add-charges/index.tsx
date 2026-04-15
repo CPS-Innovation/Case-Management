@@ -37,7 +37,7 @@ const WantToAddCharges = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#want-to-add-charges-radio-yes",
-          "data-testid": "add-charges-radio-link",
+          "data-testid": "want-to-add-charges-radio-link",
         };
       }
 
@@ -130,7 +130,7 @@ const WantToAddCharges = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"want-to-add-charges-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

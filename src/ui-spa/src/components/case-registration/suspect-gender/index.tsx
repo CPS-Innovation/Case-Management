@@ -199,7 +199,7 @@ const SuspectGenderPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"suspect-gender-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

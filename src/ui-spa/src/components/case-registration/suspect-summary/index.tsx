@@ -37,7 +37,7 @@ const SuspectSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#add-more-suspects-radio-yes",
-          "data-testid": "add-more-suspects-radio-yes",
+          "data-testid": "add-more-suspects-radio-link",
         };
       }
       return null;
@@ -118,6 +118,11 @@ const SuspectSummaryPage = () => {
       });
       navigate("/case-registration/case-summary");
       return;
+    } else if (state.formData.navigation.fromSuspectSummaryPage) {
+      dispatch({
+        type: "SET_NAVIGATION_DATA",
+        payload: { fromSuspectSummaryPage: false },
+      });
     }
 
     if (chargesCount > 0) {
@@ -154,7 +159,7 @@ const SuspectSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"suspect-summary-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
