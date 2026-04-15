@@ -3,4 +3,4 @@
 variables:
 
 - name: placeholder-flag
-  value: true
+  value: false
