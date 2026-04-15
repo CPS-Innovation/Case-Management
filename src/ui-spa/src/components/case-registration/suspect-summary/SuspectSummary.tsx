@@ -13,10 +13,12 @@ import styles from "./SuspectSummary.module.scss";
 
 type SuspectSummaryProps = {
   isCaseSummaryPage?: boolean;
+  hideActions?: boolean;
 };
 
 const SuspectSummary: React.FC<SuspectSummaryProps> = ({
   isCaseSummaryPage = false,
+  hideActions = false,
 }) => {
   const navigate = useNavigate();
   const { state, dispatch } = useContext(CaseRegistrationFormContext);
@@ -48,18 +50,20 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
           children: chargeIndex === 0 ? <span>No charges added</span> : <></>,
         },
         actions: {
-          items: [
-            {
-              children: <span>Add Charge</span>,
-              to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
-              visuallyHiddenText: "Add new charge",
-              onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                handleAddChargeClick(
-                  event,
-                  `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
-                ),
-            },
-          ],
+          items: hideActions
+            ? []
+            : [
+                {
+                  children: <span>Add Charge</span>,
+                  to: `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
+                  visuallyHiddenText: "Add new charge",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleAddChargeClick(
+                      event,
+                      `/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/charges-offence-search`,
+                    ),
+                },
+              ],
         },
       },
     ];
@@ -129,31 +133,33 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
           : undefined,
 
         actions: {
-          items: [
-            {
-              children: <span>Remove</span>,
-              className: "govuk-link--no-visited-state",
-              to: `/case-registration/suspect-remove-confirmation`,
-              state: {
-                suspectId: suspect.suspectId,
-                backRoute: isCaseSummaryPage
-                  ? `/case-registration/case-summary`
-                  : `/case-registration/suspect-summary`,
-              },
-              visuallyHiddenText: "Edit Suspect Details",
-            },
-            {
-              children: <span>Change</span>,
-              className: "govuk-link--no-visited-state",
-              to: `/case-registration/suspect-${index}/add-suspect`,
-              visuallyHiddenText: "Edit Suspect Details",
-              onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                handleSuspectChangeClick(
-                  event,
-                  `/case-registration/suspect-${index}/add-suspect`,
-                ),
-            },
-          ],
+          items: hideActions
+            ? []
+            : [
+                {
+                  children: <span>Remove</span>,
+                  className: "govuk-link--no-visited-state",
+                  to: `/case-registration/suspect-remove-confirmation`,
+                  state: {
+                    suspectId: suspect.suspectId,
+                    backRoute: isCaseSummaryPage
+                      ? `/case-registration/case-summary`
+                      : `/case-registration/suspect-summary`,
+                  },
+                  visuallyHiddenText: "Edit Suspect Details",
+                },
+                {
+                  children: <span>Change</span>,
+                  className: "govuk-link--no-visited-state",
+                  to: `/case-registration/suspect-${index}/add-suspect`,
+                  visuallyHiddenText: "Edit Suspect Details",
+                  onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    handleSuspectChangeClick(
+                      event,
+                      `/case-registration/suspect-${index}/add-suspect`,
+                    ),
+                },
+              ],
         },
       },
     ];
@@ -237,6 +243,7 @@ const SuspectSummary: React.FC<SuspectSummaryProps> = ({
                                     suspect.suspectId,
                                     charge.chargeId,
                                     state.formData.suspects,
+                                    hideActions,
                                   )}
                                 />
                               </div>

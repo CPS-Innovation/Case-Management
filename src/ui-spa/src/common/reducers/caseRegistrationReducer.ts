@@ -188,6 +188,7 @@ export const chargeInitialState: ChargesFormData = {
   chargeId: "",
   offenceSearchText: "",
   selectedOffence: {
+    id: 0,
     code: "",
     description: "",
     legislation: "",

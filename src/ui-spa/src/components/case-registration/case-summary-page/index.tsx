@@ -87,7 +87,7 @@ const CaseSummaryPage = () => {
     [state.formData.urnPoliceUnitText, state.apiData.policeUnits],
   );
 
-  const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
+  const validateUrnQuery = useQuery({
     queryKey: ["validate-urn"],
     queryFn: () =>
       validateUrn(
@@ -97,6 +97,12 @@ const CaseSummaryPage = () => {
     retry: false,
   });
 
+  const isSubmittingForm = useMemo(() => {
+    return (
+      submitCaseRegistrationMutation.isPending || validateUrnQuery.isFetching
+    );
+  }, [submitCaseRegistrationMutation.isPending, validateUrnQuery.isFetching]);
+
   useEffect(() => {
     if (submitCaseRegistrationMutation.error) {
       throw submitCaseRegistrationMutation.error;
@@ -104,8 +110,8 @@ const CaseSummaryPage = () => {
   }, [submitCaseRegistrationMutation.error]);
 
   useEffect(() => {
-    if (validateUrnError) throw validateUrnError;
-  }, [validateUrnError]);
+    if (validateUrnQuery.error) throw validateUrnQuery.error;
+  }, [validateUrnQuery.error]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -114,8 +120,11 @@ const CaseSummaryPage = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const { data } = await refetchValidateUrn();
-    if (data) {
+    const result = await validateUrnQuery.refetch();
+    if (result.error) {
+      return;
+    }
+    if (result.data) {
       setFormDataErrors((prev) => ({
         ...prev,
         urnErrorText: {
@@ -152,13 +161,25 @@ const CaseSummaryPage = () => {
   };
 
   const caseDetailsSummaryListRows = useMemo(
-    () => getCaseDetailsSummaryListRows(dispatch, navigate, state.formData),
-    [dispatch, navigate, state.formData],
+    () =>
+      getCaseDetailsSummaryListRows(
+        dispatch,
+        navigate,
+        state.formData,
+        isSubmittingForm,
+      ),
+    [dispatch, navigate, state.formData, isSubmittingForm],
   );
 
   const caseFirstHearingSummaryListRows = useMemo(
-    () => getFirstHearingSummaryRows(dispatch, navigate, state.formData),
-    [dispatch, navigate, state.formData],
+    () =>
+      getFirstHearingSummaryRows(
+        dispatch,
+        navigate,
+        state.formData,
+        isSubmittingForm,
+      ),
+    [dispatch, navigate, state.formData, isSubmittingForm],
   );
 
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
@@ -168,8 +189,15 @@ const CaseSummaryPage = () => {
         navigate,
         state.formData,
         state.apiData.caseMonitoringCodes!,
+        isSubmittingForm,
       ),
-    [dispatch, navigate, state.formData, state.apiData.caseMonitoringCodes],
+    [
+      dispatch,
+      navigate,
+      state.formData,
+      state.apiData.caseMonitoringCodes,
+      isSubmittingForm,
+    ],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
     () =>
@@ -177,19 +205,17 @@ const CaseSummaryPage = () => {
         dispatch,
         navigate,
         state.formData,
+        isSubmittingForm,
         policeUnit,
       ),
-    [dispatch, navigate, state.formData, policeUnit],
+    [dispatch, navigate, state.formData, policeUnit, isSubmittingForm],
   );
 
   return (
     <div className={styles.caseSummaryPage}>
-      <BackLink
-        to="/case-registration/case-assignee"
-        disabled={submitCaseRegistrationMutation.isPending}
-      >
-        Back
-      </BackLink>
+      {!isSubmittingForm && (
+        <BackLink to="/case-registration/case-assignee">Back</BackLink>
+      )}
 
       <h1>Check your answers before creating the case</h1>
 
@@ -214,10 +240,19 @@ const CaseSummaryPage = () => {
         <div data-testid="case-suspect-summary">
           <h2>Suspect</h2>
           {!state.formData.suspects.length && (
-            <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
+            <SummaryList
+              rows={getEmptySuspectSummaryRow(
+                dispatch,
+                navigate,
+                isSubmittingForm,
+              )}
+            />
           )}
           {!!state.formData.suspects.length && (
-            <SuspectSummary isCaseSummaryPage={true} />
+            <SuspectSummary
+              isCaseSummaryPage={true}
+              hideActions={isSubmittingForm}
+            />
           )}
         </div>
         <div data-testid="case-first-hearing-summary">
@@ -239,7 +274,7 @@ const CaseSummaryPage = () => {
         <Button
           type="submit"
           onClick={() => handleSubmit}
-          disabled={submitCaseRegistrationMutation.isPending}
+          disabled={isSubmittingForm}
         >
           Accept and create
         </Button>
