@@ -629,10 +629,10 @@ export class CaseRegistrationSummaryPage {
   }
 
   async verifyFormSubmittingStatus(withCharge: boolean = false) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveCount(0);
     await expect(this.page.getByRole("link", { name: "Change" })).toHaveCount(
       0,
     );
-
     await expect(
       this.page.getByRole("button", { name: "Accept and create" }),
     ).toBeDisabled();
@@ -647,6 +647,9 @@ export class CaseRegistrationSummaryPage {
   }
 
   async verifyFormNonSubmittingStatus(withCharge: boolean = false) {
+    await expect(this.page.getByRole("link", { name: "Back" })).not.toHaveCount(
+      0,
+    );
     await expect(
       this.page.getByRole("link", { name: "Change" }),
     ).not.toHaveCount(0);
