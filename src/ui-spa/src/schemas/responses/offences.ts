@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const offenceSchema = z.object({
-  id: z.number().optional(),
+  id: z.number().optional(), //Note: Remove the optional part after the backend returns the id
   code: z.string(),
   description: z.string(),
   legislation: z.string(),

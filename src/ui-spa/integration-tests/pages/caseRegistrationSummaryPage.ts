@@ -35,6 +35,12 @@ export class CaseRegistrationSummaryPage {
     await expect(this.page.locator("#change-urn-link")).toBeFocused();
   }
 
+  async verifyErrorSummaryCleared() {
+    await expect(
+      this.page.getByTestId("case-summary-error-summary"),
+    ).not.toBeVisible();
+  }
+
   async verifyPageElements() {
     await expect(this.page.locator("h1")).toHaveText(
       "Check your answers before creating the case",

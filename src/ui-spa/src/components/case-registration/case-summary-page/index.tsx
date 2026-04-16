@@ -88,7 +88,10 @@ const CaseSummaryPage = () => {
   );
 
   const validateUrnQuery = useQuery({
-    queryKey: ["validate-urn"],
+    queryKey: [
+      "validate-urn",
+      `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
+    ],
     queryFn: () =>
       validateUrn(
         `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
@@ -97,7 +100,7 @@ const CaseSummaryPage = () => {
     retry: false,
   });
 
-  const isSubmittingForm = useMemo(() => {
+  const disableSummaryActions = useMemo(() => {
     return (
       submitCaseRegistrationMutation.isPending || validateUrnQuery.isFetching
     );
@@ -119,7 +122,7 @@ const CaseSummaryPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    setFormDataErrors({});
     const result = await validateUrnQuery.refetch();
     if (result.error) {
       return;
@@ -166,9 +169,9 @@ const CaseSummaryPage = () => {
         dispatch,
         navigate,
         state.formData,
-        isSubmittingForm,
+        disableSummaryActions,
       ),
-    [dispatch, navigate, state.formData, isSubmittingForm],
+    [dispatch, navigate, state.formData, disableSummaryActions],
   );
 
   const caseFirstHearingSummaryListRows = useMemo(
@@ -177,9 +180,9 @@ const CaseSummaryPage = () => {
         dispatch,
         navigate,
         state.formData,
-        isSubmittingForm,
+        disableSummaryActions,
       ),
-    [dispatch, navigate, state.formData, isSubmittingForm],
+    [dispatch, navigate, state.formData, disableSummaryActions],
   );
 
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
@@ -189,14 +192,14 @@ const CaseSummaryPage = () => {
         navigate,
         state.formData,
         state.apiData.caseMonitoringCodes!,
-        isSubmittingForm,
+        disableSummaryActions,
       ),
     [
       dispatch,
       navigate,
       state.formData,
       state.apiData.caseMonitoringCodes,
-      isSubmittingForm,
+      disableSummaryActions,
     ],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
@@ -205,15 +208,15 @@ const CaseSummaryPage = () => {
         dispatch,
         navigate,
         state.formData,
-        isSubmittingForm,
+        disableSummaryActions,
         policeUnit,
       ),
-    [dispatch, navigate, state.formData, policeUnit, isSubmittingForm],
+    [dispatch, navigate, state.formData, policeUnit, disableSummaryActions],
   );
 
   return (
     <div className={styles.caseSummaryPage}>
-      {!isSubmittingForm && (
+      {!disableSummaryActions && (
         <BackLink to="/case-registration/case-assignee">Back</BackLink>
       )}
 
@@ -244,14 +247,14 @@ const CaseSummaryPage = () => {
               rows={getEmptySuspectSummaryRow(
                 dispatch,
                 navigate,
-                isSubmittingForm,
+                disableSummaryActions,
               )}
             />
           )}
           {!!state.formData.suspects.length && (
             <SuspectSummary
               isCaseSummaryPage={true}
-              hideActions={isSubmittingForm}
+              hideActions={disableSummaryActions}
             />
           )}
         </div>
@@ -274,7 +277,7 @@ const CaseSummaryPage = () => {
         <Button
           type="submit"
           onClick={() => handleSubmit}
-          disabled={isSubmittingForm}
+          disabled={disableSummaryActions}
         >
           Accept and create
         </Button>

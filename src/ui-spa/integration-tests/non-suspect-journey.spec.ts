@@ -309,6 +309,7 @@ test("Should successfully complete non suspect journey", async ({
     }),
   );
   await caseRegistrationSummaryPage.clickCreateCaseButton();
+  await caseRegistrationSummaryPage.verifyErrorSummaryCleared();
   const caseRegistrationConfirmationPage = new CaseRegistrationConfirmationPage(
     page,
   );
