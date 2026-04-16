@@ -51,7 +51,7 @@ const CaseSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: `#${formDataErrors[errorKey]?.errorIds?.[0]}`,
-          "data-testid": "urn-error-text-link",
+          "data-testid": "urn-error-change-link",
         };
       }
       if (errorKey === "genericError") {
@@ -226,7 +226,7 @@ const CaseSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-details-error-summary"}
+            data-testid={"case-summary-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

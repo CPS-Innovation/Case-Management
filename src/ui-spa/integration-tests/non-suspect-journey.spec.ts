@@ -1,3 +1,4 @@
+import { delay, HttpResponse, http } from "msw";
 import { expect, test } from "./utils/test";
 import { CaseRegistrationHomePage } from "./pages/caseRegistrationHomePage";
 import { CaseAreasPage } from "./pages/caseAreasPage";
@@ -8,8 +9,12 @@ import { CaseRegistrationSummaryPage } from "./pages/caseRegistrationSummaryPage
 import { CaseComplexityPage } from "./pages/caseComplexityPage";
 import { ChangeAreaConfirmationPage } from "./pages/changeAreaConfirmation";
 import { ChangeRegisteringUnitConfirmationPage } from "./pages/changeRegisteringUnitConfirmation";
+import { CaseRegistrationConfirmationPage } from "./pages/caseRegistrationConfirmationPage";
 
-test("Should successfully complete non suspect journey", async ({ page }) => {
+test("Should successfully complete non suspect journey", async ({
+  page,
+  worker,
+}) => {
   await page.goto("http://localhost:5173");
   await expect(page).toHaveTitle(/Case Management Register a Case/);
   const caseRegistrationHomePage = new CaseRegistrationHomePage(page);
@@ -286,4 +291,27 @@ test("Should successfully complete non suspect journey", async ({ page }) => {
     shoulderNumber: "1234567",
     policeUnit: "Not entered",
   });
+  await worker.use(
+    http.get("https://mocked-out-api/api/v1/urns/:urn/exists", async () => {
+      await delay(2000);
+      return HttpResponse.json(true);
+    }),
+  );
+  await caseRegistrationSummaryPage.clickCreateCaseButton();
+  await caseRegistrationSummaryPage.verifyFormSubmittingStatus();
+  await caseRegistrationSummaryPage.verifyUrl();
+  await caseRegistrationSummaryPage.errorValidations();
+  await caseRegistrationSummaryPage.verifyFormNonSubmittingStatus();
+  await worker.use(
+    http.get("https://mocked-out-api/api/v1/urns/:urn/exists", async () => {
+      await delay(100);
+      return HttpResponse.json(false);
+    }),
+  );
+  await caseRegistrationSummaryPage.clickCreateCaseButton();
+  const caseRegistrationConfirmationPage = new CaseRegistrationConfirmationPage(
+    page,
+  );
+  await caseRegistrationConfirmationPage.verifyUrl();
+  await caseRegistrationConfirmationPage.verifyPageElements("122112345/26");
 });
