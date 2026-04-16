@@ -100,13 +100,6 @@ const getSuspectRequestData = (
     return victims.findIndex(({ victimId }) => victim.victimId === victimId);
   };
 
-  const getDefaultOffence = {
-    offenceId: "20354",
-    offenceCode: "AV82022",
-    offenceDescription:
-      "Obstructing search of aerodrome / aircraft - Aviation Security Act 1982",
-    modeOfTrial: "EW",
-  };
   return suspects.map((suspect) => ({
     isDefendant: suspect.addSuspectRadio === "person",
     firstname: suspect.suspectFirstNameText,
@@ -133,26 +126,15 @@ const getSuspectRequestData = (
       firstNames: alias.firstName,
       surname: alias.lastName,
     })),
-    charges: suspect.charges.map((charge) => {
-      if (charge.selectedOffence.id) {
-        return {
-          offenceId: `${charge.selectedOffence.id}`,
-          offenceCode: charge.selectedOffence.code,
-          offenceDescription: charge.selectedOffence.description,
-          modeOfTrial: charge.selectedOffence.modeOfTrial,
-          dateFrom: charge.offenceFromDate,
-          dateTo: charge.offenceToDate ? charge.offenceToDate : null,
-          victimIndexId: charge.victim ? getVictimIndex(charge.victim) : -1,
-          chargedWithAdult: charge.chargedWithAdultRadio === "yes",
-        };
-      }
-      return {
-        ...getDefaultOffence,
-        dateFrom: charge.offenceFromDate,
-        dateTo: charge.offenceToDate ? charge.offenceToDate : null,
-        victimIndexId: charge.victim ? getVictimIndex(charge.victim) : -1,
-        chargedWithAdult: charge.chargedWithAdultRadio === "yes",
-      };
-    }),
+    charges: suspect.charges.map((charge) => ({
+      offenceId: `${charge.selectedOffence.id}`,
+      offenceCode: charge.selectedOffence.code,
+      offenceDescription: charge.selectedOffence.description,
+      modeOfTrial: charge.selectedOffence.modeOfTrial,
+      dateFrom: charge.offenceFromDate,
+      dateTo: charge.offenceToDate ? charge.offenceToDate : null,
+      victimIndexId: charge.victim ? getVictimIndex(charge.victim) : -1,
+      chargedWithAdult: charge.chargedWithAdultRadio === "yes",
+    })),
   }));
 };
