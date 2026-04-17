@@ -588,6 +588,19 @@ test("Should successfully complete suspect journey", async ({ page }) => {
     wcu: "Cambridgeshire Non Operational WCU",
     operationName: "thunderstruck",
   });
+  await caseRegistrationSummaryPage.verifyAddNewSuspectElements(1);
+  await caseRegistrationSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
+  await caseRegistrationSummaryPage.verifySuspectSummaryDetails(0, [
+    { key: "Date of birth", value: "27/03/2007" },
+    { key: "Gender", value: "Male" },
+    { key: "Disability", value: "yes" },
+    { key: "Religion", value: "Christianity" },
+    { key: "Ethnicity", value: "Black" },
+    { key: "Alias", value: "POTTER, Harry" },
+    { key: "Arrest Summons Number", value: "123456" },
+    { key: "Type of offender", value: "Prolific youth offender (PYO)" },
+    { key: "Arrest date", value: "01 January 2024" },
+  ]);
   await caseRegistrationSummaryPage.verifyComplexityAndMonitoringCodesElements({
     complexity: "Basic",
     monitoringCodes: ["Asset Recovery", "Pre-Charge Decision"],

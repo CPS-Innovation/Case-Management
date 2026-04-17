@@ -45,7 +45,6 @@ export class CaseRegistrationSummaryPage {
     await expect(this.page.locator("h1")).toHaveText(
       "Check your answers before creating the case",
     );
-    await this.verifyNoSuspectElements();
   }
 
   async verifyCaseDetailsElements(values: {
@@ -61,10 +60,7 @@ export class CaseRegistrationSummaryPage {
     await expect(caseDetailWrapperElement.locator("h2").nth(0)).toHaveText(
       "Case details",
     );
-    const caseDetailsDescriptionList = caseDetailWrapperElement
-      .locator("dl")
-      .nth(0);
-    const rows = caseDetailsDescriptionList.locator(".govuk-summary-list__row");
+    const rows = caseDetailWrapperElement.locator(".govuk-summary-list__row");
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText("Area");
     await expect(rows.nth(0).locator("dd").nth(0)).toHaveText(values.area);
     const areaChangeLink = rows
@@ -133,25 +129,38 @@ export class CaseRegistrationSummaryPage {
   }
 
   async verifyNoSuspectElements() {
-    const caseSuspectWrapperElement = this.page.getByTestId(
-      "case-suspect-summary",
+    await expect(
+      this.page.getByTestId("case-suspect-summary"),
+    ).not.toBeVisible();
+  }
+
+  async verifyAddNewSuspectElements(suspectsLength: number) {
+    const caseDetailWrapperElement = this.page.getByTestId(
+      "case-details-summary",
     );
-    await expect(caseSuspectWrapperElement.locator("h2")).toHaveText("Suspect");
-    const suspectDetailsDescriptionList =
-      caseSuspectWrapperElement.locator("dl");
-    const rows = suspectDetailsDescriptionList.locator(
-      ".govuk-summary-list__row",
-    );
-    await expect(rows.nth(0).locator("dt").nth(0)).toHaveText("Suspects");
-    await expect(rows.nth(0).locator("dd").nth(0)).toHaveText("Not entered");
-    const areaChangeLink = rows
-      .nth(0)
+    const rows = caseDetailWrapperElement.locator(".govuk-summary-list__row");
+    await expect(rows.nth(5).locator("dt").nth(0)).toHaveText("Suspects");
+    if (!suspectsLength) {
+      await expect(rows.nth(5).locator("dd").nth(0)).toHaveText("Not entered");
+    }
+    if (suspectsLength === 1) {
+      await expect(rows.nth(5).locator("dd").nth(0)).toHaveText(
+        "1 suspect added",
+      );
+    }
+    if (suspectsLength > 1) {
+      await expect(rows.nth(5).locator("dd").nth(0)).toHaveText(
+        `${suspectsLength} suspects added`,
+      );
+    }
+    const operationNameChangeLink = rows
+      .nth(5)
       .locator("dd")
       .nth(1)
       .getByRole("link", { name: "Add a suspect" });
-    await expect(areaChangeLink).toHaveAttribute(
+    await expect(operationNameChangeLink).toHaveAttribute(
       "href",
-      "/case-registration/suspect-0/add-suspect",
+      `/case-registration/suspect-${suspectsLength}/add-suspect`,
     );
   }
 
@@ -165,9 +174,7 @@ export class CaseRegistrationSummaryPage {
     await expect(caseComplexityWrapperElement.locator("h2")).toHaveText(
       "Case complexity and monitoring codes",
     );
-    const suspectDetailsDescriptionList =
-      caseComplexityWrapperElement.locator("dl");
-    const rows = suspectDetailsDescriptionList.locator(
+    const rows = caseComplexityWrapperElement.locator(
       ".govuk-summary-list__row",
     );
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText(
@@ -222,8 +229,7 @@ export class CaseRegistrationSummaryPage {
     await expect(caseAssigneeWrapperElement.locator("h2")).toHaveText(
       "Working on the case",
     );
-    const caseDetailsDescriptionList = caseAssigneeWrapperElement.locator("dl");
-    const rows = caseDetailsDescriptionList.locator(".govuk-summary-list__row");
+    const rows = caseAssigneeWrapperElement.locator(".govuk-summary-list__row");
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText("Prosecutor");
     await expect(rows.nth(0).locator("dd").nth(0)).toHaveText(
       values.prosecutor,
@@ -311,9 +317,7 @@ export class CaseRegistrationSummaryPage {
     await expect(caseFirstHearingWrapperElement.locator("h2")).toHaveText(
       "First hearing details",
     );
-    const suspectDetailsDescriptionList =
-      caseFirstHearingWrapperElement.locator("dl");
-    const rows = suspectDetailsDescriptionList.locator(
+    const rows = caseFirstHearingWrapperElement.locator(
       ".govuk-summary-list__row",
     );
     await expect(rows.nth(0).locator("dt").nth(0)).toHaveText(

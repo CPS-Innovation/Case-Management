@@ -243,7 +243,8 @@ test("Should successfully complete non suspect journey", async ({
     shoulderNumber: "123456",
     policeUnit: "Not entered",
   });
-
+  await caseRegistrationSummaryPage.verifyNoSuspectElements();
+  await caseRegistrationSummaryPage.verifyAddNewSuspectElements(0);
   await caseRegistrationSummaryPage.changeRegisteringUnitLinkClick();
   await caseDetailsPage.verifyUrl();
   await caseDetailsPage.verifyBackLink("/case-registration/case-summary");

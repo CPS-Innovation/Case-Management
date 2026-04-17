@@ -685,7 +685,8 @@ test("Should successfully complete multiple suspect journey", async ({
   await chargesSummaryPage.selectAddMoreChargesNo();
   await chargesSummaryPage.saveAndContinue();
   await caseRegistrationSummaryPage.verifyUrl();
-  await suspectSummaryPage.verifySuspectSummaryRows([
+  await caseRegistrationSummaryPage.verifyAddNewSuspectElements(4);
+  await caseRegistrationSummaryPage.verifySuspectSummaryRows([
     "POTTER, Harry",
     "STEVE, Martin",
     "ADAMS, Brian",
