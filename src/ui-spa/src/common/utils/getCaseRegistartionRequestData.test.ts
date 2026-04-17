@@ -490,6 +490,7 @@ describe("getCaseRegistrationRequestData", () => {
               chargeId: "442a804b-c6d3-44e4-afb2-d98019be5945",
               offenceSearchText: "theft",
               selectedOffence: {
+                id: 10001,
                 code: "WC81229",
                 description:
                   "Permit to be set trap etc - cause injury to wild bird",
@@ -511,6 +512,7 @@ describe("getCaseRegistrationRequestData", () => {
               chargeId: "442a804b-c6d3-44e4-afb2-d98019be5945",
               offenceSearchText: "theft",
               selectedOffence: {
+                id: 10001,
                 code: "WC81229",
                 description:
                   "Permit to be set trap etc - cause injury to wild bird",
@@ -637,6 +639,7 @@ describe("getCaseRegistrationRequestData", () => {
               dateFrom: "2026-03-02",
               dateTo: "2026-03-02",
               modeOfTrial: "abc",
+              offenceId: "10001",
               offenceCode: "WC81229",
               offenceDescription:
                 "Permit to be set trap etc - cause injury to wild bird",
@@ -647,6 +650,7 @@ describe("getCaseRegistrationRequestData", () => {
               dateFrom: "2026-03-02",
               dateTo: null,
               modeOfTrial: "abc",
+              offenceId: "10001",
               offenceCode: "WC81229",
               offenceDescription:
                 "Permit to be set trap etc - cause injury to wild bird",

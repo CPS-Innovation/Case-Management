@@ -989,6 +989,7 @@ describe("gateway-api", () => {
     const mockBody = {
       offences: [
         {
+          id: 10001,
           code: "WC81229",
           description: "Permit to be set trap etc - cause injury to wild bird",
           legislation:

@@ -16,6 +16,7 @@ export const getChargesSummaryListRows = (
   suspectId: string,
   chargeId: string,
   suspects: SuspectFormData[],
+  hideActions: boolean = false,
 ) => {
   const suspect = suspects.find((s) => s.suspectId === suspectId);
   const showChargedWithAdultWarning =
@@ -29,21 +30,23 @@ export const getChargesSummaryListRows = (
       key: { children: <b>{charge.selectedOffence.code}</b> },
       value: { children: <span>{charge.selectedOffence.description}</span> },
       actions: {
-        items: [
-          {
-            children: <span>Remove</span>,
-            to: `/case-registration/charge-remove-confirmation`,
-            state: {
-              suspectId,
-              chargeId,
-              backRoute: isCaseSummaryPage
-                ? `/case-registration/case-summary`
-                : `/case-registration/charges-summary`,
-            },
-            visuallyHiddenText: "Remove Charge",
-            className: "govuk-link--no-visited-state",
-          },
-        ],
+        items: hideActions
+          ? []
+          : [
+              {
+                children: <span>Remove</span>,
+                to: `/case-registration/charge-remove-confirmation`,
+                state: {
+                  suspectId,
+                  chargeId,
+                  backRoute: isCaseSummaryPage
+                    ? `/case-registration/case-summary`
+                    : `/case-registration/charges-summary`,
+                },
+                visuallyHiddenText: "Remove Charge",
+                className: "govuk-link--no-visited-state",
+              },
+            ],
       },
     },
     {

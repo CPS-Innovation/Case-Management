@@ -59,6 +59,7 @@ export const caseRegistrationRequestDataSchema = z.object({
       ),
       charges: z.array(
         z.object({
+          offenceId: z.string(),
           offenceCode: z.string(),
           offenceDescription: z.string(),
           dateFrom: z.string().nullable(),

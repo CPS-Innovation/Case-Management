@@ -24,6 +24,23 @@ export class CaseRegistrationSummaryPage {
     await this.page.getByRole("link", { name: "Back" }).click();
   }
 
+  async errorValidations() {
+    await expect(
+      this.page.getByTestId("case-summary-error-summary"),
+    ).toBeVisible();
+    await expect(this.page.getByTestId("urn-error-change-link")).toHaveText(
+      "URN already exists, please change urn and try again",
+    );
+    await this.page.getByTestId("urn-error-change-link").click();
+    await expect(this.page.locator("#change-urn-link")).toBeFocused();
+  }
+
+  async verifyErrorSummaryCleared() {
+    await expect(
+      this.page.getByTestId("case-summary-error-summary"),
+    ).not.toBeVisible();
+  }
+
   async verifyPageElements() {
     await expect(this.page.locator("h1")).toHaveText(
       "Check your answers before creating the case",
@@ -617,8 +634,47 @@ export class CaseRegistrationSummaryPage {
       .click();
   }
 
+  async verifyFormSubmittingStatus(withCharge: boolean = false) {
+    await expect(this.page.getByRole("link", { name: "Back" })).toHaveCount(0);
+    await expect(this.page.getByRole("link", { name: "Change" })).toHaveCount(
+      0,
+    );
+    await expect(
+      this.page.getByRole("button", { name: "Accept and create" }),
+    ).toBeDisabled();
+    if (withCharge) {
+      await expect(this.page.getByRole("link", { name: "Remove" })).toHaveCount(
+        0,
+      );
+      await expect(
+        this.page.getByRole("link", { name: "Add charge" }),
+      ).toHaveCount(0);
+    }
+  }
+
+  async verifyFormNonSubmittingStatus(withCharge: boolean = false) {
+    await expect(this.page.getByRole("link", { name: "Back" })).not.toHaveCount(
+      0,
+    );
+    await expect(
+      this.page.getByRole("link", { name: "Change" }),
+    ).not.toHaveCount(0);
+    await expect(
+      this.page.getByRole("button", { name: "Accept and create" }),
+    ).not.toBeDisabled();
+    if (withCharge) {
+      await expect(
+        this.page.getByRole("link", { name: "Remove" }),
+      ).not.toHaveCount(0);
+      await expect(
+        this.page.getByRole("link", { name: "Add charge" }),
+      ).not.toHaveCount(0);
+    }
+  }
+
   async clickCreateCaseButton() {
     const createCaseButton = this.page.locator("button[type='submit']");
     await expect(createCaseButton).toHaveText("Accept and create");
+    await createCaseButton.click();
   }
 }

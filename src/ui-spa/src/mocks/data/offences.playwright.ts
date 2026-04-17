@@ -3,6 +3,7 @@ import { type Offences } from "../../schemas";
 export const offencesPlaywright: Offences = {
   offences: [
     {
+      id: 10001,
       code: "WC81229",
       description: "Permit to be set trap etc - cause injury to wild bird",
       legislation:
@@ -12,6 +13,7 @@ export const offencesPlaywright: Offences = {
       modeOfTrial: "abc",
     },
     {
+      id: 10002,
       code: "PB92005",
       description: "Attempt to injure a badger",
       legislation:
@@ -21,6 +23,7 @@ export const offencesPlaywright: Offences = {
       modeOfTrial: "abc",
     },
     {
+      id: 10003,
       code: "TH68040",
       description: "Burglary dwelling - attempt grievous bodily harm",
       legislation: "Contrary to section 9(1)(b) of the Theft Act 1968.",
