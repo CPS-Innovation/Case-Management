@@ -583,6 +583,8 @@ test("Should successfully complete suspect journey", async ({ page }) => {
     wcu: "Cambridgeshire Non Operational WCU",
     operationName: "thunderstruck",
   });
+  await caseRegistrationSummaryPage.verifyAddNewSuspectElements(1);
+  await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
   await caseRegistrationSummaryPage.verifySuspectSummaryDetails(0, [
     {
       key: "Date of birth",

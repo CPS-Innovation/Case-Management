@@ -13,7 +13,6 @@ import {
   getFirstHearingSummaryRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhosIsWorkingOnTheCaseSummaryListRows,
-  getEmptySuspectSummaryRow,
 } from "./utils/getSummaryListRows";
 import useChargesCount from "../../../common/hooks/useChargesCount";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
@@ -241,21 +240,14 @@ const CaseSummaryPage = () => {
           <SummaryList rows={caseDetailsSummaryListRows} />
         </div>
         <div data-testid="case-suspect-summary">
-          <h2>Suspect</h2>
-          {!state.formData.suspects.length && (
-            <SummaryList
-              rows={getEmptySuspectSummaryRow(
-                dispatch,
-                navigate,
-                disableSummaryActions,
-              )}
-            />
-          )}
           {!!state.formData.suspects.length && (
-            <SuspectSummary
-              isCaseSummaryPage={true}
-              hideActions={disableSummaryActions}
-            />
+            <div>
+              <h2>Suspects</h2>
+              <SuspectSummary
+                isCaseSummaryPage={true}
+                hideActions={disableSummaryActions}
+              />
+            </div>
           )}
         </div>
         <div data-testid="case-first-hearing-summary">

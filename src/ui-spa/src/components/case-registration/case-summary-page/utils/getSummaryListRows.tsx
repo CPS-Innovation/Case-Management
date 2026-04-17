@@ -34,6 +34,19 @@ export const getCaseDetailsSummaryListRows = (
     });
     navigate(url);
   };
+
+  const handleAddSuspectClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    url: string,
+  ) => {
+    event.preventDefault();
+    dispatch({
+      type: "SET_NAVIGATION_DATA",
+      payload: { fromCaseSummaryPage: true },
+    });
+    navigate(url);
+  };
+
   const urn = `${formData.urnPoliceForceText}${formData.urnPoliceUnitText}${formData.urnUniqueReferenceText}/${formData.urnYearReferenceText}`;
 
   const rows = [
@@ -154,6 +167,36 @@ export const getCaseDetailsSummaryListRows = (
             ],
       },
     },
+    {
+      key: { children: <span>Suspects</span> },
+      value: formData.suspects.length
+        ? {
+            children: (
+              <span>
+                {formData.suspects.length} suspect
+                {formData.suspects.length > 1 ? "s" : ""} added
+              </span>
+            ),
+          }
+        : { children: <span>Not entered</span> },
+      actions: {
+        items: hideActions
+          ? []
+          : [
+              {
+                children: <span>Add a suspect</span>,
+                to: `/case-registration/suspect-${formData.suspects.length}/add-suspect`,
+                "data-testid": "add-suspect-link",
+                visuallyHiddenText: "Add Suspect",
+                onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
+                  handleAddSuspectClick(
+                    event,
+                    `/case-registration/suspect-${formData.suspects.length}/add-suspect`,
+                  ),
+              },
+            ],
+      },
+    },
   ];
   return rows;
 };
@@ -249,47 +292,6 @@ export const getFirstHearingSummaryRows = (
           },
         ];
   return rows;
-};
-
-export const getEmptySuspectSummaryRow = (
-  dispatch: React.Dispatch<CaseRegistrationActions>,
-  navigate: NavigateFunction,
-  hideActions: boolean,
-) => {
-  const handleAddSuspectClick = (
-    event: React.MouseEvent<HTMLAnchorElement>,
-    url: string,
-  ) => {
-    event.preventDefault();
-    dispatch({
-      type: "SET_NAVIGATION_DATA",
-      payload: { fromCaseSummaryPage: true },
-    });
-    navigate(url);
-  };
-  return [
-    {
-      key: { children: <span>Suspects</span> },
-      value: { children: <span>Not entered</span> },
-      actions: {
-        items: hideActions
-          ? []
-          : [
-              {
-                children: <span>Add a suspect</span>,
-                to: "/case-registration/suspect-0/add-suspect",
-                "data-testid": "add-suspect-link",
-                visuallyHiddenText: "Add Suspect",
-                onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
-                  handleAddSuspectClick(
-                    event,
-                    "/case-registration/suspect-0/add-suspect",
-                  ),
-              },
-            ],
-      },
-    },
-  ];
 };
 
 export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
