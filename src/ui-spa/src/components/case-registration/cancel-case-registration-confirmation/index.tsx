@@ -104,7 +104,7 @@ const CancelCaseRegistrationConfirmationPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"suspect-disability-error-summary"}
+            data-testid={"cancel-case-registration-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -147,7 +147,7 @@ const CancelCaseRegistrationConfirmationPage = () => {
           ></Radios>
         </div>
         <Button type="submit" onClick={() => handleSubmit}>
-          Save and continue
+          Continue
         </Button>
       </form>
     </div>
