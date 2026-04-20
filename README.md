@@ -32,6 +32,3 @@ UI is a vite react typescript project
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## Security
-
-If you discover a vulnerability or have a security concern, please refer to our [Security Policy](SECURITY.md) and contact Digital.Security@cps.gov.uk.
