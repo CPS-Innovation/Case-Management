@@ -40,7 +40,7 @@ export class CancelCaseRegistrationConfirmationPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("cancel-registration-radio-link"),
-    ).toHaveText("Select if you want to cancel registration");
+    ).toHaveText("Select whether you want to cancel registration");
     await this.page.getByTestId("cancel-registration-radio-link").click();
     expect(
       this.page.getByTestId("cancel-registration-radio-yes"),

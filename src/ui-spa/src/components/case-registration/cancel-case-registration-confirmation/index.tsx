@@ -48,8 +48,8 @@ const CancelCaseRegistrationConfirmationPage = () => {
 
     if (!cancelRegistrationRadio) {
       errors.cancelRegistrationRadio = {
-        errorSummaryText: "Select whether to cancel case registration",
-        inputErrorText: "Select whether to cancel case registration",
+        errorSummaryText: "Select whether you want to cancel registration",
+        inputErrorText: "Select whether you want to cancel registration",
       };
     }
 
