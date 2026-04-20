@@ -239,25 +239,21 @@ const CaseSummaryPage = () => {
           <h2>Case details</h2>
           <SummaryList rows={caseDetailsSummaryListRows} />
         </div>
-        <div data-testid="case-suspect-summary">
-          {!!state.formData.suspects.length && (
-            <div>
-              <h2>Suspects</h2>
-              <SuspectSummary
-                isCaseSummaryPage={true}
-                hideActions={disableSummaryActions}
-              />
-            </div>
-          )}
-        </div>
-        <div data-testid="case-first-hearing-summary">
-          {!!chargesCount && (
-            <>
-              <h2>First hearing details</h2>
-              <SummaryList rows={caseFirstHearingSummaryListRows} />
-            </>
-          )}
-        </div>
+        {!!state.formData.suspects.length && (
+          <div data-testid="case-suspect-summary">
+            <h2>Suspects</h2>
+            <SuspectSummary
+              isCaseSummaryPage={true}
+              hideActions={disableSummaryActions}
+            />
+          </div>
+        )}
+        {!!chargesCount && (
+          <div data-testid="case-first-hearing-summary">
+            <h2>First hearing details</h2>
+            <SummaryList rows={caseFirstHearingSummaryListRows} />
+          </div>
+        )}
         <div data-testid="case-complexity-and-monitoring-codes-summary">
           <h2>Case complexity and monitoring codes</h2>
           <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
