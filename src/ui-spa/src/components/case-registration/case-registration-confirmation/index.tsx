@@ -16,8 +16,8 @@ const CaseRegistrationConfirmationPage = () => {
     <div className={styles.caseRegistrationConfirmationPage}>
       <Panel titleChildren="Case registered successfully">
         <div className={styles.urnData}>
-          <span className={styles.urnLabel}>URN</span>
-          <span className={styles.urnValue}>{urn}</span>
+          <p className={styles.urnLabel}>URN</p>
+          <p className={styles.urnValue}>{urn}</p>
         </div>
       </Panel>
       <h2>Next steps</h2>

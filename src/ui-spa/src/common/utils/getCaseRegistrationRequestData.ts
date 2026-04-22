@@ -99,6 +99,7 @@ const getSuspectRequestData = (
   const getVictimIndex = (victim: { victimId: string }) => {
     return victims.findIndex(({ victimId }) => victim.victimId === victimId);
   };
+
   return suspects.map((suspect) => ({
     isDefendant: suspect.addSuspectRadio === "person",
     firstname: suspect.suspectFirstNameText,
@@ -126,6 +127,7 @@ const getSuspectRequestData = (
       surname: alias.lastName,
     })),
     charges: suspect.charges.map((charge) => ({
+      offenceId: `${charge.selectedOffence.id}`,
       offenceCode: charge.selectedOffence.code,
       offenceDescription: charge.selectedOffence.description,
       modeOfTrial: charge.selectedOffence.modeOfTrial,

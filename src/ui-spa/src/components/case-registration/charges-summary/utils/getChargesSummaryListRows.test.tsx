@@ -30,6 +30,7 @@ describe("getChargesSummaryListRows", () => {
       chargeId: "charge-1",
       offenceSearchText: "theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-code-1",
         description: "Theft description",
         legislation: "Theft Act 1968",
@@ -108,6 +109,7 @@ describe("getChargesSummaryListRows", () => {
       chargeId: "charge-1",
       offenceSearchText: "theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-code-1",
         description: "Theft description",
         legislation: "Theft Act 1968",
@@ -170,6 +172,7 @@ describe("getChargesSummaryListRows", () => {
       chargeId: "charge-1",
       offenceSearchText: "theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-code-1",
         description: "Theft description",
         legislation: "Theft Act 1968",
@@ -228,6 +231,7 @@ describe("getChargesSummaryListRows", () => {
       chargeId: "charge-1",
       offenceSearchText: "theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-code-1",
         description: "Theft description",
         legislation: "Theft Act 1968",
@@ -287,6 +291,7 @@ describe("getChargesSummaryListRows", () => {
       chargeId: "charge-1",
       offenceSearchText: "theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-code-1",
         description: "Theft description",
         legislation: "Theft Act 1968",

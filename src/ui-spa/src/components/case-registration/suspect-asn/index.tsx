@@ -58,7 +58,7 @@ const SuspectASNPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#suspect-asn-text",
-          "data-testid": "suspect-asn-text",
+          "data-testid": "suspect-asn-text-link",
         };
       }
 
@@ -137,7 +137,7 @@ const SuspectASNPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-ASN-error-summary"}
+            data-testid={"suspect-asn-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

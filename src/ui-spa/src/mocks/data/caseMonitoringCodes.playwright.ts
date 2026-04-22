@@ -37,6 +37,7 @@ export const caseMonitoringCodesPlaywright = [
   {
     code: "CVOF",
     description: "Coronavirus Offences",
+    display: "Coronavirus Offences",
   },
   {
     code: "DISA",
