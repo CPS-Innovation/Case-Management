@@ -115,13 +115,12 @@ const CaseRegistrationPage = () => {
 
     if (operationNameRadio === "no" && suspectDetailsRadio === "no") {
       errors.operationNameRadio = {
-        errorSummaryText:
-          "You need to select an operation name, suspect details or both",
+        errorSummaryText: "Select if you have an operation name",
         inputErrorText: "Select if you have an operation name",
         hasLink: true,
       };
       errors.suspectDetailsRadio = {
-        errorSummaryText: "",
+        errorSummaryText: "Select if you have suspect details",
         inputErrorText: "Select if you have suspect details",
         hasLink: true,
       };
@@ -129,15 +128,14 @@ const CaseRegistrationPage = () => {
 
     if (!operationNameRadio && !suspectDetailsRadio) {
       errors.operationNameRadio = {
-        errorSummaryText:
-          "Select if you have an operation name, suspect details or both",
+        errorSummaryText: "Select if you have an operation name",
         inputErrorText: "Select if you have an operation name",
         hasLink: true,
       };
       errors.suspectDetailsRadio = {
-        errorSummaryText: "",
+        errorSummaryText: "Select if you have suspect details",
         inputErrorText: "Select if you have suspect details",
-        hasLink: false,
+        hasLink: true,
       };
     } else {
       if (!operationNameRadio) {
@@ -158,7 +156,7 @@ const CaseRegistrationPage = () => {
 
     if (operationNameRadio == "yes" && !operationNameText) {
       errors.operationNameText = {
-        errorSummaryText: "You need to enter an operation name",
+        errorSummaryText: "Enter an operation name",
         inputErrorText: "Enter an operation name",
         hasLink: true,
       };
@@ -415,7 +413,7 @@ const CaseRegistrationPage = () => {
               {
                 children: "No",
                 value: "no",
-                "data-testid": "radio-operation-name-no",
+                "data-testid": "operation-name-radio-no",
               },
             ]}
             value={formData.operationNameRadio}

@@ -63,6 +63,7 @@ describe("getChargesSummaryList", () => {
       chargeId: "charge-1",
       offenceSearchText: "Theft",
       selectedOffence: {
+        id: 10001,
         code: "offence-1",
         description: "Theft",
         legislation: "Theft Act",

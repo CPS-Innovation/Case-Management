@@ -138,7 +138,7 @@ const FirstHearingPage = () => {
     if (firstHearingRadio === "yes") {
       if (!inputCourtLocationValue) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Select a location",
+          errorSummaryText: "Select the court location",
           inputErrorText: "Select the court location",
           hasLink: true,
         };
@@ -148,8 +148,8 @@ const FirstHearingPage = () => {
         ) === -1
       ) {
         errors.firstHearingCourtLocationText = {
-          errorSummaryText: "Select a location",
-          inputErrorText: "Select the court location",
+          errorSummaryText: "Select a valid court location",
+          inputErrorText: "Select a valid court location",
           hasLink: true,
         };
       }
@@ -157,7 +157,7 @@ const FirstHearingPage = () => {
 
     if (firstHearingRadio == "yes" && !firstHearingDateText) {
       errors.firstHearingDateText = {
-        errorSummaryText: "Enter the date",
+        errorSummaryText: "Enter the date of first hearing",
         inputErrorText: "Enter the date of first hearing",
         hasLink: true,
       };
@@ -311,7 +311,7 @@ const FirstHearingPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"first-hearing-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

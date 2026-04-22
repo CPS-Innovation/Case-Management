@@ -66,7 +66,7 @@ const SuspectAliasesPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#suspect-aliases-last-name-text",
-          "data-testid": "suspect-aliases-last-name-text",
+          "data-testid": "suspect-aliases-last-name-text-link",
         };
       }
       return null;
@@ -155,7 +155,7 @@ const SuspectAliasesPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"suspect-aliases-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

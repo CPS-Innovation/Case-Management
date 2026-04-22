@@ -147,26 +147,10 @@ const AddChargeDetailsPage = () => {
       chargedWithAdultRadio,
     } = formData;
 
-    if (!addVictimRadio) {
-      errors.addVictimRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-
-    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
-      errors.chargedWithAdultRadio = {
-        errorSummaryText: "Please select an option",
-        inputErrorText: "Please select an option",
-        hasLink: true,
-      };
-    }
-
     if (!offenceFromDate) {
       errors.offenceFromDate = {
         errorSummaryText: "Select an offence from date",
-        inputErrorText: "Select a date",
+        inputErrorText: "Select an offence from date",
         hasLink: true,
       };
     }
@@ -174,7 +158,7 @@ const AddChargeDetailsPage = () => {
     if (showDateRange && !offenceToDate) {
       errors.offenceToDate = {
         errorSummaryText: "Select an offence to date",
-        inputErrorText: "Select a date",
+        inputErrorText: "Select an offence to date",
         hasLink: true,
       };
     }
@@ -185,7 +169,8 @@ const AddChargeDetailsPage = () => {
       !isValidOnOrBeforeDate(offenceFromDate, offenceToDate)
     ) {
       errors.offenceFromDate = {
-        errorSummaryText: "Start date must be the same or before the end date.",
+        errorSummaryText:
+          "Enter a start date that is the same or before the end date.",
         inputErrorText:
           "Enter a start date that is the same or before the end date.",
         hasLink: true,
@@ -221,17 +206,31 @@ const AddChargeDetailsPage = () => {
     }
     if (offenceFromDate && !isValidOnOrBeforeDate(offenceFromDate)) {
       errors.offenceFromDate = {
-        errorSummaryText: "Offence start date must be today or in the past",
-        inputErrorText:
-          "Enter an offence start date that is today or in the past",
+        errorSummaryText: "Enter an offence date that is today or in the past",
+        inputErrorText: "Enter an offence date that is today or in the past",
         hasLink: true,
       };
     }
     if (offenceToDate && !isValidOnOrBeforeDate(offenceToDate)) {
       errors.offenceToDate = {
-        errorSummaryText: "Offence end date must be today or in the past",
-        inputErrorText:
-          "Enter an offence end date that is today or in the past",
+        errorSummaryText: "Enter an offence date that is today or in the past",
+        inputErrorText: "Enter an offence date that is today or in the past",
+        hasLink: true,
+      };
+    }
+
+    if (!addVictimRadio) {
+      errors.addVictimRadio = {
+        errorSummaryText: "Select whether there is a victim",
+        inputErrorText: "Select whether there is a victim",
+        hasLink: true,
+      };
+    }
+
+    if (showChargedWithAdultWarning && !chargedWithAdultRadio) {
+      errors.chargedWithAdultRadio = {
+        errorSummaryText: "Select whether suspect is charged with an adult",
+        inputErrorText: "Select whether suspect is charged with an adult",
         hasLink: true,
       };
     }
@@ -327,7 +326,7 @@ const AddChargeDetailsPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"charges-details-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -336,19 +335,20 @@ const AddChargeDetailsPage = () => {
 
       <h1>Add charges</h1>
       <div>
-        <div className={pageStyles.suspectName}>
-          <b>{suspectName}</b>
-        </div>
-        <div>
-          <b>
-            {suspectCharge.selectedOffence?.code} -{" "}
-            {suspectCharge.selectedOffence?.description}
-          </b>
-        </div>
+        <h2 className="govuk-heading-s govuk-!-margin-bottom-2">
+          {suspectName}
+        </h2>
+        <h2 className="govuk-heading-s govuk-!-margin-bottom-2">
+          {suspectCharge.selectedOffence?.code} -{" "}
+          {suspectCharge.selectedOffence?.description}
+        </h2>
       </div>
       <hr className={pageStyles.resultsDivider} />
       <form onSubmit={handleSubmit}>
-        <div className={styles.inputWrapper}>
+        <div
+          className={styles.inputWrapper}
+          data-testid="add-charge-details-dates-inputs"
+        >
           <span className="govuk-!-font-weight-bold">
             When was the offence?
           </span>
@@ -356,6 +356,7 @@ const AddChargeDetailsPage = () => {
             <DateInputNative
               key="offence-from-date-text"
               id="offence-from-date-text"
+              data-testid="offence-from-date-text"
               className={pageStyles.dateInput}
               value={formData.offenceFromDate}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -373,6 +374,7 @@ const AddChargeDetailsPage = () => {
                 <DateInputNative
                   key="offence-to-date-text"
                   id="offence-to-date-text"
+                  data-testid="offence-to-date-text"
                   className={pageStyles.dateInput}
                   value={formData.offenceToDate}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -396,6 +398,7 @@ const AddChargeDetailsPage = () => {
             </Button>
           </div>
           <Radios
+            data-testid="add-victim-radio"
             fieldset={{
               legend: {
                 children: (
@@ -433,6 +436,7 @@ const AddChargeDetailsPage = () => {
           ></Radios>
           {showChargedWithAdultWarning && (
             <Radios
+              data-testid="charged-with-adult-radio"
               fieldset={{
                 legend: {
                   children: (

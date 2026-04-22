@@ -459,6 +459,7 @@ describe("caseRegistrationReducer", () => {
         data: {
           offenceSearchText: "New Offence",
           selectedOffence: {
+            id: 10001,
             code: "ABC",
             description: "sample description",
             legislation: "sample legislation",
@@ -478,6 +479,7 @@ describe("caseRegistrationReducer", () => {
       chargedWithAdultRadio: "",
       offenceSearchText: "New Offence",
       selectedOffence: {
+        id: 10001,
         code: "ABC",
         description: "sample description",
         legislation: "sample legislation",
@@ -1191,6 +1193,7 @@ describe("caseRegistrationReducer", () => {
         offencesSearchResults: {
           offences: [
             {
+              id: 10000,
               code: "WC81229",
               description:
                 "Permit to be set trap etc - cause injury to wild bird",
@@ -1201,6 +1204,7 @@ describe("caseRegistrationReducer", () => {
               modeOfTrial: "abc",
             },
             {
+              id: 10002,
               code: "PB92005",
               description: "Attempt to injure a badger",
               legislation:

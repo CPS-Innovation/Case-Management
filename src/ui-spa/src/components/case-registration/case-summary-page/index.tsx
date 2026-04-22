@@ -13,7 +13,6 @@ import {
   getFirstHearingSummaryRows,
   getCaseComplexityAndMonitoringCodesSummaryListRows,
   getWhosIsWorkingOnTheCaseSummaryListRows,
-  getEmptySuspectSummaryRow,
 } from "./utils/getSummaryListRows";
 import useChargesCount from "../../../common/hooks/useChargesCount";
 import { getCaseRegistrationRequestData } from "../../../common/utils/getCaseRegistrationRequestData";
@@ -51,7 +50,7 @@ const CaseSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: `#${formDataErrors[errorKey]?.errorIds?.[0]}`,
-          "data-testid": "urn-error-text-link",
+          "data-testid": "urn-error-change-link",
         };
       }
       if (errorKey === "genericError") {
@@ -87,8 +86,11 @@ const CaseSummaryPage = () => {
     [state.formData.urnPoliceUnitText, state.apiData.policeUnits],
   );
 
-  const { refetch: refetchValidateUrn, error: validateUrnError } = useQuery({
-    queryKey: ["validate-urn"],
+  const validateUrnQuery = useQuery({
+    queryKey: [
+      "validate-urn",
+      `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
+    ],
     queryFn: () =>
       validateUrn(
         `${state.formData.urnPoliceForceText}${state.formData.urnPoliceUnitText}${state.formData.urnUniqueReferenceText}${state.formData.urnYearReferenceText}`,
@@ -97,6 +99,12 @@ const CaseSummaryPage = () => {
     retry: false,
   });
 
+  const disableSummaryActions = useMemo(() => {
+    return (
+      submitCaseRegistrationMutation.isPending || validateUrnQuery.isFetching
+    );
+  }, [submitCaseRegistrationMutation.isPending, validateUrnQuery.isFetching]);
+
   useEffect(() => {
     if (submitCaseRegistrationMutation.error) {
       throw submitCaseRegistrationMutation.error;
@@ -104,8 +112,8 @@ const CaseSummaryPage = () => {
   }, [submitCaseRegistrationMutation.error]);
 
   useEffect(() => {
-    if (validateUrnError) throw validateUrnError;
-  }, [validateUrnError]);
+    if (validateUrnQuery.error) throw validateUrnQuery.error;
+  }, [validateUrnQuery.error]);
 
   useEffect(() => {
     if (errorList.length) errorSummaryRef.current?.focus();
@@ -113,9 +121,12 @@ const CaseSummaryPage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const { data } = await refetchValidateUrn();
-    if (data) {
+    setFormDataErrors({});
+    const result = await validateUrnQuery.refetch();
+    if (result.error) {
+      return;
+    }
+    if (result.data) {
       setFormDataErrors((prev) => ({
         ...prev,
         urnErrorText: {
@@ -152,13 +163,25 @@ const CaseSummaryPage = () => {
   };
 
   const caseDetailsSummaryListRows = useMemo(
-    () => getCaseDetailsSummaryListRows(dispatch, navigate, state.formData),
-    [dispatch, navigate, state.formData],
+    () =>
+      getCaseDetailsSummaryListRows(
+        dispatch,
+        navigate,
+        state.formData,
+        disableSummaryActions,
+      ),
+    [dispatch, navigate, state.formData, disableSummaryActions],
   );
 
   const caseFirstHearingSummaryListRows = useMemo(
-    () => getFirstHearingSummaryRows(dispatch, navigate, state.formData),
-    [dispatch, navigate, state.formData],
+    () =>
+      getFirstHearingSummaryRows(
+        dispatch,
+        navigate,
+        state.formData,
+        disableSummaryActions,
+      ),
+    [dispatch, navigate, state.formData, disableSummaryActions],
   );
 
   const caseComplexityAndMonitoringCodesSummaryListRows = useMemo(
@@ -168,8 +191,15 @@ const CaseSummaryPage = () => {
         navigate,
         state.formData,
         state.apiData.caseMonitoringCodes!,
+        disableSummaryActions,
       ),
-    [dispatch, navigate, state.formData, state.apiData.caseMonitoringCodes],
+    [
+      dispatch,
+      navigate,
+      state.formData,
+      state.apiData.caseMonitoringCodes,
+      disableSummaryActions,
+    ],
   );
   const whoseWorkingOnTheCaseSummaryListRows = useMemo(
     () =>
@@ -177,19 +207,17 @@ const CaseSummaryPage = () => {
         dispatch,
         navigate,
         state.formData,
+        disableSummaryActions,
         policeUnit,
       ),
-    [dispatch, navigate, state.formData, policeUnit],
+    [dispatch, navigate, state.formData, policeUnit, disableSummaryActions],
   );
 
   return (
     <div className={styles.caseSummaryPage}>
-      <BackLink
-        to="/case-registration/case-assignee"
-        disabled={submitCaseRegistrationMutation.isPending}
-      >
-        Back
-      </BackLink>
+      {!disableSummaryActions && (
+        <BackLink to="/case-registration/case-assignee">Back</BackLink>
+      )}
 
       <h1>Check your answers before creating the case</h1>
 
@@ -200,36 +228,44 @@ const CaseSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-details-error-summary"}
+            data-testid={"case-summary-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <h2>Case details</h2>
-        <SummaryList rows={caseDetailsSummaryListRows} />
-        <h2>Suspect</h2>
-        {!state.formData.suspects.length && (
-          <SummaryList rows={getEmptySuspectSummaryRow(dispatch, navigate)} />
-        )}
+        <div data-testid="case-details-summary">
+          <h2>Case details</h2>
+          <SummaryList rows={caseDetailsSummaryListRows} />
+        </div>
         {!!state.formData.suspects.length && (
-          <SuspectSummary isCaseSummaryPage={true} />
+          <div data-testid="case-suspect-summary">
+            <h2>Suspects</h2>
+            <SuspectSummary
+              isCaseSummaryPage={true}
+              hideActions={disableSummaryActions}
+            />
+          </div>
         )}
         {!!chargesCount && (
-          <>
+          <div data-testid="case-first-hearing-summary">
             <h2>First hearing details</h2>
             <SummaryList rows={caseFirstHearingSummaryListRows} />
-          </>
+          </div>
         )}
-        <h2>Case complexity and monitoring codes</h2>
-        <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
-        <h2>Working on the case</h2>
-        <SummaryList rows={whoseWorkingOnTheCaseSummaryListRows} />
+        <div data-testid="case-complexity-and-monitoring-codes-summary">
+          <h2>Case complexity and monitoring codes</h2>
+          <SummaryList rows={caseComplexityAndMonitoringCodesSummaryListRows} />
+        </div>
+        <div data-testid="case-assignee-summary">
+          <h2>Working on the case</h2>
+          <SummaryList rows={whoseWorkingOnTheCaseSummaryListRows} />
+        </div>
         <Button
           type="submit"
           onClick={() => handleSubmit}
-          disabled={submitCaseRegistrationMutation.isPending}
+          disabled={disableSummaryActions}
         >
           Accept and create
         </Button>

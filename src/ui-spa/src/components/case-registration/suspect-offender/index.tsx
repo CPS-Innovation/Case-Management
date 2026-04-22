@@ -121,14 +121,14 @@ const SuspectOffenderPage = () => {
       !isValidOnOrBeforeDate(suspectOffenderTypesRadio?.arrestDate)
     ) {
       errors.suspectArrestDate = {
-        errorSummaryText: "Arrest date must be today or in the past",
+        errorSummaryText: "Enter an arrest date that is today or in the past",
         inputErrorText: "Enter an arrest date that is today or in the past",
       };
     }
 
     if (!suspectOffenderTypesRadio.shortCode) {
       errors.suspectOffenderTypesRadio = {
-        errorSummaryText: "Select an offender type",
+        errorSummaryText: "Select the type of offender",
         inputErrorText: "Select the type of offender",
       };
     }
@@ -284,7 +284,7 @@ const SuspectOffenderPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-registration-error-summary"}
+            data-testid={"suspect-offender-types-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />

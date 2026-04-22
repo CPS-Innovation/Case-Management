@@ -62,7 +62,7 @@ const SuspectAliasesSummaryPage = () => {
         return {
           children: formDataErrors[errorKey]?.errorSummaryText,
           href: "#suspect-add-more-aliases-radio-yes",
-          "data-testid": "suspect-add-more-aliases-radio-yes",
+          "data-testid": "suspect-add-more-aliases-radio-link",
         };
       }
       return null;
@@ -185,7 +185,7 @@ const SuspectAliasesSummaryPage = () => {
           className={styles.errorSummaryWrapper}
         >
           <ErrorSummary
-            data-testid={"case-suspect-Aliases-error-summary"}
+            data-testid={"suspect-aliases-summary-error-summary"}
             errorList={errorList}
             titleChildren="There is a problem"
           />
@@ -197,11 +197,17 @@ const SuspectAliasesSummaryPage = () => {
         </h1>
         {!!suspectAliases.length && (
           <div className={pageStyles.summaryListWrapper}>
-            <SummaryList rows={getAliasesSummaryListRows(suspectAliases)} />
+            <SummaryList
+              data-testid="suspect-aliases-summary-list"
+              rows={getAliasesSummaryListRows(suspectAliases)}
+            />
           </div>
         )}
         {!suspectAliases.length && (
-          <div className={pageStyles.noAliasesText}>
+          <div
+            className={pageStyles.noAliasesText}
+            data-testid="suspect-no-aliases"
+          >
             <span>There are no aliases</span>
           </div>
         )}
