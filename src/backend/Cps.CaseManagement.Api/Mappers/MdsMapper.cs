@@ -133,10 +133,7 @@ public class MdsMapper : IMdsMapper
 
     public OffencesDto MapOffencesEntityToDto(OffencesEntity entity)
     {
-        return new OffencesDto
-        {
-            Total = entity.Total,
-            Offences = entity.Offences.Where(o => o.CmsId != null).Select(o => new OffenceDto
+        var offences = entity.Offences.Where(o => o.CmsId != null).Select(o => new OffenceDto
             {
                 Code = o.Code,
                 Description = o.Description,
@@ -146,8 +143,13 @@ public class MdsMapper : IMdsMapper
                 EffectiveToDate = o.EffectiveToDate,
                 ModeOfTrial = o.ModeOfTrial,
                 CmsId = o.CmsId,
-                CmsModeOfTrialShortCode = o.CmsModeOfTrial?.Id,
-            }).ToArray()
+                CmsModeOfTrialShortCode = o.CmsModeOfTrial?.I,
+            }).ToArray();
+            
+        return new OffencesDto
+        {
+            Offences = offences,
+            Total = offences.Length,
         };
     }
 
