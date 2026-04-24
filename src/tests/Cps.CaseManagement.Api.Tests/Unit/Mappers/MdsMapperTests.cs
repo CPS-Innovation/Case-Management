@@ -1,8 +1,9 @@
 namespace Cps.CaseManagement.Api.Tests.Unit.Mappers;
 
+using AutoFixture;
+using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using AutoFixture;
 
 public class MdsMapperTests
 {
@@ -181,6 +182,7 @@ public class MdsMapperTests
     public void MapOffencesEntityToDto_MapsExpectedValues()
     {
         var cmsModeOfTrial = _fixture.Create<CmsModeOfTrialEntity>();
+        cmsModeOfTrial.Id = "S";
         var offence = _fixture.Build<OffenceEntity>()
             .With(o => o.CmsId, 42)
             .With(o => o.CmsModeOfTrial, cmsModeOfTrial)
@@ -188,7 +190,7 @@ public class MdsMapperTests
         var entity = new OffencesEntity
         {
             Total = 1,
-            Offences = new[] { offence }
+            Offences = [offence]
         };
 
         var result = _mapper.MapOffencesEntityToDto(entity);
@@ -204,7 +206,7 @@ public class MdsMapperTests
         Assert.Equal(offence.EffectiveToDate, mapped.EffectiveToDate);
         Assert.Equal(offence.ModeOfTrial, mapped.ModeOfTrial);
         Assert.Equal(offence.CmsId, mapped.CmsId);
-        Assert.Equal(cmsModeOfTrial.Id, mapped.CmsModeOfTrialShortCode);
+        Assert.Equal(CmsModeOfTrialShortCodes.SUM, mapped.CmsModeOfTrialShortCode);
     }
 
     [Fact]
@@ -219,12 +221,13 @@ public class MdsMapperTests
         var entity = new OffencesEntity
         {
             Total = 2,
-            Offences = new[] { offenceWithCmsId, offenceWithoutCmsId }
+            Offences = [offenceWithCmsId, offenceWithoutCmsId]
         };
 
         var result = _mapper.MapOffencesEntityToDto(entity);
 
         Assert.Single(result.Offences);
+        Assert.Equal(1, result.Total);
         Assert.Equal(offenceWithCmsId.Code, result.Offences.First().Code);
     }
 
@@ -239,12 +242,12 @@ public class MdsMapperTests
         var entity = new OffencesEntity
         {
             Total = 1,
-            Offences = new[] { offence }
+            Offences = [offence]
         };
 
         var result = _mapper.MapOffencesEntityToDto(entity);
 
-        Assert.Equal("S", result.Offences.First().CmsModeOfTrialShortCode);
+        Assert.Equal("SUM", result.Offences.First().CmsModeOfTrialShortCode);
     }
 
     [Fact]
@@ -257,7 +260,7 @@ public class MdsMapperTests
         var entity = new OffencesEntity
         {
             Total = 1,
-            Offences = new[] { offence }
+            Offences = [offence]
         };
 
         var result = _mapper.MapOffencesEntityToDto(entity);

@@ -143,7 +143,7 @@ public class MdsMapper : IMdsMapper
                 EffectiveToDate = o.EffectiveToDate,
                 ModeOfTrial = o.ModeOfTrial,
                 CmsId = o.CmsId,
-                CmsModeOfTrialShortCode = o.CmsModeOfTrial?.Id,
+                CmsModeOfTrialShortCode = CmsModeOfTrialMapper.ToCmsValue(o.CmsModeOfTrial?.Id),
             }).ToArray();
             
         return new OffencesDto
