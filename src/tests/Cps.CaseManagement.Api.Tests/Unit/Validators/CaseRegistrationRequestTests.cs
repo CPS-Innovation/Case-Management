@@ -529,4 +529,144 @@ public class CaseRegistrationRequestValidatorTests
         var result = _validator.TestValidate(req);
         result.ShouldHaveValidationErrorFor("MonitoringCodes[0].Code");
     }
+
+    [Fact]
+    public void MonitoringCodes_MissingSelectedCsea_WhenDefendantIsNotYetCharged_ShouldFail()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        defendants[0].Charges = [];
+        defendants[0].IsNotYetCharged = true;
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("MON1", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
+    [Fact]
+    public void MonitoringCodes_CseaPresent_ButNotSelected_WhenDefendantIsNotYetCharged_ShouldFail()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        defendants[0].Charges = [];
+        defendants[0].IsNotYetCharged = true;
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("CSEA", false)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
+    [Fact]
+    public void MonitoringCodes_CseaSelectedPresent_WhenDefendantIsNotYetCharged_ShouldPass()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        defendants[0].Charges = [];
+        defendants[0].IsNotYetCharged = true;
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("CSEA", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
+    [Fact]
+    public void MonitoringCodes_CseaSelectedPresent_WithMultipleDefendants_WhenOneDefendantIsNotYetCharged_ShouldPass()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        var secondDefendant = new CaseRegistrationDefendant
+        {
+            IsDefendant = true,
+            Surname = "Doe",
+            Charges = [],
+            IsNotYetCharged = true
+        };
+        defendants.Add(secondDefendant);
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("CSEA", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
+    [Fact]
+    public void MonitoringCodes_CseaNotSelectedPresent_WithMultipleDefendants_WhenOneDefendantIsNotYetCharged_ShouldFail()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        var secondDefendant = new CaseRegistrationDefendant
+        {
+            IsDefendant = true,
+            Surname = "Doe",
+            Charges = [],
+            IsNotYetCharged = true
+        };
+        defendants.Add(secondDefendant);
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("CSEA", false)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+        Assert.Contains(result.Errors, e => e.PropertyName == "MonitoringCodes"
+                                            && e.ErrorMessage.Contains("The 'Pre-Charge Decision' monitoring code must be selected"));
+    }
+
+    [Fact]
+    public void MonitoringCodes_MissingCsea_WhenDefendantHasNullCharges_ShouldFail()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        defendants[0].Charges = null;
+        req.Defendants = defendants;
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("MON1", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+
+    }
+
+    [Fact]
+    public void MonitoringCodes_NoCseaRequired_WhenAllDefendantsAreCharged_ShouldPass()
+    {
+        var req = GetValidRequest();
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("MON1", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
+    [Fact]
+    public void MonitoringCodes_MissingCsea_WhenNoDefendantsAreAdded_ShouldFail()
+    {
+        var req = GetValidRequest();
+        req.Defendants = [];
+        req.MonitoringCodes = [];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+    
+    [Fact]
+    public void MonitoringCodes_CseaRequired_WhenNoDefendantsAreAdded_ShouldPass()
+    {
+        var req = GetValidRequest();
+        req.Defendants = [];
+        req.MonitoringCodes = [new CaseRegistrationMonitoringCode("CSEA", true)];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldNotHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
 }
