@@ -3,9 +3,11 @@ namespace Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Models.Dto;
 using Cps.CaseManagement.MdsClient.Models.Entities;
+using Microsoft.Extensions.Logging;
 
-public class MdsMapper : IMdsMapper
+public class MdsMapper(ILogger<MdsMapper> logger) : IMdsMapper
 {
+    private readonly ILogger<MdsMapper> _logger = logger;
     public UnitsDto MapUnitsAndUserDataToDto(IEnumerable<UnitEntity> allUnits, long? homeUnitId)
     {
         return new UnitsDto
@@ -133,7 +135,14 @@ public class MdsMapper : IMdsMapper
 
     public OffencesDto MapOffencesEntityToDto(OffencesEntity entity)
     {
-        var offences = entity.Offences.Where(o => o.CmsId != null).Select(o => new OffenceDto
+        var nullModeOfTrialOffences = entity.Offences.Where(o => o.CmsModeOfTrial?.Id == null);
+        foreach (var offence in nullModeOfTrialOffences)
+        {
+            _logger.LogWarning("Offence with Code '{Code}' and CmsId '{CmsId}' was excluded because CmsModeOfTrial.Id is null",
+                offence.Code, offence.CmsId);
+        }
+
+        var offences = entity.Offences.Where(o => o.CmsId != null && o.CmsModeOfTrial?.Id != null).Select(o => new OffenceDto
             {
                 Code = o.Code,
                 Description = o.Description,
