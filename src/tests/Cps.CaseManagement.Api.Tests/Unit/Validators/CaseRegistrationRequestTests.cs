@@ -619,6 +619,29 @@ public class CaseRegistrationRequestValidatorTests
                                             && e.ErrorMessage.Contains("The 'Pre-Charge Decision' monitoring code must be selected"));
     }
 
+        [Fact]
+    public void MonitoringCodes_CseaNotPresent_WithMultipleDefendants_WhenOneDefendantIsNotYetCharged_ShouldFail()
+    {
+        var req = GetValidRequest();
+        var defendants = req.Defendants!.ToList();
+        var secondDefendant = new CaseRegistrationDefendant
+        {
+            IsDefendant = true,
+            Surname = "Doe",
+            Charges = [],
+            IsNotYetCharged = true
+        };
+        defendants.Add(secondDefendant);
+        req.Defendants = defendants;
+        req.MonitoringCodes = [];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+        Assert.Contains(result.Errors, e => e.PropertyName == "MonitoringCodes"
+                                            && e.ErrorMessage.Contains("The 'Pre-Charge Decision' monitoring code must be selected"));
+    }
+
     [Fact]
     public void MonitoringCodes_MissingCsea_WhenDefendantHasNullCharges_ShouldFail()
     {
@@ -656,6 +679,19 @@ public class CaseRegistrationRequestValidatorTests
 
         result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
     }
+
+    [Fact]
+    public void MonitoringCodes_MissingCsea_WhenDefendantsAreNull_ShouldFail()
+    {
+        var req = GetValidRequest();
+        req.Defendants = null;
+        req.MonitoringCodes = [];
+
+        var result = _validator.TestValidate(req);
+
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringCodes);
+    }
+
     
     [Fact]
     public void MonitoringCodes_CseaRequired_WhenNoDefendantsAreAdded_ShouldPass()
