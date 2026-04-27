@@ -619,7 +619,7 @@ public class CaseRegistrationRequestValidatorTests
                                             && e.ErrorMessage.Contains("The 'Pre-Charge Decision' monitoring code must be selected"));
     }
 
-        [Fact]
+    [Fact]
     public void MonitoringCodes_CseaNotPresent_WithMultipleDefendants_WhenOneDefendantIsNotYetCharged_ShouldFail()
     {
         var req = GetValidRequest();
