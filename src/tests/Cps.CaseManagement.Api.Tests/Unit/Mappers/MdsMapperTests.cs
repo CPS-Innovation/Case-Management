@@ -1,8 +1,11 @@
 namespace Cps.CaseManagement.Api.Tests.Unit.Mappers;
 
+using Microsoft.Extensions.Logging;
+using AutoFixture;
+using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.MdsClient.Models.Entities;
-using AutoFixture;
+using Moq;
 
 public class MdsMapperTests
 {
@@ -12,7 +15,7 @@ public class MdsMapperTests
     public MdsMapperTests()
     {
         _fixture = new Fixture();
-        _mapper = new MdsMapper();
+        _mapper = new MdsMapper(new Mock<ILogger<MdsMapper>>().Object);
     }
 
     [Fact]
@@ -180,11 +183,16 @@ public class MdsMapperTests
     [Fact]
     public void MapOffencesEntityToDto_MapsExpectedValues()
     {
-        var offence = _fixture.Create<OffenceEntity>();
+        var cmsModeOfTrial = _fixture.Create<CmsModeOfTrialEntity>();
+        cmsModeOfTrial.Id = "S";
+        var offence = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 42)
+            .With(o => o.CmsModeOfTrial, cmsModeOfTrial)
+            .Create();
         var entity = new OffencesEntity
         {
             Total = 1,
-            Offences = new[] { offence }
+            Offences = [offence]
         };
 
         var result = _mapper.MapOffencesEntityToDto(entity);
@@ -199,6 +207,93 @@ public class MdsMapperTests
         Assert.Equal(offence.EffectiveFromDate, mapped.EffectiveFromDate);
         Assert.Equal(offence.EffectiveToDate, mapped.EffectiveToDate);
         Assert.Equal(offence.ModeOfTrial, mapped.ModeOfTrial);
+        Assert.Equal(offence.CmsId, mapped.CmsId);
+        Assert.Equal(CmsModeOfTrialShortCodes.SUM, mapped.CmsModeOfTrialShortCode);
+    }
+
+    [Fact]
+    public void MapOffencesEntityToDto_ExcludesOffences_WhenCmsIdIsNull()
+    {
+        var cmsModeOfTrial = new CmsModeOfTrialEntity { Id = "S", Name = "Summary" };
+        var offenceWithCmsId = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 1)
+            .With(o => o.CmsModeOfTrial, cmsModeOfTrial)
+            .Create();
+        var offenceWithoutCmsId = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, (int?)null)
+            .Create();
+        var entity = new OffencesEntity
+        {
+            Total = 2,
+            Offences = [offenceWithCmsId, offenceWithoutCmsId]
+        };
+
+        var result = _mapper.MapOffencesEntityToDto(entity);
+
+        Assert.Single(result.Offences);
+        Assert.Equal(1, result.Total);
+        Assert.Equal(offenceWithCmsId.Code, result.Offences.First().Code);
+    }
+
+    [Fact]
+    public void MapOffencesEntityToDto_MapsCmsModeOfTrialShortCode_FromCmsModeOfTrialId()
+    {
+        var cmsModeOfTrial = new CmsModeOfTrialEntity { Id = "S", Name = "Summary" };
+        var offence = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 10)
+            .With(o => o.CmsModeOfTrial, cmsModeOfTrial)
+            .Create();
+        var entity = new OffencesEntity
+        {
+            Total = 1,
+            Offences = [offence]
+        };
+
+        var result = _mapper.MapOffencesEntityToDto(entity);
+
+        Assert.Equal("SUM", result.Offences.First().CmsModeOfTrialShortCode);
+    }
+
+    [Fact]
+    public void MapOffencesEntityToDto_ExcludesOffences_WhenCmsModeOfTrialIdIsNull()
+    {
+        var cmsModeOfTrial = new CmsModeOfTrialEntity { Id = "S", Name = "Summary" };
+        var offenceWithModeOfTrial = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 10)
+            .With(o => o.CmsModeOfTrial, cmsModeOfTrial)
+            .Create();
+        var offenceWithNullModeOfTrial = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 11)
+            .With(o => o.CmsModeOfTrial, (CmsModeOfTrialEntity?)null)
+            .Create();
+        var entity = new OffencesEntity
+        {
+            Total = 2,
+            Offences = [offenceWithModeOfTrial, offenceWithNullModeOfTrial]
+        };
+
+        var result = _mapper.MapOffencesEntityToDto(entity);
+
+        Assert.Single(result.Offences);
+        Assert.Equal(offenceWithModeOfTrial.Code, result.Offences.First().Code);
+    }
+
+    [Fact]
+    public void MapOffencesEntityToDto_MapsCmsModeOfTrialShortCode_AsNull_WhenCmsModeOfTrialIsNull()
+    {
+        var offence = _fixture.Build<OffenceEntity>()
+            .With(o => o.CmsId, 10)
+            .With(o => o.CmsModeOfTrial, (CmsModeOfTrialEntity?)null)
+            .Create();
+        var entity = new OffencesEntity
+        {
+            Total = 1,
+            Offences = [offence]
+        };
+
+        var result = _mapper.MapOffencesEntityToDto(entity);
+
+        Assert.Empty(result.Offences);
     }
 
     [Fact]

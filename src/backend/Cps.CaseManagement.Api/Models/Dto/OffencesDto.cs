@@ -26,4 +26,8 @@ public class OffenceDto
     public DateTime? EffectiveToDate { get; set; }
     [JsonPropertyName("modeOfTrial")]
     public string? ModeOfTrial { get; set; }
+    [JsonPropertyName("cmsId")]
+    public int? CmsId { get; set; }
+    [JsonPropertyName("cmsModeOfTrialShortCode")]
+    public string? CmsModeOfTrialShortCode { get; set; }
 }
