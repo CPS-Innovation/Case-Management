@@ -3,9 +3,11 @@ namespace Cps.CaseManagement.Api.Mappers;
 using Cps.CaseManagement.Api.Constants;
 using Cps.CaseManagement.Api.Models.Dto;
 using Cps.CaseManagement.MdsClient.Models.Entities;
+using Microsoft.Extensions.Logging;
 
-public class MdsMapper : IMdsMapper
+public class MdsMapper(ILogger<MdsMapper> logger) : IMdsMapper
 {
+    private readonly ILogger<MdsMapper> _logger = logger;
     public UnitsDto MapUnitsAndUserDataToDto(IEnumerable<UnitEntity> allUnits, long? homeUnitId)
     {
         return new UnitsDto
@@ -133,10 +135,19 @@ public class MdsMapper : IMdsMapper
 
     public OffencesDto MapOffencesEntityToDto(OffencesEntity entity)
     {
-        return new OffencesDto
+        var nullCmsIdOffences = entity.Offences.Where(o => o.CmsId == null);
+        foreach (var offence in nullCmsIdOffences)        {
+            _logger.LogWarning("Offence with Code '{Code}' was excluded because CmsId is null", offence.Code);
+        }
+
+        var nullModeOfTrialOffences = entity.Offences.Where(o => o.CmsModeOfTrial?.Id == null);
+        foreach (var offence in nullModeOfTrialOffences)
         {
-            Total = entity.Total,
-            Offences = entity.Offences.Select(o => new OffenceDto
+            _logger.LogWarning("Offence with Code '{Code}' and CmsId '{CmsId}' was excluded because CmsModeOfTrial.Id is null",
+                offence.Code, offence.CmsId);
+        }
+
+        var offences = entity.Offences.Where(o => o.CmsId != null && o.CmsModeOfTrial?.Id != null).Select(o => new OffenceDto
             {
                 Code = o.Code,
                 Description = o.Description,
@@ -144,8 +155,15 @@ public class MdsMapper : IMdsMapper
                 DPPConsent = o.DPPConsent,
                 EffectiveFromDate = o.EffectiveFromDate,
                 EffectiveToDate = o.EffectiveToDate,
-                ModeOfTrial = o.ModeOfTrial
-            }).ToArray()
+                ModeOfTrial = o.ModeOfTrial,
+                CmsId = o.CmsId,
+                CmsModeOfTrialShortCode = CmsModeOfTrialMapper.ToCmsValue(o.CmsModeOfTrial?.Id),
+            }).ToArray();
+            
+        return new OffencesDto
+        {
+            Offences = offences,
+            Total = offences.Length,
         };
     }
 
