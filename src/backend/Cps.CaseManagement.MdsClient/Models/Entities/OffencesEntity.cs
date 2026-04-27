@@ -26,4 +26,16 @@ public class OffenceEntity
     public DateTime? EffectiveToDate { get; set; }
     [JsonPropertyName("modeOfTrial")]
     public string? ModeOfTrial { get; set; }
+    [JsonPropertyName("cmsId")]
+    public int? CmsId { get; set; }
+    [JsonPropertyName("cmsModeOfTrial")]
+    public CmsModeOfTrialEntity? CmsModeOfTrial { get; set; }
+}
+
+public class CmsModeOfTrialEntity
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+    [JsonPropertyName("name")]
+    public string? Name { get; set; }
 }
