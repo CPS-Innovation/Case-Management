@@ -135,6 +135,11 @@ public class MdsMapper(ILogger<MdsMapper> logger) : IMdsMapper
 
     public OffencesDto MapOffencesEntityToDto(OffencesEntity entity)
     {
+        var nullCmsIdOffences = entity.Offences.Where(o => o.CmsId == null);
+        foreach (var offence in nullCmsIdOffences)        {
+            _logger.LogWarning("Offence with Code '{Code}' was excluded because CmsId is null", offence.Code);
+        }
+
         var nullModeOfTrialOffences = entity.Offences.Where(o => o.CmsModeOfTrial?.Id == null);
         foreach (var offence in nullModeOfTrialOffences)
         {
