@@ -63,6 +63,7 @@ export const getCaseDetailsSummaryListRows = (
             : [
                 {
                   "data-testid": "change-area-link",
+                  className: "govuk-link--no-visited-state",
                   children: <span>Change</span>,
                   to: "/case-registration/areas",
                   visuallyHiddenText: "Case Area",
@@ -85,6 +86,7 @@ export const getCaseDetailsSummaryListRows = (
               {
                 "data-testid": "change-urn-link",
                 id: "change-urn-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-details",
                 visuallyHiddenText: "Case URN",
@@ -109,6 +111,7 @@ export const getCaseDetailsSummaryListRows = (
             : [
                 {
                   "data-testid": "change-registering-unit-link",
+                  className: "govuk-link--no-visited-state",
                   children: <span>Change</span>,
                   to: "/case-registration/case-details",
                   visuallyHiddenText: "Registering Unit",
@@ -132,6 +135,7 @@ export const getCaseDetailsSummaryListRows = (
           : [
               {
                 "data-testid": "change-wcu-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-details",
                 visuallyHiddenText: "Witness Care Unit",
@@ -161,6 +165,7 @@ export const getCaseDetailsSummaryListRows = (
           : [
               {
                 "data-testid": "change-operation-name-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration",
                 visuallyHiddenText: "Operation Name",
@@ -188,6 +193,7 @@ export const getCaseDetailsSummaryListRows = (
           : [
               {
                 children: <span>Add a suspect</span>,
+                className: "govuk-link--no-visited-state",
                 to: `/case-registration/suspect-${formData.suspects.length}/add-suspect`,
                 "data-testid": "add-suspect-link",
                 onClick: (event: React.MouseEvent<HTMLAnchorElement>) =>
@@ -237,6 +243,7 @@ export const getFirstHearingSummaryRows = (
                 : [
                     {
                       "data-testid": "change-court-location-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/first-hearing",
                       visuallyHiddenText: "First Hearing Court Location",
@@ -261,6 +268,7 @@ export const getFirstHearingSummaryRows = (
                 : [
                     {
                       "data-testid": "change-first-hearing-date-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/first-hearing",
                       visuallyHiddenText: "First Hearing Date",
@@ -283,6 +291,7 @@ export const getFirstHearingSummaryRows = (
                 : [
                     {
                       "data-testid": "change-first-hearing-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/first-hearing",
                       visuallyHiddenText: "First Hearing Details",
@@ -339,6 +348,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
           : [
               {
                 "data-testid": "change-case-complexity-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-complexity",
                 visuallyHiddenText: "Case Complexity",
@@ -368,6 +378,7 @@ export const getCaseComplexityAndMonitoringCodesSummaryListRows = (
           : [
               {
                 "data-testid": "change-monitoring-codes-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-monitoring-codes",
                 visuallyHiddenText: "Monitoring Codes",
@@ -434,6 +445,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                 : [
                     {
                       "data-testid": "change-case-investigator-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/case-assignee",
                       visuallyHiddenText: "Police officer or investigator",
@@ -463,6 +475,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                 : [
                     {
                       "data-testid": "change-shoulder-number-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/case-assignee",
                       visuallyHiddenText: "Shoulder Number",
@@ -489,6 +502,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
                     {
                       "data-testid":
                         "change-police-officer-or-investigator-link",
+                      className: "govuk-link--no-visited-state",
                       children: <span>Change</span>,
                       to: "/case-registration/case-assignee",
                       visuallyHiddenText: "Police officer or investigator",
@@ -536,6 +550,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
           : [
               {
                 "data-testid": "change-prosecutor-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-assignee",
                 visuallyHiddenText: "Prosecutor",
@@ -565,6 +580,7 @@ export const getWhosIsWorkingOnTheCaseSummaryListRows = (
           : [
               {
                 "data-testid": "change-caseworker-link",
+                className: "govuk-link--no-visited-state",
                 children: <span>Change</span>,
                 to: "/case-registration/case-assignee",
                 visuallyHiddenText: "Caseworker",

@@ -221,6 +221,7 @@ const ChargesOffenceSearch = () => {
               <Link
                 to={`/case-registration/suspect-${suspectIndex}/charge-${chargeIndex}/add-charge-details`}
                 onClick={(event) => handleClick(event, data.code)}
+                className="govuk-link--no-visited-state"
               >
                 Add
               </Link>
