@@ -7,6 +7,7 @@ import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { sanitizeNameText } from "../../../common/utils/sanitizeNameText";
 import useErrorSummaryList from "../../../common/hooks/useErrorSummaryList";
 import { useNavigate, useParams } from "react-router";
+import useGetSuspectRoute from "../../../common/hooks/useGetSuspectRoute";
 import ErrorSummaryWrapper from "../../common/ErrorSummaryWrapper";
 import PageContentWrapper from "../../common/PageContentWrapper";
 import styles from "../index.module.scss";
@@ -56,6 +57,13 @@ const SuspectAliasesPage = () => {
     );
   }, [state.formData.suspects, suspectIndex]);
   const [formDataErrors, setFormDataErrors] = useState<FormDataErrors>({});
+
+  const { nextRoute } = useGetSuspectRoute(
+    "suspect-add-aliases",
+    state.formData.suspects[suspectIndex].suspectAdditionalDetailsCheckboxes,
+    suspectIndex,
+    state.formData.suspects[suspectIndex].suspectAliases.length > 0,
+  );
 
   const errorSummaryProperties = useCallback(
     (errorKey: keyof FormDataErrors) => {
@@ -140,7 +148,7 @@ const SuspectAliasesPage = () => {
           errorSummaryRef={errorSummaryRef}
           dataTestId={"suspect-aliases-error-summary"}
           showSkip={showSkip}
-          nextRoute={`/case-registration/suspect-${suspectIndex}/suspect-asn`}
+          nextRoute={nextRoute}
           skipText="I do not have alias details"
         />
         <form onSubmit={handleSubmit}>

@@ -441,3 +441,124 @@ test("Should successfully complete suspect journey with skip all additional deta
     policeUnit: "Not entered",
   });
 });
+
+test("Should successfully complete suspect additional details journey with skipping suspect additional details when only few additional details are selected", async ({
+  page,
+}) => {
+  await page.goto("http://localhost:5173");
+  const caseRegistrationHomePage = new CaseRegistrationHomePage(page);
+  await caseRegistrationHomePage.verifyUrl();
+  await caseRegistrationHomePage.verifyPageElements();
+  await caseRegistrationHomePage.errorValidations();
+  await caseRegistrationHomePage.addOperationName("thunderstruck");
+  await caseRegistrationHomePage.addSuspect();
+  await caseRegistrationHomePage.saveAndContinue();
+  await caseRegistrationHomePage.verifyErrorSummaryClear();
+
+  const caseAreasPage = new CaseAreasPage(page);
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyBackLink("/case-registration");
+  await caseAreasPage.backLinkClick();
+  await caseRegistrationHomePage.verifyUrl();
+  await caseRegistrationHomePage.saveAndContinue();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.verifyPageElements();
+  await caseAreasPage.errorValidations();
+  await caseAreasPage.enterAreaOrDivision("CAMBRIDGESHIRE");
+  await caseAreasPage.saveAndContinue();
+  await caseAreasPage.verifyErrorSummaryClear();
+
+  const caseDetailsPage = new CaseDetailsPage(page);
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyBackLink("/case-registration/areas");
+  await caseDetailsPage.backLinkClick();
+  await caseAreasPage.verifyUrl();
+  await caseAreasPage.saveAndContinue();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.verifyPageElements();
+  await caseDetailsPage.errorValidations();
+  await caseDetailsPage.enterUrnPoliceForce("12");
+  await caseDetailsPage.enterUrnPoliceUnit("21");
+  await caseDetailsPage.enterUrnUniqueReference("12345");
+  await caseDetailsPage.enterUrnYearReference("26");
+  await caseDetailsPage.enterRegisteringUnit("NORTHERN CJU (Peterborough)");
+  await caseDetailsPage.enterWitnessCareUnit(
+    "Cambridgeshire Non Operational WCU",
+  );
+  await caseDetailsPage.saveAndContinue();
+  await caseDetailsPage.verifyErrorSummaryClear();
+
+  const addSuspectPage = new AddSuspectPage(page);
+  await addSuspectPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/add-suspect",
+  );
+  await addSuspectPage.verifyBackLink("/case-registration/case-details");
+  await addSuspectPage.backLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.saveAndContinue();
+  await addSuspectPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/add-suspect",
+  );
+  await addSuspectPage.verifyBasePageElements();
+  await addSuspectPage.addPersonSuspect();
+  await addSuspectPage.verifyAdditionalElements();
+  await addSuspectPage.addPersonSuspect();
+  await addSuspectPage.addSuspectFirstName("harry");
+  await addSuspectPage.addSuspectLastName("potter");
+  await addSuspectPage.selectAdditionalDetailsDOB(true);
+  await addSuspectPage.selectAdditionalDetailsDisability(true);
+  await addSuspectPage.selectAdditionalDetailsAlias(true);
+  await addSuspectPage.selectAdditionalDetailsOffenderType(true);
+  await addSuspectPage.verifySelectedAdditionalDetails([
+    "Date of birth",
+    "Disability",
+    "Alias details",
+    "Type of offender",
+  ]);
+  await addSuspectPage.saveAndContinue();
+
+  const suspectDOBPage = new SuspectDOBPage(page);
+  await suspectDOBPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/suspect-dob",
+  );
+  await suspectDOBPage.verifyPageElements();
+  await suspectDOBPage.saveAndContinue();
+  await suspectDOBPage.verifySkipDOBAdditionalDetails();
+  await suspectDOBPage.clickSkipDOBAdditionalDetails();
+
+  const suspectDisabilityPage = new SuspectDisabilityPage(page);
+  await suspectDisabilityPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/suspect-disability",
+  );
+  await suspectDisabilityPage.saveAndContinue();
+  await suspectDisabilityPage.verifySkipDisabilityAdditionalDetails();
+  await suspectDisabilityPage.clickSkipDisabilityAdditionalDetails();
+
+  const suspectAliasesPage = new SuspectAliasesPage(page);
+  await suspectAliasesPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/suspect-add-aliases",
+  );
+  await suspectAliasesPage.saveAndContinue();
+  await suspectAliasesPage.verifySkipAddAliasesAdditionalDetails();
+  await suspectAliasesPage.clickSkipAddAliasesAdditionalDetails();
+
+  const suspectOffenderTypesPage = new SuspectOffenderTypesPage(page);
+  await suspectOffenderTypesPage.verifyUrl(
+    "http://localhost:5173/case-registration/suspect-0/suspect-offender",
+  );
+  await suspectOffenderTypesPage.saveAndContinue();
+  await suspectOffenderTypesPage.verifySkipOffenderTypesAdditionalDetails();
+  await suspectOffenderTypesPage.clickSkipOffenderTypesAdditionalDetails();
+
+  const suspectSummaryPage = new SuspectSummaryPage(page);
+  await suspectSummaryPage.verifyUrl();
+  await suspectSummaryPage.verifyBackLink("/case-registration/case-details");
+  await suspectSummaryPage.backLinkClick();
+  await caseDetailsPage.verifyUrl();
+  await caseDetailsPage.saveAndContinue();
+  await suspectSummaryPage.verifyUrl();
+  await suspectSummaryPage.verifyPageElements("You have added 1 suspect");
+  await suspectSummaryPage.errorValidations();
+  await suspectSummaryPage.verifySuspectSummaryRows(["POTTER, Harry"]);
+  await suspectSummaryPage.verifyNoSuspectSummaryDetails(0);
+});
