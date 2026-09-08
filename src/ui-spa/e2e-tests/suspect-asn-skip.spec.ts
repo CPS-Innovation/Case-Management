@@ -92,8 +92,11 @@ test("Scenario 13: arrest summons number can be skipped, and none is recorded fo
   expect(payload, "no POST /api/v1/cases payload was captured").not.toBeNull();
   const defendants = payload!.defendants ?? [];
   expect(defendants, "expected exactly one defendant").toHaveLength(1);
+  // Exactly "", not null: the request schema types arrestSummonsNumber as
+  // z.string() (non-nullable), unlike dateOfBirth which is z.string().nullable().
+  // Asserting the exact value also catches a stale ASN surviving the skip.
   expect(
     defendants[0].arrestSummonsNumber,
-    "skipping the ASN must submit no arrest summons number",
-  ).toBeFalsy();
+    "skipping the ASN must submit an empty arrest summons number",
+  ).toBe("");
 });
