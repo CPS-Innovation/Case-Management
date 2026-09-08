@@ -43,6 +43,15 @@ test("Scenario 13: arrest summons number can be skipped, and none is recorded fo
     errorSummary.getByRole("heading", { name: "There is a problem" }),
   ).toBeVisible();
 
+  // The inline error on the field itself, not just the summary. govuk-react-jsx
+  // renders it as <p id="{inputId}-error" class="govuk-error-message"> with a
+  // visually hidden "Error:" prefix, hence toContainText.
+  const inlineError = page.locator("#suspect-asn-text-error");
+  await expect(inlineError).toBeVisible();
+  await expect(inlineError).toContainText(
+    "Enter the Arrest Summons Number (ASN)",
+  );
+
   const enterAsnLink = page.getByTestId("suspect-asn-text-link");
   const skipLink = page.getByTestId("suspect-detail-skip-link");
   await expect(enterAsnLink).toHaveText(
