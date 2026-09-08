@@ -21,18 +21,6 @@ test("Scenario 13: arrest summons number can be skipped, and none is recorded fo
   const urn = generateUniqueUrn();
   const name = personName();
 
-  let payload: CaseRegistrationPayload | null = null;
-  page.on("request", (request) => {
-    if (
-      request.url().endsWith("/api/v1/cases") &&
-      request.method() === "POST"
-    ) {
-      payload = JSON.parse(
-        request.postData() ?? "null",
-      ) as CaseRegistrationPayload;
-    }
-  });
-
   await startAtHomePage(page, { hasSuspect: true });
   await enterAreasAndCaseDetails(page, urn);
 
@@ -78,7 +66,19 @@ test("Scenario 13: arrest summons number can be skipped, and none is recorded fo
   await wantToAddChargesPage.selectAddChargesNo();
   await wantToAddChargesPage.saveAndContinue();
 
+  // Armed before the submission so the request is captured deterministically
+  // rather than relying on a listener having fired by the time we assert.
+  const casesRequest = page.waitForRequest(
+    (request) =>
+      request.url().endsWith("/api/v1/cases") && request.method() === "POST",
+    { timeout: 120_000 },
+  );
+
   await completeAssigneeAndSubmit(page, urn);
+
+  const payload = JSON.parse(
+    (await casesRequest).postData() ?? "null",
+  ) as CaseRegistrationPayload | null;
 
   expect(payload, "no POST /api/v1/cases payload was captured").not.toBeNull();
   const defendants = payload!.defendants ?? [];
