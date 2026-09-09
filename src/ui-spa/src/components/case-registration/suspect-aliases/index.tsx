@@ -87,8 +87,10 @@ const SuspectAliasesPage = () => {
 
     if (!lastName) {
       errors.suspectAliasesLastNameText = {
-        errorSummaryText: "Enter a last name",
-        inputErrorText: "Enter a last name",
+        errorSummaryText:
+          "Enter last name. If the person only has one name, enter it here.",
+        inputErrorText:
+          "Enter last name. If the person only has one name, enter it here.",
       };
       setFormDataErrors(errors);
       setShowSkip(true);
