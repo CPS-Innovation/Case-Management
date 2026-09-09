@@ -41,7 +41,7 @@ export class SuspectSummaryPage {
   async verifySuspectSummaryRows(values: string[]) {
     const suspectList = this.page.locator('div[data-testid^="suspect-key-"]');
 
-    expect(suspectList).toHaveCount(values.length);
+    await expect(suspectList).toHaveCount(values.length);
     await Promise.all(
       values.map(async (value, index) => {
         await expect(

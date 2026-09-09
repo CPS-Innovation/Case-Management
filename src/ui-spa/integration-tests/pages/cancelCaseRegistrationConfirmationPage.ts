@@ -45,7 +45,7 @@ export class CancelCaseRegistrationConfirmationPage {
       this.page.getByTestId("cancel-registration-radio-link"),
     ).toHaveText("Select whether you want to cancel registration");
     await this.page.getByTestId("cancel-registration-radio-link").click();
-    expect(
+    await expect(
       this.page.getByTestId("cancel-registration-radio-yes"),
     ).toBeFocused();
   }
