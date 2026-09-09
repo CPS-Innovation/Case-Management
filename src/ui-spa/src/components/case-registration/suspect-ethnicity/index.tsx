@@ -91,8 +91,8 @@ const SuspectEthnicityPage = () => {
 
     if (!suspectEthnicityRadio.shortCode) {
       errors.suspectEthnicityRadio = {
-        errorSummaryText: "Select the defendant's ethnicity",
-        inputErrorText: "Select the defendant's ethnicity",
+        errorSummaryText: "Select the suspect's ethnicity",
+        inputErrorText: "Select the suspect's ethnicity",
       };
       setEthnicityFormDataErrors(errors);
       setShowSkip(true);

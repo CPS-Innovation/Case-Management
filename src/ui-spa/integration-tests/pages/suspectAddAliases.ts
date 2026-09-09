@@ -35,7 +35,9 @@ export class SuspectAliasesPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-aliases-last-name-text-link"),
-    ).toHaveText("Enter a last name");
+    ).toHaveText(
+      "Enter last name. If the person only has one name, enter it here.",
+    );
     await expect(this.page.getByTestId("suspect-detail-skip-link")).toHaveText(
       "I do not have alias details",
     );
@@ -52,7 +54,9 @@ export class SuspectAliasesPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-aliases-last-name-text-link"),
-    ).toHaveText("Enter a last name");
+    ).toHaveText(
+      "Enter last name. If the person only has one name, enter it here.",
+    );
     await this.page.getByTestId("suspect-aliases-last-name-text-link").click();
     await expect(
       this.page.locator("#suspect-aliases-last-name-text"),

@@ -248,7 +248,7 @@ export async function completeLongPathValidation(
     [
       {
         testId: "suspect-ethnicity-radio-link",
-        message: "Select the defendant's ethnicity",
+        message: "Select the suspect's ethnicity",
       },
     ],
   );
@@ -264,7 +264,8 @@ export async function completeLongPathValidation(
     [
       {
         testId: "suspect-aliases-last-name-text-link",
-        message: "Enter a last name",
+        message:
+          "Enter last name. If the person only has one name, enter it here.",
       },
     ],
   );

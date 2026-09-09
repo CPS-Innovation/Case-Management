@@ -28,7 +28,7 @@ export class SuspectEthnicityPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-ethnicity-radio-link"),
-    ).toHaveText("Select the defendant's ethnicity");
+    ).toHaveText("Select the suspect's ethnicity");
     await expect(this.page.getByTestId("suspect-detail-skip-link")).toHaveText(
       "I do not have the ethnicity",
     );
@@ -45,7 +45,7 @@ export class SuspectEthnicityPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-ethnicity-radio-link"),
-    ).toHaveText("Select the defendant's ethnicity");
+    ).toHaveText("Select the suspect's ethnicity");
     await this.page.getByTestId("suspect-ethnicity-radio-link").click();
     await expect(this.page.locator("#suspect-ethnicity-radio-0")).toBeFocused();
   }
