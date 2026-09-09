@@ -74,7 +74,7 @@ export class CaseRegistrationSummaryPage {
         .locator("dd")
         .nth(1)
         .getByRole("link", { name: "Change" });
-      expect(actions).toHaveCount(0);
+      await expect(actions).toHaveCount(0);
     } else {
       const areaChangeLink = rows
         .nth(0)
@@ -112,7 +112,7 @@ export class CaseRegistrationSummaryPage {
         .locator("dd")
         .nth(1)
         .getByRole("link", { name: "Change" });
-      expect(actions).toHaveCount(0);
+      await expect(actions).toHaveCount(0);
     } else {
       const registeringUnitChangeLink = rows
         .nth(2)
@@ -367,7 +367,7 @@ export class CaseRegistrationSummaryPage {
   async verifySuspectSummaryRows(values: string[]) {
     const suspectList = this.page.locator('div[data-testid^="suspect-key-"]');
 
-    expect(suspectList).toHaveCount(values.length);
+    await expect(suspectList).toHaveCount(values.length);
     await Promise.all(
       values.map(async (value, index) => {
         await expect(

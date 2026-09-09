@@ -43,7 +43,7 @@ export class SuspectAliasesSummaryPage {
     const summaryRows = this.page
       .getByTestId("suspect-aliases-summary-list")
       .locator(".govuk-summary-list__row");
-    expect(summaryRows).toHaveCount(values.length);
+    await expect(summaryRows).toHaveCount(values.length);
     await Promise.all(
       values.map(async (value, index) => {
         await expect(summaryRows.nth(index).locator("dt")).toHaveText(value);
