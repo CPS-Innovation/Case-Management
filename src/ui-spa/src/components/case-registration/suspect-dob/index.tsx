@@ -222,7 +222,10 @@ const SuspectDOBPage = () => {
           onSkipCallBack={onSkipCallBack}
         />
         <form onSubmit={handleSubmit}>
-          <div className={styles.inputWrapper}>
+          <div
+            className={`${styles.inputWrapper}
+            ${styles.suspectDetails}`}
+          >
             <DateInput
               errorMessage={
                 formDataErrors.suspectDOBDateError

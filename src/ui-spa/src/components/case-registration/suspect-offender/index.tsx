@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router";
 import { formatNameUtil } from "../../../common/utils/formatNameUtil";
 import { isValidOnOrBeforeDate } from "../../../common/utils/isValidOnOrBeforeDate";
 import { isChargedWithAdultWarningActive } from "../../../common/utils/isChargedWithAdultWarningActive";
+import { isUnder18 } from "../../../common/utils/isYouthSuspect";
 import useErrorSummaryList from "../../../common/hooks/useErrorSummaryList";
 import useGetSuspectRoute from "../../../common/hooks/useGetSuspectRoute";
 import ErrorSummaryWrapper from "../../common/ErrorSummaryWrapper";
@@ -64,6 +65,11 @@ const SuspectOffenderPage = () => {
     retry: false,
   });
 
+  const isUnderAge = useMemo(() => {
+    const birthDate = `${suspectData.suspectDOBDayText}/${suspectData.suspectDOBMonthText}/${suspectData.suspectDOBYearText}`;
+    return isUnder18(birthDate);
+  }, [suspectData]);
+
   useEffect(() => {
     if (offenderError) throw offenderError;
   }, [offenderError]);
@@ -117,7 +123,7 @@ const SuspectOffenderPage = () => {
         inputErrorText: "Select the type of offender",
       };
       setFormDataErrors(errors);
-      setShowSkip(true);
+      if (!isUnderAge) setShowSkip(true);
       return false;
     } else if (showSkip) {
       setShowSkip(false);
@@ -264,7 +270,10 @@ const SuspectOffenderPage = () => {
           skipText="I do not have the type of offender"
         />
         <form onSubmit={handleSubmit}>
-          <div className={styles.inputWrapper}>
+          <div
+            className={`${styles.inputWrapper}
+            ${styles.suspectDetails}`}
+          >
             <Radios
               fieldset={{
                 legend: {
@@ -275,6 +284,14 @@ const SuspectOffenderPage = () => {
                   ),
                 },
               }}
+              hint={
+                isUnderAge
+                  ? {
+                      children:
+                        "This is required because the suspect is under 18",
+                    }
+                  : undefined
+              }
               errorMessage={
                 formDataErrors["suspectOffenderTypesRadio"]
                   ? {
