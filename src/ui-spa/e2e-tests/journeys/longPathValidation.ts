@@ -232,7 +232,7 @@ export async function completeLongPathValidation(
     [
       {
         testId: "suspect-religion-radio-link",
-        message: "Select the defendant's religion",
+        message: "Select the suspect's religion",
       },
     ],
   );

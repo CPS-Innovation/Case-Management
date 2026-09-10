@@ -92,8 +92,8 @@ const SuspectReligionPage = () => {
 
     if (!suspectReligionRadio.shortCode) {
       errors.suspectReligionRadio = {
-        errorSummaryText: "Select the defendant's religion",
-        inputErrorText: "Select the defendant's religion",
+        errorSummaryText: "Select the suspect's religion",
+        inputErrorText: "Select the suspect's religion",
       };
       setReligionFormDataErrors(errors);
       setShowSkip(true);

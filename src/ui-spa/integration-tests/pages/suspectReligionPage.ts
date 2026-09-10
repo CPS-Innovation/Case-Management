@@ -28,7 +28,7 @@ export class SuspectReligionPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-religion-radio-link"),
-    ).toHaveText("Select the defendant's religion");
+    ).toHaveText("Select the suspect's religion");
     await expect(this.page.getByTestId("suspect-detail-skip-link")).toHaveText(
       "I do not have the religion",
     );
@@ -45,7 +45,7 @@ export class SuspectReligionPage {
     ).toBeVisible();
     await expect(
       this.page.getByTestId("suspect-religion-radio-link"),
-    ).toHaveText("Select the defendant's religion");
+    ).toHaveText("Select the suspect's religion");
     await this.page.getByTestId("suspect-religion-radio-link").click();
     await expect(this.page.locator("#suspect-religion-radio-0")).toBeFocused();
   }
